@@ -354,24 +354,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yourEmailId => 'Seu E-mail';
 
   @override
-  String get serviceRequested => "Serviço solicitado";
-
-  @override
-  String get citiesCoverage => "Cobertura de cidades";
-
-  @override
-  String get appearInSearchResults => "Aparecer nos resultados de busca";
-
-  @override
-  String get unlimitedLeads => "Leads ilimitados";
-
-  @override
-  String get premiumProfileBadge => "Selo de perfil premium";
-
-  @override
-  String get priorityCustomerSupport => "Suporte prioritário ao cliente";
-
-  @override
   String get passwordsDoNotMatch => 'As senhas não coincidem';
 
   @override
@@ -642,9 +624,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get home => 'Início';
 
   @override
-  String get noLeadsFound => "Nenhum lead encontrado";
-
-  @override
   String get professionals => 'Profissionais';
 
   @override
@@ -790,4 +769,292 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get left => 'Esquerdo';
+
+  @override
+  String get selectAtLeastOneReminder => 'Please select at least one reminder';
+
+  @override
+  String get selectWateringFrequency => 'Please select watering frequency';
+
+  @override
+  String get selectWateringTime => 'Please select watering time';
+
+  @override
+  String get selectFertilizerFrequency => 'Please select fertilizer frequency';
+
+  @override
+  String get selectFertilizerTime => 'Please select fertilizer time';
+
+  @override
+  String get selectPruningFrequency => 'Please select pruning frequency';
+
+  @override
+  String get selectGeneralFrequency => 'Please select general frequency';
+
+  @override
+  String get gotoMyPlants => 'Go to My Plants';
+
+  @override
+  String get selectFrequency => 'Select frequency';
+
+  @override
+  String get day => 'day';
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get enableWatering => 'Please enable the watering';
+
+  @override
+  String get frequency => 'Frequency';
+
+  @override
+  String get preferred => 'Preferred Time';
+
+  @override
+  String get selectTime => 'Select time';
+
+  @override
+  String get enableFertilizing => 'Please enable the fertilizing';
+
+  @override
+  String get alerts => 'Alerts';
+
+  @override
+  String get enablePruning => 'Please enable the pruning';
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get options => 'Options';
+
+  @override
+  String get criticalCare => 'Critical Care';
+
+  @override
+  String get enableCriticalCare => 'Please enable the critical care';
+
+  @override
+  String get addPlant => 'Add Plant';
+
+  @override
+  String get successfullyAdded => 'Successfully Added';
+
+  @override
+  String get scheduledFor => 'Scheduled For';
+
+  @override
+  String get watered => 'Watered';
+
+  @override
+  String get consistent => 'Consistent';
+
+  @override
+  String get careProfileCompletion => 'Care Profile Completion';
+
+  @override
+  String get addMissingInfo => 'Add Missing Info To Improve Care Accuracy';
+
+  @override
+  String get editPlant => 'Edit Plant';
+
+  @override
+  String get plant => 'plant';
+
+  @override
+  String get andCounting => 'and counting';
+
+  @override
+  String get tap => 'Tap';
+
+  @override
+  String get toAddYourFirstPlant => '\tto add your first plant';
+
+  @override
+  String get serviceRequested => 'Service Requested';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get leadStatus => 'Lead Status';
+
+  @override
+  String get updateLeadStatus => 'Are you sure you want to update lead status?';
+
+  @override
+  String get newLead => 'New';
+
+  @override
+  String get contactedLead => 'Contacted';
+
+  @override
+  String get closedLead => 'Closed';
+
+  @override
+  String get totalLeads => 'Total Leads';
+
+  @override
+  String get companyDetails => 'Company Details';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get sizeOfTheArea => 'Size of the area';
+
+  @override
+  String get noLeadsFound => 'No Lead Found';
+
+  @override
+  String get myLeadsDesc => 'Professional landscaping enquires';
+
+  @override
+  String get mu => 'mo';
+
+  @override
+  String get an => 'an';
+
+  @override
+  String get citiesCoverage => 'Cities Coverage';
+
+  @override
+  String get appearInSearchResults => 'Appear In Search Results';
+
+  @override
+  String get unlimitedLeads => 'Unlimited Leads';
+
+  @override
+  String get premiumProfileBadge => 'Premium Profile Badge';
+
+  @override
+  String get priorityCustomerSupport => 'Priority Customer Support';
+
+  @override
+  String get fullPayment => 'Full Payment';
+
+  @override
+  String get selectService => 'Select Service';
+
+  @override
+  String get shortDescription => 'Short Description';
+
+  @override
+  String get enterShortDescription => 'Enter short description';
+
+  @override
+  String get enterSizeOfTheArea => 'Enter size of the area';
+
+  @override
+  String get youAreOnA30DayTrialEnded => 'Your 30-day trial period has ended!';
+
+  @override
+  String get yourProfileIsCurrently => 'Your profile is currently ';
+
+  @override
+  String get inactive => 'inactive';
+
+  @override
+  String get customerPlanDesc => 'Customers can\'t find you in the app, and your potential bookings are being suspended.';
+
+  @override
+  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Kasagardem?';
+
+  @override
+  String get seePlans => 'Yes,SEE PLANS';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
+  String get additionalNationalCoverageDesc1 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
+
+  @override
+  String get additionalNationalCoverageDesc2 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.';
+
+  @override
+  String get validFor1Year => '(Valid for 1 year only)';
+
+  @override
+  String get planType => 'planType';
+
+  @override
+  String get oneTime => 'One-Time';
+
+  @override
+  String get reccuring => 'Recurring';
+
+  @override
+  String get yourPlanEnds => 'yourPlanEnds';
+
+  @override
+  String get yourPlanEndsDesc => 'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
+
+  @override
+  String get selectYourPlan => 'Select Your Plan';
+
+  @override
+  String get howWouldYouLikeToContinue => 'How would you like to continue?';
+
+  @override
+  String get client => 'Client';
+
+  @override
+  String get userDescription => 'I am looking for a professional service';
+
+  @override
+  String get professional => 'Professional';
+
+  @override
+  String get professionalDescription => 'I want to offer my premium service';
+
+  @override
+  String get professionalStatus => 'Professional Status';
+
+  @override
+  String get renewPlan => 'Renew Plan';
+
+  @override
+  String get subscriptionRemaining => 'Subscription Remaining';
+
+  @override
+  String get exp => 'Exp';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get areYouSureYouWantToDeleteYourAccount => 'Are you sure you want to permanently delete your account? This action cannot be undone.';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get region => 'Region';
+
+  @override
+  String get specialty => 'Specialty';
+
+  @override
+  String get ago => 'ago';
+
+  @override
+  String get find => 'Find';
 }

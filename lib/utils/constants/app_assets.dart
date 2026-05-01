@@ -2,6 +2,7 @@ class AppAssets {
   static const appLogo = 'assets/images/app_logo_ic.png';
   static const appLogoFull = 'assets/images/full_app_logo_ic.png';
   static const backBtnIc = 'assets/images/back_btn_ic.png';
+  static const closeIc = 'assets/images/close_ic.png';
 
   //
   static const cart = 'assets/images/cart.png';

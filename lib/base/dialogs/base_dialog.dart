@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/success_icon_layout.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+
+import '../../utils/constants/app_assets.dart';
 
 class BaseDialog {
   static void showFullScreenDialog(
@@ -18,61 +22,82 @@ class BaseDialog {
     VoidCallback? onButtonPressed,
   }) {
     showDialog(
-      barrierColor: AppColors.appColor,
+      // barrierColor: AppColors.appColor,
       context: context,
       barrierDismissible: barrieDismissible!,
       fullscreenDialog: true,
       useSafeArea: true,
-      builder: (context) => Dialog.fullscreen(
-        backgroundColor: Colors.transparent,
-        child: Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.symmetric(horizontal: spacerSize20),
-            decoration: BoxDecoration(
-              color: AppColors.darkGreen,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.offWhite10,
-                  blurRadius: 2,
-                  spreadRadius: 5,
-                ),
-              ],
-              border: Border.all(color: AppColors.offWhite10),
-              borderRadius: BorderRadius.circular(spacerSize45),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: spacerSize60,
-                left: spacerSize30,
-                right: spacerSize30,
+      builder: (context) => Center(
+        child: Dialog.fullscreen(
+          backgroundColor: Colors.transparent,
+          child: Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: const EdgeInsets.symmetric(horizontal: spacerSize20),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.offWhite10,
+                    blurRadius: 2,
+                    spreadRadius: 5,
+                  ),
+                ],
+                border: Border.all(color: AppColors.offWhite10),
+                borderRadius: BorderRadius.circular(spacerSize45),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SuccessIconLayout(),
-                  BaseText(
-                    text: dialogTitle ?? "",
-                    textColor: AppColors.offWhite,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: AppKeys.poppins,
-                    fontSize: fontSize26,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: CommonClickWidget(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.only(top:15.w,right: 15.w,left: 15.w,bottom: 3.h),
+                        color: Colors.transparent,
+                        child: Image.asset(AppAssets.closeIc, width: 33.w,
+                          height: 33.w,),
+                      ),
+                    ),
                   ),
-                  SizedBox(height: spacerSize5),
-                  BaseText(
-                    text: dialogDescription ?? "",
-                    textColor: AppColors.offWhite,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: AppKeys.inter,
-                    fontSize: fontSize16,
-                    textAlign: TextAlign.center,
-                  ).marginOnly(bottom: spacerSize30),
-                  BaseButton(
-                    onPressed: onButtonPressed,
-                    backgroundColor: AppColors.burntGold,
-                    buttonLabel: buttonLabel ?? "",
-                    fontSize: fontSize16,
-                    textColor: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: spacerSize60,
+                      left: spacerSize30,
+                      right: spacerSize30,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+
+                        SuccessIconLayout(),
+                        BaseText(
+                          text: dialogTitle ?? "",
+                          fontWeight: FontWeight.w600,
+                          fontFamily: AppKeys.poppins,
+                          fontSize: 25.sp,
+                        ),
+                        SizedBox(height: spacerSize5),
+                        BaseText(
+                          text: dialogDescription ?? "",
+                          textColor: AppColors.liteGreyColor,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: AppKeys.inter,
+                          fontSize: 16.sp,
+                          textAlign: TextAlign.center,
+                        ).marginOnly(bottom: spacerSize30),
+                        SizedBox(width: double.infinity,
+                          child: BaseButton(
+                            onPressed: onButtonPressed,
+                            backgroundColor: AppColors.burntGold,
+                            buttonLabel: buttonLabel ?? "",
+                            fontSize: fontSize16,
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

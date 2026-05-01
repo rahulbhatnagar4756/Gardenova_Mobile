@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -45,7 +46,8 @@ class _SuccessIconLayoutState extends State<SuccessIconLayout>
       alignment: Alignment.center,
       children: [
         _buildLottieAnimation(),
-        Image.asset(AppAssets.success, scale: 2),
+        Image.asset(AppAssets.success, width: 87.w,
+        height: 87.w,),
       ],
     );
   }
@@ -53,7 +55,7 @@ class _SuccessIconLayoutState extends State<SuccessIconLayout>
   Widget _buildLottieAnimation() {
     return ColorFiltered(
       colorFilter: const ColorFilter.mode(
-        AppColors.burntGold,
+        AppColors.greenColor,
         BlendMode.srcATop,
       ),
       child: Lottie.asset(

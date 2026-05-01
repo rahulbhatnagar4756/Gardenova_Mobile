@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
 import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_model.dart';
@@ -21,7 +22,7 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
         isBackButtonVisible: true,
       ),
       body: Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.topCenter,
         children: [
           SingleChildScrollView(
             child: Column(
@@ -45,10 +46,15 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
                   controller.confirmPasswordController,
                   context,
                 ),
-                resetPassword(context),
+
               ],
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child:
+            resetPassword(context),
+          )
         ],
       ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
     );
@@ -63,7 +69,6 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
     return Obx(
       () => BaseTextField(
         hintText: AppLocalizations.of(context)!.enterYourPassword,
-        hintColor: AppColors.offWhite50,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: isPasswordObscure.value,
         textEditingController: textEditingController,
@@ -82,13 +87,15 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
   }
 
   resetPassword(BuildContext context) {
-    return BaseButton(
-      backgroundColor: AppColors.burntGold,
-      onPressed: () {
-        controller.resetPassword();
-      },
-      fontSize: fontSize18,
-      buttonLabel: AppLocalizations.of(context)!.resetPassword.toUpperCase(),
-    ).marginOnly(top: spacerSize25);
+    return SizedBox(width: double.infinity,
+      child: BaseButton(
+        backgroundColor: AppColors.burntGold,
+        onPressed: () {
+          controller.resetPassword();
+        },
+        fontSize: fontSize18,
+        buttonLabel: AppLocalizations.of(context)!.resetPassword.toUpperCase(),
+      ).paddingOnly(bottom: 15.h).marginOnly(top: spacerSize25),
+    );
   }
 }

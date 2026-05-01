@@ -103,7 +103,7 @@ class ForgotPasswordViewModel extends GetxController {
         Get.context!,
         buttonLabel: AppLocalizations.of(
           Get.context!,
-        )!.backToLogin.toUpperCase(),
+        )!.backToLogin,
         dialogTitle: AppLocalizations.of(Get.context!)!.passwordChanged,
         dialogDescription: AppLocalizations.of(
           Get.context!,
@@ -125,5 +125,6 @@ class ForgotPasswordViewModel extends GetxController {
     focusNode.dispose();
     super.dispose();
   }
+
 
 }

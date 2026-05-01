@@ -362,7 +362,7 @@ abstract class AppLocalizations {
   /// No description provided for @setAStrongPasswordToSecureYourAccount.
   ///
   /// In en, this message translates to:
-  /// **'Set A Strong Password To Secure Your Account.'**
+  /// **'Set a strong password to secure your account.'**
   String get setAStrongPasswordToSecureYourAccount;
 
   /// No description provided for @backToLogin.
@@ -1618,6 +1618,582 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left'**
   String get left;
+
+  /// No description provided for @selectAtLeastOneReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one reminder'**
+  String get selectAtLeastOneReminder;
+
+  /// No description provided for @selectWateringFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select watering frequency'**
+  String get selectWateringFrequency;
+
+  /// No description provided for @selectWateringTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select watering time'**
+  String get selectWateringTime;
+
+  /// No description provided for @selectFertilizerFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select fertilizer frequency'**
+  String get selectFertilizerFrequency;
+
+  /// No description provided for @selectFertilizerTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select fertilizer time'**
+  String get selectFertilizerTime;
+
+  /// No description provided for @selectPruningFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select pruning frequency'**
+  String get selectPruningFrequency;
+
+  /// No description provided for @selectGeneralFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select general frequency'**
+  String get selectGeneralFrequency;
+
+  /// No description provided for @gotoMyPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to My Plants'**
+  String get gotoMyPlants;
+
+  /// No description provided for @selectFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select frequency'**
+  String get selectFrequency;
+
+  /// No description provided for @day.
+  ///
+  /// In en, this message translates to:
+  /// **'day'**
+  String get day;
+
+  /// No description provided for @reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get reminders;
+
+  /// No description provided for @enableWatering.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable the watering'**
+  String get enableWatering;
+
+  /// No description provided for @frequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get frequency;
+
+  /// No description provided for @preferred.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Time'**
+  String get preferred;
+
+  /// No description provided for @selectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select time'**
+  String get selectTime;
+
+  /// No description provided for @enableFertilizing.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable the fertilizing'**
+  String get enableFertilizing;
+
+  /// No description provided for @alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alerts;
+
+  /// No description provided for @enablePruning.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable the pruning'**
+  String get enablePruning;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @options.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get options;
+
+  /// No description provided for @criticalCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical Care'**
+  String get criticalCare;
+
+  /// No description provided for @enableCriticalCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable the critical care'**
+  String get enableCriticalCare;
+
+  /// No description provided for @addPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Plant'**
+  String get addPlant;
+
+  /// No description provided for @successfullyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully Added'**
+  String get successfullyAdded;
+
+  /// No description provided for @scheduledFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled For'**
+  String get scheduledFor;
+
+  /// No description provided for @watered.
+  ///
+  /// In en, this message translates to:
+  /// **'Watered'**
+  String get watered;
+
+  /// No description provided for @consistent.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistent'**
+  String get consistent;
+
+  /// No description provided for @careProfileCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Care Profile Completion'**
+  String get careProfileCompletion;
+
+  /// No description provided for @addMissingInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Missing Info To Improve Care Accuracy'**
+  String get addMissingInfo;
+
+  /// No description provided for @editPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Plant'**
+  String get editPlant;
+
+  /// No description provided for @plant.
+  ///
+  /// In en, this message translates to:
+  /// **'plant'**
+  String get plant;
+
+  /// No description provided for @andCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'and counting'**
+  String get andCounting;
+
+  /// No description provided for @tap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap'**
+  String get tap;
+
+  /// No description provided for @toAddYourFirstPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'\tto add your first plant'**
+  String get toAddYourFirstPlant;
+
+  /// No description provided for @serviceRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Requested'**
+  String get serviceRequested;
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get viewDetails;
+
+  /// No description provided for @leadStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Lead Status'**
+  String get leadStatus;
+
+  /// No description provided for @updateLeadStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to update lead status?'**
+  String get updateLeadStatus;
+
+  /// No description provided for @newLead.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newLead;
+
+  /// No description provided for @contactedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get contactedLead;
+
+  /// No description provided for @closedLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closedLead;
+
+  /// No description provided for @totalLeads.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Leads'**
+  String get totalLeads;
+
+  /// No description provided for @companyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Details'**
+  String get companyDetails;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @sizeOfTheArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Size of the area'**
+  String get sizeOfTheArea;
+
+  /// No description provided for @noLeadsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Lead Found'**
+  String get noLeadsFound;
+
+  /// No description provided for @myLeadsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional landscaping enquires'**
+  String get myLeadsDesc;
+
+  /// No description provided for @mu.
+  ///
+  /// In en, this message translates to:
+  /// **'mo'**
+  String get mu;
+
+  /// No description provided for @an.
+  ///
+  /// In en, this message translates to:
+  /// **'an'**
+  String get an;
+
+  /// No description provided for @citiesCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Cities Coverage'**
+  String get citiesCoverage;
+
+  /// No description provided for @appearInSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Appear In Search Results'**
+  String get appearInSearchResults;
+
+  /// No description provided for @unlimitedLeads.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Leads'**
+  String get unlimitedLeads;
+
+  /// No description provided for @premiumProfileBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Profile Badge'**
+  String get premiumProfileBadge;
+
+  /// No description provided for @priorityCustomerSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority Customer Support'**
+  String get priorityCustomerSupport;
+
+  /// No description provided for @fullPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Payment'**
+  String get fullPayment;
+
+  /// No description provided for @selectService.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Service'**
+  String get selectService;
+
+  /// No description provided for @shortDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Short Description'**
+  String get shortDescription;
+
+  /// No description provided for @enterShortDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter short description'**
+  String get enterShortDescription;
+
+  /// No description provided for @enterSizeOfTheArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter size of the area'**
+  String get enterSizeOfTheArea;
+
+  /// No description provided for @youAreOnA30DayTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Your 30-day trial period has ended!'**
+  String get youAreOnA30DayTrialEnded;
+
+  /// No description provided for @yourProfileIsCurrently.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is currently '**
+  String get yourProfileIsCurrently;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'inactive'**
+  String get inactive;
+
+  /// No description provided for @customerPlanDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers can\'t find you in the app, and your potential bookings are being suspended.'**
+  String get customerPlanDesc;
+
+  /// No description provided for @customerPlanDesc2.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to continue receiving customers through Kasagardem?'**
+  String get customerPlanDesc2;
+
+  /// No description provided for @seePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes,SEE PLANS'**
+  String get seePlans;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
+
+  /// No description provided for @additionalNationalCoverageDesc1.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.'**
+  String get additionalNationalCoverageDesc1;
+
+  /// No description provided for @additionalNationalCoverageDesc2.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.'**
+  String get additionalNationalCoverageDesc2;
+
+  /// No description provided for @validFor1Year.
+  ///
+  /// In en, this message translates to:
+  /// **'(Valid for 1 year only)'**
+  String get validFor1Year;
+
+  /// No description provided for @planType.
+  ///
+  /// In en, this message translates to:
+  /// **'planType'**
+  String get planType;
+
+  /// No description provided for @oneTime.
+  ///
+  /// In en, this message translates to:
+  /// **'One-Time'**
+  String get oneTime;
+
+  /// No description provided for @reccuring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get reccuring;
+
+  /// No description provided for @yourPlanEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'yourPlanEnds'**
+  String get yourPlanEnds;
+
+  /// No description provided for @yourPlanEndsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.'**
+  String get yourPlanEndsDesc;
+
+  /// No description provided for @selectYourPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Your Plan'**
+  String get selectYourPlan;
+
+  /// No description provided for @howWouldYouLikeToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'How would you like to continue?'**
+  String get howWouldYouLikeToContinue;
+
+  /// No description provided for @client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get client;
+
+  /// No description provided for @userDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'I am looking for a professional service'**
+  String get userDescription;
+
+  /// No description provided for @professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get professional;
+
+  /// No description provided for @professionalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'I want to offer my premium service'**
+  String get professionalDescription;
+
+  /// No description provided for @professionalStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Status'**
+  String get professionalStatus;
+
+  /// No description provided for @renewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew Plan'**
+  String get renewPlan;
+
+  /// No description provided for @subscriptionRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Remaining'**
+  String get subscriptionRemaining;
+
+  /// No description provided for @exp.
+  ///
+  /// In en, this message translates to:
+  /// **'Exp'**
+  String get exp;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @areYouSureYouWantToDeleteYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to permanently delete your account? This action cannot be undone.'**
+  String get areYouSureYouWantToDeleteYourAccount;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @region.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get region;
+
+  /// No description provided for @specialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get specialty;
+
+  /// No description provided for @ago.
+  ///
+  /// In en, this message translates to:
+  /// **'ago'**
+  String get ago;
+
+  /// No description provided for @find.
+  ///
+  /// In en, this message translates to:
+  /// **'Find'**
+  String get find;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

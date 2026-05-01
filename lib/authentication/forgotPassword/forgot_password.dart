@@ -20,39 +20,36 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Get.toNamed(Routes.verifyOtp),
-      child: Scaffold(
-        backgroundColor: AppColors.appColor,
-        appBar: const BaseAppBar(
-          isAppIconVisible: false,
-          isBackButtonVisible: true,
-        ),
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            BaseForm(
-              formKey: controller.sendOtpFormKey,
-              child: Column(
-                children: [
-                  HeaderLogoLayout(
-                    title: AppLocalizations.of(context)!.forgotPasswordNew,
-                    subTitle: AppLocalizations.of(
-                      context,
-                    )!.forgotPasswordSubTitle,
-                  ),
-                  emailField(context),
-                ],
-              ),
-            ),
-
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: sendOtp(context),
-            )
-          ],
-        ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
+      appBar: const BaseAppBar(
+        isAppIconVisible: false,
+        isBackButtonVisible: true,
       ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          BaseForm(
+            formKey: controller.sendOtpFormKey,
+            child: Column(
+              children: [
+                HeaderLogoLayout(
+                  title: AppLocalizations.of(context)!.forgotPasswordNew,
+                  subTitle: AppLocalizations.of(
+                    context,
+                  )!.forgotPasswordSubTitle,
+                ),
+                emailField(context),
+              ],
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: sendOtp(context),
+          )
+        ],
+      ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
     );
   }
 

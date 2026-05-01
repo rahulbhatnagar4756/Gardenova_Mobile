@@ -25,32 +25,29 @@ class CommonClickWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: InkWell(
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: () {
-          // 👇 Hide keyboard (GetX way)
-          Get.focusScope?.unfocus();
-          if (onTap != null) {
-            onTap!();
-          }
-        },
-        child:
-            Container(
+    return InkWell(
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        // 👇 Hide keyboard (GetX way)
+        Get.focusScope?.unfocus();
+        if (onTap != null) {
+          onTap!();
+        }
+      },
+      child:
+          Container(
 
-              padding: EdgeInsets.only(
-                left: leftPadding,
-                right: rightPadding,
-                top:topPadding ,
-                bottom: bottomPadding,
-              ),
-              color:test?Colors.red:Colors.transparent,
-                child:child
-            )
-      ),
+            padding: EdgeInsets.only(
+              left: leftPadding,
+              right: rightPadding,
+              top:topPadding ,
+              bottom: bottomPadding,
+            ),
+            color:test?Colors.red:Colors.transparent,
+              child:child
+          )
     );
   }
 }
