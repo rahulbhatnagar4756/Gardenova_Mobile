@@ -14,6 +14,8 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../base/widgets/base_outline_button.dart';
+
 class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
   const IntroductionScreen({super.key});
 
@@ -104,8 +106,8 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
                             SizedBox(height: 11.h),
                             SizedBox(
                               width: double.infinity,
-                              child: BaseButton(
-                                textColor: AppColors.offWhite,
+                              child: BaseOutlineButton(
+                                textColor: AppColors.greenColor,
                                 fontSize: fontSize17,
                                 buttonLabel: AppLocalizations.of(
                                   context,
