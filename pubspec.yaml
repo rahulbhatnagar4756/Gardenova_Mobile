@@ -1,0 +1,91 @@
+name: kasagardem
+description: "A plant and garden management app."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+9
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  get: ^4.7.2
+  http: ^1.5.0
+  intl: ^0.20.2
+  crypto: ^3.0.7
+  lottie: ^3.3.2
+  pinput: ^6.0.2
+  share_plus: ^12.0.0
+  geolocator: ^14.0.2
+  image_picker: ^1.1.2
+  url_launcher: ^6.3.2
+  firebase_auth: ^6.0.1
+  dotted_border: ^3.1.0
+  firebase_core: ^4.2.0
+  flutter_dotenv: ^6.0.0
+  google_sign_in: ^7.1.1
+  carousel_slider: ^5.1.1
+  cloud_firestore: ^6.0.0
+  flutter_spinkit: ^5.2.2
+  webview_flutter: ^4.13.0
+  connectivity_plus: ^7.0.0
+  firebase_storage: ^13.0.3
+  shimmer_animation: ^2.2.2
+  shared_preferences: ^2.5.3
+  sign_in_with_apple: ^7.0.1
+  linear_progress_bar: ^3.0.0
+  staggered_grid_view: ^0.0.1
+  cached_network_image: ^3.4.1
+  flutter_facebook_auth: ^7.1.2
+  flutter_native_splash: ^2.4.6
+  syncfusion_flutter_charts: ^33.1.47
+
+  internet_connection_checker_plus: ^2.8.0
+  flutter_localizations:
+    sdk: flutter
+dependency_overrides:
+  shared_preferences_foundation: 2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  change_app_package_name:
+
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+
+  assets:
+    - assets/images/
+    - assets/fonts/
+    - assets/json/
+    - assets/html/
+    - secret.env
+
+  fonts:
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/Merriweather-Regular.ttf
+
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+
+    - family: lora
+      fonts:
+        - asset: assets/fonts/Lora-Regular.ttf
+
+flutter_native_splash:
+  icon_background_color: "#2E3A30"
+  android_12:
+    icon_background_color: "#2E3A30"
+  android: true
+  ios: true
+  color: "#2E3A30"

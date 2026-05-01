@@ -1,0 +1,32 @@
+class AppKeys {
+  static const multipleChoiceType = 1;
+  static const dropDownType = 2;
+  static const idToken = 'id_token';
+  static const isLoggedIn = 'is_logged_in';
+  static const isGuestLoggedIn = 'is_guest_logged_in';
+  static const users = 'users';
+  static const role = 'role';
+  static const uid = 'uid';
+  static const email = 'email';
+  static const profileImage = 'profileImage';
+  static const password = 'password';
+  static const name = 'name';
+  static const createdAt = 'created_at';
+  static const securityQuestion = 'security_question';
+  static const securityAnswer = 'security_answer';
+  static const weakPassword = 'weak-password';
+  static const emailAlreadyInUse = 'email-already-in-use';
+  static const merriweather = 'Merriweather';
+  static const inter = 'Inter';
+  static const selectedLang = 'selected_lang';
+  static const submissionResponseId = 'submission_response_id';
+  static const user = 'user';
+  static const professional = 'professional';
+  static const screenType = 'screen_type';
+  static const dashboard = 'dashboard';
+  static const login = 'login';
+  static const accountStatus = 'AccountStatus';
+  static const remainingDays = 'remainingDays';
+  static const currentLatKey = 'currentLat';
+  static const currentLongKey = 'currentLongKey';
+}
