@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
 import 'package:kasagardem/authentication/login/login_view_model.dart';
@@ -16,6 +17,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 
 import '../../base/widgets/base_back_button.dart';
+import '../../base/widgets/base_bback_button.dart';
 import '../../utils/app_config.dart';
 import '../components/social_login_layout.dart';
 
@@ -24,9 +26,11 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   @override
   Widget build(BuildContext context) {
+print('sdf ${AppLocalizations.of(
+  context,
+)!.loginAccountSubTitle}');
     return PopScope(
       canPop: true,
-
       /* onPopInvokedWithResult: (result, didPop) {
           if (!Navigator.of(Get.context!).canPop()){
         BaseDialog.showAlertDialog(
@@ -45,7 +49,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
         backgroundColor: AppColors.appColor,
         appBar: const BaseAppBar(
           isAppIconVisible: false,
-          isBackButtonVisible: false,
+          isBackButtonVisible: true,
         ),
         body: Column(
           children: [
@@ -57,6 +61,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
+                          // BasBBackButton(),
                           HeaderLogoLayout(
                             title: AppLocalizations.of(context)!.loginAccount,
                             subTitle: AppLocalizations.of(
@@ -83,6 +88,14 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                               type: AppStrings.login,
                             ),
                           ),
+                          Visibility(
+                            visible: controller.accountType.value != AppKeys.professional,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: dontHaveAnAccount(context),
+                            ).marginOnly(top: 130.h),
+                          ),
+
                         ],
                       ),
                     ).marginSymmetric(
@@ -92,15 +105,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
               ),
             ),
 
-            Visibility(
-              visible: controller.accountType.value != AppKeys.professional,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: dontHaveAnAccount(context),
-              ),
-            ),
 
-            BaseBackButton().marginOnly(bottom: spacerSize8),
           ],
         ),
       ),
@@ -110,7 +115,6 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   Widget emailField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourEmail,
-      hintColor: AppColors.offWhite50,
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
       validator: (value) {
@@ -126,20 +130,19 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
         return null;
       },
-    ).marginOnly(bottom: spacerSize10);
+    ).marginOnly(bottom: 10.h);
   }
 
   passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
         hintText: AppLocalizations.of(context)!.enterYourPassword,
-        hintColor: AppColors.offWhite50,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
         textEditingController: controller.passwordController,
         errorText: AppLocalizations.of(context)!.passwordCannotBeEmpty,
         suffixIcon: IconButton(
-          color: AppColors.offWhite,
+          color: AppColors.liteGreyColor,
           onPressed: () {
             controller.isPasswordObscure.value =
                 !controller.isPasswordObscure.value;
@@ -163,27 +166,29 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           textAlign: TextAlign.right,
           text: AppLocalizations.of(context)!.forgotPassword,
           fontFamily: AppKeys.inter,
-          fontWeight: FontWeight.w700,
-          fontSize: fontSize13,
-          textColor: AppColors.burntGold,
+          fontWeight: FontWeight.w500,
+          fontSize: 13.sp,
+          textColor: AppColors.greenColor,
         ),
-      ).marginOnly(top: spacerSize10),
+      ).marginOnly(top:  10.h),
     );
   }
 
   login(BuildContext context) {
-    return BaseButton(
-      backgroundColor: AppColors.burntGold,
-      onPressed: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+    return SizedBox(
+      width: double.infinity,
+      child: BaseButton(
+        backgroundColor: AppColors.burntGold,
+        onPressed: () {
+          FocusScope.of(context).requestFocus(FocusNode());
 
-        if (controller.formKey.currentState!.validate()) {
-          controller.login();
-        }
-      },
-      fontSize: fontSize18,
-      buttonLabel: AppLocalizations.of(context)!.login.toUpperCase(),
-    ).marginOnly(bottom: spacerSize30, top: spacerSize25);
+          if (controller.formKey.currentState!.validate()) {
+            controller.login();
+          }
+        },
+        buttonLabel: AppLocalizations.of(context)!.login,
+      ).marginOnly(bottom: spacerSize30, top: spacerSize25),
+    );
   }
 
   orLoginWith(BuildContext context) {
@@ -193,14 +198,14 @@ class LoginScreen extends GetWidget<LoginViewModel> {
         divider(),
         BaseText(
           text: AppLocalizations.of(context)!.orLoginWith,
-          textColor: AppColors.offWhite,
+          textColor: AppColors.blackColor,
           fontFamily: AppKeys.inter,
           fontWeight: FontWeight.w400,
-          fontSize: fontSize14,
+          fontSize: 13.sp,
         ),
         divider(),
       ],
-    ).marginOnly(bottom: spacerSize15);
+    ).marginOnly(bottom: 15.h);
   }
 
   divider() {
@@ -208,7 +213,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
       child: Divider(
         thickness: spacerSize1,
         height: spacerSize1,
-        color: AppColors.offWhite10,
+        color: AppColors.liteGreyColor,
       ),
     );
   }
@@ -221,9 +226,9 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           TextSpan(
             text: AppLocalizations.of(context)!.dontHaveAnAccount,
             style: TextStyle(
-              fontSize: fontSize12,
+              fontSize: 13.sp,
               fontFamily: AppKeys.inter,
-              color: AppColors.offWhite,
+              color: AppColors.blackColor,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -234,8 +239,8 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                 Get.toNamed(Routes.signUp);
               },
             style: TextStyle(
-              fontSize: fontSize12,
-              color: AppColors.burntGold,
+              fontSize: 13.sp,
+              color: AppColors.greenColor,
               fontWeight: FontWeight.w500,
               fontFamily: AppKeys.inter,
             ),

@@ -49,7 +49,7 @@ class CircularBottomAppBar extends StatelessWidget
               children: [
                 BaseText(
                   fontWeight: FontWeight.w700,
-                  fontFamily: AppKeys.merriweather,
+                  fontFamily: AppKeys.poppins,
                   fontSize: fontSize14,
                   textColor: AppColors.offWhite,
                   maxLines: 1,

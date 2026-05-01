@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
 class BaseTextField extends StatelessWidget {
-  const BaseTextField({
+    BaseTextField({
     super.key,
     this.textEditingController,
     this.labelText,
@@ -15,9 +16,9 @@ class BaseTextField extends StatelessWidget {
     this.keyboardType,
     this.errorText,
     this.isTextObscure = false,
-    this.hintColor = AppColors.lightBlue,
-    this.fontSize = fontSize14,
-    this.textColor = AppColors.offWhite,
+    this.hintColor,
+    this.fontSize,
+    this.textColor = AppColors.blackColor,
     this.isTextFieldEnabled = true,
     this.onChanged,
     this.validator,
@@ -32,10 +33,11 @@ class BaseTextField extends StatelessWidget {
   final dynamic suffixIcon;
   final TextInputType? keyboardType;
   final bool isTextObscure;
-  final Color hintColor;
+  Color? hintColor;
   final Color textColor;
-  final double fontSize;
   final bool isTextFieldEnabled;
+  double? fontSize = 14.sp;
+  double? hintFontSize = 13.sp;
   final Function(String)? onChanged;
   final FormFieldValidator<String>? validator;
 
@@ -44,48 +46,53 @@ class BaseTextField extends StatelessWidget {
     return TextFormField(
       controller: textEditingController,
       enabled: isTextFieldEnabled,
-      maxLines: maxLines??1,
+      maxLines: maxLines ?? 1,
       style: TextStyle(
         color: textColor,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w300,
         fontFamily: AppKeys.inter,
-        fontSize: fontSize,
+        fontSize: fontSize ,
       ),
       decoration: InputDecoration(
         labelText: labelText,
-
         labelStyle: TextStyle(
-          color: AppColors.offWhite,
+          color: AppColors.blackColor,
           fontWeight: FontWeight.w500,
           fontFamily: AppKeys.inter,
           fontSize: fontSize,
         ),
-        contentPadding: EdgeInsets.all(spacerSize15),
+        contentPadding: EdgeInsets.all(14.w),
         hintText: hintText,
         errorStyle: TextStyle(
-          color: AppColors.burntGold,
-          fontWeight: FontWeight.w500,
+          color: AppColors.red,
+          fontWeight: FontWeight.w300,
           fontFamily: AppKeys.inter,
           fontSize: fontSize,
         ),
         hintStyle: TextStyle(
-          color: hintColor,
-          fontWeight: FontWeight.w500,
+          color: hintColor?? AppColors.liteGreyColor,
+          fontWeight: FontWeight.w300,
           fontFamily: AppKeys.inter,
-          fontSize: fontSize,
+          fontSize: hintFontSize,
         ),
-        disabledBorder: borderColor(color: AppColors.offWhite10, width: 1.0),
         prefixIcon: prefixIcon,
         prefixIconColor: AppColors.grey,
         suffixIcon: suffixIcon ?? SizedBox(),
-        enabledBorder: borderColor(color: AppColors.offWhite10, width: 1.0),
-        errorBorder: borderColor(color: AppColors.lightGold),
-        focusedErrorBorder: borderColor(color: AppColors.lightGold),
         focusColor: AppColors.darkGreen,
+        disabledBorder: borderColor(
+          color: AppColors.borderGreyColor,
+          width: 1.0,
+        ),
+        enabledBorder: borderColor(
+          color: AppColors.borderGreyColor,
+          width: 1.0,
 
-        focusedBorder: borderColor(color: AppColors.offWhite50, width: 1.0),
+        ),
+        errorBorder: borderColor(color: AppColors.red),
+        focusedErrorBorder: borderColor(color: AppColors.red),
+        focusedBorder: borderColor(color: AppColors.greenColor, width: 1.0),
         filled: true,
-        fillColor: AppColors.darkGreen,
+        fillColor: AppColors.backgroundGrey,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: onChanged,

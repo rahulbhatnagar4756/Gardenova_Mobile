@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/firebase_options.dart';
@@ -16,6 +17,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/network_services/network_connectivity_service.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/utils/utils.dart';
 import 'base/widgets/base_calculate_remaining_days.dart';
 
 Future<void> main() async {
@@ -64,7 +66,8 @@ Future<void> main() async {
   var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "";
 
   Locale selectedLocale = locale.isEmpty
-      ? ptBR
+      // ? ptBR
+      ? enUS
       : locale == ptBR.languageCode
       ? ptBR
       : enUS;
@@ -102,30 +105,39 @@ class MyApp extends StatelessWidget {
         );
       },
       child: SafeArea(
-        top: true,
+        top: false,
         bottom: true,
-        child: GetMaterialApp(
-          fallbackLocale: enUS,
-          popGesture: true,
-          locale: locale,
-          supportedLocales: [enUS, ptBR],
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+        child: ScreenUtilInit(
+          designSize: const Size(375, 812),
+          minTextAdapt: true,
+          splitScreenMode: false,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => Utils.hideKeyboard(),
+            child: GetMaterialApp(
+              fallbackLocale: enUS,
+              popGesture: true,
+              locale: locale,
+              supportedLocales: [enUS, ptBR],
+              localizationsDelegates: [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              color: AppColors.offWhite,
+              initialRoute: Routes.splash,
+              defaultTransition: Transition.rightToLeftWithFade,
+              getPages: Routes.getPages(),
+            ),
           ),
-          color: AppColors.offWhite,
-          initialRoute: Routes.splash,
-          defaultTransition: Transition.rightToLeftWithFade,
-          getPages: Routes.getPages(),
         ),
       ),
     );

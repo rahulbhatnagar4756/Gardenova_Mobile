@@ -135,7 +135,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
         child: Center(
           child: BaseText(
             textAlign: TextAlign.center,
-            fontFamily: AppKeys.merriweather,
+            fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w400,
             fontSize: fontSize14,
             textColor: AppColors.offWhite,
@@ -201,7 +201,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       textColor: AppColors.offWhite,
       fontWeight: FontWeight.w400,
       textAlign: TextAlign.center,
-      fontFamily: AppKeys.merriweather,
+      fontFamily: AppKeys.poppins,
       fontSize: fontSize22,
     ).marginOnly(top: spacerSize25).paddingAll(spacerSize5);
   }

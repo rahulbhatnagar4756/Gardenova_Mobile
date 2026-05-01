@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_model.dart';
 import 'package:kasagardem/base/widgets/base_form.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -16,11 +17,11 @@ class OtpLayout extends StatelessWidget {
     final defaultPinTheme = PinTheme(
       width: spacerSize75,
       height: spacerSize55,
-      textStyle: TextStyle(color: AppColors.offWhite),
+      textStyle: TextStyle(color: AppColors.blackColor,fontSize: 18.sp),
       decoration: BoxDecoration(
-        color: AppColors.darkGreen,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(spacerSize10),
-        border: Border.all(color: AppColors.offWhite10),
+        border: Border.all(color: AppColors.borderGreyColor),
       ),
     );
     return BaseForm(
@@ -51,22 +52,22 @@ class OtpLayout extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: spacerSize10),
                     width: spacerSize24,
                     height: spacerSize1,
-                    color: AppColors.burntGold,
+                    color: AppColors.greenColor,
                   ),
                 ],
               ),
               focusedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
                   borderRadius: BorderRadius.circular(spacerSize10),
-                  color: AppColors.darkGreen,
-                  border: Border.all(color: AppColors.burntGold),
+                  color: Colors.white,
+                  border: Border.all(color: AppColors.greenColor),
                 ),
               ),
               submittedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  color: AppColors.darkGreen,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(spacerSize10),
-                  border: Border.all(color: AppColors.burntGold),
+                  border: Border.all(color: AppColors.greenColor),
                 ),
               ),
               errorPinTheme: defaultPinTheme.copyBorderWith(

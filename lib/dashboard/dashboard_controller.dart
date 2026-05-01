@@ -84,6 +84,8 @@ class DashboardController extends GetxController {
       case 6:
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
+
+          // Get.toNamed(Routes.plantsCatalog);
         break;
 
       default:

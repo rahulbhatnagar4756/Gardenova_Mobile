@@ -26,7 +26,7 @@ class PlanCard extends StatelessWidget {
               textAlign: TextAlign.center,
               textColor: AppColors.offWhite50,
               fontWeight: FontWeight.w400,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               fontSize: fontSize15,
               text: AppLocalizations.of(context)!.selectYourPlan,
             ).marginOnly(top: spacerSize25, bottom: spacerSize15),

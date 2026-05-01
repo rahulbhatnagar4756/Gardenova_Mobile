@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -8,10 +9,10 @@ class BaseButton extends StatelessWidget {
   const BaseButton({
     super.key,
     this.buttonLabel,
-    this.fontSize = fontSize18,
+    this.fontSize ,
     this.onPressed,
     this.buttonWidth = spacerSize215,
-    this.buttonHeight = spacerSize45,
+    this.buttonHeight ,
     this.backgroundColor = Colors.black,
     this.textColor = Colors.white,
     this.buttonPadding = const EdgeInsets.symmetric(
@@ -35,23 +36,19 @@ class BaseButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: buttonWidth,
-        height: buttonHeight,
+        height: buttonHeight??48.h,
         padding: buttonPadding,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize10),
-          gradient: LinearGradient(
-            colors: [AppColors.lightGold, AppColors.burntGold],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: AppColors.linearGradientForBtn,
         ),
         alignment: Alignment.center,
         child: BaseText(
-          text: buttonLabel!.toUpperCase(),
+          text: buttonLabel??'',
           fontFamily: AppKeys.inter,
           overflow: TextOverflow.ellipsis,
           textColor: Colors.white,
-          fontSize: fontSize ?? fontSize15,
+          fontSize: fontSize ?? 16.sp,
           fontWeight: FontWeight.w600,
         ),
       ),

@@ -44,7 +44,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             BaseText(
               text: "${AppLocalizations.of(context)!.companyDetails}:",
               textAlign: TextAlign.center,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               textColor: AppColors.offWhite,
               fontSize: fontSize20,
               fontWeight: FontWeight.w500,
@@ -91,7 +91,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             BaseText(
               text: "${AppLocalizations.of(context)!.location}:",
               textAlign: TextAlign.center,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               textColor: AppColors.offWhite,
               fontSize: fontSize20,
               fontWeight: FontWeight.w500,
@@ -138,7 +138,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 children: [
                   BaseText(
                     text: "${AppLocalizations.of(context)!.description}:",
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     textColor: AppColors.offWhite,
                     fontSize: fontSize20,
                     fontWeight: FontWeight.w500,
@@ -168,7 +168,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 children: [
                   BaseText(
                     text: "${AppLocalizations.of(context)!.serviceRequested}:",
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     textColor: AppColors.offWhite,
                     fontSize: fontSize20,
                     fontWeight: FontWeight.w500,
@@ -196,7 +196,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 children: [
                   BaseText(
                     text: "${AppLocalizations.of(context)!.sizeOfTheArea}:",
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     textColor: AppColors.offWhite,
                     fontSize: fontSize20,
                     fontWeight: FontWeight.w500,

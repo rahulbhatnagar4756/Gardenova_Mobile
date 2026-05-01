@@ -41,7 +41,7 @@ class ProfessionalHeadingItem extends StatelessWidget {
           children: [
             BaseText(
               textColor: AppColors.offWhite,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               fontSize: fontSize18,
               fontWeight: FontWeight.w400,
               text: sectionTitle ?? "",

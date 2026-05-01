@@ -8,6 +8,8 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../utils/utils.dart';
+
 class ForgotPasswordViewModel extends GetxController {
   RxBool isShowLoader = false.obs;
   RxBool isNewPasswordObscure = true.obs;
@@ -123,4 +125,5 @@ class ForgotPasswordViewModel extends GetxController {
     focusNode.dispose();
     super.dispose();
   }
+
 }

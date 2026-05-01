@@ -35,7 +35,7 @@ class RequestQuoteSuccess extends GetWidget<RecommendedProfessionalsViewModel> {
             SuccessIconLayout(),
             BaseText(
               text: AppLocalizations.of(context)!.requestSentSuccessfully,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               textColor: AppColors.offWhite,
               textAlign: TextAlign.center,
               fontSize: fontSize22,

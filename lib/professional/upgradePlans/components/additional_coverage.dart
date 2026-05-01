@@ -144,7 +144,7 @@ class AdditionalNationalCoverage extends StatelessWidget {
                                   )!.planType.toUpperCase(),
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  fontFamily: AppKeys.merriweather,
+                                  fontFamily: AppKeys.poppins,
                                   textColor: AppColors.offWhite50,
                                 ).marginOnly(top: spacerSize6),
                                 Obx(

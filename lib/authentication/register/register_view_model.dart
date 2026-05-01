@@ -7,6 +7,8 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../utils/utils.dart';
+
 class RegisterViewModel extends GetxController with SocialSignInMixin {
   RxBool isPasswordObscure = true.obs;
   RxBool isUserAgreedToTerms = false.obs;
@@ -70,4 +72,6 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
   onCheckTermsAndCondition() {
     isUserAgreedToTerms.value = !isUserAgreedToTerms.value;
   }
+
+
 }

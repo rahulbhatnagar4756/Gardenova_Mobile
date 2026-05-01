@@ -22,7 +22,7 @@ class BaseBackButton extends StatelessWidget {
             child: Icon(
               Icons.arrow_back,
               size: spacerSize20,
-              color: AppColors.offWhite,
+              color: AppColors.blackColor,
               applyTextScaling: true,
             ),
           ),

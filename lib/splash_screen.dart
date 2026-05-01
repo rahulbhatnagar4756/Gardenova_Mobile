@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'authentication/auth_repository.dart';
@@ -25,6 +26,11 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       navigateToIntroductionScreen();
     }
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   // Your code here
+    //   print("UI rendered, now safe to use context");
+    // Get.toNamed(Routes.plantsCatalog);
+    // });
     super.initState();
   }
 
@@ -32,7 +38,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      body: Center(child: Image.asset(AppAssets.appLogo, scale: 2)),
+      body: Center(child: SizedBox(
+        width: 220.w,
+          height: 215.h,
+          child: Image.asset(AppAssets.appLogoFull, scale: 2))),
     );
   }
 

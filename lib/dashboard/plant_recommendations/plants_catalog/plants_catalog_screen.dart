@@ -73,7 +73,7 @@ class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
                             context,
                           )!.noPlantRecommendationsFound,
                           textColor: AppColors.antiqueWhite,
-                          fontFamily: AppKeys.merriweather,
+                          fontFamily: AppKeys.poppins,
                           fontWeight: FontWeight.bold,
                           textAlign: TextAlign.center,
                           fontSize: fontSize18,

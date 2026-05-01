@@ -132,7 +132,7 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
                 textAlign: TextAlign.center,
                 textColor: AppColors.offWhite,
                 fontWeight: FontWeight.w500,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 fontSize: fontSize20,
                 text: title,
               ).marginOnly(bottom: spacerSize5),

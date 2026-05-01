@@ -67,7 +67,7 @@ class PlantAddSuccessDialog {
                           children: [
                             BaseText(
                               text: title,
-                              fontFamily: AppKeys.merriweather,
+                              fontFamily: AppKeys.poppins,
                               fontSize: fontSize22,
                               fontWeight: FontWeight.w400,
                               textColor: AppColors.offWhite,

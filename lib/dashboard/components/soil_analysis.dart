@@ -49,7 +49,7 @@ class SoilAnalysis extends StatelessWidget {
                 text: AppLocalizations.of(context)!.soilAnalysis,
                 fontWeight: FontWeight.w400,
                 fontSize: fontSize15,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 textColor: AppColors.offWhite,
               ).marginOnly(bottom: spacerSize10),
             ),

@@ -22,7 +22,7 @@ class SimilarPlantsLayout extends StatelessWidget {
       children: [
         BaseText(
           text: AppLocalizations.of(context)!.similarPlants,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGoldLight,
           textAlign: TextAlign.left,
@@ -50,7 +50,7 @@ class SimilarPlantsLayout extends StatelessWidget {
                               context,
                             )!.noPlantRecommendationsFound,
                             textAlign: TextAlign.center,
-                            fontFamily: AppKeys.merriweather,
+                            fontFamily: AppKeys.poppins,
                             textColor: Colors.white,
                             fontSize: fontSize15,
                             fontWeight: FontWeight.w500,

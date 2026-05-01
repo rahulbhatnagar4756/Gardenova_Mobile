@@ -31,7 +31,7 @@ class PlantDetailLayout extends StatelessWidget {
                     .join(', ')
                     .toTitleCase()
               : "",
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGold,
           textAlign: TextAlign.left,
@@ -67,7 +67,7 @@ class PlantDetailLayout extends StatelessWidget {
 
         BaseText(
           text: AppLocalizations.of(context)!.careNotes,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGoldLight,
           textAlign: TextAlign.left,

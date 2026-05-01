@@ -114,7 +114,7 @@ class PlantHealthAndPreventionLayout extends StatelessWidget {
             ),
             BaseText(
               text: AppLocalizations.of(context)!.suggestedTreatment,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               fontWeight: FontWeight.bold,
               textColor: AppColors.burntGoldLight,
               textAlign: TextAlign.left,

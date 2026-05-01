@@ -57,7 +57,7 @@ class LeadCardItem extends StatelessWidget {
                               BaseText(
                                 text: item.companyName ?? "",
                                 textAlign: TextAlign.center,
-                                fontFamily: AppKeys.merriweather,
+                                fontFamily: AppKeys.poppins,
                                 textColor: AppColors.offWhite,
                                 fontSize: fontSize16,
                                 fontWeight: FontWeight.w700,
@@ -215,7 +215,7 @@ class LeadCardItem extends StatelessWidget {
               child: BaseText(
                 text: controller.noDataText,
                 textAlign: TextAlign.center,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 textColor: AppColors.offWhite,
                 fontSize: fontSize18,
                 fontWeight: FontWeight.bold,

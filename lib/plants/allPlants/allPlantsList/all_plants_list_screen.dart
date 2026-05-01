@@ -82,7 +82,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
         BaseText(
           text: AppLocalizations.of(context)!.addYourFirstPlant,
           textAlign: TextAlign.center,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           textColor: AppColors.offWhite,
           fontSize: fontSize20,
           fontWeight: FontWeight.w500,
@@ -199,7 +199,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                         text: AppLocalizations.of(context)!.noPlantsFound,
                         textColor: AppColors.offWhite,
                         fontWeight: FontWeight.w700,
-                        fontFamily: AppKeys.merriweather,
+                        fontFamily: AppKeys.poppins,
                         fontSize: fontSize14,
                       ),
                     )
@@ -249,7 +249,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 children: [
                   BaseText(
                     text: plant.commonName ?? "",
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     fontSize: fontSize14,
                     fontWeight: FontWeight.w700,
                     textColor: AppColors.offWhite,

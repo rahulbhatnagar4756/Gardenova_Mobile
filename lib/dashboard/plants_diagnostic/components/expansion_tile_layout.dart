@@ -21,7 +21,7 @@ class ExpansionTileLayout extends StatelessWidget {
         tilePadding: EdgeInsets.zero,
         title: BaseText(
           text: title ?? "",
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGoldLight,
           textAlign: TextAlign.left,

@@ -55,7 +55,7 @@ class BaseDialog {
                     text: dialogTitle ?? "",
                     textColor: AppColors.offWhite,
                     fontWeight: FontWeight.w700,
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     fontSize: fontSize26,
                   ),
                   SizedBox(height: spacerSize5),
@@ -96,7 +96,7 @@ class BaseDialog {
         backgroundColor: AppColors.darkGreen,
         title: BaseText(
           text: title,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontSize: fontSize22,
           textColor: AppColors.offWhite,
           fontWeight: FontWeight.w700,

@@ -28,7 +28,7 @@ class TitleAndDescriptionLayout extends StatelessWidget {
       children: [
         BaseText(
           text: title ?? "",
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGoldLight,
           textAlign: TextAlign.left,

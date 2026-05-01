@@ -77,7 +77,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                     children: [
                       BaseText(
                         fontWeight: FontWeight.w700,
-                        fontFamily: AppKeys.merriweather,
+                        fontFamily: AppKeys.poppins,
                         fontSize: fontSize14,
                         textColor: AppColors.offWhite,
                         maxLines: 1,
@@ -264,7 +264,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
             vertical: spacerSize1,
           ),
           title: BaseText(
-            fontFamily: AppKeys.merriweather,
+            fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w400,
             fontSize: fontSize18,
             textColor: AppColors.offWhite,

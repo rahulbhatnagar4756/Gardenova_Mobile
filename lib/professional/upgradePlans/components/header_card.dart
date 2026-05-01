@@ -32,7 +32,7 @@ class HeaderCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 textColor: AppColors.offWhite50,
                 fontWeight: FontWeight.w400,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 fontSize: fontSize15,
                 text: "${AppLocalizations.of(context)!.yourPlanEnds}\t\t",
               ),
@@ -40,7 +40,7 @@ class HeaderCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 textColor: AppColors.offWhite,
                 fontWeight: FontWeight.w700,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 fontSize: fontSize18,
                 text:
                     "${controller.remainingDays.value}\t${AppLocalizations.of(context)!.days}",

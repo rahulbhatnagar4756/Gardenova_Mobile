@@ -74,7 +74,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                             ?.plant
                                             ?.commonName ??
                                         "",
-                                    fontFamily: AppKeys.merriweather,
+                                    fontFamily: AppKeys.poppins,
                                     fontSize: fontSize20,
                                     fontWeight: FontWeight.w700,
                                     textColor: AppColors.offWhite,
@@ -217,7 +217,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
       children: [
         BaseText(
           text: title,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontSize: fontSize14,
           fontWeight: FontWeight.w700,
           textColor: AppColors.darkGold,
@@ -243,7 +243,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
       children: [
         BaseText(
           text: AppLocalizations.of(Get.context!)!.personalizedCare,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontSize: fontSize14,
           fontWeight: FontWeight.w700,
           textColor: AppColors.darkGold,
@@ -308,7 +308,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
       children: [
         BaseText(
           text: AppLocalizations.of(Get.context!)!.plantStats,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontSize: fontSize14,
           fontWeight: FontWeight.w700,
           textColor: AppColors.darkGold,

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/login_view_model.dart';
 import 'package:kasagardem/authentication/register/register_view_model.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
@@ -65,7 +67,6 @@ class SocialLoginLayout extends StatelessWidget {
         }
       },
       child: Container(
-        width: spacerSize115,
         padding: EdgeInsets.symmetric(
           vertical: spacerSize10,
           horizontal: spacerSize14,
@@ -73,16 +74,18 @@ class SocialLoginLayout extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.offWhite,
           borderRadius: BorderRadius.circular(spacerSize10),
-          border: Border.all(color: AppColors.offWhite),
+          border: Border.all(color: AppColors.backgroundGrey),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: spacerSize2,
           children: [
-            Image.asset(appAsset, scale: 3),
+            Image.asset(appAsset,width: 19.w,
+            height: 19.w,).paddingOnly(right: 2.w),
+
             BaseText(
               text: socialLoginText,
-              fontSize: fontSize12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w400,
               textColor: AppColors.mediumGrey,
             ),

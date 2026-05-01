@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -7,6 +8,8 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
+
+import 'common_click_widget.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   const BaseAppBar({
@@ -75,10 +78,23 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleSpacing: spacerSize0,
       centerTitle: false,
       leading: isBackButtonVisible!
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: onBackPressed ?? () => Get.back(result: true),
-            )
+          ?
+      CommonClickWidget(
+        test: false,
+        leftPadding: 20.w,
+        rightPadding: 10.w,
+        topPadding: 5.w,
+        bottomPadding: 5.w,
+
+        onTap: onBackPressed ?? () => Get.back(result: true),
+        child: Image.asset(AppAssets.backBtnIc,
+          width: 20.w,
+          height: 20.w,),
+      )
+      // IconButton(
+      //         icon: const Icon(Icons.arrow_back),
+      //         onPressed: onBackPressed ?? () => Get.back(result: true),
+      //       )
           : null,
       flexibleSpace: isAppIconVisible!
           ? Image.asset(AppAssets.appLogo, scale: 2.8)

@@ -36,8 +36,8 @@ class ApiRepository {
     };
   }
 
-  static final String baseUrl = AppConfig.shared.baseUrl;
-  //static final String baseUrl = "http://69.62.81.167:8080/";
+  // static final String baseUrl = AppConfig.shared.baseUrl;
+  static final String baseUrl = "http://69.62.81.167:8080/";
   ApiRepository? apiRepository;
 
   Future<dynamic> request(

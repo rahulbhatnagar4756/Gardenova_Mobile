@@ -91,7 +91,7 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
                               fontWeight: FontWeight.bold,
                               textAlign: TextAlign.center,
                               textColor: AppColors.offWhite,
-                              fontFamily: AppKeys.merriweather,
+                              fontFamily: AppKeys.poppins,
                             ),
                           )
                         : Column(

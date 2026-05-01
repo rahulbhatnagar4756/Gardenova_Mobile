@@ -7,8 +7,7 @@ class Assets {
   static const String fontsLatoRegular = 'assets/fonts/Lato-Regular.ttf';
   static const String fontsLoraBold = 'assets/fonts/Lora-Bold.ttf';
   static const String fontsLoraRegular = 'assets/fonts/Lora-Regular.ttf';
-  static const String fontsMerriweatherRegular =
-      'assets/fonts/Merriweather-Regular.ttf';
+
   static const String htmlTermsAndConditionsEn =
       'assets/html/terms_and_conditions_en.html';
   static const String htmlTermsAndConditionsPt =

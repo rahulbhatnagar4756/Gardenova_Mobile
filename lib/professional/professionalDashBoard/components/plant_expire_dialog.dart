@@ -60,7 +60,7 @@ class PlanExpireDialog {
                     text: AppLocalizations.of(
                       context,
                     )!.youAreOnA30DayTrialEnded,
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     textAlign: TextAlign.center,
                     fontSize: fontSize22,
                     fontWeight: FontWeight.w700,

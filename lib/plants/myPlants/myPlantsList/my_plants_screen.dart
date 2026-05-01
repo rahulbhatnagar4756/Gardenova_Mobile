@@ -88,7 +88,7 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
             BaseText(
               text: AppLocalizations.of(context)!.myPlants,
               textAlign: TextAlign.center,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               textColor: AppColors.offWhite,
               fontSize: fontSize20,
               fontWeight: FontWeight.w500,
@@ -167,7 +167,7 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
               fontSize: fontSize14,
               fontWeight: FontWeight.w500,
               color: AppColors.offWhite,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
             ),
             children: [
               TextSpan(text: "${AppLocalizations.of(context)!.tap}\t"),

@@ -16,7 +16,7 @@ class ComingSoon extends StatelessWidget {
         child: BaseText(
           text: AppLocalizations.of(context)!.comingSoon,
           textColor: AppColors.offWhite70,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontSize: fontSize26,
         ),
       ),

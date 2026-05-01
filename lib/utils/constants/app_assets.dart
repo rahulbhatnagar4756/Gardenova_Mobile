@@ -1,4 +1,9 @@
 class AppAssets {
+  static const appLogo = 'assets/images/app_logo_ic.png';
+  static const appLogoFull = 'assets/images/full_app_logo_ic.png';
+  static const backBtnIc = 'assets/images/back_btn_ic.png';
+
+  //
   static const cart = 'assets/images/cart.png';
   static const edit = 'assets/images/edit.png';
   static const brain = 'assets/images/brain.png';
@@ -6,7 +11,6 @@ class AppAssets {
   static const people = 'assets/images/people.png';
   static const success = 'assets/images/success.png';
   static const appleIcon = 'assets/images/apple.png';
-  static const appLogo = 'assets/images/app_logo.png';
   static const googleIcon = 'assets/images/google.png';
   static const location = 'assets/images/location.png';
   static const settings = 'assets/images/settings.png';

@@ -31,7 +31,7 @@ class ReportSuccessScreen extends StatelessWidget {
                 textColor: AppColors.offWhite,
                 fontWeight: FontWeight.w400,
                 textAlign: TextAlign.center,
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 fontSize: fontSize22,
               ),
             ],

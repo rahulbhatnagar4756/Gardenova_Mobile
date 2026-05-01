@@ -30,7 +30,7 @@ class PlantRecommendations extends StatelessWidget {
                     context,
                   )!.noPlantRecommendationsFound,
                   textAlign: TextAlign.center,
-                  fontFamily: AppKeys.merriweather,
+                  fontFamily: AppKeys.poppins,
                   textColor: Colors.white,
                   fontSize: fontSize15,
                   fontWeight: FontWeight.w500,

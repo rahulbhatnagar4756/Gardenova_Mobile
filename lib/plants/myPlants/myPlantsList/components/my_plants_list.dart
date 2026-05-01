@@ -60,7 +60,7 @@ class MyPlantsList extends StatelessWidget {
                       children: [
                         BaseText(
                           text: item.commonName ?? "",
-                          fontFamily: AppKeys.merriweather,
+                          fontFamily: AppKeys.poppins,
                           fontSize: fontSize14,
                           fontWeight: FontWeight.w700,
                           textColor: AppColors.offWhite,

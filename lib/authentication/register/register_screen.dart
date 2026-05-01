@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
 import 'package:kasagardem/authentication/register/register_view_model.dart';
@@ -14,6 +15,9 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../utils/constants/app_strings.dart';
+import '../components/social_login_layout.dart';
+
 class RegisterScreen extends GetWidget<RegisterViewModel> {
   const RegisterScreen({super.key});
 
@@ -23,7 +27,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
         isAppIconVisible: false,
-        isBackButtonVisible: false,
+        isBackButtonVisible: true,
       ),
       body: Column(
         children: [
@@ -47,8 +51,11 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                         passwordField(context),
                         termOfUseAndPrivacyPolicy(context),
                         register(context),
+                        orRegisterWith(context),
                         /*  orRegisterWith(context),
-                    SocialLoginLayout(registerController: controller, type: AppStrings.register),*/
+                  ,*/
+                        SocialLoginLayout(registerController: controller, type: AppStrings.register).paddingOnly(bottom: 25.h),
+
                       ],
                     ),
                   ).marginSymmetric(
@@ -68,7 +75,6 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     return BaseTextField(
       textEditingController: controller.nameController,
       hintText: AppLocalizations.of(context)!.enterYourName,
-      hintColor: AppColors.offWhite50,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
     ).marginOnly(top: spacerSize10, bottom: spacerSize10);
   }
@@ -77,7 +83,6 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     return Obx(
       () => BaseTextField(
         hintText: AppLocalizations.of(context)!.enterYourPassword,
-        hintColor: AppColors.offWhite50,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
         textEditingController: controller.passwordController,
@@ -99,7 +104,6 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   emailField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourEmail,
-      hintColor: AppColors.offWhite50,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
     ).marginOnly(bottom: spacerSize10);
@@ -108,7 +112,6 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   phoneNoField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
-      hintColor: AppColors.offWhite50,
       keyboardType: TextInputType.phone,
       textEditingController: controller.phoneNoController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
@@ -128,8 +131,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
               child: Checkbox(
                 tristate: true,
                 value: controller.isUserAgreedToTerms.value,
+                activeColor: AppColors.greenColor,
 
-                activeColor: AppColors.burntGold,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(spacerSize10),
                 ),
@@ -152,7 +155,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                       fontSize: fontSize13,
                       fontFamily: AppKeys.inter,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.offWhite,
+                      color: AppColors.blackColor,
                     ),
                   ),
                   TextSpan(
@@ -165,13 +168,13 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                       fontSize: fontSize13,
                       fontFamily: AppKeys.inter,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.burntGold,
+                      color: AppColors.greenColor,
                     ),
                   ),
                   TextSpan(
                     text: "\t${AppLocalizations.of(context)!.and}",
                     style: TextStyle(
-                      color: AppColors.offWhite,
+                      color: AppColors.blackColor,
                       fontSize: fontSize13,
                       fontFamily: AppKeys.inter,
                       fontWeight: FontWeight.w500,
@@ -180,7 +183,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                   TextSpan(
                     text: "\t${AppLocalizations.of(context)!.privacyPolicy}",
                     style: TextStyle(
-                      color: AppColors.burntGold,
+                      color: AppColors.greenColor,
                       fontSize: fontSize13,
                       fontFamily: AppKeys.inter,
                       fontWeight: FontWeight.w500,
@@ -196,25 +199,26 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   }
 
   register(BuildContext context) {
-    return BaseButton(
-      backgroundColor: AppColors.burntGold,
-      onPressed: () {
-        if (controller.formKey.currentState!.validate()) {
-          if (controller.isUserAgreedToTerms.value) {
-            controller.registerUser();
-          } else {
-            BaseSnackBar.show(
-              title: appName,
-              message: AppLocalizations.of(
-                context,
-              )!.pleaseAcceptTermsAndConditions,
-            );
+    return SizedBox(width: double.infinity,
+      child: BaseButton(
+        onPressed: () {
+          if (controller.formKey.currentState!.validate()) {
+            if (controller.isUserAgreedToTerms.value) {
+              controller.registerUser();
+            } else {
+              BaseSnackBar.show(
+                title: appName,
+                message: AppLocalizations.of(
+                  context,
+                )!.pleaseAcceptTermsAndConditions,
+              );
+            }
           }
-        }
-      },
-      fontSize: fontSize18,
-      buttonLabel: AppLocalizations.of(context)!.register.toUpperCase(),
-    ).marginOnly(bottom: spacerSize20);
+        },
+        fontSize: fontSize18,
+        buttonLabel: AppLocalizations.of(context)!.register,
+      ).marginOnly(bottom: spacerSize20),
+    );
   }
 
   orRegisterWith(BuildContext context) {
@@ -224,13 +228,12 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         divider(),
         BaseText(
           text: AppLocalizations.of(context)!.orRegisterWith,
-          textColor: AppColors.offWhite,
           fontFamily: AppKeys.inter,
-          fontSize: fontSize14,
+          fontSize: 13.sp,
         ),
         divider(),
       ],
-    ).marginOnly(bottom: spacerSize15);
+    ).marginOnly(bottom: 15.h,top: 28.h);
   }
 
   divider() {
@@ -238,7 +241,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       child: Divider(
         thickness: spacerSize1,
         height: spacerSize1,
-        color: AppColors.offWhite10,
+        color: AppColors.liteGreyColor,
       ),
     );
   }
@@ -251,8 +254,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
           TextSpan(
             text: AppLocalizations.of(context)!.alreadyHaveAnAccount,
             style: TextStyle(
-              fontSize: fontSize12,
-              color: AppColors.offWhite,
+              fontSize: 13.sp,
+              color: AppColors.blackColor,
               fontWeight: FontWeight.w400,
               fontFamily: AppKeys.inter,
             ),
@@ -264,8 +267,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                 Get.toNamed(Routes.login);
               },
             style: TextStyle(
-              fontSize: fontSize12,
-              color: AppColors.burntGold,
+              fontSize: 13.sp,
+              color: AppColors.greenColor,
               fontWeight: FontWeight.w500,
               fontFamily: AppKeys.inter,
             ),

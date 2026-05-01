@@ -482,7 +482,7 @@ class MainContentCard extends StatelessWidget {
                 text:
                     controller.plantDetailData.value.data?.plant?.commonName ??
                     "",
-                fontFamily: AppKeys.merriweather,
+                fontFamily: AppKeys.poppins,
                 fontSize: fontSize20,
                 fontWeight: FontWeight.w700,
                 textColor: AppColors.offWhite,

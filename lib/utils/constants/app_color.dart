@@ -1,6 +1,15 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+
 class AppColors {
+  // static const appColor = Color(0xFF2E3A30);
+  static const appColor = Color(0xFFFFFFFF);
+  static const blackColor = Color(0xFF111111);
+  static final liteGreyColor = Color(0xFF111111).withValues(alpha: 0.6);
+  static const borderGreyColor = Color(0xFFDFDFDF);
+  static const greenColor = Color(0xFF01AF55);
+
   static const antiqueWhite = Color(0xFFE4E0D4);
   static const darkBlue = Color(0xFF15387C);
   static const lightBlue = Color(0xA815387C);
@@ -20,10 +29,10 @@ class AppColors {
   static const darkGrey = Color(0xFF313131);
   static const mediumGrey = Color(0xFF757575);
   static const backgroundLightGrey = Color(0xFFF5F5F5);
-  static const backgroundGrey = Color(0x1AEFEFEF);
+  static const backgroundGrey = Color(0xFFEFEFEF);
   static const red = Color(0xFFFA3131);
   static const newGrey = Color(0xF5313131);
-  static const appColor = Color(0xFF2E3A30);
+
   static const offWhite = Color(0xFFF4F4F4);
   static const offWhite50 = Color(0x80F4F4F4);
   static const offWhite10 = Color(0x1AF4F4F4);
@@ -45,4 +54,12 @@ class AppColors {
   static const harvestGold = Color(0xFFB2883D);
   static const mossGold = Color(0xFF706136);
   static const amberGold = Color(0xFFB48A3E);
+  static  const linearGradientForBtn =
+  LinearGradient(
+    colors: [Color(0XFF004A24),Color(0XFF00B056),],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+
 }

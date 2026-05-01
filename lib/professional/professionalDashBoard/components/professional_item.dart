@@ -102,7 +102,7 @@ class ProfessionalItem extends StatelessWidget {
                 Expanded(
                   child: BaseText(
                     text: professional!.companyName ?? "",
-                    fontFamily: AppKeys.merriweather,
+                    fontFamily: AppKeys.poppins,
                     textColor: AppColors.offWhite,
                     fontWeight: FontWeight.w700,
                     fontSize: fontSize13,

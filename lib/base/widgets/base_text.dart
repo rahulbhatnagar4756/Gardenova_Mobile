@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
+import '../../utils/constants/app_color.dart';
+
 class BaseText extends StatelessWidget {
   const BaseText({
     super.key,
     this.fontSize,
-    this.textColor = Colors.black,
+    this.textColor = AppColors.blackColor,
     this.text = '',
     this.fontWeight = FontWeight.normal,
     this.textAlign = TextAlign.left,
-    this.fontFamily = AppKeys.inter,
+    this.fontFamily = AppKeys.poppins,
     this.overflow = TextOverflow.visible,
     this.maxLines,
   });

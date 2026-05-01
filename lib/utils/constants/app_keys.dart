@@ -16,7 +16,7 @@ class AppKeys {
   static const securityAnswer = 'security_answer';
   static const weakPassword = 'weak-password';
   static const emailAlreadyInUse = 'email-already-in-use';
-  static const merriweather = 'Merriweather';
+  static const poppins = 'poppins';
   static const inter = 'Inter';
   static const selectedLang = 'selected_lang';
   static const submissionResponseId = 'submission_response_id';

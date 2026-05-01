@@ -70,7 +70,7 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
                 BaseText(
                   text: AppLocalizations.of(context)!.myLeads,
                   textAlign: TextAlign.center,
-                  fontFamily: AppKeys.merriweather,
+                  fontFamily: AppKeys.poppins,
                   textColor: AppColors.offWhite,
                   fontSize: fontSize20,
                   fontWeight: FontWeight.w500,

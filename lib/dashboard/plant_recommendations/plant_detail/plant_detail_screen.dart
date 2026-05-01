@@ -62,7 +62,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
               children: [
                 BaseText(
                   text: controller.plantDetail.value.commonName ?? "",
-                  fontFamily: AppKeys.merriweather,
+                  fontFamily: AppKeys.poppins,
                   fontWeight: FontWeight.bold,
                   textColor: AppColors.burntGold,
                   textAlign: TextAlign.left,
@@ -113,7 +113,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
       children: [
         BaseText(
           text: title!,
-          fontFamily: AppKeys.merriweather,
+          fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
           textColor: AppColors.burntGoldLight,
           textAlign: TextAlign.left,

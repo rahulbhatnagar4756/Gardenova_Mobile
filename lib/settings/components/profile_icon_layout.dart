@@ -53,7 +53,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                                 child: BaseText(
                                   text: controller.name.value.substring(0, 1),
                                   textColor: AppColors.charcoalGrey,
-                                  fontFamily: AppKeys.merriweather,
+                                  fontFamily: AppKeys.poppins,
                                   fontWeight: FontWeight.w700,
                                   fontSize: fontSize40,
                                   textAlign: TextAlign.center,
@@ -109,7 +109,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                                 child: BaseText(
                                   text: controller.name.value.substring(0, 1),
                                   textColor: AppColors.charcoalGrey,
-                                  fontFamily: AppKeys.merriweather,
+                                  fontFamily: AppKeys.poppins,
                                   fontWeight: FontWeight.w700,
                                   fontSize: fontSize40,
                                   textAlign: TextAlign.center,
@@ -125,7 +125,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                                         .substring(0, 1)
                                         .toUpperCase(),
                               textColor: AppColors.charcoalGrey,
-                              fontFamily: AppKeys.merriweather,
+                              fontFamily: AppKeys.poppins,
                               fontWeight: FontWeight.w700,
                               fontSize: fontSize40,
                               textAlign: TextAlign.center,
@@ -165,7 +165,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                 BaseText(
                   text: controller.name.value,
                   textColor: AppColors.offWhite,
-                  fontFamily: AppKeys.merriweather,
+                  fontFamily: AppKeys.poppins,
                   fontWeight: FontWeight.w700,
                   fontSize: fontSize20,
                   textAlign: TextAlign.center,

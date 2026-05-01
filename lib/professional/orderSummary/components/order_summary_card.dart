@@ -33,7 +33,7 @@ class OrderSummaryCard extends StatelessWidget {
           Center(
             child: BaseText(
               fontWeight: FontWeight.w700,
-              fontFamily: AppKeys.merriweather,
+              fontFamily: AppKeys.poppins,
               fontSize: fontSize16,
               textColor: AppColors.offWhite,
               text: AppLocalizations.of(context)!.orderSummary.toUpperCase(),

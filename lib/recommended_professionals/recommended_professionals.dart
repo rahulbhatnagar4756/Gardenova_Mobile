@@ -129,7 +129,7 @@ class RecommendedProfessionals
                          context,
                        )!.noProfessionalsAvailable,
                        textAlign: TextAlign.center,
-                       fontFamily: AppKeys.merriweather,
+                       fontFamily: AppKeys.poppins,
                        textColor: AppColors.offWhite,
                        fontSize: fontSize18,
                        fontWeight: FontWeight.bold,
