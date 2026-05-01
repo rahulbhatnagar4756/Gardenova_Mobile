@@ -69,7 +69,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
       width: double.infinity,
       child: BaseButton(
         textColor: AppColors.offWhite,
-        buttonLabel: AppLocalizations.of(context)!.sendOtp.toUpperCase(),
+        buttonLabel: AppLocalizations.of(context)!.sendOtp,
         onPressed: () {
           if (controller.sendOtpFormKey.currentState!.validate() &&
               RegExp(

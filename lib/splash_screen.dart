@@ -64,12 +64,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigateToIntroductionScreen() {
     Get.back();
     Future.delayed(Duration(seconds: 1)).then((value) {
-      if (SharedPrefsService.instance.getString(AppKeys.role) !=
-          AppKeys.professional) {
-        Get.offNamed(Routes.introduction);
-      } else {
-        Get.offAllNamed(Routes.professionalDashboard);
-      }
+      // if (SharedPrefsService.instance.getString(AppKeys.role) !=
+      //     AppKeys.professional) {
+      //   Get.offNamed(Routes.introduction);
+      // } else {
+      //   Get.offAllNamed(Routes.professionalDashboard);
+      // }
+      Get.offNamed(Routes.introduction);
     });
   }
 }

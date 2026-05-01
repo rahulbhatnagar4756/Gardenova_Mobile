@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
@@ -45,75 +46,49 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: Image.asset(AppAssets.appLogo, scale: 2),
-                ),
-
-                BaseText(
-                  textAlign: TextAlign.center,
-                  textColor: AppColors.offWhite,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: AppKeys.poppins,
-                  fontSize: fontSize35,
-                  text: AppLocalizations.of(context)!.startIntelligentDiagnosis,
-                ).marginOnly(top: spacerSize30, bottom: spacerSize15),
-
-                BaseText(
-                  textAlign: TextAlign.center,
-                  textColor: AppColors.offWhite70,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: AppKeys.inter,
-                  fontSize: fontSize14,
-                  text: AppLocalizations.of(
-                    context,
-                  )!.startIntelligentDiagnosisDesc,
-                ).marginOnly(bottom: spacerSize30),
-
-                Expanded(
-                  child: ListView(
-                    children: List.generate(
-                      controller.introductionList.length,
-                      (itemIndex) => itemsLayout(itemIndex),
-                    ),
+                  child: Image.asset(
+                    AppAssets.appLogo,
+                    width: 60.w,
+                    height: 60.w,
                   ),
                 ),
 
-                BaseButton(
-                  backgroundColor: AppColors.burntGold,
-                  textColor: AppColors.offWhite,
-                  fontSize: fontSize17,
-                  buttonLabel: AppLocalizations.of(context)!.startDiagnosis,
-                  onPressed: () {
-                    Get.toNamed(Routes.question);
-                  },
+                BaseText(
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: AppKeys.poppins,
+                  fontSize: 25.sp,
+                  text: AppLocalizations.of(context)!.startIntelligentDiagnosis,
+                ).marginOnly(
+                  top: spacerSize30,
+                  bottom: spacerSize15,
+                  left: 15.w,
+                  right: 15.w,
                 ),
 
-                Obx(
-                  () => !controller.isUserLoggedIn.value
-                      ? GestureDetector(
-                          onTap: () {
-                            Get.offAllNamed(Routes.login);
-                          },
-                          child: BaseText(
-                            text: AppLocalizations.of(context)!.login,
-                            fontSize: fontSize16,
-                            fontWeight: FontWeight.w400,
-                            textColor: AppColors.offWhite,
-                          ),
-                        ).marginOnly(top: spacerSize5, bottom: spacerSize15)
-                      : SizedBox(height: spacerSize35),
-                ),
-              ],
-            ).marginSymmetric(horizontal: spacerSize20),
+                BaseText(
+                  textAlign: TextAlign.center,
+                  textColor: AppColors.liteGreyColor,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: AppKeys.inter,
+                  fontSize: 14.sp,
+                  text: AppLocalizations.of(
+                    context,
+                  )!.startIntelligentDiagnosisDesc,
+                ).marginOnly(bottom: spacerSize30, left: 10.w, right: 10.w),
 
-            Positioned(
-              bottom: spacerSize0,
-              left: spacerSize0,
-              right: spacerSize0,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  BaseButton(
-                    backgroundColor: AppColors.burntGold,
+                ListView(
+                  shrinkWrap: true,
+                  physics: RangeMaintainingScrollPhysics(),
+                  children: List.generate(
+                    controller.introductionList.length,
+                    (itemIndex) => itemsLayout(itemIndex),
+                  ),
+                ),
+                SizedBox(height: 36.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: BaseButton(
                     textColor: AppColors.offWhite,
                     fontSize: fontSize17,
                     buttonLabel: AppLocalizations.of(context)!.startDiagnosis,
@@ -121,25 +96,85 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
                       Get.toNamed(Routes.question);
                     },
                   ),
-                  Obx(
-                    () => !controller.isUserLoggedIn.value
-                        ? GestureDetector(
-                            onTap: () {
-                              // Get.offAllNamed(Routes.login);
-                              Get.offAllNamed(Routes.chooseAccountType);
-                            },
-                            child: BaseText(
-                              text: AppLocalizations.of(context)!.login,
-                              fontSize: fontSize16,
-                              fontWeight: FontWeight.w400,
-                              textColor: AppColors.offWhite,
+                ),
+                Obx(
+                  () => !controller.isUserLoggedIn.value
+                      ? Column(
+                          children: [
+                            SizedBox(height: 11.h),
+                            SizedBox(
+                              width: double.infinity,
+                              child: BaseButton(
+                                textColor: AppColors.offWhite,
+                                fontSize: fontSize17,
+                                buttonLabel: AppLocalizations.of(
+                                  context,
+                                )!.login,
+                                onPressed: () {
+                                  // Get.offAllNamed(Routes.login);
+                                  Get.offAllNamed(Routes.chooseAccountType);
+                                },
+                              ),
                             ),
-                          ).marginOnly(top: spacerSize5, bottom: spacerSize15)
-                        : SizedBox(height: spacerSize35),
-                  ),
-                ],
-              ),
-            ),
+                            SizedBox(height: 25.h),
+                          ],
+                        )
+                      : const SizedBox(),
+                ),
+
+                // Obx(
+                //   () => !controller.isUserLoggedIn.value
+                //       ? GestureDetector(
+                //           onTap: () {
+                //             Get.offAllNamed(Routes.login);
+                //           },
+                //           child: BaseText(
+                //             text: AppLocalizations.of(context)!.login,
+                //             fontSize: fontSize16,
+                //             fontWeight: FontWeight.w400,
+                //             textColor: AppColors.offWhite,
+                //           ),
+                //         ).marginOnly(top: spacerSize5, bottom: spacerSize15)
+                //       : SizedBox(height: spacerSize35),
+                // ),
+              ],
+            ).marginSymmetric(horizontal: spacerSize20),
+
+            // Positioned(
+            //   bottom: spacerSize0,
+            //   left: spacerSize0,
+            //   right: spacerSize0,
+            //   child: Column(
+            //     mainAxisSize: MainAxisSize.max,
+            //     children: [
+            //       BaseButton(
+            //         backgroundColor: AppColors.burntGold,
+            //         textColor: AppColors.offWhite,
+            //         fontSize: fontSize17,
+            //         buttonLabel: AppLocalizations.of(context)!.startDiagnosis,
+            //         onPressed: () {
+            //           Get.toNamed(Routes.question);
+            //         },
+            //       ),
+            //       Obx(
+            //         () => !controller.isUserLoggedIn.value
+            //             ? GestureDetector(
+            //                 onTap: () {
+            //                   // Get.offAllNamed(Routes.login);
+            //                   Get.offAllNamed(Routes.chooseAccountType);
+            //                 },
+            //                 child: BaseText(
+            //                   text: AppLocalizations.of(context)!.login,
+            //                   fontSize: fontSize16,
+            //                   fontWeight: FontWeight.w400,
+            //                   textColor: AppColors.offWhite,
+            //                 ),
+            //               ).marginOnly(top: spacerSize5, bottom: spacerSize15)
+            //             : SizedBox(height: spacerSize35),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
         resizeToAvoidBottomInset: true,
@@ -150,10 +185,9 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
   itemsLayout(int itemIndex) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.darkGreen,
-        borderRadius: BorderRadius.all(Radius.circular(spacerSize10)),
-        shape: BoxShape.rectangle,
-        border: Border.all(color: AppColors.borderWhite),
+        color: AppColors.greenColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(spacerSize16),
+        border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -161,11 +195,13 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColors.dullWhite,
+              color: AppColors.greenColor,
               shape: BoxShape.circle,
             ),
             child: Image.asset(
-              scale: 3,
+              color: AppColors.whiteColor,
+              width: 25.w,
+              height: 25.w,
               controller.introductionList[itemIndex].imagePath ?? "",
             ).marginAll(spacerSize10),
           ),
@@ -176,21 +212,20 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
               children: [
                 BaseText(
                   textAlign: TextAlign.start,
-                  textColor: AppColors.offWhite,
                   fontWeight: FontWeight.w400,
                   fontFamily: AppKeys.poppins,
-                  fontSize: fontSize16,
+                  fontSize: 15.sp,
                   text: controller.introductionList[itemIndex].title ?? "",
                 ),
                 BaseText(
                   textAlign: TextAlign.start,
-                  textColor: AppColors.offWhite70,
+                  textColor: AppColors.liteGreyColor,
                   fontWeight: FontWeight.w400,
                   fontFamily: AppKeys.poppins,
-                  fontSize: fontSize12,
+                  fontSize: 12.sp,
                   text:
                       controller.introductionList[itemIndex].description ?? "",
-                ).marginOnly(top: spacerSize6),
+                ),
               ],
             ),
           ),
@@ -198,5 +233,4 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
       ).marginAll(spacerSize10),
     ).marginOnly(bottom: spacerSize10);
   }
-
 }

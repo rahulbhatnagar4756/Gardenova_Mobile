@@ -94,7 +94,7 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
           controller.resetPassword();
         },
         fontSize: fontSize18,
-        buttonLabel: AppLocalizations.of(context)!.resetPassword.toUpperCase(),
+        buttonLabel: AppLocalizations.of(context)!.resetPassword,
       ).paddingOnly(bottom: 15.h).marginOnly(top: spacerSize25),
     );
   }

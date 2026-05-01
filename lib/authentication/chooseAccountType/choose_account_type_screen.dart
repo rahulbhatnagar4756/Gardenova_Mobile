@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/generated/assets.dart';
@@ -6,7 +7,9 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 import '../../base/widgets/base_app_bar.dart';
+import '../../base/widgets/base_button.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
@@ -21,7 +24,7 @@ class ChooseAccountTypeScreen extends StatefulWidget {
 }
 
 class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
-  String selectedType = "";
+  String selectedType = AppKeys.user;
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +47,39 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
                 )!.howWouldYouLikeToContinue,
               ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: spacerSize60),
-                child: accountCard(
-                  title: AppLocalizations.of(context)!.client,
-                  subtitle: AppLocalizations.of(context)!.userDescription,
-                  icon: Assets.imagesUser,
-                  value: AppKeys.user,
-                ),
+              accountCard(
+                title: AppLocalizations.of(context)!.client,
+                subtitle: AppLocalizations.of(context)!.userDescription,
+                icon: Assets.imagesUser,
+                value: AppKeys.user,
               ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: spacerSize60),
-                child: accountCard(
-                  title: AppLocalizations.of(context)!.professional,
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.professionalDescription,
-                  icon: Assets.imagesProfessional,
-                  value: AppKeys.professional,
-                ),
+              accountCard(
+                title: AppLocalizations.of(context)!.professional,
+                subtitle: AppLocalizations.of(context)!.professionalDescription,
+                icon: Assets.imagesProfessional,
+                value: AppKeys.professional,
               ),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: continueBtn(selectedType: selectedType),
+    );
+  }
+
+  Widget continueBtn({required String selectedType}) {
+    return Container(
+      padding: EdgeInsets.only(bottom: 25.h,left:20.w,right: 20.w ),
+      width: double.infinity,
+      child: BaseButton(
+        textColor: AppColors.offWhite,
+        buttonLabel: AppLocalizations.of(context)!.continueText,
+        onPressed: () {
+          SharedPrefsService.instance.setString(AppKeys.role, selectedType);
+          Get.toNamed(Routes.login);
+        },
+      ).marginOnly(top: spacerSize25),
     );
   }
 
@@ -83,67 +94,75 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
       onTap: () {
         selectedType = value;
         setState(() {});
-        SharedPrefsService.instance.setString(AppKeys.role, value);
-        Get.toNamed(Routes.login);
       },
       child: Container(
+        margin: EdgeInsets.only(left: 20.w,right: 20.w,bottom: 5.h),
         decoration: BoxDecoration(
           color: AppColors.appColor,
           borderRadius: BorderRadius.circular(spacerSize16),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.borderGold,
-                    blurRadius: 5,
-                    spreadRadius: 0,
-                  ),
-                ]
-              : [],
         ),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: spacerSize25,
-            vertical: spacerSize25,
+          padding:  EdgeInsets.symmetric(
+            horizontal: 15.w,
+            vertical:  15.w,
           ),
           decoration: BoxDecoration(
-            color: AppColors.appBarColor,
+              color: AppColors.greenColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(spacerSize16),
             border: Border.all(
-              color: isSelected ? AppColors.darkGold : AppColors.borderWhite,
+              color: AppColors.greenColor.withValues(alpha: 0.2),
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
-              CircleAvatar(
-                backgroundColor: AppColors.offWhite10,
-                radius: spacerSize24,
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.greenColor,
+                  borderRadius: BorderRadius.all(Radius.circular(5.r))
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.w),
                 child: Image.asset(
                   icon,
-                  height: spacerSize18,
-                  width: spacerSize18,
+                  height: 18.w,
+                  width: 20.h,
+                  color: Colors.white,
                 ),
-              ).marginOnly(bottom: spacerSize14),
+              ),
 
-              BaseText(
-                textAlign: TextAlign.center,
-                textColor: AppColors.offWhite,
-                fontWeight: FontWeight.w500,
-                fontFamily: AppKeys.poppins,
-                fontSize: fontSize20,
-                text: title,
-              ).marginOnly(bottom: spacerSize5),
+              SizedBox(width: 10.w,),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BaseText(
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: AppKeys.poppins,
+                      fontSize: 14.sp,
+                      text: title,
+                    ).marginOnly(bottom: spacerSize5),
 
-              BaseText(
-                textAlign: TextAlign.center,
-                textColor: AppColors.offWhite70,
-                fontWeight: FontWeight.w400,
-                fontFamily: AppKeys.inter,
-                fontSize: fontSize15,
-                text: subtitle,
+                    BaseText(
+                      textColor: AppColors.liteGreyColor,
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: AppKeys.poppins,
+                      fontSize: 14.sp,
+                      text: subtitle,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 15.w,),
+              Image.asset(
+                isSelected
+                    ? AppAssets.selectedRadioIc
+                    : AppAssets.unSelectedRadioIc,
+                width: 24.w,
+                height: 24.w,
               ),
             ],
           ),
