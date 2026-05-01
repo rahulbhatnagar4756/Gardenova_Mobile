@@ -252,6 +252,7 @@
   "plan": "Plan",
   "additionalCoverage": "Additional Coverage",
   "total": "Total",
-  "completePayment": "Complete Payment"
+  "completePayment": "Complete Payment",
+  "left":"Left"
 
 }

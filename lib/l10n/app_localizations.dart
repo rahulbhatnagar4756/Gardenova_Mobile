@@ -62,8 +62,7 @@ import 'app_localizations_pt.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('pt'),
+    Locale('pt')
   ];
 
   /// No description provided for @careTitle.
@@ -281,7 +278,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginAccountSubTitle.
   ///
   /// In en, this message translates to:
-  /// **'Login An Account To Explore Our App'**
+  /// **'Login an account to explore our app'**
   String get loginAccountSubTitle;
 
   /// No description provided for @forgotPassword.
@@ -317,7 +314,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordSubTitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter your Email Below To Reset\nYour Password.'**
+  /// **'Enter your Email below to reset\nyour password.'**
   String get forgotPasswordSubTitle;
 
   /// No description provided for @sendOtp.
@@ -329,13 +326,13 @@ abstract class AppLocalizations {
   /// No description provided for @enterYourOtp.
   ///
   /// In en, this message translates to:
-  /// **'Enter Your Otp'**
+  /// **'Enter Your OTP'**
   String get enterYourOtp;
 
   /// No description provided for @checkYourEmailOrPhoneForTheOTPAndEnterItBelow.
   ///
   /// In en, this message translates to:
-  /// **'Check Your Email Or Phone For The\nOTP And Enter It Below'**
+  /// **'Check your email or phone for the\nOTP and enter it below'**
   String get checkYourEmailOrPhoneForTheOTPAndEnterItBelow;
 
   /// No description provided for @verifyOtp.
@@ -403,7 +400,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New password'**
   String get newPassword;
-  String get currentPassword;
 
   /// No description provided for @confirmNewPassword.
   ///
@@ -744,7 +740,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsAndCondition.
   ///
   /// In en, this message translates to:
-  /// **'Terms And Condition'**
+  /// **'Terms And Conditions'**
   String get termsAndCondition;
 
   /// No description provided for @referAFriend.
@@ -1323,309 +1319,308 @@ abstract class AppLocalizations {
   /// **'No Plant data available'**
   String get noPlantDataAvailable;
 
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
   String get home;
 
+  /// No description provided for @professionals.
+  ///
+  /// In en, this message translates to:
+  /// **'Professionals'**
   String get professionals;
 
+  /// No description provided for @store.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
   String get store;
 
+  /// No description provided for @courses.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses'**
   String get courses;
 
+  /// No description provided for @siteKasagardem.
+  ///
+  /// In en, this message translates to:
+  /// **'Site kasagardem'**
   String get siteKasagardem;
 
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
   String get myProfile;
 
+  /// No description provided for @myPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'My Plants'**
   String get myPlants;
 
+  /// No description provided for @searchYourPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Your Plant'**
   String get searchYourPlant;
 
-  String get plant;
-  String get andCounting;
+  /// No description provided for @plantAndCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'plants and counting'**
+  String get plantAndCounting;
 
+  /// No description provided for @health.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
   String get health;
 
+  /// No description provided for @addYourFirstPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Your First Plant'**
   String get addYourFirstPlant;
 
+  /// No description provided for @addYourFirstPlantDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by common name, scientific name or variety of your plant'**
   String get addYourFirstPlantDescription;
 
+  /// No description provided for @searchPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Plants'**
   String get searchPlants;
 
+  /// No description provided for @trendingPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending Plants'**
   String get trendingPlants;
 
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
   String get days;
 
-  String get day;
-
-  String get ago;
-
+  /// No description provided for @week.
+  ///
+  /// In en, this message translates to:
+  /// **'week'**
   String get week;
 
+  /// No description provided for @water.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
   String get water;
 
-  String get watered;
-
+  /// No description provided for @fertilizing.
+  ///
+  /// In en, this message translates to:
+  /// **'Fertilizing'**
   String get fertilizing;
 
+  /// No description provided for @pruning.
+  ///
+  /// In en, this message translates to:
+  /// **'Pruning'**
   String get pruning;
 
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
   String get viewAll;
 
+  /// No description provided for @every.
+  ///
+  /// In en, this message translates to:
+  /// **'Every'**
   String get every;
 
+  /// No description provided for @personalizedCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalized Care'**
   String get personalizedCare;
 
+  /// No description provided for @plantStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant Stats'**
   String get plantStats;
 
-  String get upcomingEvents;
-
+  /// No description provided for @plantHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant History'**
   String get plantHistory;
 
-  String get schedule;
+  /// No description provided for @upcomingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Events'**
+  String get upcomingEvents;
 
-  String get alerts;
+  /// No description provided for @upgradeToPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium'**
+  String get upgradeToPremium;
 
-  String get general;
+  /// No description provided for @enjoyExclusiveBenefits.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy exclusive benefits and unlock all features'**
+  String get enjoyExclusiveBenefits;
 
-  String get options;
+  /// No description provided for @billedMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed Monthly'**
+  String get billedMonthly;
 
-  String get preferred;
+  /// No description provided for @billedAnnually.
+  ///
+  /// In en, this message translates to:
+  /// **'Billed Annually'**
+  String get billedAnnually;
 
-  String get time;
-
-  String get date;
-
-  String get criticalCare;
-
-  String get scheduledFor;
-
-  String get reminders;
-
-  String get frequency;
-
-  String get consistent;
-
-  String get addPlant;
-
-  String get editPlant;
-
-  String get howWouldYouLikeToContinue;
-
-  String get user;
-
-  String get client;
-
-  String get userDescription;
-
-  String get professional;
-
-  String get professionalDescription;
-
-  String get annually;
-
+  /// No description provided for @monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'MONTHLY'**
   String get monthly;
 
-  String get continueWith;
+  /// No description provided for @annually.
+  ///
+  /// In en, this message translates to:
+  /// **'ANNUALLY'**
+  String get annually;
 
-  String get professionalStatus;
+  /// No description provided for @mostPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Most Popular'**
+  String get mostPopular;
 
-  String get goldPlan;
-
-  String get active;
-
-  String get renewPlan;
-
-  String get subscriptionRemaining;
-
-  String get exp;
-
-  String get left;
-
-  String get yourPlanEnds;
-
-  String get yourPlanEndsDesc;
-
-  String get selectYourPlan;
-
-  String get toSpeak;
-
-  String get gold;
-
-  String get diamante;
-
-  String get covers;
-
+  /// No description provided for @additionalNationalCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional National Coverage'**
   String get additionalNationalCoverage;
 
-  String get additionalNationalCoverageDesc1;
+  /// No description provided for @forAnAdditional.
+  ///
+  /// In en, this message translates to:
+  /// **'For an additional'**
+  String get forAnAdditional;
 
-  String get additionalNationalCoverageDesc2;
+  /// No description provided for @youGetCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'you get coverage across the country'**
+  String get youGetCoverage;
 
-  String get planType;
+  /// No description provided for @selectAPlanToAddThisOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a plan to add this option'**
+  String get selectAPlanToAddThisOption;
 
-  String get oneTime;
+  /// No description provided for @continueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with'**
+  String get continueWith;
 
-  String get reccuring;
+  /// No description provided for @upgradePlanScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Plan Screen'**
+  String get upgradePlanScreen;
 
-  String get mu;
-
-  String get an;
-
-  String get validFor1Year;
-
-  String get orderSummary;
-
-  String get total;
-
-  String get fullPayment;
-
+  /// No description provided for @myLeads.
+  ///
+  /// In en, this message translates to:
+  /// **'My Leads'**
   String get myLeads;
 
-  String get myLeadsDesc;
+  /// No description provided for @professionalLandscapingEnquires.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional landscaping enquires'**
+  String get professionalLandscapingEnquires;
 
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
   String get search;
 
-  String get viewDetails;
-
+  /// No description provided for @wholesaleSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Wholesale Suppliers'**
   String get wholesaleSuppliers;
 
-  String get find;
-
-  String get yourProfileIsCurrently;
-
-  String get inactive;
-
-  String get customerPlanDesc;
-
-  String get customerPlanDesc2;
-
-  String get seePlans;
-
-  String get notNow;
-
-  String get youAreOnA30DayFreeTrial;
-
+  /// No description provided for @upgradeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Now'**
   String get upgradeNow;
 
-  String get youAreOnA30DayTrialEnded;
+  /// No description provided for @youAreOnA30DayFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'You are on a 30-day free trial. To prevent your profile from being blocked and hidden from users after 30 days, please purchase a plan.'**
+  String get youAreOnA30DayFreeTrial;
 
-  String get serviceRequested;
+  /// No description provided for @orderSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Summary'**
+  String get orderSummary;
 
-  String get citiesCoverage;
+  /// No description provided for @plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan;
 
-  String get appearInSearchResults;
+  /// No description provided for @additionalCoverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Coverage'**
+  String get additionalCoverage;
 
-  String get unlimitedLeads;
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
 
-  String get premiumProfileBadge;
+  /// No description provided for @completePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete Payment'**
+  String get completePayment;
 
-  String get priorityCustomerSupport;
-
-  String get noLeadsFound;
-
-  String get name;
-
-  String get email;
-
-  String get address;
-
-  String get location;
-
-  String get role;
-
-  String get leadStatus;
-
-  String get companyDetails;
-
-  String get plantGrowers;
-
-  String get flowers;
-
-  String get fertilizers;
-
-  String get equipment;
-
-  String get newLead;
-
-  String get closedLead;
-
-  String get contactedLead;
-
-  String get totalLeads;
-
-  String get updateLeadStatus;
-
-  String get region;
-
-  String get specialty;
-
-  String get successfullyAdded;
-
-  String get selectAtLeastOneReminder;
-
-  String get selectWateringFrequency;
-
-  String get selectWateringTime;
-
-  String get selectFertilizerFrequency;
-
-  String get selectFertilizerTime;
-
-  String get selectPruningFrequency;
-
-  String get selectGeneralFrequency;
-
-  String get enableWatering;
-
-  String get enableCriticalCare;
-
-  String get enableFertilizing;
-
-  String get enablePruning;
-
-  String get selectFrequency;
-
-  String get selectTime;
-
-  String get gotoMyPlants;
-
-  String get addMissingInfo;
-
-  String get careProfileCompletion;
-
-  String get deleteAccount;
-
-  String get areYouSureYouWantToDeleteYourAccount;
-
-  String get tap;
-
-  String get toAddYourFirstPlant;
-
-  String get newPasswordCannotBeSameAsCurrentPassword;
-
-  String get selectService;
-  String get shortDescription;
-  String get enterShortDescription;
-  String get sizeOfTheArea;
-  String get enterSizeOfTheArea;
-  String get submitRequest;
-
-  //category
-
-  String get landscapingGardening;
-  String get flowerShops;
-  String get swimmingPools;
-  String get outdoorFlooring;
-  String get irrigation;
-  String get outdoorLighting;
-  String get lawnTurf;
-  String get bbqOutdoorKitchen;
-  String get decksPergolas;
-  String get nurseriesSeedlings;
-  String get pestControl;
+  /// No description provided for @left.
+  ///
+  /// In en, this message translates to:
+  /// **'Left'**
+  String get left;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1634,26 +1629,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
-
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
+  // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'pt':
-      return AppLocalizationsPt();
+    case 'en': return AppLocalizationsEn();
+    case 'pt': return AppLocalizationsPt();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }
