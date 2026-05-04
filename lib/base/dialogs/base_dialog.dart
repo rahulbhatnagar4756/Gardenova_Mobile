@@ -77,6 +77,7 @@ class BaseDialog {
                           fontWeight: FontWeight.w600,
                           fontFamily: AppKeys.poppins,
                           fontSize: 25.sp,
+                          textAlign: TextAlign.center,
                         ),
                         SizedBox(height: spacerSize5),
                         BaseText(

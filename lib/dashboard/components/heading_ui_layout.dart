@@ -39,10 +39,9 @@ class HeadingUiLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BaseText(
-              textColor: AppColors.offWhite,
               fontFamily: AppKeys.poppins,
-              fontSize: fontSize18,
-              fontWeight: FontWeight.w400,
+              fontSize: fontSize17,
+              fontWeight: FontWeight.w500,
               text: sectionTitle ?? "",
             ),
             Visibility(
@@ -54,11 +53,7 @@ class HeadingUiLayout extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(spacerSize10),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.lightGold, AppColors.burntGold],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    gradient: AppColors.linearGradientForBtn,
                     borderRadius: BorderRadius.circular(spacerSize10),
                   ),
                   child: Image.asset(

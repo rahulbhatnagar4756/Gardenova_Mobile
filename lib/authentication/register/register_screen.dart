@@ -26,7 +26,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Column(
@@ -201,6 +201,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   register(BuildContext context) {
     return SizedBox(width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
@@ -217,7 +218,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.register,
-      ).marginOnly(bottom: spacerSize20),
+      ).marginOnly(bottom: 25.h),
     );
   }
 

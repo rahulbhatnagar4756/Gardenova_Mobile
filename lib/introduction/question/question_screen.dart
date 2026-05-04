@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
@@ -16,6 +17,8 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
+import '../../utils/constants/app_assets.dart';
+
 class QuestionScreen extends GetWidget<QuestionViewModel> {
   const QuestionScreen({super.key});
 
@@ -32,7 +35,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           controller.backPressed();
         },
         child: Scaffold(
-          appBar: controller.isUserLoggedIn.value
+          appBar: controller.isUserLoggedIn.value && false
               ? CircularBottomAppBar(
                   onSettingPressed: () {
                     Get.toNamed(Routes.settings, arguments: 'question');
@@ -49,7 +52,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                         QuestionProgressIndicator(
                           currentQuestion: controller.currentQuestion.value,
                           totalQuestions: controller.totalQuestions,
-                        ).marginOnly(top: spacerSize45),
+                        ).marginOnly(top: 25.h),
 
                         questionLayout(),
 
@@ -87,7 +90,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                       );
                                     },
                                   ),
-                                ).marginOnly(top: spacerSize15),
+                                ).marginOnly(top: 26.h),
                       ],
                     ),
                     continueAndBackLayout(context),
@@ -109,6 +112,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     required Questions question,
     required BuildContext context,
   }) {
+    // Image.asset(AppAssets.selectedRadioIc, width: 24.w,height: 24.w,),
+    // Image.asset(AppAssets.unSelectedRadioIc, width: 24.w,height: 24.w,),
     return GestureDetector(
       onTap: () {
         question.selectedAnswer = question.options![index].optionText;
@@ -116,34 +121,81 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       },
       child: Container(
         height: spacerSize60,
-        width: spacerSize150,
-        alignment: Alignment.topLeft,
-        decoration: BoxDecoration(
-          color: AppColors.darkGreen,
-          border: Border.all(
-            color:
-                (question.options![index].optionText == question.selectedAnswer)
-                ? AppColors.burntGold
-                : AppColors.backgroundGrey,
-          ),
-          borderRadius: BorderRadius.circular(spacerSize10),
-        ),
+        width: double.infinity,
         padding: EdgeInsets.symmetric(
           horizontal: spacerSize17,
           vertical: spacerSize10,
         ),
-        child: Center(
-          child: BaseText(
-            textAlign: TextAlign.center,
-            fontFamily: AppKeys.poppins,
-            fontWeight: FontWeight.w400,
-            fontSize: fontSize14,
-            textColor: AppColors.offWhite,
-            text: question.options![index].optionText ?? "",
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(spacerSize10),
+          border: Border.all(
+            color: (question.options![index].optionText ==
+                question.selectedAnswer)
+                ? AppColors.greenColor // selected border
+                : AppColors.borderLiteGreyColor,
+            width: 1.2,
           ),
+        ),
+        child: Row(
+          children: [
+            /// ✅ Text (Left)
+            Expanded(
+              child: BaseText(
+                text: question.options![index].optionText ?? "",
+                fontFamily: AppKeys.poppins,
+                fontWeight: FontWeight.w500,
+                fontSize: 13.sp,
+              ),
+            ),
+
+            /// ✅ Radio Icon (Right)
+            Image.asset(
+              (question.options![index].optionText ==
+                  question.selectedAnswer)
+                  ? AppAssets.selectedRadioIc
+                  : AppAssets.unSelectedRadioIc,
+              width: 24.w,
+              height: 24.w,
+            ),
+          ],
         ),
       ),
     );
+    // return GestureDetector(
+    //   onTap: () {
+    //     question.selectedAnswer = question.options![index].optionText;
+    //     controller.questionList.refresh();
+    //   },
+    //   child: Container(
+    //     height: spacerSize60,
+    //     width: spacerSize150,
+    //     alignment: Alignment.topLeft,
+    //     decoration: BoxDecoration(
+    //       color: AppColors.darkGreen,
+    //       border: Border.all(
+    //         color:
+    //             (question.options![index].optionText == question.selectedAnswer)
+    //             ? AppColors.burntGold
+    //             : AppColors.backgroundGrey,
+    //       ),
+    //       borderRadius: BorderRadius.circular(spacerSize10),
+    //     ),
+    //     padding: EdgeInsets.symmetric(
+    //       horizontal: spacerSize17,
+    //       vertical: spacerSize10,
+    //     ),
+    //     child: Center(
+    //       child: BaseText(
+    //         textAlign: TextAlign.center,
+    //         fontFamily: AppKeys.poppins,
+    //         fontWeight: FontWeight.w400,
+    //         fontSize: fontSize14,
+    //         textColor: AppColors.offWhite,
+    //         text: question.options![index].optionText ?? "",
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   continueAndBackLayout(BuildContext context) {
@@ -153,38 +205,19 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       right: 0,
       child: Column(
         children: [
-          BaseButton(
-            backgroundColor: AppColors.burntGold,
-            textColor: AppColors.offWhite,
-            fontSize: fontSize17,
-            buttonLabel: AppLocalizations.of(
-              context,
-            )!.continueText.toUpperCase(),
-            onPressed: controller.onContinuePressed,
-          ),
-          GestureDetector(
-            onTap: controller.backPressed,
-            child: Row(
-              spacing: spacerSize4,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: spacerSize20,
-                    color: AppColors.offWhite,
-                    applyTextScaling: true,
-                  ),
-                ),
-                BaseText(
-                  text: AppLocalizations.of(context)!.back,
-                  fontSize: fontSize16,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.offWhite,
-                ),
-              ],
+          SizedBox(
+            width: double.infinity,
+            child: BaseButton(
+              bottomPadding: true,
+              backgroundColor: AppColors.burntGold,
+              textColor: AppColors.offWhite,
+              fontSize: fontSize17,
+              buttonLabel: AppLocalizations.of(
+                context,
+              )!.continueText,
+              onPressed: controller.onContinuePressed,
             ),
-          ).marginOnly(top: spacerSize5),
+          ),
         ],
       ),
     );
@@ -198,12 +231,12 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                 .questionText!
                 .toTitleCase()
           : "",
-      textColor: AppColors.offWhite,
-      fontWeight: FontWeight.w400,
-      textAlign: TextAlign.center,
+      textColor: AppColors.blackColor,
+      fontWeight: FontWeight.w600,
+      textAlign: TextAlign.left,
       fontFamily: AppKeys.poppins,
-      fontSize: fontSize22,
-    ).marginOnly(top: spacerSize25).paddingAll(spacerSize5);
+      fontSize: 22.sp,
+    ).marginOnly(top: 29.h);
   }
 
   answer5Layout(BuildContext context) {
@@ -211,7 +244,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       formKey: controller.formKey,
       child: Column(
           spacing:spacerSize15,
-          children: [state(context), city(context)]).marginOnly(top: spacerSize30),
+          children: [state(context), city(context)]).marginOnly(top: 26.h),
     );
   }
 
@@ -222,7 +255,6 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           child: BaseTextField(
             textEditingController: controller.stateController,
             hintText: AppLocalizations.of(context)!.selectState,
-            hintColor: Colors.white,
             isTextFieldEnabled:false,
             validator: (value) {
               if (value!.isEmpty) {
@@ -230,9 +262,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               }
               return null;
             },
-            suffixIcon: const Icon(
+            suffixIcon:  Icon(
               Icons.keyboard_arrow_down_outlined,
-              color: AppColors.offWhite,
+              color: AppColors.liteGreyColor,
             ),
           ),
         );
@@ -253,7 +285,6 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       child: BaseTextField(
         textEditingController: controller.cityController,
         hintText: AppLocalizations.of(context)!.selectCity,
-        hintColor: Colors.white,
         isTextFieldEnabled:false,
         validator: (value) {
           if (value!.isEmpty) {
@@ -261,9 +292,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           }
           return null;
         },
-        suffixIcon: const Icon(
+        suffixIcon:  Icon(
           Icons.keyboard_arrow_down_outlined,
-          color: AppColors.offWhite,
+          color: AppColors.liteGreyColor,
         ),
       ),
     );
@@ -292,7 +323,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
             BaseTextField(
               textEditingController: controller.stateController,
               hintText: AppLocalizations.of(context)!.search,
-              hintColor: Colors.white,
+              hintColor: AppColors.liteGreyColor,
               onChanged: (value) => controller.filterState(value),
             ),
             SizedBox(height: spacerSize15),

@@ -688,6 +688,11 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Report'**
   String get viewReport;
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'report'**
+  String get report;
 
   /// No description provided for @pleaseSelectCity.
   ///

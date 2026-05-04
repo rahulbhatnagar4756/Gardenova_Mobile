@@ -47,6 +47,7 @@ class Assets {
   static const String imagesThermometer = 'assets/images/thermometer.png';
   static const String imagesWaterDrop = 'assets/images/water_drop.png';
   static const String imagesWatering = 'assets/images/watering.png';
+  static const String navigationIc = 'assets/images/navgiation_ic.png';
 
   static const String kasagardemFrontendSecret = 'secret.env';
   static const String jsonHeartFluttering = 'assets/json/heart_fluttering.json';

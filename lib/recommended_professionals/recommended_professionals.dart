@@ -37,7 +37,7 @@ class RecommendedProfessionals
           () =>
           Scaffold(
             backgroundColor: AppColors.appColor,
-            appBar: controller.isUserLoggedIn.value
+            appBar: controller.isUserLoggedIn.value && false
                 ? PreferredSize(
                 preferredSize: const Size.fromHeight(spacerSize80),
                 child: Builder(
@@ -50,9 +50,15 @@ class RecommendedProfessionals
                     );
                   },
                 ))
-                : BaseAppBar(),
+                : BaseAppBar(
+              isAppIconVisible: false,
+              title: AppLocalizations.of(
+                context,
+              )!.recommendedProfessionals,
+
+            ),
             bottomNavigationBar: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:spacerSize20,vertical: spacerSize6),
+              padding: const EdgeInsets.symmetric(horizontal:spacerSize20,vertical: 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -60,6 +66,7 @@ class RecommendedProfessionals
                         () =>
                     controller.professionalsList.isNotEmpty
                         ? BaseButton(
+                      bottomPadding: true,
                       buttonLabel: AppLocalizations.of(
                         context,
                       )!.requestAQuote,
@@ -83,10 +90,10 @@ class RecommendedProfessionals
                     )
                         : const SizedBox.shrink(),
                   ),
-                  BaseBackButton().marginOnly(
-                    top: spacerSize6,
-                    bottom: spacerSize6,
-                  ),
+                  // BaseBackButton().marginOnly(
+                  //   top: spacerSize6,
+                  //   bottom: spacerSize6,
+                  // ),
                 ],
               ),
             ),
@@ -95,94 +102,96 @@ class RecommendedProfessionals
                 controller.navigateToNext(index);
               },
             ),
-            body: HeadingUiLayout(
-               spacing: spacerSize20,
-               sectionTitle: AppLocalizations.of(
-                 context,
-               )!.recommendedProfessionals,
-               isFilterShow: true,
-               onTabFilter: () {
-                 ServiceBottomSheet.show(
-                   categories: controller.categories,
-                   selectedKey: controller.selectedService.value,
-                   onSelect: (key, value) {
-                     controller.selectedService.value = value;
-                     controller.serviceController.text = value;
-                     controller.callGetProfessionalListApi();
-                   },
-                 );
-               },
-               child: Expanded(
-                 child: Obx(
-                       () =>
-                   controller.isLoading.value
-                       ? ListView.builder(
-                     physics: NeverScrollableScrollPhysics(),
-                     itemCount: 4,
-                     itemBuilder: (context, index) =>
-                         BaseShimmer().marginOnly(bottom: spacerSize10),
-                   )
-                       : controller.professionalsList.isEmpty
-                       ? Center(
-                     child: BaseText(
-                       text: AppLocalizations.of(
-                         context,
-                       )!.noProfessionalsAvailable,
-                       textAlign: TextAlign.center,
-                       fontFamily: AppKeys.poppins,
-                       textColor: AppColors.offWhite,
-                       fontSize: fontSize18,
-                       fontWeight: FontWeight.bold,
-                     ),
-                   )
-                       : RefreshIndicator(
-                     onRefresh: () async {
-                       await controller.callGetProfessionalListApi();
+            body: Container(
+              // color: Colors.red,
+              child: HeadingUiLayout(
+                 // sectionTitle: AppLocalizations.of(
+                 //   context,
+                 // )!.recommendedProfessionals,
+                sectionTitle: '',
+                 spacing: spacerSize20,
+                 isFilterShow: true,
+                 onTabFilter: () {
+                   ServiceBottomSheet.show(
+                     categories: controller.categories,
+                     selectedKey: controller.selectedService.value,
+                     onSelect: (key, value) {
+                       controller.selectedService.value = value;
+                       controller.serviceController.text = value;
+                       controller.callGetProfessionalListApi();
                      },
-                     child: NotificationListener<ScrollNotification>(
-                       onNotification: (ScrollNotification scrollInfo) {
-                         if (!controller.isLoadMoreRunning.value &&
-                             scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
-                             controller.isLoadMoreVisible.value) {
-                           controller.loadMoreProfessional();
-                         }
-                         return false;
-                       },
-                       child: ListView.builder(
-                         padding: EdgeInsets.zero,
-                         itemCount: controller.isLoading.value
-                             ? 4
-                             : controller.professionalsList.length,
-                         itemBuilder: (context, index) {
-                           if (controller.isLoading.value) {
-                             return BaseShimmer().marginOnly(bottom: spacerSize10);
-                           }
-                           return GestureDetector(
-                             onTap: () {
-                               controller.onTapToSelect(index);
-                             },
-                             child: BaseBorderedContainer(
-                               height: spacerSize320,
-                               width: Get.width,
-                               backgroundColor: AppColors.darkGreen,
-                               borderColor: controller.professionalsList[index].isSelected
-                                   ? AppColors.burntGold
-                                   : AppColors.offWhite10,
-
-                               childWidget: ProfessionalItem(
-                                 professional: controller.professionalsList[index],
-                                 isSuccess: false,
-                                 isSelected: controller.professionalsList[index].isSelected,
-                               ),
-                             ).marginOnly(bottom: spacerSize10),
-                           );
-                         },
+                   );
+                 },
+                 child: Expanded(
+                   child: Obx(
+                         () =>
+                     controller.isLoading.value
+                         ? ListView.builder(
+                       physics: NeverScrollableScrollPhysics(),
+                       itemCount: 4,
+                       itemBuilder: (context, index) =>
+                           BaseShimmer().marginOnly(bottom: spacerSize10),
+                     )
+                         : controller.professionalsList.isEmpty
+                         ? Center(
+                       child: BaseText(
+                         text: AppLocalizations.of(
+                           context,
+                         )!.noProfessionalsAvailable,
+                         textAlign: TextAlign.center,
+                         fontFamily: AppKeys.poppins,
+                         textColor: AppColors.offWhite,
+                         fontSize: fontSize18,
+                         fontWeight: FontWeight.bold,
                        ),
                      )
+                         : RefreshIndicator(
+                       onRefresh: () async {
+                         await controller.callGetProfessionalListApi();
+                       },
+                       child: NotificationListener<ScrollNotification>(
+                         onNotification: (ScrollNotification scrollInfo) {
+                           if (!controller.isLoadMoreRunning.value &&
+                               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+                               controller.isLoadMoreVisible.value) {
+                             controller.loadMoreProfessional();
+                           }
+                           return false;
+                         },
+                         child: ListView.builder(
+                           padding: EdgeInsets.zero,
+                           itemCount: controller.isLoading.value
+                               ? 4
+                               : controller.professionalsList.length,
+                           itemBuilder: (context, index) {
+                             if (controller.isLoading.value) {
+                               return BaseShimmer().marginOnly(bottom: spacerSize10);
+                             }
+                             return GestureDetector(
+                               onTap: () {
+                                 controller.onTapToSelect(index);
+                               },
+                               child: BaseBorderedContainer(
+                                 height: spacerSize350,
+                                 width: Get.width,
+                                 backgroundColor: AppColors.appColor,
+                                 borderColor: AppColors.blackColor.withValues(alpha: .4),
+
+                                 childWidget: ProfessionalItem(
+                                   professional: controller.professionalsList[index],
+                                   isSuccess: false,
+                                   isSelected: controller.professionalsList[index].isSelected,
+                                 ),
+                               ).marginOnly(bottom: spacerSize10),
+                             );
+                           },
+                         ),
+                       )
+                     ),
                    ),
                  ),
-               ),
-             ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+               ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+            ),
           ),
     );
   }

@@ -12,6 +12,8 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
+import '../../base/dialogs/base_dialog.dart';
+
 class QuestionViewModel extends GetxController {
   late QuestionRepository questionRepository;
   final formKey = GlobalKey<FormState>();
@@ -116,9 +118,24 @@ class QuestionViewModel extends GetxController {
           AppKeys.submissionResponseId,
           plantResponse.data!.responseId ?? "",
         );
-        Get.toNamed(
-          Routes.reportSuccess,
-          arguments: {plantResponse.data!.responseId ?? ""},
+
+
+        // Get.toNamed(
+        //   Routes.reportSuccess,
+        //   arguments: {plantResponse.data!.responseId ?? ""},
+        // );
+        BaseDialog.showFullScreenDialog(
+          barrieDismissible: false,
+          Get.context!,
+          buttonLabel: AppLocalizations.of(
+            Get.context!,
+          )!.viewReport,
+          dialogTitle: AppLocalizations.of(Get.context!)!.yourIntelligentDiagnosisReportIsReady,
+          dialogDescription: '',
+          onButtonPressed: () {
+            Get.back();
+             Get.offNamed(Routes.dashboard, arguments: {plantResponse.data!.responseId ?? ""});
+          },
         );
       }
     }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
@@ -20,7 +21,9 @@ class PlantRecommendations extends StatelessWidget {
     return Obx(
       () => BaseBorderedContainer(
         height: Get.height * .23,
-        padding: EdgeInsets.all(spacerSize5),
+        // padding: EdgeInsets.all(spacerSize5),
+        backgroundColor: AppColors.appColor,
+        borderColor:  AppColors.appColor,
         childWidget:
             controller.plantRecommendationList.isEmpty &&
                 !controller.isLoading.value
@@ -39,9 +42,12 @@ class PlantRecommendations extends StatelessWidget {
             : GridView.builder(
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: .82,
+                  childAspectRatio: .995,
+                  crossAxisSpacing: 8.w,
+                  mainAxisSpacing: 8.w
+
                 ),
                 scrollDirection: Axis.horizontal,
                 itemCount: controller.isLoading.value
@@ -72,7 +78,7 @@ class PlantRecommendations extends StatelessWidget {
                                 ),
                               );
                             },
-                          ).marginAll(spacerSize2),
+                          ),
                   );
                 },
               ),

@@ -23,7 +23,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Stack(
@@ -65,9 +65,10 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
 
   sendOtp(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: 15.h),
+      // padding: EdgeInsets.only(bottom: 15.h),
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         textColor: AppColors.offWhite,
         buttonLabel: AppLocalizations.of(context)!.sendOtp,
         onPressed: () {

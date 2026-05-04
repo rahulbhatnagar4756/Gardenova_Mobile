@@ -28,7 +28,7 @@ class ReportSuccessScreen extends StatelessWidget {
                 text: AppLocalizations.of(
                   context,
                 )!.yourIntelligentDiagnosisReportIsReady,
-                textColor: AppColors.offWhite,
+                textColor: AppColors.blackColor,
                 fontWeight: FontWeight.w400,
                 textAlign: TextAlign.center,
                 fontFamily: AppKeys.poppins,

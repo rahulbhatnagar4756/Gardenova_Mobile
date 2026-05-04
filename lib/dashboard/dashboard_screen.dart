@@ -46,51 +46,56 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 );
               },
             ))
-            : BaseAppBar(isBackButtonVisible: false),
+            : BaseAppBar(isBackButtonVisible: true,
+        title: AppLocalizations.of(context)!.report,
+        isAppIconVisible: false,),
 
-        body: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child:
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                /*  HeadingUiLayout(
-                    sectionTitle: AppLocalizations.of(context)!.overview,
-                    child: SoilAnalysis(),
-                  ),*/
-                  const SizedBox(height: spacerSize20),
-                  HeadingUiLayout(
-                    sectionTitle: AppLocalizations.of(
-                      context,
-                    )!.automationSuggestions,
-                    child: AutomationSuggestions(),
-                  ),
-                  const SizedBox(height: spacerSize20),
-                  HeadingUiLayout(
-                    sectionTitle: AppLocalizations.of(
-                      context,
-                    )!.plantRecommendations,
-                    child: Column(
-                      children: [PlantRecommendations(controller: controller)],
+        body: Container(
+          // color: Colors.red,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child:
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    HeadingUiLayout(
+                      sectionTitle: AppLocalizations.of(context)!.overview,
+                      child: SoilAnalysis(),
                     ),
-                  ),
-                ],
-              ).marginOnly(
-                top: spacerSize25,
-                left: spacerSize20,
-                right: spacerSize20,
-              ),
+                    const SizedBox(height: spacerSize15),
+                    HeadingUiLayout(
+                      sectionTitle: AppLocalizations.of(
+                        context,
+                      )!.automationSuggestions,
+                      child: AutomationSuggestions(),
+                    ),
+                    const SizedBox(height: spacerSize15),
+                    HeadingUiLayout(
+                      sectionTitle: AppLocalizations.of(
+                        context,
+                      )!.plantRecommendations,
+                      child: Column(
+                        children: [PlantRecommendations(controller: controller)],
+                      ),
+                    ),
+                  ],
+                ).marginOnly(
+                  left: spacerSize20,
+                  right: spacerSize20,
+                ),
+          ),
         ),
 
         bottomNavigationBar: Wrap(
           runSpacing: spacerSize5,
           children: [
             BaseButton(
+              bottomPadding: true,
               buttonLabel: AppLocalizations.of(
                 context,
-              )!.viewRecommendedProfessionals.toUpperCase(),
+              )!.viewRecommendedProfessionals,
               buttonWidth: Get.width,
               fontSize: fontSize15,
               onPressed: () {
@@ -123,9 +128,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 }
               },
             ),
-            BaseBackButton(),
+            // BaseBackButton(),
           ],
-        ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+        ).marginSymmetric(horizontal: spacerSize20,),
       ),
     );
   }

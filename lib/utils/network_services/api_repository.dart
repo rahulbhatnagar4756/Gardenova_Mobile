@@ -211,7 +211,7 @@ class ApiRepository {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return const Center(
-            child: SpinKitSpinningLines(color: AppColors.burntGold),
+            child: SpinKitSpinningLines(color: AppColors.greenColor),
           );
         },
       );

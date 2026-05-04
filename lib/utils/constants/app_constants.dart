@@ -89,6 +89,7 @@ const double spacerSize250 = 250;
 const double spacerSize300 = 300;
 const double spacerSize310 = 310;
 const double spacerSize320 = 320;
+const double spacerSize345 = 345;
 const double spacerSize350 = 350;
 const double spacerSize370 = 370;
 const double spacerSize400 = 400;

@@ -18,7 +18,7 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Stack(
@@ -89,13 +89,14 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
   resetPassword(BuildContext context) {
     return SizedBox(width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         backgroundColor: AppColors.burntGold,
         onPressed: () {
           controller.resetPassword();
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.resetPassword,
-      ).paddingOnly(bottom: 15.h).marginOnly(top: spacerSize25),
+      ).marginOnly(top: spacerSize25),
     );
   }
 }

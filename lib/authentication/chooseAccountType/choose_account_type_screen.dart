@@ -31,7 +31,7 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: false,
       ),
       body: SafeArea(
@@ -70,9 +70,10 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
 
   Widget continueBtn({required String selectedType}) {
     return Container(
-      padding: EdgeInsets.only(bottom: 25.h,left:20.w,right: 20.w ),
+      padding: EdgeInsets.only(left:20.w,right: 20.w ),
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         textColor: AppColors.offWhite,
         buttonLabel: AppLocalizations.of(context)!.continueText,
         onPressed: () {

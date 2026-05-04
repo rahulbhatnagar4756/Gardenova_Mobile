@@ -304,6 +304,8 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get viewReport => 'Ver Relatório';
+  @override
+  String get report => 'Report';
 
   @override
   String get pleaseSelectCity => 'Por Favor, Selecione a Cidade';

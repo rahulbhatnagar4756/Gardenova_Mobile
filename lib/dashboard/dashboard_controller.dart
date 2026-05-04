@@ -12,6 +12,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
+import '../utils/location_service.dart';
 
 class DashboardController extends GetxController {
   RxList<PlantRecommendationsResponse> plantRecommendationList =
@@ -24,7 +25,8 @@ class DashboardController extends GetxController {
   double lat = 0.0;
   double long = 0.0;
   Position? position;
-
+  final LocationService _locationService = LocationService();
+  bool _isFetching = false;
   @override
   void onInit() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -119,13 +121,36 @@ class DashboardController extends GetxController {
     isLoading.value = false;
   }
 
-  Future getCurrentLocation() async {
-    position = await _determinePosition();
-    lat = position!.latitude;
-    long = position!.longitude;
-    sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
-    sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
-    return position;
+  // Future getCurrentLocation() async {
+  //   // position = await _determinePosition();
+  //   position = await _locationService.getCurrentLocation();
+  //   lat = position?.latitude??0.0;
+  //   long = position?.longitude??0.0;
+  //   sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
+  //   sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
+  //   return position;
+  // }
+  Future<void> getCurrentLocation() async {
+    if (_isFetching) return;
+
+    _isFetching = true;
+
+    try {
+      position = await _locationService.getCurrentLocation();
+
+      lat = position?.latitude ?? 0.0;
+      long = position?.longitude ?? 0.0;
+
+      // Save locally
+      sharedPrefsService.setString("lat", lat.toString());
+      sharedPrefsService.setString("long", long.toString());
+
+      debugPrint("LAT: $lat, LNG: $long");
+    } catch (e) {
+      debugPrint("Final Error: $e");
+    } finally {
+      _isFetching = false;
+    }
   }
 
   Future<void> pickImage({required bool isCamera}) async {

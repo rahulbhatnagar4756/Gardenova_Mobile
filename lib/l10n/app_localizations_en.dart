@@ -228,7 +228,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startIntelligentDiagnosis => 'Start Intelligent Diagnosis';
 
   @override
-  String get startDiagnosis => 'START DIAGNOSIS';
+  String get startDiagnosis => 'Start Diagnosis';
 
   @override
   String get questionOne => 'Which Space Do You Want to Transform?';
@@ -304,6 +304,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewReport => 'View Report';
+  @override
+  String get report => 'Report';
 
   @override
   String get pleaseSelectCity => 'Please Select City';

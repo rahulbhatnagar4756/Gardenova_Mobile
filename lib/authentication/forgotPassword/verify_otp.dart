@@ -22,7 +22,7 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Stack(
@@ -52,6 +52,7 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         backgroundColor: AppColors.burntGold,
         onPressed: () {
           if (controller.verifyOtpFormKey.currentState!.validate()) {
@@ -61,7 +62,7 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.verifyOtp,
-      ).marginOnly(bottom: 24.h, top: spacerSize25),
+      ).marginOnly( top: spacerSize25),
     );
   }
 

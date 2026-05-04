@@ -13,6 +13,7 @@ class BaseOutlineButton extends StatelessWidget {
     this.onPressed,
     this.buttonWidth = spacerSize215,
     this.buttonHeight,
+    this.bottomPadding,
     this.borderColor = Colors.green,
     this.textColor = Colors.green,
     this.buttonPadding = const EdgeInsets.symmetric(
@@ -29,6 +30,7 @@ class BaseOutlineButton extends StatelessWidget {
   final Color? borderColor;
   final Color? textColor;
   final EdgeInsets? buttonPadding;
+  final bool? bottomPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class BaseOutlineButton extends StatelessWidget {
       child: Container(
         width: buttonWidth,
         height: buttonHeight ?? 48.h,
+        margin: EdgeInsets.only(bottom: bottomPadding==true?25.h:0),
         padding: buttonPadding,
         alignment: Alignment.center,
         decoration: BoxDecoration(

@@ -48,7 +48,7 @@ print('sdf ${AppLocalizations.of(
       child: Scaffold(
         backgroundColor: AppColors.appColor,
         appBar: const BaseAppBar(
-          isAppIconVisible: false,
+          // isAppIconVisible: false,
           isBackButtonVisible: true,
         ),
         body: Column(
@@ -178,6 +178,7 @@ print('sdf ${AppLocalizations.of(
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         backgroundColor: AppColors.burntGold,
         onPressed: () {
           FocusScope.of(context).requestFocus(FocusNode());
@@ -187,7 +188,7 @@ print('sdf ${AppLocalizations.of(
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,
-      ).marginOnly(bottom: spacerSize30, top: spacerSize25),
+      ).marginOnly( bottom:25.h,top: spacerSize25),
     );
   }
 

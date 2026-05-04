@@ -24,7 +24,7 @@ class BaseShimmer extends StatelessWidget {
 
   Widget shimmerPlaceHolder() {
     return BaseBorderedContainer(
-      backgroundColor: AppColors.darkGreen,
+      backgroundColor: AppColors.greenColor,
       height: spacerSize310,
       width: Get.width,
       childWidget: Shimmer(

@@ -10,6 +10,14 @@ class PlantRecommendationsResponseModel {
   }
 
   PlantRecommendationsResponseModel.fromJson(dynamic json) {
+
+    if (json == null) {
+      _success = false;
+      _message = "Invalid response";
+      _data = null;
+      return;
+    }
+
     _success = json['success'];
     _message = json['message'];
     _data = json['data'] != null ? Data.fromJson(json['data']) : null;

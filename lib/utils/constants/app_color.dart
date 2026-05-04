@@ -10,6 +10,18 @@ class AppColors {
   static final liteGreyColor = Color(0xFF111111).withValues(alpha: 0.6);
   static const borderGreyColor = Color(0xFFDFDFDF);
   static const greenColor = Color(0xFF01AF55);
+  static const borderLiteGreyColor = Color(0xFFE4E4E4);
+  static const orangeColor = Color(0xFFFF8833);
+
+  // char item colors
+  static const liteYellowColor = Color(0xFFB5E48C);
+  static const darkGreenColor = Color(0xFF2D6A4F);
+  static const liteGreenColor = Color(0xFF52B788);
+  static const toLiteGreenColor = Color(0xFF95D5B2);
+  static const chartBorderColor = Color(0xFF2D6647);
+
+
+
 
   static const antiqueWhite = Color(0xFFE4E0D4);
   static const darkBlue = Color(0xFF15387C);
@@ -58,6 +70,12 @@ class AppColors {
   static  const linearGradientForBtn =
   LinearGradient(
     colors: [Color(0XFF004A24),Color(0XFF00B056),],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+  static  const linearGreenGradientForBtn =
+  LinearGradient(
+    colors: [Color(0xFF01AF55),Color(0xFF01AF55),],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );

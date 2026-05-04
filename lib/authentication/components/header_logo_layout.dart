@@ -17,11 +17,11 @@ class HeaderLogoLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Image.asset(AppAssets.appLogo, width: 60.w,
-            height: 60.w,),
-        ).marginOnly(top: 25.h),
+        // Align(
+        //   alignment: Alignment.topCenter,
+        //   child: Image.asset(AppAssets.appLogo, width: 60.w,
+        //     height: 60.w,),
+        // ).marginOnly(top: 25.h),
         BaseText(
           textAlign: TextAlign.center,
           fontWeight: FontWeight.w600,
