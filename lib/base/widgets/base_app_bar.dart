@@ -207,8 +207,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                  padding: EdgeInsets.only(left: 48.w, bottom: 16.h),
-
+                  padding: EdgeInsets.only(left: 48.w, bottom: (isAppIconVisible==true)?16.h:16.h),
                   // color: Colors.red,
                   child: BaseText(
                     text: title!,

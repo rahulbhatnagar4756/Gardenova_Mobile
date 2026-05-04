@@ -37,11 +37,14 @@ class SettingsViewModel extends GetxController {
     if (Get.arguments != null) {
       screenType.value = Get.arguments;
     }
+
     if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {
       getProfileDetail();
     }
+
+
     super.onInit();
   }
 
@@ -85,6 +88,7 @@ class SettingsViewModel extends GetxController {
         }
       }
     }
+    screenType.refresh();
   }
 
   void getProfessionalProfileDetail() async {
@@ -115,13 +119,21 @@ class SettingsViewModel extends GetxController {
         }
       }
     }
+    screenType.refresh();
   }
-
   updateProfile() async {
-    List<int> imageBytes = await imageFile.value.readAsBytes();
-    String base64String = base64Encode(imageBytes);
+    String? base64String;
+
+    // ✅ Check if image exists
+    if (imageFile.value.path.isNotEmpty) {
+      List<int> imageBytes = await imageFile.value.readAsBytes();
+      base64String = base64Encode(imageBytes);
+    }
+
     UpdateProfileModel? updateProfileResponse = UpdateProfileModel()
-      ..profileImage = "data:image/png;base64, $base64String"
+      ..profileImage = base64String != null
+          ? "data:image/png;base64,$base64String"
+          : null
       ..dateOfBirth = ""
       ..gender = ""
       ..bio = ""
@@ -129,14 +141,38 @@ class SettingsViewModel extends GetxController {
       ..company = "";
 
     debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
+
     var response = await profileRepository.updateProfile(
       updateProfileReq: updateProfileResponse,
     );
+
     if (response != null) {
-      profileImage.value = updateProfileResponse.profileImage ?? "";
+      if (base64String != null) {
+        profileImage.value = updateProfileResponse.profileImage ?? "";
+      }
       Get.back();
     }
   }
+  // updateProfile() async {
+  //   List<int> imageBytes = await imageFile.value.readAsBytes();
+  //   String base64String = base64Encode(imageBytes);
+  //   UpdateProfileModel? updateProfileResponse = UpdateProfileModel()
+  //     ..profileImage = "data:image/png;base64, $base64String"
+  //     ..dateOfBirth = ""
+  //     ..gender = ""
+  //     ..bio = ""
+  //     ..occupation = ""
+  //     ..company = "";
+  //
+  //   debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
+  //   var response = await profileRepository.updateProfile(
+  //     updateProfileReq: updateProfileResponse,
+  //   );
+  //   if (response != null) {
+  //     profileImage.value = updateProfileResponse.profileImage ?? "";
+  //     Get.back();
+  //   }
+  // }
 
   updateProfessionalProfile() async {
     Map<String, dynamic> map = {};

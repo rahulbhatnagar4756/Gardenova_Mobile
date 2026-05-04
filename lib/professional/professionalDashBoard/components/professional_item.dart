@@ -229,11 +229,12 @@ class ProfessionalItem extends StatelessWidget {
                     width: double.infinity,
                     height: spacerSize45,
                     child: BaseButton(
+                      tickPrefixIcon: true,
                       buttonPadding: EdgeInsets.only(bottom: 0),
                       linearBackgroundColor: AppColors.linearGreenGradientForBtn,
                       textColor: AppColors.greenColor,
                       fontSize: fontSize17,
-                      buttonLabel:'✓ ${AppLocalizations.of(context)!.selected}',
+                      buttonLabel:'${AppLocalizations.of(context)!.selected}',
                       onPressed: () {
                         // Get.offAllNamed(Routes.login);
                       },

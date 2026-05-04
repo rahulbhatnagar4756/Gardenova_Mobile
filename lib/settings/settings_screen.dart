@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
@@ -15,37 +16,58 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
+import '../base/widgets/common_click_widget.dart';
+import '../utils/constants/app_assets.dart';
+
 class SettingsScreen extends GetWidget<SettingsViewModel> {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkGreen,
-      appBar: BaseAppBar(
-        backgroundColor: AppColors.darkGreen,
-        isBackButtonVisible: true,
-        isAppIconVisible: false,
-        title: AppLocalizations.of(context)!.settings,
-        toolbarHeightScale: 1,
-        isTrailingButtonVisible: true,
+      backgroundColor: AppColors.greenColor
+      ,
+      // appBar: BaseAppBar(
+      //   backgroundColor: AppColors.greenColor,
+      //   isBackButtonVisible: true,
+      //   isAppIconVisible: false,
+      //   title: AppLocalizations.of(context)!.settings,
+      //   toolbarHeightScale: 1,
+      //   isTrailingButtonVisible: true,
+      // ),
+      body: SafeArea(
+        child: Container(
+          color: AppColors.whiteColor,
+          height: double.infinity,
+          child: SingleChildScrollView(
+
+            child: Column(
+              children: [
+                ProfileIconLayout(
+                  isEnableEditable: true,
+                  title:  AppLocalizations.of(context)!.settings,
+                  isProfileEditable: false,
+                  onClickEditPencil: () {
+                  Get.toNamed(Routes.profile);
+                },),
+                SizedBox(height: 34.h,),
+                settingItemsLayout(context)
+              ],
+            ),
+          ),
+        ),
       ),
-      body: Column(
-        children: [
-          ProfileIconLayout(isProfileEditable: false),
-        ],
-      ),
-      bottomSheet: BottomSheetLayout(
-        buttonLabel: AppLocalizations.of(context)!.logout.toUpperCase(),
-        childLayout: settingItemsLayout(context),
-        onButtonTap: logout,
-      ),
+      // bottomSheet: BottomSheetLayout(
+      //   buttonLabel: AppLocalizations.of(context)!.logout.toUpperCase(),
+      //   childLayout: settingItemsLayout(context),
+      //   onButtonTap: logout,
+      // ),
     );
   }
 
   settingItemsLayout(BuildContext context) {
     if (SharedPrefsService.instance.getString(AppKeys.role) !=
-        AppKeys.professional) {
+        AppKeys.professional ) {
       return Column(
         children: [
           SettingsItemLayout(
@@ -57,26 +79,33 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               Get.toNamed(Routes.changePassword);
             },
           ),
+          SizedBox(height: 10.h,),
 
           SettingsItemLayout(
             icon: Icons.translate,
             title: getTitle(),
             onTap: () => _changeLanguage(),
           ),
-
+          SizedBox(height: 10.h,),
           SettingsItemLayout(
             icon: Icons.sticky_note_2_outlined,
             title: AppLocalizations.of(context)!.termsAndCondition,
             onTap: () => Get.toNamed(Routes.termsAndConditions),
           ),
-
+          SizedBox(height: 10.h,),
           SettingsItemLayout(
             icon: Icons.privacy_tip_outlined,
             title: AppLocalizations.of(context)!.privacyPolicy,
             onTap: () => Get.toNamed(Routes.privacyPolicy),
           ),
+          SizedBox(height: 10.h,),
+          SettingsItemLayout(
+            icon: Icons.power_settings_new_rounded,
+            title: AppLocalizations.of(context)!.logout,
+            onTap: () => logout(),
+          ),
 
-     /*     SettingsItemLayout(
+          /*     SettingsItemLayout(
             icon: Icons.delete_forever,
             title: AppLocalizations.of(context)!.deleteAccount,
             onTap: () {
@@ -102,7 +131,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           },
         ),*/
         ],
-      );
+      ).paddingSymmetric(horizontal: 20.w);
     } else {
       return SingleChildScrollView(
         child: Column(
@@ -118,23 +147,28 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                 Get.toNamed(Routes.changePassword);
               },
             ),
-
+            SizedBox(height: 10.h,),
             SettingsItemLayout(
               icon: Icons.translate,
               title: getTitle(),
               onTap: () => _changeLanguage(),
             ),
-
+            SizedBox(height: 10.h,),
             SettingsItemLayout(
               icon: Icons.sticky_note_2_outlined,
               title: AppLocalizations.of(context)!.termsAndCondition,
               onTap: () => Get.toNamed(Routes.termsAndConditions),
             ),
-
+            SizedBox(height: 10.h,),
             SettingsItemLayout(
               icon: Icons.privacy_tip_outlined,
               title: AppLocalizations.of(context)!.privacyPolicy,
               onTap: () => Get.toNamed(Routes.privacyPolicy),
+            ),
+            SettingsItemLayout(
+              icon: Icons.power_settings_new_rounded,
+              title: AppLocalizations.of(context)!.logout,
+              onTap: () => logout(),
             ),
 
        /*     SettingsItemLayout(
@@ -167,7 +201,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             },
           ),*/
           ],
-        ),
+        ).paddingSymmetric(horizontal: 20.w),
       );
     }
   }

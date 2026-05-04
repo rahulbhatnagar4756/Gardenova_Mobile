@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+
+import '../../generated/assets.dart';
 
 class BaseButton extends StatelessWidget {
   const BaseButton({
@@ -11,6 +14,7 @@ class BaseButton extends StatelessWidget {
     this.buttonLabel,
     this.fontSize ,
     this.bottomPadding ,
+    this.tickPrefixIcon ,
     this.onPressed,
     this.buttonWidth = spacerSize215,
     this.buttonHeight ,
@@ -33,6 +37,7 @@ class BaseButton extends StatelessWidget {
   final Color? textColor;
   final EdgeInsets? buttonPadding;
   final bool? bottomPadding;
+  final bool? tickPrefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +53,21 @@ class BaseButton extends StatelessWidget {
           gradient:linearBackgroundColor?? AppColors.linearGradientForBtn,
         ),
         alignment: Alignment.center,
-        child: BaseText(
-          text: buttonLabel??'',
-          fontFamily: AppKeys.inter,
-          overflow: TextOverflow.ellipsis,
-          textColor: Colors.white,
-          fontSize: fontSize ?? 16.sp,
-          fontWeight: FontWeight.w600,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            tickPrefixIcon==true?
+                Image.asset(Assets.tickIc,width: 14.w,height: 14.w,).paddingOnly(right: 5.w)
+                :const SizedBox(),
+            BaseText(
+              text: buttonLabel??'',
+              fontFamily: AppKeys.inter,
+              overflow: TextOverflow.ellipsis,
+              textColor: Colors.white,
+              fontSize: fontSize ?? 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ],
         ),
       ),
     );

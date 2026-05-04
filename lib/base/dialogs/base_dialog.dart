@@ -119,19 +119,19 @@ class BaseDialog {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.darkGreen,
+        backgroundColor: AppColors.whiteColor,
         title: BaseText(
           text: title,
           fontFamily: AppKeys.poppins,
           fontSize: fontSize22,
-          textColor: AppColors.offWhite,
+          // textColor: AppColors.offWhite,
           fontWeight: FontWeight.w700,
         ),
         content: BaseText(
           text: description,
           fontSize: fontSize16,
           textAlign: TextAlign.start,
-          textColor: AppColors.offWhite50,
+          textColor: AppColors.liteGreyColor,
           fontWeight: FontWeight.w400,
         ),
         actions: [
@@ -140,7 +140,7 @@ class BaseDialog {
             child: BaseText(
               text: AppLocalizations.of(context)!.cancel,
               fontSize: fontSize14,
-              textColor: AppColors.offWhite50,
+              textColor: AppColors.liteGreyColor,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -151,7 +151,7 @@ class BaseDialog {
             child: BaseText(
               text: buttonLabel,
               fontSize: fontSize14,
-              textColor: AppColors.burntGold,
+              textColor: AppColors.greenColor,
               fontWeight: FontWeight.w800,
             ),
           ),

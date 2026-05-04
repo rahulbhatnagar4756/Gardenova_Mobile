@@ -46,9 +46,8 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BaseText(
-          textColor: AppColors.offWhite,
           fontSize: fontSize14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
           text: widget.editTextTitle,
           textAlign: TextAlign.start,
         ),

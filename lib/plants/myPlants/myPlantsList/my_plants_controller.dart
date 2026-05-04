@@ -112,6 +112,7 @@ class MyPlantsController extends GetxController {
       debugPrint("response:::$response");
       PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(response);
       myPlantList.addAll(allPlantsResponse.data!.plants ?? []);
+
       isLoadMoreVisible.value = allPlantsResponse.data!.totalCount! > myPlantList.length ? true : false;
     }
   }

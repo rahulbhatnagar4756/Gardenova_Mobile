@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
 
 import '../../../base/widgets/base_app_bar.dart';
+import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_text.dart';
 import '../../../base/widgets/circular_bottom_app_bar.dart';
 import '../../../dashboard/components/full_drawer.dart';
@@ -43,14 +45,14 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
               },
             ))
             : BaseAppBar(isBackButtonVisible: false),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BaseBackButton(),
-          ],
-        ).marginOnly(
-          bottom: spacerSize15,
-        ),
+        // bottomNavigationBar: Column(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     BaseBackButton(),
+        //   ],
+        // ).marginOnly(
+        //   bottom: spacerSize15,
+        // ),
 
         body: RefreshIndicator(
           onRefresh: () async {
@@ -79,44 +81,14 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
 
   Widget titleWithSearch(BuildContext context) {
     return Column(
-      spacing: spacerSize10,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BaseText(
-              text: AppLocalizations.of(context)!.myPlants,
-              textAlign: TextAlign.center,
-              fontFamily: AppKeys.poppins,
-              textColor: AppColors.offWhite,
-              fontSize: fontSize20,
-              fontWeight: FontWeight.w500,
-            ),
-            InkWell(
-              onTap: () {
-                Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-                  controller.callGetMyPlantListApi();
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.all(spacerSize10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.lightGold, AppColors.burntGold],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.circular(spacerSize12),
-                ),
-                child: Image.asset(
-                  Assets.imagesAdd,
-                  height: spacerSize16,
-                  width: spacerSize16,
-                ),
-              ),
-            ),
-          ],
+        BaseText(
+          text: AppLocalizations.of(context)!.myPlants,
+          textAlign: TextAlign.center,
+          fontFamily: AppKeys.poppins,
+          fontSize: fontSize20,
+          fontWeight: FontWeight.w600,
         ).marginOnly(top: spacerSize10),
         BaseText(
           text: "${controller.myPlantList.length} "
@@ -128,15 +100,30 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
           textAlign: TextAlign.center,
 
           fontFamily: AppKeys.inter,
-          textColor: AppColors.offWhite70,
+          textColor: AppColors.liteGreyColor,
           fontSize: fontSize14,
           fontWeight: FontWeight.w400,
-        ).marginOnly(bottom: spacerSize10),
+        ).marginOnly(bottom: spacerSize10,top: spacerSize5),
+
+
+        Container(
+          width: double.infinity,
+          child: BaseButton(
+            bottomPadding: true,
+            textColor: AppColors.offWhite,
+            buttonLabel: AppLocalizations.of(context)!.addPlant,
+            onPressed: () => {
+              Get.toNamed(Routes.allPlantsScreen)!.then((value) {
+              controller.callGetMyPlantListApi();
+              })
+            },
+          ),
+        ),
         BaseTextField(
           textEditingController: controller.searchController,
           hintText: AppLocalizations.of(context)!.searchYourPlant,
-          hintColor: AppColors.offWhite70,
-          prefixIcon: Icon(Icons.search, color: AppColors.amberGold),
+          hintColor: AppColors.liteGreyColor,
+          suffixIcon: Icon(Icons.search, color: AppColors.liteGreyColor),
           onChanged: (value) {
             if (value.isEmpty) {
               controller.pageNumber.value = 1;

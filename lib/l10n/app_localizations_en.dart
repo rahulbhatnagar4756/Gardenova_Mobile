@@ -644,7 +644,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myPlants => 'My Plants';
 
   @override
-  String get searchYourPlant => 'Search Your Plant';
+  String get searchYourPlant => 'Search Plants';
 
   @override
   String get plantAndCounting => 'plants and counting';

@@ -28,10 +28,13 @@ class DashboardScreen extends GetWidget<DashboardController> {
     });
     return Obx(() => Scaffold(
         backgroundColor: AppColors.appColor,
-        drawer: FullScreenDrawer(
-          onTap: (index) {
-            controller.navigateToNext(index);
-          },
+        drawer: SizedBox(
+          // width: MediaQuery.of(context).size.width * 0.9,
+          child: FullScreenDrawer(
+            onTap: (index) {
+              controller.navigateToNext(index);
+            },
+          ),
         ),
         appBar: controller.isUserLoggedIn.value
             ? PreferredSize(

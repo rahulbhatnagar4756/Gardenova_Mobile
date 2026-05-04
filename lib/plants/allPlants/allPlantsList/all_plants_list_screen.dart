@@ -43,14 +43,14 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
               ),
             )
           : BaseAppBar(isBackButtonVisible: false),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BaseBackButton(),
-        ],
-      ).marginOnly(
-        bottom: spacerSize15,
-      ),
+      // bottomNavigationBar: Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     BaseBackButton(),
+      //   ],
+      // ).marginOnly(
+      //   bottom: spacerSize15,
+      // ),
       body: RefreshIndicator(
         onRefresh: () async {
           controller.callGetAllPlantListApi();
@@ -83,7 +83,6 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
           text: AppLocalizations.of(context)!.addYourFirstPlant,
           textAlign: TextAlign.center,
           fontFamily: AppKeys.poppins,
-          textColor: AppColors.offWhite,
           fontSize: fontSize20,
           fontWeight: FontWeight.w500,
         ).marginOnly(top: spacerSize10),
@@ -91,7 +90,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
         BaseText(
           text: AppLocalizations.of(context)!.addYourFirstPlantDescription,
           fontFamily: AppKeys.inter,
-          textColor: AppColors.offWhite70,
+          textColor: AppColors.liteGreyColor,
           fontSize: fontSize14,
           fontWeight: FontWeight.w400,
         ).marginOnly(bottom: spacerSize10),
@@ -99,8 +98,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
         BaseTextField(
           textEditingController: controller.searchController,
           hintText: AppLocalizations.of(context)!.searchYourPlant,
-          hintColor: AppColors.offWhite70,
-          prefixIcon: Icon(Icons.search, color: AppColors.amberGold),
+          suffixIcon: Icon(Icons.search, color: AppColors.liteGreyColor),
           onChanged: (value) {
             if (value.isEmpty) {
               controller.pageNumber.value = 1;
@@ -214,14 +212,23 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.darkGreen,
-          borderRadius: BorderRadius.circular(spacerSize15),
+          // Use light background as seen in the image
+          color: AppColors.greenColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(spacerSize16),
           border: Border.all(
-            color: plant.isSelected
-                ? AppColors.borderGold
-                : AppColors.offWhite10,
-          ),
+            width: 1,
+            color: AppColors.greenColor.withValues(alpha: 0.2),
+          ), // Adjust border color as needed
         ),
+        // decoration: BoxDecoration(
+        //   color: AppColors.darkGreen,
+        //   borderRadius: BorderRadius.circular(spacerSize15),
+        //   border: Border.all(
+        //     color: plant.isSelected
+        //         ? AppColors.borderGold
+        //         : AppColors.offWhite10,
+        //   ),
+        // ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -248,11 +255,10 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BaseText(
-                    text: plant.commonName ?? "",
+                    text: plant.commonName ?? "N/A",
                     fontFamily: AppKeys.poppins,
                     fontSize: fontSize14,
-                    fontWeight: FontWeight.w700,
-                    textColor: AppColors.offWhite,
+                    fontWeight: FontWeight.w600,
                   ).marginOnly(top: spacerSize6),
 
                   BaseText(
@@ -260,7 +266,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     fontFamily: AppKeys.inter,
                     fontSize: fontSize12,
                     fontWeight: FontWeight.w400,
-                    textColor: AppColors.offWhite70,
+                    textColor: AppColors.liteGreyColor,
                   ).marginOnly(bottom: spacerSize10),
                 ],
               ),
