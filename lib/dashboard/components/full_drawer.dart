@@ -202,12 +202,12 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                         widget.onTap(0);
                                       },
                                     ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(Get.context!)!.professionals,
-                                      onTap: () {
-                                        widget.onTap(1);
-                                      },
-                                    ),
+                                    // drawerItem(
+                                    //   title: AppLocalizations.of(Get.context!)!.professionals,
+                                    //   onTap: () {
+                                    //     widget.onTap(1);
+                                    //   },
+                                    // ),
                                     drawerItem(
                                       title: AppLocalizations.of(Get.context!)!.store,
                                       onTap: () {

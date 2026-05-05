@@ -32,6 +32,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
           // width: MediaQuery.of(context).size.width * 0.9,
           child: FullScreenDrawer(
             onTap: (index) {
+
               controller.navigateToNext(index);
             },
           ),
@@ -67,11 +68,18 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       sectionTitle: AppLocalizations.of(context)!.overview,
                       child: SoilAnalysis(),
                     ),
+                    // const SizedBox(height: spacerSize15),
+                    // HeadingUiLayout(
+                    //   sectionTitle: AppLocalizations.of(
+                    //     context,
+                    //   )!.automationSuggestions,
+                    //   child: AutomationSuggestions(),
+                    // ),|
                     const SizedBox(height: spacerSize15),
                     HeadingUiLayout(
                       sectionTitle: AppLocalizations.of(
                         context,
-                      )!.automationSuggestions,
+                      )!.aIPlantDiagnosis,
                       child: AutomationSuggestions(),
                     ),
                     const SizedBox(height: spacerSize15),
@@ -98,10 +106,13 @@ class DashboardScreen extends GetWidget<DashboardController> {
               bottomPadding: true,
               buttonLabel: AppLocalizations.of(
                 context,
-              )!.viewRecommendedProfessionals,
+              )!.addPlant,
+              // )!.viewRecommendedProfessionals,
               buttonWidth: Get.width,
               fontSize: fontSize15,
               onPressed: () {
+                Get.toNamed(Routes.allPlantsScreen);
+                return;
                 if (controller.isUserLoggedIn.value) {
                   Get.toNamed(
                     Routes.recommendedProfessionals,

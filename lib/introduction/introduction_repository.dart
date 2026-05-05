@@ -15,11 +15,11 @@ class IntroductionRepository {
         description: appLocalisation.productRecommendationsDesc,
         imagePath: AppAssets.cart,
       ),
-      IntroductionModel(
-        title: appLocalisation.professionalConnections,
-        description: appLocalisation.professionalConnectionsDesc,
-        imagePath: AppAssets.people,
-      ),
+      // IntroductionModel(
+      //   title: appLocalisation.professionalConnections,
+      //   description: appLocalisation.professionalConnectionsDesc,
+      //   imagePath: AppAssets.people,
+      // ),
     ];
   }
 }

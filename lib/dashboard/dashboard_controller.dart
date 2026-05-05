@@ -27,6 +27,7 @@ class DashboardController extends GetxController {
   Position? position;
   final LocationService _locationService = LocationService();
   bool _isFetching = false;
+
   @override
   void onInit() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -87,7 +88,7 @@ class DashboardController extends GetxController {
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
 
-         //  Get.toNamed(Routes.plantsCatalog);
+        //  Get.toNamed(Routes.plantsCatalog);
         break;
 
       default:
@@ -174,7 +175,7 @@ class DashboardController extends GetxController {
           }
         }
       } else {
-     //   getCurrentLocation().then((value) => pickImage(isCamera: isCamera));
+        //   getCurrentLocation().then((value) => pickImage(isCamera: isCamera));
       }
     } catch (e) {
       debugPrint("Error:::$e");

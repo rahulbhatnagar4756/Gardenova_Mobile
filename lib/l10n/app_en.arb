@@ -125,6 +125,7 @@
   "soilAnalysis": "Soil Analysis",
   "overview": "Overview",
   "automationSuggestions": "Automation Suggestions",
+  "aIPlantDiagnosis": "AI Plant Diagnosis",
   "plantRecommendations": "Plant Recommendations",
   "viewRecommendedProfessionals": "View Recommended Professionals",
   "recommendedProfessionals": "Recommended Professionals",
@@ -354,5 +355,7 @@
   "region":  "Region",
   "specialty":  "Specialty",
   "ago":  "ago",
-  "find":  "Find"
+  "find":  "Find",
+  "plantAnalysis": "Plant Analysis",
+  "scanYourPlantForHealthAndDetails": "Scan your plant to identify and check its health"
 }

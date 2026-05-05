@@ -123,6 +123,7 @@
   "soilAnalysis": "Análise de Solo",
   "overview": "Visão Geral",
   "automationSuggestions": "Sugestões de Automação",
+   "aIPlantDiagnosis": "AI Plant Diagnosis",
   "plantRecommendations": "Recomendações de Plantas",
   "viewRecommendedProfessionals": "Ver Profissionais Recomendados",
   "recommendedProfessionals": "Profissionais Recomendados",
@@ -230,5 +231,7 @@
   "plantStats": "Estatísticas de Plantas",
   "plantHistory": "Histórico de Plantas",
   "upcomingEvents": "Eventos Próximos",
-  "left":"Esquerdo"
+  "left":"Esquerdo",
+  "plantAnalysis": "Plant Analysis",
+  "scanYourPlantForHealthAndDetails": "Scan your plant to identify and check its health"
 }

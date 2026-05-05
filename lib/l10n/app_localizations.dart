@@ -856,6 +856,8 @@ abstract class AppLocalizations {
   /// **'Automation Suggestions'**
   String get automationSuggestions;
 
+  String get aIPlantDiagnosis;
+
   /// No description provided for @plantRecommendations.
   ///
   /// In en, this message translates to:

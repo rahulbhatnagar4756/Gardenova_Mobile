@@ -405,6 +405,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get automationSuggestions => 'Sugestões de Automação';
 
   @override
+  String get aIPlantDiagnosis => 'AI Plant Diagnosis';
+
+  @override
   String get plantRecommendations => 'Recomendações de Plantas';
 
   @override

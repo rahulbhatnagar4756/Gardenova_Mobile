@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -39,6 +40,10 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           ? dotenv.env['iosClientId']!
           : dotenv.env['androidClientId']!,
     );
+    if(kDebugMode){
+      emailController.text='bishav@yopmail.com';
+      passwordController.text='Aditya@123';
+    }
   }
 
   @override

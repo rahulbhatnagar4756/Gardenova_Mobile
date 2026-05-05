@@ -17,7 +17,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
       () => GestureDetector(
         onTap: () => controller.testing(),
         child: Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.appColor,
           body: Stack(
             children: [
               controller.plantDetailData.value.data == null

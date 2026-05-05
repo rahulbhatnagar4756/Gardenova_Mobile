@@ -401,6 +401,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get automationSuggestions => 'Automation Suggestions';
 
   @override
+  String get aIPlantDiagnosis => 'AI Plant Diagnosis';
+
+  @override
   String get plantRecommendations => 'Plant Recommendations';
 
   @override

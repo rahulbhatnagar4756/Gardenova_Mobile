@@ -54,12 +54,12 @@ class _ChooseAccountTypeScreenState extends State<ChooseAccountTypeScreen> {
                 value: AppKeys.user,
               ),
 
-              accountCard(
-                title: AppLocalizations.of(context)!.professional,
-                subtitle: AppLocalizations.of(context)!.professionalDescription,
-                icon: Assets.imagesProfessional,
-                value: AppKeys.professional,
-              ),
+              // accountCard(
+              //   title: AppLocalizations.of(context)!.professional,
+              //   subtitle: AppLocalizations.of(context)!.professionalDescription,
+              //   icon: Assets.imagesProfessional,
+              //   value: AppKeys.professional,
+              // ),
             ],
           ),
         ),
