@@ -5,6 +5,7 @@ class AppAssets {
   static const closeIc = 'assets/images/close_ic.png';
   static const selectedRadioIc = 'assets/images/selected_radio_ic.png';
   static const unSelectedRadioIc = 'assets/images/un_selected_radio_ic.png';
+  static const crownIc = 'assets/images/crown_ic.png';
   static const verifiedIc = 'assets/images/verified_ic.png';
   static const editPencilIc = 'assets/images/edit_pencil_ic.png';
 

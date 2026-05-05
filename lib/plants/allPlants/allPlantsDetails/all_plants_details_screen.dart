@@ -14,16 +14,19 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            controller.plantDetailData.value.data == null
-                ? Container()
-                : imageCard(),
-            MainContentCard(controller: controller),
-            backButton(),
-          ],
+      () => GestureDetector(
+        onTap: () => controller.testing(),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              controller.plantDetailData.value.data == null
+                  ? Container()
+                  : imageCard(),
+              MainContentCard(controller: controller),
+              backButton(),
+            ],
+          ),
         ),
       ),
     );

@@ -1,12 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_back_button.dart';
+import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 
 import '../../../../base/widgets/base_button.dart';
 import '../../../../base/widgets/base_shimmer.dart';
 import '../../../../base/widgets/base_text.dart';
+import '../../../../generated/assets.dart';
 import '../../../../utils/constants/app_color.dart';
 import '../../../../utils/constants/app_constants.dart';
 import '../../../../utils/constants/app_keys.dart';
@@ -33,23 +36,44 @@ class PlantAddSuccessDialog {
             child: Container(
               padding: EdgeInsets.all(spacerSize15),
               decoration: BoxDecoration(
-                color: AppColors.darkGreen,
+                color: AppColors.whiteColor,
                 borderRadius: BorderRadius.circular(spacerSize20),
-                border: Border.all(color: AppColors.backgroundGrey),
               ),
               child: Column(
-                spacing: spacerSize20,
+                // spacing: spacerSize20,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CommonClickWidget(
+                        onTap: () => Get.back(),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 10.h,
+                            left: 15.w,
+                            top: 2.h,
+                          ),
+                          child: Image.asset(
+                            Assets.closeIc,
+                            height: 33.w,
+                            width: 33.w,
+                            color: AppColors.greyIconColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   Row(
                     spacing: spacerSize12,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(spacerSize45),
                         child: CachedNetworkImage(
-                          height: 70,
-                          width: 70,
+                          height: 86.w,
+                          width: 86.w,
                           fit: BoxFit.cover,
                           imageUrl: image,
                           placeholder: (c, s) =>
@@ -69,8 +93,7 @@ class PlantAddSuccessDialog {
                               text: title,
                               fontFamily: AppKeys.poppins,
                               fontSize: fontSize22,
-                              fontWeight: FontWeight.w400,
-                              textColor: AppColors.offWhite,
+                              fontWeight: FontWeight.w600,
                             ),
                             BaseText(
                               text: AppLocalizations.of(
@@ -79,23 +102,23 @@ class PlantAddSuccessDialog {
                               fontFamily: AppKeys.inter,
                               fontSize: fontSize14,
                               fontWeight: FontWeight.w400,
-                              textColor: AppColors.darkGold,
+                              textColor: AppColors.greenColor,
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-
+                  SizedBox(height: 24.h),
                   BaseText(
                     text: description,
                     fontFamily: AppKeys.inter,
                     fontSize: fontSize14,
                     fontWeight: FontWeight.w400,
-                    textColor: AppColors.offWhite.withValues(alpha: 0.5),
+                    textColor: AppColors.liteGreyColor,
                   ),
 
-                  const SizedBox(height: spacerSize2),
+                  SizedBox(height: 35.h),
 
                   BaseButton(
                     onPressed: () {
@@ -109,8 +132,8 @@ class PlantAddSuccessDialog {
                     buttonWidth: double.infinity,
                     textColor: Colors.white,
                   ),
-
-                  BaseBackButton(),
+                  SizedBox(height: 25.h),
+                  // BaseBackButton(),
                 ],
               ),
             ),

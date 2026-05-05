@@ -111,9 +111,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                               vertical: spacerSize2,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: AppColors.harvestGold.withValues(
-                                                alpha: .4,
-                                              ),
+                                              color: AppColors.toLiteGreenColor,
                                               borderRadius: BorderRadius.circular(
                                                 spacerSize20,
                                               ),
@@ -124,7 +122,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                               fontSize: fontSize10,
                                               fontFamily: AppKeys.inter,
                                               fontWeight: FontWeight.w400,
-                                              textColor: AppColors.liteGreyColor,
+                                              textColor: AppColors.whiteColor,
                                             ),
                                           )
                                         : BaseText(

@@ -8,6 +8,7 @@ class AppColors {
   static const blackColor = Color(0xFF111111);
   static const whiteColor = Color(0xFFFFFFFF);
   static final liteGreyColor = Color(0xFF111111).withValues(alpha: 0.6);
+  static final greyIconColor = Color(0xFF898989);
   static const borderGreyColor = Color(0xFFDFDFDF);
   static const greenColor = Color(0xFF01AF55);
   static const borderLiteGreyColor = Color(0xFFE4E4E4);
@@ -18,6 +19,7 @@ class AppColors {
   static const darkGreenColor = Color(0xFF2D6A4F);
   static const liteGreenColor = Color(0xFF52B788);
   static const toLiteGreenColor = Color(0xFF95D5B2);
+  static const toToLiteGreenColor = Color(0xFFE6F7EE);
   static const chartBorderColor = Color(0xFF2D6647);
 
 

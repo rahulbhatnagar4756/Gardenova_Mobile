@@ -29,13 +29,13 @@ class PlantToggleCard extends StatelessWidget {
         Row(
           spacing: spacerSize4,
           children: [
-            Image.asset(icon, height: spacerSize18, width: spacerSize18),
+            Image.asset(icon, height: spacerSize18, width: spacerSize18,color: AppColors.greenColor,),
             BaseText(
               text: title,
               fontFamily: AppKeys.inter,
               fontSize: fontSize14,
               fontWeight: FontWeight.w400,
-              textColor: AppColors.offWhite,
+              textColor: AppColors.greenColor,
             ),
 
             const Spacer(),
@@ -49,10 +49,10 @@ class PlantToggleCard extends StatelessWidget {
                 height: spacerSize25,
                 padding: const EdgeInsets.all(spacerSize2),
                 decoration: BoxDecoration(
-                  color: value ? AppColors.darkGold : Colors.transparent,
+                  color: value ? AppColors.greenColor : Colors.transparent,
                   borderRadius: BorderRadius.circular(spacerSize40),
                   border: Border.all(
-                    color: value ? AppColors.darkGold : AppColors.borderGold,
+                    color: value ? AppColors.greenColor : AppColors.liteGreyColor,
                   ),
                 ),
                 child: AnimatedAlign(
@@ -65,7 +65,7 @@ class PlantToggleCard extends StatelessWidget {
                     width: spacerSize20,
                     height: spacerSize20,
                     decoration: BoxDecoration(
-                      color: value ? AppColors.offWhite : AppColors.offWhite50,
+                      color: value ? AppColors.offWhite : AppColors.liteGreyColor,
                       shape: BoxShape.circle,
                     ),
                   ),

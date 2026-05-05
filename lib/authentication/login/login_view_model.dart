@@ -50,6 +50,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> login() async {
+    print('userType accountType.value ${accountType.value}');
     var loginResponse = await authRepository.loginUser(
       loginReq: {
         ApiKeys.email: emailController.text.toString().trim(),

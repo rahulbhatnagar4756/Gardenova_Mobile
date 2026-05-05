@@ -386,7 +386,6 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
             BaseTextField(
               textEditingController: controller.cityController,
               hintText: AppLocalizations.of(context)!.search,
-              hintColor: Colors.white,
               onChanged: (value) => controller.filterCity(value),
             ),
             SizedBox(height: spacerSize15),

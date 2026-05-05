@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 
 import '../../../base/widgets/base_text.dart';
@@ -23,14 +24,13 @@ class HeaderCard extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.topCenter,
-            child: Image.asset(AppAssets.appLogo, scale: 2.2),
+            child: Image.asset(AppAssets.appLogo, width: 60.w,height: 60.w,),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BaseText(
                 textAlign: TextAlign.center,
-                textColor: AppColors.offWhite50,
                 fontWeight: FontWeight.w400,
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize15,
@@ -38,7 +38,6 @@ class HeaderCard extends StatelessWidget {
               ),
               BaseText(
                 textAlign: TextAlign.center,
-                textColor: AppColors.offWhite,
                 fontWeight: FontWeight.w700,
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize18,
@@ -46,15 +45,15 @@ class HeaderCard extends StatelessWidget {
                     "${controller.remainingDays.value}\t${AppLocalizations.of(context)!.days}",
               ),
             ],
-          ).marginOnly(top: spacerSize30, bottom: spacerSize5),
+          ).marginOnly( bottom: spacerSize5),
           BaseText(
             textAlign: TextAlign.center,
-            textColor: AppColors.offWhite50,
+            textColor: AppColors.liteGreyColor,
             fontWeight: FontWeight.w400,
             fontFamily: AppKeys.inter,
             fontSize: fontSize14,
             text: AppLocalizations.of(context)!.yourPlanEndsDesc,
-          ).marginOnly(bottom: spacerSize30),
+          ).marginOnly(bottom: spacerSize25),
         ],
       ),
     );

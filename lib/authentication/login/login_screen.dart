@@ -26,9 +26,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   @override
   Widget build(BuildContext context) {
-print('sdf ${AppLocalizations.of(
-  context,
-)!.loginAccountSubTitle}');
+
     return PopScope(
       canPop: true,
       /* onPopInvokedWithResult: (result, didPop) {
@@ -62,11 +60,19 @@ print('sdf ${AppLocalizations.of(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           // BasBBackButton(),
-                          HeaderLogoLayout(
-                            title: AppLocalizations.of(context)!.loginAccount,
-                            subTitle: AppLocalizations.of(
-                              context,
-                            )!.loginAccountSubTitle,
+                          Obx(
+                            () => HeaderLogoLayout(
+                              title: AppLocalizations.of(context)!.loginAccount,
+                              subTitle:
+                                  controller.accountType.value ==
+                                      AppKeys.professional
+                                  ? AppLocalizations.of(
+                                      context,
+                                    )!.loginAccountProfessionalSubTitle
+                                  : AppLocalizations.of(
+                                      context,
+                                    )!.loginAccountSubTitle,
+                            ),
                           ),
                           emailField(context),
                           passwordField(context),
@@ -89,13 +95,14 @@ print('sdf ${AppLocalizations.of(
                             ),
                           ),
                           Visibility(
-                            visible: controller.accountType.value != AppKeys.professional,
+                            visible:
+                                controller.accountType.value !=
+                                AppKeys.professional,
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: dontHaveAnAccount(context),
                             ).marginOnly(top: 130.h),
                           ),
-
                         ],
                       ),
                     ).marginSymmetric(
@@ -104,8 +111,6 @@ print('sdf ${AppLocalizations.of(
                     ),
               ),
             ),
-
-
           ],
         ),
       ),
@@ -170,7 +175,7 @@ print('sdf ${AppLocalizations.of(
           fontSize: 13.sp,
           textColor: AppColors.greenColor,
         ),
-      ).marginOnly(top:  10.h),
+      ).marginOnly(top: 10.h),
     );
   }
 
@@ -188,7 +193,7 @@ print('sdf ${AppLocalizations.of(
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,
-      ).marginOnly( bottom:25.h,top: spacerSize25),
+      ).marginOnly(bottom: 25.h, top: spacerSize25),
     );
   }
 

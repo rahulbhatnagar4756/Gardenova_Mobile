@@ -34,7 +34,7 @@ class MainContentCard extends StatelessWidget {
                 top: Radius.circular(spacerSize30),
               ),
               border: Border(
-                top: BorderSide(color: AppColors.borderGold, width: 1),
+                top: BorderSide(color: AppColors.greenColor, width: 1),
               ),
             ),
             child: Column(
@@ -59,7 +59,7 @@ class MainContentCard extends StatelessWidget {
                         fontFamily: AppKeys.inter,
                         fontSize: fontSize14,
                         fontWeight: FontWeight.w400,
-                        textColor: AppColors.offWhite.withValues(alpha: 0.5),
+                        textColor: AppColors.liteGreyColor,
                       ),
 
                 Divider(color: AppColors.backgroundGrey),
@@ -105,7 +105,7 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
+                                  textColor: AppColors.blackColor,
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -118,12 +118,12 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
                                   size: spacerSize20,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                 ),
                               ],
                             ),
@@ -152,7 +152,6 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -168,11 +167,11 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                   size: spacerSize20,
                                 ),
                               ],
@@ -227,7 +226,7 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
+
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -240,12 +239,12 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
                                   size: spacerSize20,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                 ),
                               ],
                             ),
@@ -276,7 +275,7 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
+
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -296,11 +295,11 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                   size: spacerSize20,
                                 ),
                               ],
@@ -354,7 +353,7 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
+
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -367,12 +366,12 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
                                   size: spacerSize20,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                 ),
                               ],
                             ),
@@ -428,7 +427,7 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.offWhite,
+
                                 ),
                                 Spacer(),
                                 BaseText(
@@ -443,12 +442,12 @@ class MainContentCard extends StatelessWidget {
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize12,
                                   fontWeight: FontWeight.w400,
-                                  textColor: AppColors.darkGold,
+                                  textColor: AppColors.greenColor,
                                 ),
                                 Icon(
                                   Icons.navigate_next_outlined,
                                   size: spacerSize20,
-                                  color: AppColors.darkGold,
+                                  color: AppColors.greenColor,
                                 ),
                               ],
                             ),
@@ -481,11 +480,10 @@ class MainContentCard extends StatelessWidget {
               BaseText(
                 text:
                     controller.plantDetailData.value.data?.plant?.commonName ??
-                    "",
+                    "N/A",
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize20,
                 fontWeight: FontWeight.w700,
-                textColor: AppColors.offWhite,
               ),
               BaseText(
                 text:
@@ -499,7 +497,7 @@ class MainContentCard extends StatelessWidget {
                 fontFamily: AppKeys.inter,
                 fontSize: fontSize14,
                 fontWeight: FontWeight.w400,
-                textColor: AppColors.offWhite.withValues(alpha: 0.5),
+                textColor: AppColors.liteGreyColor,
               ),
             ],
           ),
@@ -507,11 +505,12 @@ class MainContentCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(spacerSize14),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.lightGold, AppColors.burntGold],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            color: AppColors.greenColor,
+            // gradient: LinearGradient(
+            //   colors: [AppColors.lightGold, AppColors.burntGold],
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            // ),
             borderRadius: BorderRadius.circular(spacerSize12),
           ),
           child: Image.asset(

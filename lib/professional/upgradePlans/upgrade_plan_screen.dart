@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_controller.dart';
 
+import '../../authentication/components/header_logo_layout.dart';
+import '../../base/widgets/base_app_bar.dart';
 import '../../base/widgets/base_button.dart';
 import '../../base/widgets/base_text.dart';
 import '../../l10n/app_localizations.dart';
@@ -23,76 +25,34 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
     return Obx(
       () => Scaffold(
         backgroundColor: AppColors.appColor,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(
-            left: spacerSize20,
-            right: spacerSize20,
-            bottom: spacerSize20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BaseButton(
-                onPressed: () {
-                  controller.goToOrderSummary();
-                },
-                backgroundColor: AppColors.burntGold,
-                buttonLabel: controller.selectedPrice.value.isEmpty
-                    ? AppLocalizations.of(context)!.continueText
-                    : "${AppLocalizations.of(context)!.continueWith}\t\$${controller.selectedPrice.value}",
-                fontSize: fontSize16,
-                textColor: Colors.white,
-                buttonWidth: double.infinity,
-              ).marginOnly(bottom: spacerSize8),
-
-              Visibility(
-                visible: controller.screenType.value == AppKeys.login,
-                replacement: BaseBackButton(),
-                child: TextButton(
-                  style: ButtonStyle(
-                    padding: WidgetStateProperty.all(EdgeInsets.zero),
-                    minimumSize: WidgetStateProperty.all(Size.zero),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                  ),
-                  onPressed: () {
-                    Get.offAllNamed(Routes.professionalDashboard);
-                  },
-                  child: BaseText(
-                    text: AppLocalizations.of(context)!.skip.toUpperCase(),
-
-                    fontSize: fontSize16,
-                    fontWeight: FontWeight.w400,
-                    textColor: AppColors.offWhite,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        appBar: const BaseAppBar(
+          isAppIconVisible: false,
+          isBackButtonVisible: true,
         ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HeaderCard(controller: controller).marginOnly(top: spacerSize40),
+              HeaderCard(controller: controller).marginOnly(top: spacerSize20),
+
               Obx(
-                () => Align(
+                    () => Align(
                   alignment: Alignment.center,
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                      vertical: spacerSize2,
-                      horizontal: spacerSize2,
+                      vertical: spacerSize4,
+                      horizontal: spacerSize4,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(spacerSize30),
-                      border: Border.all(color: AppColors.borderGold),
+                      borderRadius: BorderRadius.circular(spacerSize3),
+                      border: Border.all(color: AppColors.greenColor),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ToggleButton(
-                          verticalPadding: spacerSize8,
+                          verticalPadding: spacerSize6,
                           horizontalPadding: spacerSize20,
                           textSize: fontSize13,
                           title: AppLocalizations.of(
@@ -102,7 +62,7 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
                           onTap: () => controller.changeTab(true),
                         ),
                         ToggleButton(
-                          verticalPadding: spacerSize8,
+                          verticalPadding: spacerSize6,
                           horizontalPadding: spacerSize30,
                           textSize: fontSize13,
                           title: AppLocalizations.of(
@@ -124,7 +84,7 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
                   isSelected: controller.isTabAdditionalCoverage.value,
                   onTap: () {
                     if (controller.planList.any(
-                      (plan) => plan.isSelect == true,
+                          (plan) => plan.isSelect == true,
                     )) {
                       controller.changeTabAdditionalCoverage(
                         !controller.isTabAdditionalCoverage.value,
@@ -136,6 +96,55 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
             ],
           ),
         ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+            left: spacerSize20,
+            right: spacerSize20,
+            bottom: spacerSize20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BaseButton(
+                bottomPadding: true,
+                onPressed: () {
+                  controller.goToOrderSummary();
+                },
+                backgroundColor: AppColors.burntGold,
+                buttonLabel: controller.selectedPrice.value.isEmpty
+                    ? AppLocalizations.of(context)!.continueText
+                    : "${AppLocalizations.of(context)!.continueWith}\t\$${controller.selectedPrice.value}",
+                fontSize: fontSize16,
+                textColor: Colors.white,
+                buttonWidth: double.infinity,
+              )
+
+              // Visibility(
+              //   visible: controller.screenType.value == AppKeys.login,
+              //   replacement: BaseBackButton(),
+              //   child: TextButton(
+              //     style: ButtonStyle(
+              //       padding: WidgetStateProperty.all(EdgeInsets.zero),
+              //       minimumSize: WidgetStateProperty.all(Size.zero),
+              //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              //       overlayColor: WidgetStateProperty.all(Colors.transparent),
+              //     ),
+              //     onPressed: () {
+              //       Get.offAllNamed(Routes.professionalDashboard);
+              //     },
+              //     child: BaseText(
+              //       text: AppLocalizations.of(context)!.skip.toUpperCase(),
+              //
+              //       fontSize: fontSize16,
+              //       fontWeight: FontWeight.w400,
+              //       textColor: AppColors.offWhite,
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+
       ),
     );
   }

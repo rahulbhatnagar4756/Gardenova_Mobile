@@ -21,18 +21,13 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  PreferredSize(
-          preferredSize: Size.fromHeight(spacerSize80),
-          child : Builder(
-            builder: (context) {
-              return CircularBottomAppBar(
-                showMenuIcon: true,
-                onSettingPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              );
-            },
-          )),
+      appBar:  CircularBottomAppBar(
+        isBackButtonVisible: true,
+        showMenuIcon: true,
+        onSettingPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
       backgroundColor: AppColors.appColor,
       drawer: FullScreenDrawer(
         isProfessional: true,
@@ -48,7 +43,7 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
           children: [
             titleWithSearch(context),
             Expanded(child: LeadCardItem(controller: controller)),
-            BaseBackButton().marginOnly(bottom: spacerSize15),
+            // BaseBackButton().marginOnly(bottom: spacerSize15),
           ],
         ),
       ),
@@ -71,20 +66,21 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
                   text: AppLocalizations.of(context)!.myLeads,
                   textAlign: TextAlign.center,
                   fontFamily: AppKeys.poppins,
-                  textColor: AppColors.offWhite,
+
                   fontSize: fontSize20,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                 ),
                 InkWell(
                   onTap: () => controller.onTabSearch(),
                   child: Container(
                     padding: EdgeInsets.all(spacerSize10),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppColors.lightGold, AppColors.burntGold],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
+                      color: AppColors.greenColor,
+                      // gradient: LinearGradient(
+                      //   colors: [AppColors.lightGold, AppColors.burntGold],
+                      //   begin: Alignment.topCenter,
+                      //   end: Alignment.bottomCenter,
+                      // ),
                       borderRadius: BorderRadius.circular(spacerSize8),
                     ),
                     child: Image.asset(
@@ -99,7 +95,7 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
             BaseText(
               text: AppLocalizations.of(context)!.myLeadsDesc,
               fontFamily: AppKeys.inter,
-              textColor: AppColors.offWhite70,
+              textColor: AppColors.liteGreyColor,
               fontSize: fontSize14,
               fontWeight: FontWeight.w400,
             ).marginOnly(bottom: spacerSize10),
@@ -108,8 +104,8 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
               child: BaseTextField(
                 textEditingController: controller.searchController,
                 hintText: AppLocalizations.of(context)!.search,
-                hintColor: AppColors.offWhite70,
-                prefixIcon: Icon(Icons.search, color: AppColors.amberGold),
+
+                suffixIcon: Icon(Icons.search, color: AppColors.liteGreyColor),
                 onChanged: (value) {
                   if (value.isEmpty) {
                     controller.pageNumber.value = 1;

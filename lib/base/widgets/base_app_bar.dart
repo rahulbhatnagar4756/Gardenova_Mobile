@@ -221,7 +221,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
             /// 🔹 Back button (top-left)
             if (isBackButtonVisible ?? false)
               Align(
-                alignment: Alignment.topLeft,
+                alignment:(isAppIconVisible??false)==false?Alignment.centerLeft: Alignment.topLeft ,
                 child: Padding(
                   padding: EdgeInsets.only(top: 8.h, left: 12.w),
                   child: CommonClickWidget(
@@ -238,7 +238,8 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ),
-    ).paddingOnly(top: topMargin!);
+    ).paddingOnly(top: 5.h);
+    // ).paddingOnly(top: topMargin!);
   }
 
   @override

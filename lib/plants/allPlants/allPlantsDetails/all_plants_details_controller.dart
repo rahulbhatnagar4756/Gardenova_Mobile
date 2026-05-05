@@ -324,4 +324,7 @@ class AllPlantsDetailsController extends GetxController {
       Get.back(result: true);
     }
   }
+  testing(){
+
+  }
 }

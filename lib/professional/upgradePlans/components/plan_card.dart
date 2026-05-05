@@ -24,7 +24,6 @@ class PlanCard extends StatelessWidget {
           children: [
             BaseText(
               textAlign: TextAlign.center,
-              textColor: AppColors.offWhite50,
               fontWeight: FontWeight.w400,
               fontFamily: AppKeys.poppins,
               fontSize: fontSize15,
@@ -41,6 +40,7 @@ class PlanCard extends StatelessWidget {
       ),
     );
   }
+
   //
   Widget planCardItem(BuildContext context, int index) {
     final plan = controller.planList[index];
@@ -50,87 +50,117 @@ class PlanCard extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: spacerSize12),
-        padding: const EdgeInsets.all(spacerSize15),
+        padding: const EdgeInsets.only(bottom: spacerSize15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize12),
           border: Border.all(
-            color: plan.isSelect! ? AppColors.burntGold : AppColors.offWhite10,
+            color: plan.isSelect!
+                ? AppColors.greenColor
+                : AppColors.borderLiteGreyColor,
           ),
         ),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              child: Column(
-                spacing: spacerSize4,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BaseText(
-                    textAlign: TextAlign.center,
-                    textColor: AppColors.offWhite70,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: AppKeys.inter,
-                    fontSize: fontSize12,
-                    text: plan.planName ?? "",
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: spacerSize6-1),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(spacerSize12),
+                    topRight: Radius.circular(spacerSize12),
                   ),
-                  Row(
+                color: (plan.isSelect ?? false)
+                    ? AppColors.greenColor
+                    : AppColors.borderLiteGreyColor
+              ),
+              child: BaseText(
+                textColor: (plan.isSelect ?? false)
+                    ? AppColors.whiteColor
+                    : AppColors.blackColor,
+                textAlign: TextAlign.center,
+                fontWeight: FontWeight.w500,
+                fontFamily: AppKeys.inter,
+                fontSize: fontSize12,
+                text: plan.planName ?? "",
+              ),
+            ),
+            SizedBox(height: spacerSize15,),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
                     spacing: spacerSize4,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BaseText(
-                        textAlign: TextAlign.center,
-                        textColor: AppColors.offWhite,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: AppKeys.inter,
-                        fontSize: fontSize14,
-                        text: controller.isTabMonthly.value
-                            ? "R\$\t${plan.priceMonthly}/${AppLocalizations.of(context)!.mu}"
-                            : "R\$\t${plan.priceAnnual}/${AppLocalizations.of(context)!.an}",
-                      ).marginOnly(right: spacerSize4),
+                      // BaseText(
+                      //   textAlign: TextAlign.center,
+                      //   fontWeight: FontWeight.w500,
+                      //   fontFamily: AppKeys.inter,
+                      //   fontSize: fontSize12,
+                      //   text: plan.planName ?? "",
+                      // ),
+                      Row(
+                        spacing: spacerSize4,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          BaseText(
+                            textAlign: TextAlign.center,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: AppKeys.inter,
+                            fontSize: fontSize14,
+                            text: controller.isTabMonthly.value
+                                ? "R\$\t${plan.priceMonthly}/${AppLocalizations.of(context)!.mu}"
+                                : "R\$\t${plan.priceAnnual}/${AppLocalizations.of(context)!.an}",
+                          ).marginOnly(right: spacerSize4),
 
-                      CircleAvatar(
-                        radius: spacerSize1,
-                        backgroundColor: AppColors.offWhite70,
-                      ),
+                          CircleAvatar(
+                            radius: spacerSize1,
+                            backgroundColor: AppColors.greenColor,
+                          ),
 
-                      BaseText(
-                        textAlign: TextAlign.center,
-                        textColor: AppColors.offWhite70,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppKeys.inter,
-                        fontSize: fontSize12,
-                        text: plan.citiesCoverage.toString(),
-                      ),
+                          BaseText(
+                            textAlign: TextAlign.center,
+                            textColor: AppColors.liteGreyColor,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: AppKeys.inter,
+                            fontSize: fontSize12,
+                            text: plan.citiesCoverage.toString(),
+                          ),
 
-                      BaseText(
-                        textAlign: TextAlign.center,
-                        textColor: AppColors.offWhite,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppKeys.inter,
-                        fontSize: fontSize12,
-                        text: AppLocalizations.of(context)!.city,
+                          BaseText(
+                            textAlign: TextAlign.center,
+                            textColor: AppColors.liteGreyColor,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: AppKeys.inter,
+                            fontSize: fontSize12,
+                            text: AppLocalizations.of(context)!.city,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(spacerSize2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(
-                  color: plan.isSelect!
-                      ? AppColors.burntGold
-                      : AppColors.offWhite10,
                 ),
-              ),
-              child: CircleAvatar(
-                radius: spacerSize6,
-                backgroundColor: plan.isSelect!
-                    ? AppColors.burntGold
-                    : AppColors.appBarColor,
-              ),
-            ),
+                Container(
+                  padding: EdgeInsets.all(spacerSize2),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(spacerSize12),
+                    border: Border.all(
+                      color: plan.isSelect!
+                          ? AppColors.greenColor
+                          : AppColors.blackColor,
+                      width: 2
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: spacerSize6,
+                    backgroundColor: plan.isSelect!
+                        ? AppColors.greenColor
+                        : AppColors.appColor,
+                  ),
+                ),
+              ],
+            ).paddingSymmetric(horizontal: spacerSize15),
           ],
         ),
       ),

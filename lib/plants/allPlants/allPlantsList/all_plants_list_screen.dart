@@ -84,7 +84,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
           textAlign: TextAlign.center,
           fontFamily: AppKeys.poppins,
           fontSize: fontSize20,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ).marginOnly(top: spacerSize10),
 
         BaseText(
@@ -119,7 +119,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
             vertical: spacerSize6,
           ),
           decoration: BoxDecoration(
-            color: AppColors.harvestGold,
+            color: AppColors.greenColor,
             borderRadius: BorderRadius.circular(spacerSize20),
           ),
           child: Row(

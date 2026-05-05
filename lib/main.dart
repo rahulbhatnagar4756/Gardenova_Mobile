@@ -15,6 +15,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/network_services/network_connectivity_service.dart';
+import 'package:kasagardem/utils/non_glowing_scroll_behavior.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:kasagardem/utils/utils.dart';
@@ -115,6 +116,10 @@ class MyApp extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: () => Utils.hideKeyboard(),
             child: GetMaterialApp(
+              scrollBehavior:  const MaterialScrollBehavior().copyWith(
+                overscroll: false,
+                physics: ClampingScrollPhysics(),
+              ),
               fallbackLocale: enUS,
               popGesture: true,
               locale: locale,
@@ -127,15 +132,28 @@ class MyApp extends StatelessWidget {
               ],
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                scaffoldBackgroundColor: AppColors.appColor,
+                colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColor),
                 useMaterial3: true,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
+                appBarTheme: const AppBarTheme(
+
+                  surfaceTintColor: Colors.transparent,
+                ),
               ),
               color: AppColors.offWhite,
               initialRoute: Routes.splash,
               defaultTransition: Transition.rightToLeftWithFade,
               getPages: Routes.getPages(),
+              builder: (context, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: const TextScaler.linear(1.0)),
+                  child: child!,
+                );
+              },
             ),
           ),
         ),

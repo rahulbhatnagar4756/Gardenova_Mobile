@@ -152,7 +152,7 @@ class ProfessionalItem extends StatelessWidget {
                      BaseText(
                        text: professional!.companyName ?? "",
                        fontFamily: AppKeys.poppins,
-                       fontWeight: FontWeight.w700,
+                       fontWeight: FontWeight.w600,
                        fontSize: fontSize13,
                      ),
 
@@ -160,7 +160,7 @@ class ProfessionalItem extends StatelessWidget {
                        text: professional!.legalName ?? "",
                        textColor: AppColors.whiteColor,
                        fontSize: fontSize11,
-                       fontWeight: FontWeight.w400,
+                       fontWeight: FontWeight.w300,
                        textAlign: TextAlign.start,
                      ):const SizedBox(),
 
@@ -182,15 +182,18 @@ class ProfessionalItem extends StatelessWidget {
                                    crossAxisAlignment: CrossAxisAlignment.start,
                                    children: [
                                      BaseText(
+                                       overflow: TextOverflow.ellipsis,
+                                       maxLines: 1,
                                        text:
                                        '${professional!.state} ${professional!.city}',
                                        fontSize: fontSize12,
                                        fontWeight: FontWeight.w400,
                                      ),
                                      BaseText(
+                                       overflow: TextOverflow.ellipsis,
+                                       maxLines: 2,
                                        text: professional!.address ?? "",
                                        fontSize: fontSize10,
-
                                        fontWeight: FontWeight.w400,
                                      ),
                                    ],
@@ -201,7 +204,7 @@ class ProfessionalItem extends StatelessWidget {
                          ),
 
                        ],
-                     ).marginOnly(top: spacerSize6,bottom: spacerSize10),
+                     ).marginOnly(top: spacerSize6,),
 
                    ],
                  ),
@@ -233,7 +236,7 @@ class ProfessionalItem extends StatelessWidget {
                       buttonPadding: EdgeInsets.only(bottom: 0),
                       linearBackgroundColor: AppColors.linearGreenGradientForBtn,
                       textColor: AppColors.greenColor,
-                      fontSize: fontSize17,
+                      fontSize: fontSize15,
                       buttonLabel:'${AppLocalizations.of(context)!.selected}',
                       onPressed: () {
                         // Get.offAllNamed(Routes.login);

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_date_format.dart';
 import 'package:kasagardem/professional/myLead/my_lead_controller.dart';
 
 import '../../../base/dialogs/base_dialog.dart';
+import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_text.dart';
 import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -28,19 +30,17 @@ class LeadCardItem extends StatelessWidget {
       () => controller.myLeadsList.isNotEmpty
           ? ListView.builder(
               itemCount: controller.myLeadsList.length,
-              padding: EdgeInsets.symmetric(horizontal: spacerSize15),
+              padding: EdgeInsets.only(left: spacerSize15,right: spacerSize12,bottom: 25.h),
               itemBuilder: (context, index) {
                 var item = controller.myLeadsList[index];
                 return Container(
                   padding: EdgeInsets.all(spacerSize12),
                   margin: EdgeInsets.only(bottom: spacerSize15),
                   decoration: BoxDecoration(
-                    color: AppColors.darkGreen,
+                    color: AppColors.appColor,
                     borderRadius: BorderRadius.circular(spacerSize15),
                     border: Border.all(
-                      color: item.isSelected
-                          ? AppColors.darkGold
-                          : AppColors.backgroundGrey,
+                      color: AppColors.borderLiteGreyColor,
                     ),
                   ),
                   child: Column(
@@ -58,7 +58,6 @@ class LeadCardItem extends StatelessWidget {
                                 text: item.companyName ?? "",
                                 textAlign: TextAlign.center,
                                 fontFamily: AppKeys.poppins,
-                                textColor: AppColors.offWhite,
                                 fontSize: fontSize16,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -72,7 +71,7 @@ class LeadCardItem extends StatelessWidget {
                                     vertical: spacerSize2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.burntGold,
+                                    color: AppColors.greenColor,
                                     borderRadius: BorderRadius.circular(
                                       spacerSize20,
                                     ),
@@ -96,6 +95,7 @@ class LeadCardItem extends StatelessWidget {
                             spacing: spacerSize4,
                             children: [
                               Image.asset(
+                                color: AppColors.greenColor,
                                 item.location?.address != null &&
                                         item.location!.address!.isNotEmpty
                                     ? AppAssets.location
@@ -110,14 +110,13 @@ class LeadCardItem extends StatelessWidget {
                                       item.email ??
                                       "",
                                   fontSize: fontSize11,
-                                  textColor: AppColors.offWhite70,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               BaseText(
                                 text: timeAgo(item.createdAt ?? ""),
                                 fontSize: fontSize11,
-                                textColor: AppColors.offWhite70,
+                                textColor: AppColors.liteGreyColor,
                                 fontWeight: FontWeight.w400,
                               ).marginOnly(right: spacerSize8),
                             ],
@@ -128,7 +127,7 @@ class LeadCardItem extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.all(spacerSize6),
                                 decoration: BoxDecoration(
-                                  color: AppColors.dimGold,
+                                  color: AppColors.toLiteGreenColor,
                                   borderRadius: BorderRadius.circular(
                                     spacerSize8,
                                   ),
@@ -138,6 +137,7 @@ class LeadCardItem extends StatelessWidget {
                                   Assets.imagesServiceRequest,
                                   height: spacerSize16,
                                   width: spacerSize16,
+                                  color: AppColors.greenColor,
                                 ),
                               ),
                               Expanded(
@@ -149,7 +149,6 @@ class LeadCardItem extends StatelessWidget {
                                         Get.context!,
                                       )!.serviceRequested.toUpperCase(),
                                       fontSize: fontSize12,
-                                      textColor: AppColors.offWhite70,
                                       fontWeight: FontWeight.w400,
                                     ),
                                     BaseText(
@@ -158,7 +157,7 @@ class LeadCardItem extends StatelessWidget {
                                           "",
                                       maxLines: 2,
                                       fontSize: fontSize14,
-                                      textColor: AppColors.offWhite,
+                                      textColor: AppColors.liteGreyColor,
                                       fontWeight: FontWeight.w400,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -169,43 +168,75 @@ class LeadCardItem extends StatelessWidget {
                           ).marginOnly(top: spacerSize16),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () {
+                      Container(
+                        height: 1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              Colors.transparent,
+                              AppColors.blackColor.withValues(alpha: 0.6), // soft black center
+                              Colors.transparent,
+                            ],
+                            stops: const [0.0, 0.5, 1.0],
+                          ),
+                        ),
+                      ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 38.h,
+                      child: BaseButton(
+                        buttonPadding: EdgeInsets.only(bottom: 0),
+                        linearBackgroundColor: AppColors.linearGreenGradientForBtn,
+                        textColor: AppColors.greenColor,
+                        fontSize: fontSize15,
+                        buttonLabel:AppLocalizations.of(context)!.viewDetails,
+                        onPressed: () {
                           Get.toNamed(
                             Routes.leadDetailsScreen,
                             arguments: controller.myLeadsList[index],
                           );
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(spacerSize12),
-                          decoration: BoxDecoration(
-                            gradient: item.isSelected
-                                ? LinearGradient(
-                                    colors: [
-                                      AppColors.lightGold,
-                                      AppColors.burntGold,
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  )
-                                : null,
-                            color: item.isSelected
-                                ? AppColors.darkGold
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(spacerSize10),
-                            border: Border.all(color: AppColors.offWhite10),
-                          ),
-                          child: BaseText(
-                            text: AppLocalizations.of(context)!.viewDetails,
-                            fontSize: fontSize15,
-                            textColor: item.isSelected
-                                ? AppColors.offWhite
-                                : AppColors.amberGold,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
                       ),
+                    )
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Get.toNamed(
+                      //       Routes.leadDetailsScreen,
+                      //       arguments: controller.myLeadsList[index],
+                      //     );
+                      //   },
+                      //   child: Container(
+                      //     alignment: Alignment.center,
+                      //     padding: EdgeInsets.all(spacerSize12),
+                      //     decoration: BoxDecoration(
+                      //       gradient: item.isSelected
+                      //           ? LinearGradient(
+                      //               colors: [
+                      //                 AppColors.lightGold,
+                      //                 AppColors.burntGold,
+                      //               ],
+                      //               begin: Alignment.topCenter,
+                      //               end: Alignment.bottomCenter,
+                      //             )
+                      //           : null,
+                      //       color: item.isSelected
+                      //           ? AppColors.darkGold
+                      //           : Colors.transparent,
+                      //       borderRadius: BorderRadius.circular(spacerSize10),
+                      //       border: Border.all(color: AppColors.offWhite10),
+                      //     ),
+                      //     child: BaseText(
+                      //       text: AppLocalizations.of(context)!.viewDetails,
+                      //       fontSize: fontSize15,
+                      //       textColor: item.isSelected
+                      //           ? AppColors.offWhite
+                      //           : AppColors.amberGold,
+                      //       fontWeight: FontWeight.w500,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 );
@@ -216,7 +247,6 @@ class LeadCardItem extends StatelessWidget {
                 text: controller.noDataText,
                 textAlign: TextAlign.center,
                 fontFamily: AppKeys.poppins,
-                textColor: AppColors.offWhite,
                 fontSize: fontSize18,
                 fontWeight: FontWeight.bold,
               ),

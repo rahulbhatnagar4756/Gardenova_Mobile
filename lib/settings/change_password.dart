@@ -39,54 +39,56 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                   child: BottomSheetLayout(
                     childLayout: BaseForm(
                       formKey: controller.changePasswordFormKey,
-                      child: Column(
-                        children: [
-                          TextFieldLayout(
-                            editTextTitle: AppLocalizations.of(context)!.currentPassword,
-                            textEditingController: controller.oldPasswordController,
-                            isTextObscure: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(
-                                  context,
-                                )!.passwordFieldCannotBeEmpty;
-                              }
-                              return null;
-                            },
-                          ),
-
-                          TextFieldLayout(
-                            editTextTitle: AppLocalizations.of(context)!.newPassword,
-                            textEditingController: controller.newPasswordController,
-                            isTextObscure: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(
-                                  context,
-                                )!.passwordFieldCannotBeEmpty;
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFieldLayout(
-                            editTextTitle: AppLocalizations.of(context)!.confirmNewPassword,
-                            textEditingController: controller.confirmPasswordController,
-                            isTextObscure: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(
-                                  context,
-                                )!.passwordFieldCannotBeEmpty;
-                              }
-
-                              if (value != controller.newPasswordController.text) {
-                                return AppLocalizations.of(context)!.passwordsDoNotMatch;
-                              }
-
-                              return null;
-                            },
-                          ),
-                        ],
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            TextFieldLayout(
+                              editTextTitle: AppLocalizations.of(context)!.currentPassword,
+                              textEditingController: controller.oldPasswordController,
+                              isTextObscure: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.passwordFieldCannotBeEmpty;
+                                }
+                                return null;
+                              },
+                            ),
+                        
+                            TextFieldLayout(
+                              editTextTitle: AppLocalizations.of(context)!.newPassword,
+                              textEditingController: controller.newPasswordController,
+                              isTextObscure: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.passwordFieldCannotBeEmpty;
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFieldLayout(
+                              editTextTitle: AppLocalizations.of(context)!.confirmNewPassword,
+                              textEditingController: controller.confirmPasswordController,
+                              isTextObscure: true,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.passwordFieldCannotBeEmpty;
+                                }
+                        
+                                if (value != controller.newPasswordController.text) {
+                                  return AppLocalizations.of(context)!.passwordsDoNotMatch;
+                                }
+                        
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     buttonLabel: AppLocalizations.of(context)!.saveChanges,

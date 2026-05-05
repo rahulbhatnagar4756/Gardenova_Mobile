@@ -35,195 +35,223 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
             child: Column(
               children: [
                 ProfileIconLayout(
-                  isEnableEditable: true
-                 ,title: AppLocalizations.of(context)!.editProfile,),
-                SizedBox(height: 34.h,),
+                  isEnableEditable: true,
+                  isProfileEditable: true,
+                  onClickEditPencil: () {
+                    print('inside the on Click Edit pencil');
+
+                  },
+                  title: AppLocalizations.of(context)!.editProfile,
+                ),
+                SizedBox(height: 34.h),
                 Expanded(
                   child: Obx(() {
-                   return controller.screenType.value == AppKeys.professional
+                    return controller.screenType.value == AppKeys.professional
                         ? BottomSheetLayout(
-                      childLayout: Obx(
-                            () => SingleChildScrollView(
-                          padding: const EdgeInsets.only(bottom: spacerSize100),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-
-
-                              TextFieldLayout(
-                                editTextTitle: AppLocalizations.of(context)!.yourName,
-                                textEditingController: TextEditingController(
-                                  text: controller.name.value,
+                            childLayout: Obx(
+                              () => SingleChildScrollView(
+                                padding: const EdgeInsets.only(
+                                  bottom: spacerSize100,
                                 ),
-                                isTextFieldEnabled: false,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextFieldLayout(
+                                      editTextTitle: AppLocalizations.of(
+                                        context,
+                                      )!.yourName,
+                                      textEditingController:
+                                          TextEditingController(
+                                            text: controller.name.value,
+                                          ),
+                                      isTextFieldEnabled: false,
+                                    ),
+
+                                    TextFieldLayout(
+                                      editTextTitle: AppLocalizations.of(
+                                        context,
+                                      )!.yourEmailId,
+                                      textEditingController:
+                                          TextEditingController(
+                                            text: controller.email.value,
+                                          ),
+                                      isTextFieldEnabled: false,
+                                    ),
+
+                                    // if (controller.screenType.value == AppKeys.professional)
+                                    //   TextFieldLayout(
+                                    //     editTextTitle: AppLocalizations.of(
+                                    //       context,
+                                    //     )!.description,
+                                    //     textEditingController:
+                                    //     controller.descriptionController,
+                                    //     isTextFieldEnabled: true,
+                                    //   ),
+
+                                    // TextFieldLayout(
+                                    //   editTextTitle: AppLocalizations.of(context)!.yourName,
+                                    //   textEditingController: TextEditingController(
+                                    //     text: controller.name.value,
+                                    //   ),
+                                    //   isTextFieldEnabled: false,
+                                    // ),
+                                    // BaseTextField(
+                                    //   hintText: AppLocalizations.of(context)!.name,
+                                    //   keyboardType: TextInputType.name,
+                                    //   textEditingController: TextEditingController(
+                                    //     text: controller.name.value,
+                                    //   ),
+                                    //   isTextObscure: true,
+                                    // ),
+                                    // // TextFieldLayout(
+                                    // //   editTextTitle: AppLocalizations.of(context)!.yourName,
+                                    // //   textEditingController: TextEditingController(
+                                    // //     text: controller.name.value,
+                                    // //   ),
+                                    // //   isTextFieldEnabled: false,
+                                    // // ),
+                                    //
+                                    // TextFieldLayout(
+                                    //   editTextTitle: AppLocalizations.of(
+                                    //     context,
+                                    //   )!.yourEmailId,
+                                    //   textEditingController: TextEditingController(
+                                    //     text: controller.email.value,
+                                    //   ),
+                                    //   isTextFieldEnabled: false,
+                                    // ),
+                                    if (controller.screenType.value ==
+                                        AppKeys.professional)
+                                      TextFieldLayout(
+                                        editTextTitle: AppLocalizations.of(
+                                          context,
+                                        )!.description,
+                                        textEditingController:
+                                            controller.descriptionController,
+                                        isTextFieldEnabled: true,
+                                      ),
+
+                                    if (controller.screenType.value ==
+                                        AppKeys.professional)
+                                      TextFieldLayout(
+                                        editTextTitle: AppLocalizations.of(
+                                          context,
+                                        )!.region,
+                                        textEditingController:
+                                            controller.regionController,
+                                        isTextFieldEnabled: true,
+                                      ),
+
+                                    if (controller.screenType.value ==
+                                        AppKeys.professional)
+                                      TextFieldLayout(
+                                        editTextTitle: AppLocalizations.of(
+                                          context,
+                                        )!.specialty,
+                                        textEditingController:
+                                            controller.specialtyController,
+                                        isTextFieldEnabled: true,
+                                      ),
+                                  ],
+                                ),
                               ),
+                            ),
 
-                              TextFieldLayout(
-                                editTextTitle: AppLocalizations.of(
-                                  context,
-                                )!.yourEmailId,
-                                textEditingController: TextEditingController(
-                                  text: controller.email.value,
-                                ),
-                                isTextFieldEnabled: false,
-                              ),
-
-                              // if (controller.screenType.value == AppKeys.professional)
-                              //   TextFieldLayout(
-                              //     editTextTitle: AppLocalizations.of(
-                              //       context,
-                              //     )!.description,
-                              //     textEditingController:
-                              //     controller.descriptionController,
-                              //     isTextFieldEnabled: true,
-                              //   ),
-
-
-
-                              // TextFieldLayout(
-                              //   editTextTitle: AppLocalizations.of(context)!.yourName,
-                              //   textEditingController: TextEditingController(
-                              //     text: controller.name.value,
-                              //   ),
-                              //   isTextFieldEnabled: false,
-                              // ),
-                              // BaseTextField(
-                              //   hintText: AppLocalizations.of(context)!.name,
-                              //   keyboardType: TextInputType.name,
-                              //   textEditingController: TextEditingController(
-                              //     text: controller.name.value,
-                              //   ),
-                              //   isTextObscure: true,
-                              // ),
-                              // // TextFieldLayout(
-                              // //   editTextTitle: AppLocalizations.of(context)!.yourName,
-                              // //   textEditingController: TextEditingController(
-                              // //     text: controller.name.value,
-                              // //   ),
-                              // //   isTextFieldEnabled: false,
-                              // // ),
-                              //
-                              // TextFieldLayout(
-                              //   editTextTitle: AppLocalizations.of(
-                              //     context,
-                              //   )!.yourEmailId,
-                              //   textEditingController: TextEditingController(
-                              //     text: controller.email.value,
-                              //   ),
-                              //   isTextFieldEnabled: false,
-                              // ),
-
-                              if (controller.screenType.value == AppKeys.professional)
-                                TextFieldLayout(
-                                  editTextTitle: AppLocalizations.of(
-                                    context,
-                                  )!.description,
-                                  textEditingController:
-                                  controller.descriptionController,
-                                  isTextFieldEnabled: true,
-                                ),
-
-                              if (controller.screenType.value == AppKeys.professional)
-                                TextFieldLayout(
-                                  editTextTitle: AppLocalizations.of(context)!.region,
-                                  textEditingController: controller.regionController,
-                                  isTextFieldEnabled: true,
-                                ),
-
-                              if (controller.screenType.value == AppKeys.professional)
-                                TextFieldLayout(
-                                  editTextTitle: AppLocalizations.of(
-                                    context,
-                                  )!.specialty,
-                                  textEditingController: controller.specialtyController,
-                                  isTextFieldEnabled: true,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      buttonLabel: AppLocalizations.of(
-                        context,
-                      )!.saveChanges,
-                      onButtonTap: () {
-                        if (controller.screenType.value == AppKeys.professional) {
-                          controller.updateProfessionalProfile();
-                        } else {
-                          controller.updateProfile();
-                        }
-                      },
-                    )
+                            buttonLabel: AppLocalizations.of(
+                              context,
+                            )!.saveChanges,
+                            onButtonTap: () {
+                              if (controller.screenType.value ==
+                                  AppKeys.professional) {
+                                controller.updateProfessionalProfile();
+                              } else {
+                                controller.updateProfile();
+                              }
+                            },
+                          )
                         : BottomSheetLayout(
-                      childLayout: Obx(
-                            () => Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // TextFieldLayout(
-                            //   editTextTitle: AppLocalizations.of(context)!.yourName,
-                            //   textEditingController: TextEditingController(
-                            //     text: controller.name.value,
-                            //   ),
-                            //   hintText: AppLocalizations.of(context)!.enterYourName,
-                            //   isTextFieldEnabled: false,
-                            // ),
-                            BaseText(
-                              textAlign: TextAlign.start,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: AppKeys.poppins,
-                              fontSize: 13.sp,
-                              text: AppLocalizations.of(context)!.yourName,
-                            ).paddingOnly(bottom: 3.h),
-                            BaseTextField(
-                              // labelText:AppLocalizations.of(context)!.yourName ,
-                              hintText: AppLocalizations.of(context)!.name,
-                              keyboardType: TextInputType.name,
-                              textEditingController: TextEditingController(
-                                text: controller.name.value,
+                            childLayout: Obx(
+                              () => SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // TextFieldLayout(
+                                    //   editTextTitle: AppLocalizations.of(context)!.yourName,
+                                    //   textEditingController: TextEditingController(
+                                    //     text: controller.name.value,
+                                    //   ),
+                                    //   hintText: AppLocalizations.of(context)!.enterYourName,
+                                    //   isTextFieldEnabled: false,
+                                    // ),
+                                    BaseText(
+                                      textAlign: TextAlign.start,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: AppKeys.poppins,
+                                      fontSize: 13.sp,
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.yourName,
+                                    ).paddingOnly(bottom: 3.h),
+                                    BaseTextField(
+                                      // labelText:AppLocalizations.of(context)!.yourName ,
+                                      hintText: AppLocalizations.of(
+                                        context,
+                                      )!.name,
+                                      keyboardType: TextInputType.name,
+                                      textEditingController:
+                                          TextEditingController(
+                                            text: controller.name.value,
+                                          ),
+                                      isTextFieldEnabled: false,
+                                    ),
+                                    SizedBox(height: 15.h),
+                                    // TextFieldLayout(
+                                    //   editTextTitle: AppLocalizations.of(context)!.yourEmailId,
+                                    //   textEditingController: TextEditingController(
+                                    //     text: controller.email.value,
+                                    //   ),
+                                    //   isTextFieldEnabled: false,
+                                    //   hintText: AppLocalizations.of(context)!.enterYourEmail,
+                                    // ),
+                                    BaseText(
+                                      textAlign: TextAlign.start,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: AppKeys.poppins,
+                                      fontSize: 13.sp,
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.yourEmailId,
+                                    ).paddingOnly(bottom: 3.h),
+                                    BaseTextField(
+                                      // labelText:AppLocalizations.of(context)!.yourName ,
+                                      hintText: AppLocalizations.of(
+                                        context,
+                                      )!.yourEmailId,
+                                      keyboardType: TextInputType.emailAddress,
+                                      textEditingController:
+                                          TextEditingController(
+                                            text: controller.email.value,
+                                          ),
+                                      isTextFieldEnabled: false,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              isTextFieldEnabled: false,
                             ),
-                            SizedBox(height: 15.h,),
-                            // TextFieldLayout(
-                            //   editTextTitle: AppLocalizations.of(context)!.yourEmailId,
-                            //   textEditingController: TextEditingController(
-                            //     text: controller.email.value,
-                            //   ),
-                            //   isTextFieldEnabled: false,
-                            //   hintText: AppLocalizations.of(context)!.enterYourEmail,
-                            // ),
-                            BaseText(
-                              textAlign: TextAlign.start,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: AppKeys.poppins,
-                              fontSize: 13.sp,
-                              text: AppLocalizations.of(context)!.yourEmailId,
-                            ).paddingOnly(bottom: 3.h),
-                            BaseTextField(
-                              // labelText:AppLocalizations.of(context)!.yourName ,
-                              hintText: AppLocalizations.of(context)!.yourEmailId,
-                              keyboardType: TextInputType.emailAddress,
-                              textEditingController: TextEditingController(
-                                text:controller.email.value,
-                              ),
-                              isTextFieldEnabled: false,
-                            ),
-                          ],
-                        ),
-                      ),
-                      buttonLabel: AppLocalizations.of(
-                        context,
-                      )!.saveChanges,
-                      onButtonTap: () {
-                        if (controller.screenType.value == AppKeys.professional) {
-                          controller.updateProfessionalProfile();
-                        } else {
-                          controller.updateProfile();
-                        }
-                      },
-                    );
-                  },),
-                )
+                            buttonLabel: AppLocalizations.of(
+                              context,
+                            )!.saveChanges,
+                            onButtonTap: () {
+                              if (controller.screenType.value ==
+                                  AppKeys.professional) {
+                                controller.updateProfessionalProfile();
+                              } else {
+                                controller.updateProfile();
+                              }
+                            },
+                          );
+                  }),
+                ),
 
                 // settingItemsLayout(context)
               ],
@@ -335,5 +363,4 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
       //       ),
     );
   }
-
 }

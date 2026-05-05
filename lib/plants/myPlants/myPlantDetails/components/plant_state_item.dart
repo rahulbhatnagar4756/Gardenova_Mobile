@@ -19,39 +19,49 @@ class PlantStateItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(spacerSize15),
-          margin: const EdgeInsets.only(bottom: spacerSize8),
-          decoration: BoxDecoration(
-            color: AppColors.darkGold.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(spacerSize12),
-            border: Border.all(
-              color: AppColors.darkGold.withValues(alpha: 0.1),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: spacerSize15,horizontal:spacerSize35 ),
+      margin: const EdgeInsets.only(bottom: spacerSize8),
+      decoration: BoxDecoration(
+        color: AppColors.toToLiteGreenColor,
+        borderRadius: BorderRadius.circular(spacerSize16),
+        border: Border.all(
+          color: AppColors.liteGreenColor,
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(spacerSize15),
+            margin: const EdgeInsets.only(bottom: spacerSize8),
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(
+                color: AppColors.whiteColor,
+              ),
             ),
+            child: Image.asset(icon, height: spacerSize35, width: spacerSize35,color:  AppColors.greenColor,),
           ),
-          child: Image.asset(icon, height: spacerSize35, width: spacerSize35),
-        ),
-        Column(
-          children: [
-            BaseText(
-              text: label,
-              fontFamily: AppKeys.inter,
-              fontSize: fontSize13,
-              fontWeight: FontWeight.w500,
-              textColor: AppColors.offWhite,
-            ),
-            BaseText(
-              text: value,
-              fontFamily: AppKeys.inter,
-              fontSize: fontSize12,
-              fontWeight: FontWeight.w400,
-              textColor: AppColors.offWhite.withValues(alpha: 0.6),
-            ),
-          ],
-        ),
-      ],
+          Column(
+            children: [
+              BaseText(
+                text: label,
+                fontFamily: AppKeys.inter,
+                fontSize: fontSize13,
+                fontWeight: FontWeight.w500,
+              ),
+              BaseText(
+                text: value,
+                fontFamily: AppKeys.inter,
+                fontSize: fontSize12,
+                fontWeight: FontWeight.w400,
+                textColor: AppColors.liteGreyColor,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

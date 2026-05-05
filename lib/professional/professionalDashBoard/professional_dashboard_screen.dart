@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/professional/professionalDashBoard/components/custom_tab.dart';
 import 'package:kasagardem/professional/professionalDashBoard/components/professional_item.dart';
@@ -48,6 +49,7 @@ class ProfessionalDashboardScreen
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: controller.hidePopUp.value?0:110.h,),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: spacerSize20,
@@ -201,12 +203,11 @@ class ProfessionalDashboardScreen
                 controller.onTapToSelect(index);
               },
               child: BaseBorderedContainer(
-                height: spacerSize320,
+                height: spacerSize345,
                 width: Get.width,
-                backgroundColor: AppColors.darkGreen,
-                borderColor: controller.professionalsList[index].isSelected
-                    ? AppColors.burntGold
-                    : AppColors.offWhite10,
+                backgroundColor: AppColors.whiteColor,
+                borderColor:  AppColors.liteGreyColor,
+                borderRadius:spacerSize16,
 
                 childWidget: ProfessionalItem(
                   professional: controller.professionalsList[index],
@@ -247,7 +248,7 @@ class ProfessionalDashboardScreen
               Icon(
                 Icons.info_outline,
                 size: spacerSize16,
-                color: AppColors.darkGold,
+                color: AppColors.liteGreyColor,
               ),
 
               SizedBox(width: spacerSize8),
@@ -261,7 +262,7 @@ class ProfessionalDashboardScreen
                       text: AppLocalizations.of(
                         context,
                       )!.youAreOnA30DayFreeTrial,
-                      textColor: AppColors.offWhite70,
+                      textColor: AppColors.liteGreyColor,
                       fontSize: fontSize13,
                     ),
                     SizedBox(height: spacerSize4),
@@ -277,10 +278,10 @@ class ProfessionalDashboardScreen
                         style: TextStyle(
                           fontSize: fontSize14,
                           fontFamily: AppKeys.inter,
-                          color: AppColors.darkGold,
+                          color: AppColors.greenColor,
                           fontWeight: FontWeight.w500,
                           decoration: TextDecoration.underline,
-                          decorationColor: AppColors.darkGold,
+                          decorationColor: AppColors.greenColor,
                         ),
                       ),
                     ),

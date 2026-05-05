@@ -40,7 +40,6 @@ class ProfessionalHeadingItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BaseText(
-              textColor: AppColors.offWhite,
               fontFamily: AppKeys.poppins,
               fontSize: fontSize18,
               fontWeight: FontWeight.w400,
@@ -55,11 +54,12 @@ class ProfessionalHeadingItem extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(spacerSize10),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.lightGold, AppColors.burntGold],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    color: AppColors.greenColor,
+                    // gradient: const LinearGradient(
+                    //   colors: [AppColors.lightGold, AppColors.burntGold],
+                    //   begin: Alignment.topCenter,
+                    //   end: Alignment.bottomCenter,
+                    // ),
                     borderRadius: BorderRadius.circular(spacerSize10),
                   ),
                   child: Image.asset(

@@ -51,6 +51,7 @@ class Assets {
   static const String backBtnDraweClose = 'assets/images/back_btn_drawer.png';
   static const String drawerIc = 'assets/images/drawer_ic.png';
   static const String tickIc = 'assets/images/tick_ic.png';
+  static const String closeIc = 'assets/images/close_ic.png';
   static const String kasagardemFrontendSecret = 'secret.env';
   static const String jsonHeartFluttering = 'assets/json/heart_fluttering.json';
 }
