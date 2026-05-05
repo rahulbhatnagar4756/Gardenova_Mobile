@@ -62,7 +62,7 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
           hintText:
               widget.hintText ??
               AppLocalizations.of(context)!.enterYourPassword,
-          hintColor: AppColors.offWhite50,
+          hintColor: AppColors.liteGreyColor,
           validator: widget.validator,
           suffixIcon: widget.isTextObscure
               ? IconButton(

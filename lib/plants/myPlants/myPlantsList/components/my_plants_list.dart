@@ -166,9 +166,9 @@ class MyPlantsList extends StatelessWidget {
         // ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: .92,
-          crossAxisSpacing: 10.w,
-          mainAxisSpacing: 10.w,
+          childAspectRatio: .82,
+          crossAxisSpacing: 8.w,
+          mainAxisSpacing: 8.w,
         ),
         itemCount: controller.myPlantList.length,
         itemBuilder: (context, index) {
@@ -257,20 +257,24 @@ class MyPlantsList extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              statusChip(
-                                icon: Icons.info,
-                                text:
-                                    "85%\t${AppLocalizations.of(context)!.health}",
-                                // Use a green/success color for health
-                                chipColor: AppColors
-                                    .greenColor, // Or update to AppColors.success
+                              Flexible(
+                                child: statusChip(
+                                  icon: Icons.info,
+                                  text:
+                                      "85%\t${AppLocalizations.of(context)!.health}",
+                                  // Use a green/success color for health
+                                  chipColor: AppColors
+                                      .greenColor, // Or update to AppColors.success
+                                ),
                               ),
-                              statusChip(
-                                icon: Icons.water_drop_outlined,
-                                text:
-                                    "${AppLocalizations.of(context)!.inText}\t${item.wateringReminderFrequency}\t${AppLocalizations.of(context)!.day}s",
-                                // Use the harvestGold or an alert color for watering
-                                chipColor: AppColors.red,
+                              Flexible(
+                                child: statusChip(
+                                  icon: Icons.water_drop_outlined,
+                                  text:
+                                      "${AppLocalizations.of(context)!.inText}\t${item.wateringReminderFrequency}\t${AppLocalizations.of(context)!.day}s",
+                                  // Use the harvestGold or an alert color for watering
+                                  chipColor: AppColors.red,
+                                ),
                               ),
                             ],
                           ),
@@ -307,12 +311,14 @@ class MyPlantsList extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: spacerSize12, color: AppColors.offWhite),
-          BaseText(
-            text: text,
-            fontSize: fontSize9,
-            fontFamily: AppKeys.inter,
-            fontWeight: FontWeight.w500,
-            textColor: AppColors.offWhite,
+          Flexible(
+            child: BaseText(
+              text: text,
+              fontSize: fontSize9,
+              fontFamily: AppKeys.inter,
+              fontWeight: FontWeight.w500,
+              textColor: AppColors.offWhite,
+            ),
           ),
         ],
       ),

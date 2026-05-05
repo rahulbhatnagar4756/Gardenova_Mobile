@@ -31,6 +31,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
             child: Column(
               children: [
                 ProfileIconLayout(
+                  
                   isEnableEditable: false,
                   title:  AppLocalizations.of(context)!.changePassword,
 
@@ -45,6 +46,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                             TextFieldLayout(
                               editTextTitle: AppLocalizations.of(context)!.currentPassword,
                               textEditingController: controller.oldPasswordController,
+                              hintText:  AppLocalizations.of(context)!.currentPassword,
                               isTextObscure: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -58,6 +60,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                         
                             TextFieldLayout(
                               editTextTitle: AppLocalizations.of(context)!.newPassword,
+                              hintText: AppLocalizations.of(context)!.newPassword,
                               textEditingController: controller.newPasswordController,
                               isTextObscure: true,
                               validator: (value) {
@@ -71,6 +74,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                             ),
                             TextFieldLayout(
                               editTextTitle: AppLocalizations.of(context)!.confirmNewPassword,
+                              hintText: AppLocalizations.of(context)!.confirmNewPassword,
                               textEditingController: controller.confirmPasswordController,
                               isTextObscure: true,
                               validator: (value) {
