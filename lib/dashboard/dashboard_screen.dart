@@ -14,6 +14,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'components/ai_plan_diagnosis.dart';
 import 'components/automation_suggestions.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
@@ -80,7 +81,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       sectionTitle: AppLocalizations.of(
                         context,
                       )!.aIPlantDiagnosis,
-                      child: AutomationSuggestions(),
+                      child: AiPlantDiagnosisCard(onTap: () {
+                        controller.pickImage(isCamera: false);
+                      },),
+
                     ),
                     const SizedBox(height: spacerSize15),
                     HeadingUiLayout(

@@ -44,6 +44,12 @@ class DashboardController extends GetxController {
   void navigateToNext(int index) {
     debugPrint("index:::$index");
     switch (index) {
+      case 0 :
+        Get.offNamedUntil(
+          Routes.dashboard,
+              (route) => false,
+        );
+        break;
       case 1:
         if (isUserLoggedIn.value) {
           Get.back();
@@ -165,12 +171,13 @@ class DashboardController extends GetxController {
           imageQuality: 10,
           preferredCameraDevice: CameraDevice.front,
         );
-        Get.back();
-        if (pickedFile != null) {
+
+        if (pickedFile != null && pickedFile.path.isNotEmpty) {
+          Get.back();
           if (position != null) {
             goToPlantDiagnosis(pickedFile);
           } else {
-            getCurrentLocation();
+            await getCurrentLocation();
             goToPlantDiagnosis(pickedFile);
           }
         }

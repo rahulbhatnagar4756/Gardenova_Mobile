@@ -7,7 +7,8 @@ import 'package:kasagardem/base/widgets/base_shimmer.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
-import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart' show PlantRecommendationsResponse;
+import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart'
+    show PlantRecommendationsResponse;
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/constants/app_color.dart';
@@ -26,7 +27,7 @@ class PlantRecommendations extends StatelessWidget {
         height: Get.height * .23,
         // padding: EdgeInsets.all(spacerSize5),
         backgroundColor: AppColors.appColor,
-        borderColor:  AppColors.appColor,
+        borderColor: AppColors.appColor,
         childWidget:
             controller.plantRecommendationList.isEmpty &&
                 !controller.isLoading.value
@@ -45,26 +46,32 @@ class PlantRecommendations extends StatelessWidget {
             : GridView.builder(
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: .995,
                   crossAxisSpacing: 8.w,
-                  mainAxisSpacing: 8.w
-
+                  mainAxisSpacing: 8.w,
                 ),
                 scrollDirection: Axis.horizontal,
                 itemCount: controller.isLoading.value
                     ? 5
                     : controller.plantRecommendationList.length,
                 itemBuilder: (context, index) {
-                  PlantRecommendationsResponse item = controller
-                      .plantRecommendationList[index];
+                  PlantRecommendationsResponse? item;
+                  if (controller.plantRecommendationList.length - 1 >= index) {
+                    item = controller.plantRecommendationList[index];
+                  }
                   return CommonClickWidget(
                     onTap: () {
-                      Get.toNamed(
-                        Routes.allPlantsDetails,
-                        arguments: {"plant_id": item.id, "screen_type": "add"},
-                      );
+                      if (item != null) {
+                        Get.toNamed(
+                          Routes.allPlantsDetails,
+                          arguments: {
+                            "plant_id": item.id,
+                            "screen_type": "add",
+                          },
+                        );
+                      }
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(spacerSize20),
@@ -77,7 +84,8 @@ class PlantRecommendations extends StatelessWidget {
                                       .plantRecommendationList[index]
                                       .image ??
                                   "",
-                              placeholder: (context, url) => const BaseShimmer(),
+                              placeholder: (context, url) =>
+                                  const BaseShimmer(),
                               errorWidget: (context, url, error) {
                                 return BaseBorderedContainer(
                                   height: Get.height * .23,
@@ -98,5 +106,4 @@ class PlantRecommendations extends StatelessWidget {
       ),
     );
   }
-
 }

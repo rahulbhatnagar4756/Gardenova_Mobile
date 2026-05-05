@@ -12,22 +12,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get careTitle => 'Cuide das Suas\nPlantas de Forma Inteligente';
 
   @override
-  String get careDescription =>
-      'Dê às suas plantas cuidados inteligentes com hidratação, nutrição e crescimento perfeitos usando este aplicativo.';
+  String get careDescription => 'Dê às suas plantas cuidados inteligentes com hidratação, nutrição e crescimento perfeitos usando este aplicativo.';
 
   @override
   String get identifyTitle => 'Identifique Plantas Instantaneamente';
 
   @override
-  String get identifyDescription =>
-      'Reconheça rapidamente qualquer planta e aprenda informações detalhadas sobre ela em apenas alguns segundos.';
+  String get identifyDescription => 'Reconheça rapidamente qualquer planta e aprenda informações detalhadas sobre ela em apenas alguns segundos.';
 
   @override
   String get connectTitle => 'Conecte-se Com Outros Jardineiros';
 
   @override
-  String get connectDescription =>
-      'Junte-se a uma comunidade vibrante de amantes de plantas para compartilhar dicas, histórias, conselhos e crescer juntos.';
+  String get connectDescription => 'Junte-se a uma comunidade vibrante de amantes de plantas para compartilhar dicas, histórias, conselhos e crescer juntos.';
 
   @override
   String get next => 'Próxima';
@@ -42,8 +39,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createAccount => 'Criar Conta';
 
   @override
-  String get createAccountSubTitle =>
-      'Crie uma Conta para Explorar Nosso Aplicativo';
+  String get createAccountSubTitle => 'Crie uma Conta para Explorar Nosso Aplicativo';
 
   @override
   String get enterYourName => 'Digite seu nome';
@@ -58,8 +54,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get enterYourPhoneNo => 'Digite seu número de telefone';
 
   @override
-  String get pleaseEnterValidPhoneNo =>
-      'Por favor, insira um número de telefone válido.';
+  String get pleaseEnterValidPhoneNo => 'Por favor, insira um número de telefone válido.';
 
   @override
   String get pleaseEnterValidEmailId => 'Por favor, insira um e-mail válido';
@@ -104,12 +99,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loginAccount => 'Entrar na Conta';
 
   @override
-  String get loginAccountSubTitle =>
-      'Entre em uma Conta para Explorar Nosso Aplicativo';
+  String get loginAccountSubTitle => 'Entre em uma Conta para Explorar Nosso Aplicativo';
 
   @override
-  String get loginAccountProfessionalSubTitle =>
-      'Login to your professional account';
+  String get loginAccountProfessionalSubTitle => 'Login to your professional account';
 
   @override
   String get forgotPassword => 'Esqueceu a senha?';
@@ -127,8 +120,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get forgotPasswordNew => 'Esqueceu a senha';
 
   @override
-  String get forgotPasswordSubTitle =>
-      'Digite seu e-mail abaixo para redefinir\nSua senha.';
+  String get forgotPasswordSubTitle => 'Digite seu e-mail abaixo para redefinir\nSua senha.';
 
   @override
   String get sendOtp => 'Enviar OTP';
@@ -137,8 +129,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get enterYourOtp => 'Digite seu OTP';
 
   @override
-  String get checkYourEmailOrPhoneForTheOTPAndEnterItBelow =>
-      'Verifique seu e-mail ou telefone para o\nOTP e digite-o abaixo';
+  String get checkYourEmailOrPhoneForTheOTPAndEnterItBelow => 'Verifique seu e-mail ou telefone para o\nOTP e digite-o abaixo';
 
   @override
   String get verifyOtp => 'Verificar OTP';
@@ -153,8 +144,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createPassword => 'Criar Nova Senha';
 
   @override
-  String get setAStrongPasswordToSecureYourAccount =>
-      'Defina uma senha forte para proteger sua conta.';
+  String get setAStrongPasswordToSecureYourAccount => 'Defina uma senha forte para proteger sua conta.';
 
   @override
   String get backToLogin => 'Voltar para o Login';
@@ -163,8 +153,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get passwordChanged => 'Senha Alterada';
 
   @override
-  String get passwordChangedSuccessfully =>
-      'Sua senha foi alterada com sucesso.';
+  String get passwordChangedSuccessfully => 'Sua senha foi alterada com sucesso.';
 
   @override
   String get resetPassword => 'Redefinir Senha';
@@ -221,26 +210,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get smartAnalysis => 'Análise Inteligente';
 
   @override
-  String get smartAnalysisDesc =>
-      'Nossa IA Analisa Suas Necessidades para Fornecer\nSoluções Personalizadas';
+  String get smartAnalysisDesc => 'Nossa IA Analisa Suas Necessidades para Fornecer\nSoluções Personalizadas';
 
   @override
   String get productRecommendations => 'Recomendações de Produtos';
 
   @override
-  String get productRecommendationsDesc =>
-      'Descubra os Melhores Produtos para o Seu\nEspaço Específico';
+  String get productRecommendationsDesc => 'Descubra os Melhores Produtos para o Seu\nEspaço Específico';
 
   @override
   String get professionalConnections => 'Conexões Profissionais';
 
   @override
-  String get professionalConnectionsDesc =>
-      'Conecte-se com Profissionais Verificados\nna Sua Área';
+  String get professionalConnectionsDesc => 'Conecte-se com Profissionais Verificados\nna Sua Área';
 
   @override
-  String get startIntelligentDiagnosisDesc =>
-      'Responda a Algumas Perguntas Sobre Seu Espaço e Preferências para Receber Recomendações Personalizadas para a Transformação do Seu Jardim.';
+  String get startIntelligentDiagnosisDesc => 'Responda a Algumas Perguntas Sobre Seu Espaço e Preferências para Receber Recomendações Personalizadas para a Transformação do Seu Jardim.';
 
   @override
   String get startIntelligentDiagnosis => 'Iniciar Diagnóstico Inteligente';
@@ -258,8 +243,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get questionThree => 'Qual é o Seu Maior\nDesafio?';
 
   @override
-  String get questionFour =>
-      'Qual Benefício Tecnológico\npara o Seu Jardim Mais\nLhe Interessa?';
+  String get questionFour => 'Qual Benefício Tecnológico\npara o Seu Jardim Mais\nLhe Interessa?';
 
   @override
   String get questionFive => 'Onde Seu Projeto\nEstá Localizado?';
@@ -319,8 +303,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get city => 'Cidade';
 
   @override
-  String get yourIntelligentDiagnosisReportIsReady =>
-      'Seu Relatório de Diagnóstico\nInteligente Está Pronto!';
+  String get yourIntelligentDiagnosisReportIsReady => 'Seu Relatório de Diagnóstico\nInteligente Está Pronto!';
 
   @override
   String get viewReport => 'Ver Relatório';
@@ -338,8 +321,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get welcome => 'Bem-vindo(a)';
 
   @override
-  String get loginOrRegisterToContinue =>
-      'Faça Login ou Cadastre-se para continuar';
+  String get loginOrRegisterToContinue => 'Faça Login ou Cadastre-se para continuar';
 
   @override
   String get passwordCannotBeEmpty => 'A senha não pode estar vazia!';
@@ -426,8 +408,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get requestSentSuccessfully => 'Solicitação Enviada com Sucesso!';
 
   @override
-  String get requestSentSuccessMessage =>
-      'Sua Solicitação de Orçamento Foi Enviada aos Nossos Profissionais. Eles Analisarão Seus Requisitos e Entrarão em Contato com Suas Propostas.';
+  String get requestSentSuccessMessage => 'Sua Solicitação de Orçamento Foi Enviada aos Nossos Profissionais. Eles Analisarão Seus Requisitos e Entrarão em Contato com Suas Propostas.';
 
   @override
   String get professionalNotified => 'Profissionais Notificados';
@@ -448,8 +429,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get changeToEnglish => 'Mudar para Inglês';
 
   @override
-  String get passwordFieldCannotBeEmpty =>
-      'O campo de senha não pode estar vazio';
+  String get passwordFieldCannotBeEmpty => 'O campo de senha não pode estar vazio';
 
   @override
   String get cancel => 'Cancelar';
@@ -461,8 +441,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get changeLanguage => 'Mudar Idioma';
 
   @override
-  String get areYouSureYouWantToChangeTheLanguage =>
-      'Tem certeza que deseja alterar o idioma?';
+  String get areYouSureYouWantToChangeTheLanguage => 'Tem certeza que deseja alterar o idioma?';
 
   @override
   String get areYouSureYouWantToLogout => 'Tem certeza de que deseja sair?';
@@ -480,16 +459,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get select => 'Selecionar';
 
   @override
-  String get pleaseLoginToSubmitQuote =>
-      'Faça login para enviar sua solicitação de orçamento.';
+  String get pleaseLoginToSubmitQuote => 'Faça login para enviar sua solicitação de orçamento.';
 
   @override
-  String get pleaseLoginToSeeRecommendedProfessionals =>
-      'Faça login para ver os profissionais recomendados.';
+  String get pleaseLoginToSeeRecommendedProfessionals => 'Faça login para ver os profissionais recomendados.';
 
   @override
-  String get incorrectCodePleaseTryAgain =>
-      'Código incorreto. Por favor, tente novamente.';
+  String get incorrectCodePleaseTryAgain => 'Código incorreto. Por favor, tente novamente.';
 
   @override
   String get goodMorning => 'Bom dia';
@@ -519,12 +495,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get clay => 'Argila';
 
   @override
-  String get noPlantRecommendationsFound =>
-      'Nenhuma recomendação de planta encontrada.';
+  String get noPlantRecommendationsFound => 'Nenhuma recomendação de planta encontrada.';
 
   @override
-  String get pleaseSelectAtLeastOneProfessional =>
-      'Selecione pelo menos um profissional.';
+  String get pleaseSelectAtLeastOneProfessional => 'Selecione pelo menos um profissional.';
 
   @override
   String get exitAppContent => 'Tem certeza de que deseja sair do aplicativo?';
@@ -536,22 +510,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get inText => 'em';
 
   @override
-  String get noProfessionalsAvailable =>
-      'Atualmente não há profissionais disponíveis para esta área.';
+  String get noProfessionalsAvailable => 'Atualmente não há profissionais disponíveis para esta área.';
 
   @override
   String get noInternetConnection => 'Sem conexão com a Internet!!';
 
   @override
-  String get pleaseAcceptTermsAndConditions =>
-      'Por favor, aceite os Termos de Uso e a Política de Privacidade para continuar.';
+  String get pleaseAcceptTermsAndConditions => 'Por favor, aceite os Termos de Uso e a Política de Privacidade para continuar.';
 
   @override
   String get comingSoon => 'Em Breve !!!';
 
   @override
-  String get searchPlantsByNameAndDescription =>
-      'Pesquise plantas por nome, descrição...';
+  String get searchPlantsByNameAndDescription => 'Pesquise plantas por nome, descrição...';
 
   @override
   String get noPlantsFound => 'Nenhuma planta encontrada!!!';
@@ -647,12 +618,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tapToDiagnoseYourPlant => 'Toque para diagnosticar sua planta';
 
   @override
-  String get locationPermissionRequired =>
-      'É necessária autorização para utilizar o local.';
+  String get locationPermissionRequired => 'É necessária autorização para utilizar o local.';
 
   @override
-  String get locationPermissionsAreDenied =>
-      'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Kasagardem.';
+  String get locationPermissionsAreDenied => 'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Kasagardem.';
 
   @override
   String get openSettings => 'Abra Configurações';
@@ -694,8 +663,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get addYourFirstPlant => 'Adicione sua primeira planta';
 
   @override
-  String get addYourFirstPlantDescription =>
-      'Pesquise pelo nome comum, nome científico ou variedade da sua planta';
+  String get addYourFirstPlantDescription => 'Pesquise pelo nome comum, nome científico ou variedade da sua planta';
 
   @override
   String get searchPlants => 'Pesquisar Plantas';
@@ -740,8 +708,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get upgradeToPremium => 'Upgrade to Premium';
 
   @override
-  String get enjoyExclusiveBenefits =>
-      'Enjoy exclusive benefits and unlock all features';
+  String get enjoyExclusiveBenefits => 'Enjoy exclusive benefits';
 
   @override
   String get billedMonthly => 'Billed Monthly';
@@ -780,8 +747,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get myLeads => 'My Leads';
 
   @override
-  String get professionalLandscapingEnquires =>
-      'Professional landscaping enquires';
+  String get professionalLandscapingEnquires => 'Professional landscaping enquires';
 
   @override
   String get search => 'Search...';
@@ -793,8 +759,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get upgradeNow => 'Upgrade Now';
 
   @override
-  String get youAreOnA30DayFreeTrial =>
-      'You are on a 30-day free trial. To prevent your profile from being blocked and hidden from users after 30 days, please purchase a plan.';
+  String get youAreOnA30DayFreeTrial => 'You are on a 30-day free trial. To prevent your profile from being blocked and hidden from users after 30 days, please purchase a plan.';
 
   @override
   String get orderSummary => 'Order Summary';
@@ -914,7 +879,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tap => 'Tap';
 
   @override
-  String get toAddYourFirstPlant => '\tto add your first plant';
+  String get toAddYourFirstPlant => 'to add your first plant';
 
   @override
   String get serviceRequested => 'Service Requested';
@@ -1016,26 +981,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get inactive => 'inactive';
 
   @override
-  String get customerPlanDesc =>
-      'Customers can\'t find you in the app, and your potential bookings are being suspended.';
+  String get customerPlanDesc => 'Customers can\'t find you in the app, and your potential bookings are being suspended.';
 
   @override
-  String get customerPlanDesc2 =>
-      'Do you want to continue receiving customers through Kasagardem?';
+  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Kasagardem?';
 
   @override
-  String get seePlans => 'Yes,SEE PLANS';
+  String get seePlans => 'Yes, SEE PLANS';
 
   @override
   String get notNow => 'Not now';
 
   @override
-  String get additionalNationalCoverageDesc1 =>
-      'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
+  String get additionalNationalCoverageDesc1 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
 
   @override
-  String get additionalNationalCoverageDesc2 =>
-      'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.';
+  String get additionalNationalCoverageDesc2 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over Brazil.';
 
   @override
   String get validFor1Year => '(Valid for 1 year only)';
@@ -1053,8 +1014,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yourPlanEnds => 'Your Plan Ends';
 
   @override
-  String get yourPlanEndsDesc =>
-      'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
+  String get yourPlanEndsDesc => 'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
 
   @override
   String get selectYourPlan => 'Select Your Plan';
@@ -1096,8 +1056,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get deleteAccount => 'Delete Account';
 
   @override
-  String get areYouSureYouWantToDeleteYourAccount =>
-      'Are you sure you want to permanently delete your account? This action cannot be undone.';
+  String get areYouSureYouWantToDeleteYourAccount => 'Are you sure you want to permanently delete your account? This action cannot be undone.';
 
   @override
   String get currentPassword => 'Current password';
@@ -1113,4 +1072,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get find => 'Find';
+
+  @override
+  String get plantAnalysis => 'Análise da Planta';
+
+  @override
+  String get scanYourPlantForHealthAndDetails => 'Escaneie sua planta para identificar e verificar sua saúde';
 }

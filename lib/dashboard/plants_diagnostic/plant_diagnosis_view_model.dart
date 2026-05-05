@@ -116,4 +116,5 @@ class PlantDiagnosisViewModel extends GetxController {
       setup.value = "${setup.value}$setupData\n";
     }
   }
+
 }

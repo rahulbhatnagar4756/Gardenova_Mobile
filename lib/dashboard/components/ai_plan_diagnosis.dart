@@ -56,7 +56,7 @@ class AiPlantDiagnosisCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BaseText(
-                    text: AppLocalizations.of(context)!.ai,
+                    text: AppLocalizations.of(context)!.plantAnalysis,
                     fontWeight: FontWeight.w600,
                     fontSize: fontSize16,
                   ),
@@ -75,7 +75,7 @@ class AiPlantDiagnosisCard extends StatelessWidget {
             Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: AppColors.greyColor,
+              color: AppColors.liteGreyColor,
             )
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
+import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/components/expansion_tile_layout.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/components/plant_detail_layout.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/components/plant_health_and_prevention_layout.dart';
@@ -17,17 +18,42 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../components/full_drawer.dart';
+
 class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
   const PlantDiagnosisScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkGreen,
+      backgroundColor: AppColors.appColor,
+      drawer: SizedBox(
+        // width: MediaQuery.of(context).size.width * 0.9,
+        child: FullScreenDrawer(
+          onTap: (index) {
+            if(Get.isRegistered<DashboardController>()) {
+              Get.find<DashboardController>().navigateToNext(index);
+            }
+          },
+        ),
+      ),
+appBar:PreferredSize(
+    preferredSize: Size.fromHeight(spacerSize80),
+    child: Builder(
+      builder: (context) {
+        return CircularBottomAppBar(
+          showMenuIcon: true,
+          onSettingPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        );
+      },
+    )),
       body: Obx(
+
         () => Stack(
           children: [
-            controller.plantDiagnosisResponse.value.data != null &&
+            SafeArea(child: controller.plantDiagnosisResponse.value.data != null &&
                     controller.isCurrentImagePlant.value
                 ? CachedNetworkImage(
                     imageUrl:
@@ -60,13 +86,12 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
                   )
                 : controller.isLoading.value
                 ? BaseShimmer()
-                : SizedBox(),
-            CircularBottomAppBar(
-              backgroundColor: AppColors.darkGreen,
-              onSettingPressed: () {
-                Get.toNamed(Routes.settings);
-              },
-            ),
+                : SizedBox()),
+            // CircularBottomAppBar(
+            //   onSettingPressed: () {
+            //     Get.toNamed(Routes.settings);
+            //   },
+            // ),
           ],
         ),
       ),
