@@ -87,7 +87,7 @@ class DashboardController extends GetxController {
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
 
-          // Get.toNamed(Routes.plantsCatalog);
+         //  Get.toNamed(Routes.plantsCatalog);
         break;
 
       default:
@@ -140,10 +140,11 @@ class DashboardController extends GetxController {
 
       lat = position?.latitude ?? 0.0;
       long = position?.longitude ?? 0.0;
-
       // Save locally
-      sharedPrefsService.setString("lat", lat.toString());
-      sharedPrefsService.setString("long", long.toString());
+      sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
+      sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
+      // sharedPrefsService.setString("lat", lat.toString());
+      // sharedPrefsService.setString("long", long.toString());
 
       debugPrint("LAT: $lat, LNG: $long");
     } catch (e) {
@@ -173,7 +174,7 @@ class DashboardController extends GetxController {
           }
         }
       } else {
-        getCurrentLocation().then((value) => pickImage(isCamera: isCamera));
+     //   getCurrentLocation().then((value) => pickImage(isCamera: isCamera));
       }
     } catch (e) {
       debugPrint("Error:::$e");

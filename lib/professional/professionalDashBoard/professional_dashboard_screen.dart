@@ -49,7 +49,7 @@ class ProfessionalDashboardScreen
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: controller.hidePopUp.value?0:110.h,),
+                SizedBox(height: controller.hidePopUp.value?0:130.h,),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: spacerSize20,
