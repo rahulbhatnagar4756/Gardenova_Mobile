@@ -15,6 +15,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
 import '../base/widgets/base_outline_button.dart';
+import '../utils/shared_prefs_service.dart';
 
 class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
   const IntroductionScreen({super.key});
@@ -133,8 +134,9 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
                         context,
                       )!.login,
                       onPressed: () {
-                        // Get.offAllNamed(Routes.login);
-                        Get.offAllNamed(Routes.chooseAccountType);
+                        SharedPrefsService.instance.setString(AppKeys.role,  AppKeys.user);
+                        Get.toNamed(Routes.login);
+                        // Get.offAllNamed(Routes.chooseAccountType);
                       },
                     ),
                   ),

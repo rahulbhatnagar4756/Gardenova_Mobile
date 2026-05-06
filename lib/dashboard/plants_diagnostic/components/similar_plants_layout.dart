@@ -89,7 +89,7 @@ class SimilarPlantsLayout extends StatelessWidget {
                                           childWidget: Icon(
                                             Icons.broken_image_rounded,
                                             size: spacerSize40,
-                                            color: AppColors.offWhite10,
+                                            color: AppColors.liteGreyColor,
                                           ),
                                         );
                                       },

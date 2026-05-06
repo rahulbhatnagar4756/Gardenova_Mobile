@@ -34,7 +34,7 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
     super.initState();
     _controller = WebViewController();
     debugPrint(
-      "language::::${SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "pt"}",
+      "language::::${SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "en"}",
     );
     loadHtmlFromAssets(
       languageCode: SharedPrefsService.instance.getString(

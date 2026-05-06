@@ -55,7 +55,7 @@ class ProfessionalItem extends StatelessWidget {
                   return Icon(
                     Icons.broken_image_rounded,
                     size: spacerSize60,
-                    color: AppColors.offWhite10,
+                    color: AppColors.liteGreyColor,
                   );
                 },
               ),

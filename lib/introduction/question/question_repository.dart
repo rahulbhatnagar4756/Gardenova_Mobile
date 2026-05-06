@@ -4,11 +4,13 @@ import 'package:kasagardem/utils/network_services/api_repository.dart';
 class QuestionRepository {
   final String _questionApiEndPoint = 'api/v1/admin/question';
   final String _statesApiEndPoint = 'api/v1/stateCityData/countries/states';
-  final String _cityApiEndPoint = 'api/v1/stateCityData/countries/BR';
+  final String _cityApiEndPoint = 'api/v1/stateCityData/countries';
   final String _saveAnswersEndPoint = 'api/v1/answers';
 
   getCityEndPoint({String? stateCode}) {
-    return '$_cityApiEndPoint/states/$stateCode/cities';
+    var language = 'IN';
+    // String language ='BR'
+    return '$_cityApiEndPoint/$language/states/$stateCode/cities';
   }
 
   fetchQuestions() async {

@@ -14,6 +14,7 @@ import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
+import '../../../utils/utils.dart';
 import 'components/my_plants_list_item.dart';
 import 'my_plants_controller.dart';
 
@@ -111,7 +112,9 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                         Get.toNamed(
                           Routes.myPlantsDetails,
                           arguments: item.plantId,
-                        );
+                        )?.then((value) {
+                          Utils.hideKeyboard();
+                        });
                       },
                     );
                   }, childCount: controller.myPlantList.length),
@@ -173,11 +176,13 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                 ),
                 SizedBox(height: spacerSize5),
 
-                BaseText(
-                  text:
-                      "${controller.myPlantList.length} ${controller.myPlantList.length == 1 ? AppLocalizations.of(context)!.plant : controller.plantPlural} ${AppLocalizations.of(context)!.andCounting}!",
-                  fontFamily: AppKeys.inter,
-                  textColor: AppColors.liteGreyColor,
+                Obx(
+                  () => BaseText(
+                    text:
+                        "${controller.myPlantList.length} ${controller.myPlantList.length == 1 ? AppLocalizations.of(context)!.plant : controller.plantPlural} ${AppLocalizations.of(context)!.andCounting}!",
+                    fontFamily: AppKeys.inter,
+                    textColor: AppColors.liteGreyColor,
+                  ),
                 ),
                 SizedBox(height: spacerSize10),
 
@@ -185,7 +190,10 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                   buttonWidth: double.infinity,
                   buttonLabel: AppLocalizations.of(context)!.addPlant,
                   onPressed: () {
-                    Get.toNamed(Routes.allPlantsScreen);
+                    Get.toNamed(Routes.allPlantsScreen)?.then((value) {
+                      Utils.hideKeyboard();
+                      controller.callGetMyPlantListApi();
+                    });
                   },
                 ),
 
@@ -218,7 +226,9 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
     return Center(
       child: InkWell(
         onTap: () {
+          Utils.hideKeyboard();
           Get.toNamed(Routes.allPlantsScreen)!.then((_) {
+            Utils.hideKeyboard();
             controller.callGetMyPlantListApi();
           });
         },
@@ -228,17 +238,18 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
             style: TextStyle(
               fontSize: fontSize14,
               fontWeight: FontWeight.w500,
-              color: AppColors.offWhite,
+              color: AppColors.blackColor,
               fontFamily: AppKeys.poppins,
             ),
             children: [
               TextSpan(text: "${AppLocalizations.of(context)!.tap} "),
               WidgetSpan(
                 child: Image.asset(
+                  color: AppColors.blackColor,
                   Assets.imagesAdd,
                   height: spacerSize12,
                   width: spacerSize12,
-                ),
+                ).paddingOnly(bottom: 3.h),
               ),
               TextSpan(
                 text: " ${AppLocalizations.of(context)!.toAddYourFirstPlant}",

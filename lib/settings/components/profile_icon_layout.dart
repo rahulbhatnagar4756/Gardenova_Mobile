@@ -286,14 +286,14 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ListTile(
-              leading: Icon(Icons.camera_alt, color: AppColors.burntGold),
+              leading: Icon(Icons.camera_alt, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
                 controller.pickImage(isCamera: true);
               },
             ),
             ListTile(
-              leading: Icon(Icons.photo_library, color: AppColors.burntGold),
+              leading: Icon(Icons.photo_library, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
               onTap: () async {
                 controller.pickImage(isCamera: false);

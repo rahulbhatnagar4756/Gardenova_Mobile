@@ -597,7 +597,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get toxicity => 'Toxicidade';
 
   @override
-  String get kasagardemPlantDiagnosis => 'Diagnóstico de plantas Kasagardem';
+  String get kasagardemPlantDiagnosis => 'Diagnóstico de plantas Gardenova';
 
   @override
   String get automationFeature => 'Recurso de automação';
@@ -621,7 +621,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get locationPermissionRequired => 'É necessária autorização para utilizar o local.';
 
   @override
-  String get locationPermissionsAreDenied => 'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Kasagardem.';
+  String get locationPermissionsAreDenied => 'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Gardenova.';
 
   @override
   String get openSettings => 'Abra Configurações';
@@ -642,7 +642,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get courses => 'Cursos';
 
   @override
-  String get siteKasagardem => 'Site Kasagardem';
+  String get siteKasagardem => 'Site Gardenova';
 
   @override
   String get myProfile => 'Meu Perfil';
@@ -984,7 +984,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get customerPlanDesc => 'Customers can\'t find you in the app, and your potential bookings are being suspended.';
 
   @override
-  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Kasagardem?';
+  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Gardenova?';
 
   @override
   String get seePlans => 'Yes, SEE PLANS';

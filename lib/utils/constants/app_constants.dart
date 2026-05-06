@@ -6,7 +6,8 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 var enUS = Locale("en", "US");
 var ptBR = Locale("pt", "BR");
 String userRoleCode = "U";
-String appName = "Kasagardem";
+String appName = "Gardenova";
+// String appName = "Kasagardem";
 
 /*FontSize*/
 const double fontSize9 = 9;
@@ -96,6 +97,8 @@ const double spacerSize370 = 370;
 const double spacerSize400 = 400;
 const double spacerSize500 = 500;
 const double spacerSize600 = 600;
+const double defaultLatitude = 30.70828;
+const double defaultLongitude = 76.68834;
 
 double deviceWidth = MediaQuery.of(Get.context!).size.width;
 double deviceHeight = MediaQuery.of(Get.context!).size.height;

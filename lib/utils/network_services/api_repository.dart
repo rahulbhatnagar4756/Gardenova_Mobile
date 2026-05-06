@@ -15,6 +15,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/network_services/app_exceptions.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import '../../base/dialogs/base_dialog.dart';
 import '../app_config.dart';
 
 class ApiRepository {
@@ -33,7 +34,7 @@ class ApiRepository {
       'Accept-Language':
           Get.locale?.languageCode ??
           SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
-          'pt',
+          'en',
       if (token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
@@ -72,7 +73,7 @@ class ApiRepository {
     }
     http.Response response;
     try {
-      if(showDefaultLoader) {
+      if (showDefaultLoader) {
         showLoader();
       }
       switch (method.toUpperCase()) {
@@ -129,7 +130,7 @@ class ApiRepository {
 
       final responseData = _returnResponse(response);
       // log("API Response::: ${jsonEncode(responseData)}");
-      if(showDefaultLoader) {
+      if (showDefaultLoader) {
         hideLoader();
       }
       if (responseData[ApiKeys.success] == true) {
@@ -159,7 +160,12 @@ class ApiRepository {
     String endPoint, {
     Map<String, String>? headers,
     bool showDefaultLoader = true,
-  }) async => request(ApiKeys.get, endPoint, headers: headers,showDefaultLoader:showDefaultLoader);
+  }) async => request(
+    ApiKeys.get,
+    endPoint,
+    headers: headers,
+    showDefaultLoader: showDefaultLoader,
+  );
 
   Future<dynamic> post(
     String endPoint, {
@@ -196,8 +202,21 @@ class ApiRepository {
         throw BadRequestException(response.body.toString());
 
       case 401:
-        SharedPrefsService.instance.clear();
-        Get.offAllNamed(Routes.login);
+        Future.delayed(Duration.zero, () {
+          BaseDialog.showUnauthorizedDialog(
+            context: Get.context!,
+            message:
+                'Your session has expired. Please login again to continue.',
+            onLoginPressed: () {
+              SharedPrefsService.instance.clear();
+              Get.back();
+              // then navigate
+              Get.offAllNamed(Routes.login);
+            },
+          );
+        });
+      // SharedPrefsService.instance.clear();
+      // Get.offAllNamed(Routes.login);
       case 403:
         throw UnauthorisedException(response.body.toString());
       case 404:

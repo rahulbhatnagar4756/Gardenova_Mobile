@@ -94,7 +94,6 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                       child: Center(
                         child: BaseText(
                           text: AppLocalizations.of(context)!.noPlantsFound,
-                          textColor: AppColors.offWhite,
                         ),
                       ),
                     )
@@ -272,7 +271,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: plant.imageUrl ?? "",
-                placeholder: (_, __) => BaseShimmer(),
+                placeholder: (_, __) => BaseShimmer(borderRadious: spacerSize15,),
                 errorWidget: (_, __, ___) => Icon(Icons.broken_image),
               ),
             ),

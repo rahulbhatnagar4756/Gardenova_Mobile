@@ -11,6 +11,7 @@ import '../../plants/myPlants/myPlantsList/my_plants_controller.dart';
 import '../../utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
+import '../dashboard_controller.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
   PlantDiagnosisRepository plantDiagnosisRepository =
@@ -132,6 +133,9 @@ class PlantDiagnosisViewModel extends GetxController {
       case 0:
       // Get.back();
       // Get.back();
+        if(Get.isRegistered<DashboardController>()){
+          Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+        }
         Get.key.currentState?.popUntil(
               (route) => route.settings.name == Routes.dashboard,
         );

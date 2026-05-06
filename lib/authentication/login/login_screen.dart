@@ -27,6 +27,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   @override
   Widget build(BuildContext context) {
 
+
     return PopScope(
       canPop: true,
       /* onPopInvokedWithResult: (result, didPop) {
@@ -45,9 +46,9 @@ class LoginScreen extends GetWidget<LoginViewModel> {
         }},*/
       child: Scaffold(
         backgroundColor: AppColors.appColor,
-        appBar: const BaseAppBar(
+        appBar:  BaseAppBar(
           // isAppIconVisible: false,
-          isBackButtonVisible: true,
+          isBackButtonVisible: Get.key.currentState!.canPop(),
         ),
         body: Column(
           children: [

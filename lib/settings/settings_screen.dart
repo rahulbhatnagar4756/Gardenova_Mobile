@@ -80,13 +80,13 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               Get.toNamed(Routes.changePassword);
             },
           ),
-          SizedBox(height: 10.h,),
+          // SizedBox(height: 10.h,),
 
-          SettingsItemLayout(
-            icon: Icons.translate,
-            title: getTitle(),
-            onTap: () => _changeLanguage(),
-          ),
+          // SettingsItemLayout(
+          //   icon: Icons.translate,
+          //   title: getTitle(),
+          //   onTap: () => _changeLanguage(),
+          // ),
           SizedBox(height: 10.h,),
           SettingsItemLayout(
             icon: Icons.sticky_note_2_outlined,
@@ -148,12 +148,12 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                 Get.toNamed(Routes.changePassword);
               },
             ),
-            SizedBox(height: 10.h,),
-            SettingsItemLayout(
-              icon: Icons.translate,
-              title: getTitle(),
-              onTap: () => _changeLanguage(),
-            ),
+            // SizedBox(height: 10.h,),
+            // SettingsItemLayout(
+            //   icon: Icons.translate,
+            //   title: getTitle(),
+            //   onTap: () => _changeLanguage(),
+            // ),
             SizedBox(height: 10.h,),
             SettingsItemLayout(
               icon: Icons.sticky_note_2_outlined,
@@ -660,7 +660,9 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       onButtonPressed: () {
         SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
         SharedPrefsService.instance.clear();
-        Get.offAllNamed(Routes.chooseAccountType);
+        // Get.offAllNamed(Routes.chooseAccountType);
+        SharedPrefsService.instance.setString(AppKeys.role,  AppKeys.user);
+        Get.offAllNamed(Routes.introduction);
       },
     );
   }

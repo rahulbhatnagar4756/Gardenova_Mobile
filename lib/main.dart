@@ -64,7 +64,7 @@ Future<void> main() async {
     BaseCalculateRemainingDays().calculateRemainingDays(createdAt);
   }
 
-  var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "";
+  var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "en";
 
   Locale selectedLocale = locale.isEmpty
       // ? ptBR
@@ -72,9 +72,15 @@ Future<void> main() async {
       : locale == ptBR.languageCode
       ? ptBR
       : enUS;
+  selectedLocale = enUS;
 
   await initServices();
   FlutterNativeSplash.remove();
+
+  SharedPrefsService.instance.setString(
+    AppKeys.selectedLang,
+    Get.locale?.languageCode ?? 'en',
+  );
   runApp(MyApp(locale: selectedLocale));
 }
 
@@ -87,6 +93,7 @@ Future<void> initServices() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, this.locale});
+
   final Locale? locale;
 
   @override
@@ -116,7 +123,7 @@ class MyApp extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: () => Utils.hideKeyboard(),
             child: GetMaterialApp(
-              scrollBehavior:  const MaterialScrollBehavior().copyWith(
+              scrollBehavior: const MaterialScrollBehavior().copyWith(
                 overscroll: false,
                 physics: ClampingScrollPhysics(),
               ),
@@ -133,12 +140,13 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 scaffoldBackgroundColor: AppColors.appColor,
-                colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColor),
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: AppColors.appColor,
+                ),
                 useMaterial3: true,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 appBarTheme: const AppBarTheme(
-
                   surfaceTintColor: Colors.transparent,
                 ),
               ),

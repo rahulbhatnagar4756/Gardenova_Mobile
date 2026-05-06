@@ -46,12 +46,12 @@ android {
   /*  flavorDimensions.add("default")
       productFlavors.create("prod") {
           dimension = "default"
-          resValue("string", "app_name", "Kasagardem")
+          resValue("string", "app_name", "Gardenova")
       }
       productFlavors.create("dev") {
           dimension = "default"
           applicationIdSuffix = ""
-          resValue("string", "app_name", "Kasagardem Dev")
+          resValue("string", "app_name", "Gardenova Dev")
           versionNameSuffix = ".dev"
       }*/
     buildTypes {

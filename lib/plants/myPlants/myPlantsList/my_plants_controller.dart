@@ -56,6 +56,9 @@ class MyPlantsController extends GetxController {
     // }
     switch (index) {
       case 0:
+        if(Get.isRegistered<DashboardController>()){
+          Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+        }
         Get.until((route) => route.settings.name == Routes.dashboard);
         break;
       case 1:
@@ -133,22 +136,23 @@ class MyPlantsController extends GetxController {
       PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(
         response,
       );
+
       myPlantList.addAll(allPlantsResponse.data!.plants ?? []);
 
-      final List<PlantModel> mockData = List.generate(20, (index) {
-        return PlantModel(
-          id: index,
-          plantId: index,
-          commonName:
-              "Plant ${index + 1} slkdfja lwks;fj alksdfjlk;asdfj;lkasjdf ;lkajsdf;l kajsfdsadf",
-          scientificName:
-              "Scientific ${index + 1} asdlkf.jaskl;dfjaslkdfjsa; dfj;lkasjdf;lksajfk;lajs;lfkjasd;lfkjsa",
-          imageUrl: "https://picsum.photos/200/300?random=$index",
-          wateringReminderFrequency: (index % 5) + 1,
-        );
-      });
-
-      myPlantList.addAll(mockData);
+      // final List<PlantModel> mockData = List.generate(20, (index) {
+      //   return PlantModel(
+      //     id: index,
+      //     plantId: index,
+      //     commonName:
+      //         "Plant ${index + 1} slkdfja lwks;fj alksdfjlk;asdfj;lkasjdf ;lkajsdf;l kajsfdsadf",
+      //     scientificName:
+      //         "Scientific ${index + 1} asdlkf.jaskl;dfjaslkdfjsa; dfj;lkasjdf;lksajfk;lajs;lfkjasd;lfkjsa",
+      //     imageUrl: "https://picsum.photos/200/300?random=$index",
+      //     wateringReminderFrequency: (index % 5) + 1,
+      //   );
+      // });
+      //
+      // myPlantList.addAll(mockData);
 
       isLoadMoreVisible.value =
           allPlantsResponse.data!.totalCount! > myPlantList.length

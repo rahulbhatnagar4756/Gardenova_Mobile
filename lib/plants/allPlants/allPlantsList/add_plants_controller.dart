@@ -68,6 +68,9 @@ class AllPlantsController extends GetxController {
       case 0:
         // Get.back();
         // Get.toNamed(Routes.dashboard);
+        if(Get.isRegistered<DashboardController>()){
+          Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+        }
         Get.until((route) => route.settings.name == Routes.dashboard);
         break;
 
@@ -106,9 +109,12 @@ class AllPlantsController extends GetxController {
         // Get.back();
         // Get.back();
         if (Get.isRegistered<MyPlantsController>()) {
-          Get.find<MyPlantsController>().callGetMyPlantListApi();
+          var con = Get.find<MyPlantsController>();
+          // con.searchController.text = '';
+          // con.myPlantList.clear();
+          // con.callGetMyPlantListApi();
           Get.until((route) => route.settings.name == Routes.myPlantsScreen);
-        }else{
+        } else {
           Get.back();
           Get.offNamed(Routes.myPlantsScreen);
           // Get.back();
@@ -138,6 +144,9 @@ class AllPlantsController extends GetxController {
   Future<void> callGetAllPlantListApi({String searchName = ''}) async {
     allPlantList.clear();
     isLoading.value = true;
+    if(searchName.isEmpty){
+      isLoadMoreRunning.value=false;
+    }
     await getAllPlantList(searchName: searchName, showDefaultLoader: false);
     isLoading.value = false;
   }

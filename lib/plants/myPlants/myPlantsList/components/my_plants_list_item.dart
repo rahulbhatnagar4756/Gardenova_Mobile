@@ -46,7 +46,7 @@ class MyPlantsListItem extends StatelessWidget {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: item.imageUrl ?? "",
-                placeholder: (_, __) => const BaseShimmer(),
+                placeholder: (_, __) => const BaseShimmer(borderRadious: spacerSize16,),
                 errorWidget: (_, __, ___) =>
                     Icon(Icons.broken_image, color: AppColors.offWhite10),
               ),

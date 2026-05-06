@@ -151,6 +151,9 @@ class SettingsViewModel extends GetxController {
         profileImage.value = updateProfileResponse.profileImage ?? "";
       }
       Get.back();
+    }else {
+      profileImage.value = '';
+      imageFile.value=File('');
     }
   }
   // updateProfile() async {
@@ -239,7 +242,9 @@ class SettingsViewModel extends GetxController {
     if (response != null) {
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
       SharedPrefsService.instance.clear();
-      Get.offAllNamed(Routes.chooseAccountType);
+      // Get.offAllNamed(Routes.chooseAccountType);
+      SharedPrefsService.instance.setString(AppKeys.role,  AppKeys.user);
+      Get.offAllNamed(Routes.introduction);
     }
   }
 }

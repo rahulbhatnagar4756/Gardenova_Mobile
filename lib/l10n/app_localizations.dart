@@ -1274,7 +1274,7 @@ abstract class AppLocalizations {
   /// No description provided for @kasagardemPlantDiagnosis.
   ///
   /// In en, this message translates to:
-  /// **'Kasagardem Plant Diagnosis'**
+  /// **'Gardenova Plant Diagnosis'**
   String get kasagardemPlantDiagnosis;
 
   /// No description provided for @automationFeature.
@@ -1322,7 +1322,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationPermissionsAreDenied.
   ///
   /// In en, this message translates to:
-  /// **'Location permissions are permanently denied. Please go to your app settings to enable them for Kasagardem.'**
+  /// **'Location permissions are permanently denied. Please go to your app settings to enable them for Gardenova.'**
   String get locationPermissionsAreDenied;
 
   /// No description provided for @openSettings.
@@ -2048,7 +2048,7 @@ abstract class AppLocalizations {
   /// No description provided for @customerPlanDesc2.
   ///
   /// In en, this message translates to:
-  /// **'Do you want to continue receiving customers through Kasagardem?'**
+  /// **'Do you want to continue receiving customers through Gardenova?'**
   String get customerPlanDesc2;
 
   /// No description provided for @seePlans.

@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:label="Kasagardem"
+        android:label="Gardenova"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
@@ -36,7 +36,7 @@
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="Kasagardem" />
+            android:label="Gardenova" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">

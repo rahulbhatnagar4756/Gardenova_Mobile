@@ -86,7 +86,9 @@ class PlantRecommendations extends StatelessWidget {
                                   "",
                               placeholder: (context, url) =>
                                   const BaseShimmer(),
+
                               errorWidget: (context, url, error) {
+
                                 return BaseBorderedContainer(
                                   height: Get.height * .23,
                                   alignment: Alignment.center,
@@ -94,7 +96,7 @@ class PlantRecommendations extends StatelessWidget {
                                   childWidget: Icon(
                                     Icons.broken_image_rounded,
                                     size: spacerSize40,
-                                    color: AppColors.offWhite10,
+                                    color: AppColors.liteGreyColor,
                                   ),
                                 );
                               },

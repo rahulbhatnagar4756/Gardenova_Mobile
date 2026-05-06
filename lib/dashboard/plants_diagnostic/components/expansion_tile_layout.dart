@@ -16,8 +16,8 @@ class ExpansionTileLayout extends StatelessWidget {
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         childrenPadding: EdgeInsets.zero,
-        iconColor: AppColors.burntGold,
-        collapsedIconColor: AppColors.burntGold,
+        iconColor: AppColors.liteGreyColor,
+        collapsedIconColor: AppColors.liteGreyColor,
         tilePadding: EdgeInsets.zero,
         title: BaseText(
           text: title ?? "",

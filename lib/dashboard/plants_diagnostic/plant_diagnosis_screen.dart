@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
@@ -76,7 +77,7 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
                           childWidget: Icon(
                             Icons.broken_image_rounded,
                             size: spacerSize40,
-                            color: AppColors.offWhite10,
+                            color: AppColors.liteGreyColor,
                           ),
                         );
                       },
@@ -85,7 +86,9 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
                       fit: BoxFit.fill,
                     )
                   : controller.isLoading.value
-                  ? BaseShimmer()
+                  ? BaseShimmer(
+                      borderRadious: 20,
+                    ).paddingSymmetric(horizontal: 20.w)
                   : SizedBox(),
             ),
             // CircularBottomAppBar(

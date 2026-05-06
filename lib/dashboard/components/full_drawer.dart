@@ -211,7 +211,11 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                     drawerItem(
                                       title: AppLocalizations.of(Get.context!)!.store,
                                       onTap: () {
-                                        launchExternalUrl("https://loja.kasagardem.com.br/");
+                                        // launchExternalUrl("https://loja.kasagardem.com.br/");
+                                        BaseSnackBar.show(
+                                            title: 'Temporarily Unavailable',
+                                          message:  'The store is currently on hold. We’ll be back soon with updates.',
+                                        );
                                       },
                                     ),
                                    /* drawerItem(

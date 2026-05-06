@@ -148,25 +148,30 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                         ),
                         Row(
                           children: [
-                            eventTile(
-                              Assets.imagesWatering,
-                              AppLocalizations.of(context)!.watering,
-                              controller
-                                          .plantDetailData
-                                          .value
-                                          .data
-                                          ?.reminder
-                                          ?.nextWateredAt ==
-                                      null
-                                  ? ""
-                                  : "${AppLocalizations.of(context)!.scheduledFor} "
-                                        "${getDayName(context, controller.plantDetailData.value.data?.reminder?.nextWateredAt)}",
+                            Flexible(
+                              child: eventTile(
+                                Assets.imagesWatering,
+                                AppLocalizations.of(context)!.watering,
+                                controller
+                                            .plantDetailData
+                                            .value
+                                            .data
+                                            ?.reminder
+                                            ?.nextWateredAt ==
+                                        null
+                                    ? ""
+                                    : "${AppLocalizations.of(context)!.scheduledFor} "
+                                          "${getDayName(context, controller.plantDetailData.value.data?.reminder?.nextWateredAt)}",
+                              ),
                             ),
-                            Expanded(child: SizedBox()),
-                            eventTile(
-                              Assets.imagesFertilizing,
-                              AppLocalizations.of(Get.context!)!.fertilizing,
-                              "${AppLocalizations.of(context)!.scheduledFor}\t${AppLocalizations.of(context)!.next}\t${AppLocalizations.of(context)!.week}",
+                            SizedBox(width: 15.w,),
+                            // Expanded(child: SizedBox()),
+                            Flexible(
+                              child: eventTile(
+                                Assets.imagesFertilizing,
+                                AppLocalizations.of(Get.context!)!.fertilizing,
+                                "${AppLocalizations.of(context)!.scheduledFor}\t${AppLocalizations.of(context)!.next}\t${AppLocalizations.of(context)!.week}",
+                              ),
                             ),
                           ],
                         ),
@@ -211,10 +216,10 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
     if (date == null) return "";
 
     String lang =
-        SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "pt";
+        SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "en";
 
     if (lang.isEmpty) {
-      lang = "pt"; // fallback
+      lang = "en"; // fallback
     }
 
     return DateFormat('EEEE', lang).format(date);
@@ -339,8 +344,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
 
     if (reminder == null) return const SizedBox();
     return Container(
-      // color: Colors.red,
-      height: 130.h,
+      height: 145.h,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(

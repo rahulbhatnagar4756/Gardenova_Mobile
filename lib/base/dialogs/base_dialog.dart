@@ -159,4 +159,44 @@ class BaseDialog {
       ),
     );
   }
+  static void showUnauthorizedDialog({
+    required BuildContext context,
+    required VoidCallback onLoginPressed,
+    required String message,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // ❌ can't close by tapping outside
+      builder: (context) => PopScope(
+        canPop: false, // ❌ disable back button
+        child: AlertDialog(
+          backgroundColor: AppColors.whiteColor,
+          title: BaseText(
+            text: 'Session Expired',
+            fontFamily: AppKeys.poppins,
+            fontSize: fontSize22,
+            fontWeight: FontWeight.w700,
+          ),
+          content: BaseText(
+            text: message,
+            fontSize: fontSize16,
+            textAlign: TextAlign.start,
+            textColor: AppColors.liteGreyColor,
+            fontWeight: FontWeight.w400,
+          ),
+          actions: [
+            TextButton(
+              onPressed: onLoginPressed,
+              child: BaseText(
+                text: 'Login',
+                fontSize: fontSize14,
+                textColor: AppColors.greenColor,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

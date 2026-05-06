@@ -12,6 +12,8 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
+import '../utils/constants/app_color.dart';
+import '../utils/constants/app_constants.dart';
 import '../utils/location_service.dart';
 
 class DashboardController extends GetxController {
@@ -27,6 +29,7 @@ class DashboardController extends GetxController {
   Position? position;
   final LocationService _locationService = LocationService();
   bool _isFetching = false;
+  var refreshSoilAnalysis = false.obs;
 
   @override
   void onInit() {
@@ -50,6 +53,7 @@ class DashboardController extends GetxController {
         //       (route) => false,
         // );
         // Get.until((route) => route.settings.name == Routes.dashboard);
+        refreshSoilAnalysis.refresh();
         Get.back();
         break;
       case 1:
@@ -146,13 +150,16 @@ class DashboardController extends GetxController {
     try {
       position = await _locationService.getCurrentLocation();
 
-      lat = position?.latitude ?? 0.0;
-      long = position?.longitude ?? 0.0;
+      lat = position?.latitude ?? defaultLatitude;
+      long = position?.longitude ?? defaultLongitude;
       // Save locally
       sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
       sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
       // sharedPrefsService.setString("lat", lat.toString());
       // sharedPrefsService.setString("long", long.toString());
+      if ((Get.isDialogOpen ?? false) == true) {
+        Get.back();
+      }
 
       debugPrint("LAT: $lat, LNG: $long");
     } catch (e) {
@@ -164,7 +171,15 @@ class DashboardController extends GetxController {
 
   Future<void> pickImage({required bool isCamera}) async {
     try {
-      if (position != null) {
+      if (position != null ||_isFetching) {
+
+        if(_isFetching && position == null){
+          BaseSnackBar.show(
+            title: 'Please Wait',
+            message: 'Location is being fetched. Please wait...',
+          );
+          return;
+        }
         final ImagePicker picker = ImagePicker();
         final XFile? pickedFile = await picker.pickImage(
           source: isCamera ? ImageSource.camera : ImageSource.gallery,
@@ -183,70 +198,11 @@ class DashboardController extends GetxController {
           }
         }
       } else {
-        //   getCurrentLocation().then((value) => pickImage(isCamera: isCamera));
+        getCurrentLocation();
       }
     } catch (e) {
       debugPrint("Error:::$e");
     }
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      if (Platform.isIOS) {
-        await Get.dialog(
-          AlertDialog(
-            title: BaseText(
-              text: AppLocalizations.of(
-                Get.context!,
-              )!.locationPermissionRequired,
-            ),
-            content: BaseText(
-              text: AppLocalizations.of(
-                Get.context!,
-              )!.locationPermissionsAreDenied,
-            ),
-            actions: [
-              TextButton(
-                child: BaseText(
-                  text: AppLocalizations.of(Get.context!)!.cancel,
-                ),
-                onPressed: () => Get.back(),
-              ),
-              TextButton(
-                child: BaseText(
-                  text: AppLocalizations.of(Get.context!)!.openSettings,
-                ),
-                onPressed: () {
-                  Geolocator.openAppSettings();
-                  Get.back();
-                },
-              ),
-            ],
-          ),
-        );
-        return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.',
-        );
-      }
-
-      return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.',
-      );
-    }
-    return await Geolocator.getCurrentPosition();
-  }
 }

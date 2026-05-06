@@ -236,7 +236,7 @@ class Routes {
       GetPage(
         name: Routes.privacyPolicy,
         page: () =>
-            PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_pt.html'),
+            PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_en.html'),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
@@ -245,7 +245,7 @@ class Routes {
       GetPage(
         name: Routes.termsAndConditions,
         page: () => TermsAndConditions(
-          filePath: 'assets/html/terms_and_conditions_pt.html',
+          filePath: 'assets/html/terms_and_conditions_en.html',
         ),
         transition: Utils.transition,
         transitionDuration: const Duration(
