@@ -27,7 +27,20 @@ class AllPlantsDetailsController extends GetxController {
   PlantsRepository plantsRepository = PlantsRepository();
   Rx<PlantDetailsResponseModel> plantDetailData =
       PlantDetailsResponseModel().obs;
-  final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
+  final List<int> frequencyOptions = [
+    1,
+    2,
+    3,
+    5,
+    7,
+    10,
+    15,
+    20,
+    30,
+    45,
+    60,
+    90,
+  ];
 
   @override
   void onInit() {
@@ -66,68 +79,70 @@ class AllPlantsDetailsController extends GetxController {
   }
 
   void validateAndSubmit(BuildContext context) {
-    if (!isWateringOn.value &&
-        !isFertilizingOn.value &&
-        !isPruningOn.value &&
-        !isCriticalOn.value) {
-      BaseSnackBar.show(
-        title: appName,
-        message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
-      );
-      return;
-    }
+    if (screenType.value != "add") {
+      if (!isWateringOn.value &&
+          !isFertilizingOn.value &&
+          !isPruningOn.value &&
+          !isCriticalOn.value) {
+        BaseSnackBar.show(
+          title: appName,
+          message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
+        );
+        return;
+      }
 
-    if (isWateringOn.value) {
-      if (wateringFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectWateringFrequency,
-        );
-        return;
+      if (isWateringOn.value) {
+        if (wateringFrequency.value == 0) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectWateringFrequency,
+          );
+          return;
+        }
+        if (wateringTime.isEmpty) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectWateringTime,
+          );
+          return;
+        }
       }
-      if (wateringTime.isEmpty) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectWateringTime,
-        );
-        return;
-      }
-    }
 
-    if (isFertilizingOn.value) {
-      if (fertilizingFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectFertilizerFrequency,
-        );
-        return;
+      if (isFertilizingOn.value) {
+        if (fertilizingFrequency.value == 0) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectFertilizerFrequency,
+          );
+          return;
+        }
+        if (fertilizingTime.isEmpty) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectFertilizerTime,
+          );
+          return;
+        }
       }
-      if (fertilizingTime.isEmpty) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectFertilizerTime,
-        );
-        return;
-      }
-    }
 
-    if (isPruningOn.value) {
-      if (pruningFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectPruningFrequency,
-        );
-        return;
+      if (isPruningOn.value) {
+        if (pruningFrequency.value == 0) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectPruningFrequency,
+          );
+          return;
+        }
       }
-    }
 
-    if (isCriticalOn.value) {
-      if (criticalCareFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectGeneralFrequency,
-        );
-        return;
+      if (isCriticalOn.value) {
+        if (criticalCareFrequency.value == 0) {
+          BaseSnackBar.show(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectGeneralFrequency,
+          );
+          return;
+        }
       }
     }
     if (screenType.value == "add") {
@@ -324,7 +339,6 @@ class AllPlantsDetailsController extends GetxController {
       Get.back(result: true);
     }
   }
-  testing(){
 
-  }
+  testing() {}
 }

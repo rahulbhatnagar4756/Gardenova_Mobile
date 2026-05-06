@@ -12,6 +12,7 @@ import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
+import '../../model/plant_model.dart';
 import '../../myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 import 'add_plants_controller.dart';
 
@@ -29,10 +30,12 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
       ),
       appBar: controller.isUserLoggedIn.value
           ? PreferredSize(
-              preferredSize: Size.fromHeight(spacerSize80),
+              // preferredSize: Size.fromHeight(spacerSize80),
+              preferredSize: Size.fromHeight(110.h + 30.h),
               child: Builder(
                 builder: (context) {
                   return CircularBottomAppBar(
+                    isBackButtonVisible: true,
                     showMenuIcon: true,
                     onSettingPressed: () {
                       Scaffold.of(context).openDrawer();
@@ -105,10 +108,10 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                             int firstIndex = rowIndex * 2;
                             int secondIndex = firstIndex + 1;
 
-                            var firstPlant =
+                            PlantModel firstPlant =
                                 controller.allPlantList[firstIndex];
 
-                            var secondPlant =
+                            PlantModel? secondPlant =
                                 secondIndex < controller.allPlantList.length
                                 ? controller.allPlantList[secondIndex]
                                 : null;
@@ -172,7 +175,6 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
     return Container(
       color: AppColors.appColor,
       child: LayoutBuilder(
-
         builder: (context, constrantBox) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +189,9 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
               SizedBox(height: spacerSize10),
 
               BaseText(
-                text: AppLocalizations.of(context)!.addYourFirstPlantDescription,
+                text: AppLocalizations.of(
+                  context,
+                )!.addYourFirstPlantDescription,
                 textColor: AppColors.liteGreyColor,
               ),
               SizedBox(height: spacerSize10),
@@ -239,13 +243,13 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
               ),
             ],
           );
-        }
+        },
       ),
     );
   }
 
   /// 🔹 CARD
-  Widget plantCard(var plant, int index) {
+  Widget plantCard(PlantModel plant, int index) {
     return GestureDetector(
       onTap: () {
         controller.selectPlant(index);
@@ -271,7 +275,8 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: plant.imageUrl ?? "",
-                placeholder: (_, __) => BaseShimmer(borderRadious: spacerSize15,),
+                placeholder: (_, __) =>
+                    BaseShimmer(borderRadious: spacerSize15),
                 errorWidget: (_, __, ___) => Icon(Icons.broken_image),
               ),
             ),
@@ -282,7 +287,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 children: [
                   SizedBox(height: spacerSize6),
                   BaseText(
-                    text: plant.commonName ?? "N/A",
+                    text: plant.commonName ?? AppLocalizations.of(Get.context!)!.noDataNa,
                     fontWeight: FontWeight.w600,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

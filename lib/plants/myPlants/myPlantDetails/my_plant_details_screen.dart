@@ -15,6 +15,7 @@ import '../../../base/widgets/base_text.dart';
 import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../model/plant_details_model.dart';
 import 'components/plant_state_item.dart';
 
 class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
@@ -74,9 +75,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                             .data
                                             ?.plant
                                             ?.commonName ??
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.noDataNa,
+                                        AppLocalizations.of(context)!.noDataNa,
                                     fontFamily: AppKeys.poppins,
                                     fontSize: fontSize20,
                                     fontWeight: FontWeight.w700,
@@ -137,45 +136,13 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                           fontWeight: FontWeight.w400,
                           textColor: AppColors.liteGreyColor,
                         ),
-                        Divider(color: AppColors.backgroundGrey),
+                        Divider(color: AppColors.backgroundGrey, height: 1),
                         progressCard(context),
-                        Divider(color: AppColors.backgroundGrey),
-                        statsRow(controller: controller),
-                        Divider(color: AppColors.backgroundGrey),
 
-                        sectionHeader(
-                          AppLocalizations.of(Get.context!)!.upcomingEvents,
-                        ),
-                        Row(
-                          children: [
-                            Flexible(
-                              child: eventTile(
-                                Assets.imagesWatering,
-                                AppLocalizations.of(context)!.watering,
-                                controller
-                                            .plantDetailData
-                                            .value
-                                            .data
-                                            ?.reminder
-                                            ?.nextWateredAt ==
-                                        null
-                                    ? ""
-                                    : "${AppLocalizations.of(context)!.scheduledFor} "
-                                          "${getDayName(context, controller.plantDetailData.value.data?.reminder?.nextWateredAt)}",
-                              ),
-                            ),
-                            SizedBox(width: 15.w,),
-                            // Expanded(child: SizedBox()),
-                            Flexible(
-                              child: eventTile(
-                                Assets.imagesFertilizing,
-                                AppLocalizations.of(Get.context!)!.fertilizing,
-                                "${AppLocalizations.of(context)!.scheduledFor}\t${AppLocalizations.of(context)!.next}\t${AppLocalizations.of(context)!.week}",
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(color: AppColors.backgroundGrey),
+                        statsRow(controller: controller),
+                        upcomingEvents(controller: controller),
+
+                        Divider(color: AppColors.backgroundGrey, height: 1),
                         sectionHeader(
                           AppLocalizations.of(Get.context!)!.plantHistory,
                         ),
@@ -209,6 +176,61 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
           ],
         ),
       ),
+    );
+  }
+
+  bool shouldShowUpcomingEvents(MyPlantDetailsController controller) {
+    final reminder = controller.plantDetailData.value.data?.reminder;
+
+    return reminder?.nextWateredAt != null ||
+        reminder?.fertilizerReminderFrequency != null ||
+        reminder?.pruningReminderFrequency != null && false;
+  }
+
+  Widget upcomingEvents({required MyPlantDetailsController controller}) {
+    if (!shouldShowUpcomingEvents(controller)) {
+      return const SizedBox();
+    }
+
+    final context = Get.context!;
+
+    return Column(
+      spacing: spacerSize16,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(color: AppColors.backgroundGrey, height: 1),
+        sectionHeader(AppLocalizations.of(context)!.upcomingEvents),
+        Row(
+          children: [
+            Flexible(
+              child: eventTile(
+                Assets.imagesWatering,
+                AppLocalizations.of(context)!.watering,
+                controller
+                            .plantDetailData
+                            .value
+                            .data
+                            ?.reminder
+                            ?.nextWateredAt ==
+                        null
+                    ? ""
+                    : "${AppLocalizations.of(context)!.scheduledFor} "
+                          "${getDayName(context, controller.plantDetailData.value.data?.reminder?.nextWateredAt)}",
+              ),
+            ),
+            SizedBox(width: 15.w),
+            Flexible(
+              child: eventTile(
+                Assets.imagesFertilizing,
+                AppLocalizations.of(context)!.fertilizing,
+                "${AppLocalizations.of(context)!.scheduledFor} "
+                "${AppLocalizations.of(context)!.next} "
+                "${AppLocalizations.of(context)!.week}",
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -324,20 +346,34 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
   }
 
   static Widget statsRow({required MyPlantDetailsController controller}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        BaseText(
-          text: AppLocalizations.of(Get.context!)!.plantStats,
-          fontFamily: AppKeys.poppins,
-          fontSize: fontSize14,
-          fontWeight: FontWeight.w700,
-          textColor: AppColors.greenColor,
-        ).marginOnly(bottom: spacerSize20),
-        buildReminderList(controller)
-      ],
-    );
+    ReminderModel? reminder = controller.plantDetailData.value.data?.reminder;
+    bool reindePruningrReq = ((reminder?.pruningReminderFrequency ?? 0) > 0);
+    bool reinderFertilizerReq =
+        ((reminder?.fertilizerReminderFrequency ?? 0) > 0);
+    bool reinderWateringReq = ((reminder?.wateringReminderFrequency ?? 0) > 0);
+
+    bool needToShow =
+        reindePruningrReq || reinderFertilizerReq || reinderWateringReq;
+    return needToShow
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: spacerSize8),
+              Divider(color: AppColors.backgroundGrey, height: 1),
+              SizedBox(height: spacerSize16),
+              BaseText(
+                text: AppLocalizations.of(Get.context!)!.plantStats,
+                fontFamily: AppKeys.poppins,
+                fontSize: fontSize14,
+                fontWeight: FontWeight.w700,
+                textColor: AppColors.greenColor,
+              ).marginOnly(bottom: spacerSize20),
+              buildReminderList(controller),
+            ],
+          )
+        : const SizedBox();
   }
+
   static Widget buildReminderList(MyPlantDetailsController controller) {
     final reminder = controller.plantDetailData.value.data?.reminder;
     final loc = AppLocalizations.of(Get.context!);
@@ -352,9 +388,9 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
             if ((reminder.wateringReminderFrequency ?? 0) > 0)
               PlantStateItem(
                 icon: Assets.imagesWatering,
-                label: loc?.water??'',
+                label: loc?.water ?? '',
                 value:
-                "${loc!.inText.capitalizeFirst} ${reminder.wateringReminderFrequency} ${loc.week}",
+                    "${loc!.inText.capitalizeFirst} ${reminder.wateringReminderFrequency} ${loc.week}",
               ),
 
             if ((reminder.fertilizerReminderFrequency ?? 0) > 0)
@@ -362,7 +398,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                 icon: Assets.imagesFertilizing,
                 label: loc!.fertilizing,
                 value:
-                "${loc.every} ${reminder.fertilizerReminderFrequency} ${loc.week}",
+                    "${loc.every} ${reminder.fertilizerReminderFrequency} ${loc.week}",
               ),
 
             if ((reminder.pruningReminderFrequency ?? 0) > 0)
@@ -370,7 +406,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                 icon: Assets.imagesPruning,
                 label: loc!.pruning,
                 value:
-                "${loc.inText.capitalizeFirst} ${reminder.pruningReminderFrequency} ${loc.week}",
+                    "${loc.inText.capitalizeFirst} ${reminder.pruningReminderFrequency} ${loc.week}",
               ),
           ],
         ),
@@ -409,6 +445,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
     //   ),
     // );
   }
+
   static Widget eventTile(String icon, String title, String subtitle) {
     return Container(
       padding: const EdgeInsets.all(spacerSize15),
@@ -520,6 +557,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
       buttonLabel: AppLocalizations.of(context)!.editPlant,
       fontSize: fontSize16,
       textColor: Colors.white,
+      bottomPadding: true,
       buttonWidth: double.infinity,
     );
   }

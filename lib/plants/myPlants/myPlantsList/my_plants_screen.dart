@@ -35,12 +35,14 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
 
       /// 🔹 AppBar (only this needs Obx)
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(spacerSize80),
+        // preferredSize: Size.fromHeight(spacerSize80),
+        preferredSize: Size.fromHeight(110.h + 30.h),
         child: Obx(() {
           return controller.isUserLoggedIn.value
               ? Builder(
                   builder: (context) {
                     return CircularBottomAppBar(
+                      isBackButtonVisible: true,
                       showMenuIcon: true,
                       onSettingPressed: () {
                         Scaffold.of(context).openDrawer();

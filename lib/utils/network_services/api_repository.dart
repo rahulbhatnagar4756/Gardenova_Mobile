@@ -28,13 +28,15 @@ class ApiRepository {
 
   Map<String, String> _buildDefaultHeaders() {
     final token = SharedPrefsService.instance.getToken();
-    debugPrint("Header-Token::::$token");
+    final String accecptLanguage =
+        Get.locale?.languageCode ??
+        SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
+        'en';
+    debugPrint("Header-Token::::$token, accecptLanguage $accecptLanguage");
     return {
       'Content-Type': 'application/json',
-      'Accept-Language':
-          Get.locale?.languageCode ??
-          SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
-          'en',
+      'Accept-Language': accecptLanguage,
+      'accept-language': accecptLanguage,
       if (token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
