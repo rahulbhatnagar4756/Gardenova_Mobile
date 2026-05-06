@@ -10,11 +10,13 @@ class BaseShimmer extends StatelessWidget {
     super.key,
     this.height,
     this.width,
+    this.borderRadious,
     this.backgroundColor = AppColors.darkGreen,
   });
 
   final double? height;
   final double? width;
+  final double? borderRadious;
   final Color? backgroundColor;
 
   @override
@@ -27,17 +29,21 @@ class BaseShimmer extends StatelessWidget {
       backgroundColor: AppColors.greenColor,
       height: spacerSize310,
       width: Get.width,
-      childWidget: Shimmer(
-        color: AppColors.offWhite10,
-        colorOpacity: 0.25,
-        interval: Duration(milliseconds: 5),
-        duration: Duration(milliseconds: 3500),
-        child: Container(
-          height: height ?? Get.height * .27,
-          width: width ?? Get.width,
-          decoration: BoxDecoration(
-            color: AppColors.appColor,
-            borderRadius: BorderRadius.circular(spacerSize14),
+      borderRadius:borderRadious??0 ,
+      childWidget: ClipRRect(
+        borderRadius:BorderRadius.circular( borderRadious??0 ),
+        child: Shimmer(
+          color: AppColors.greenColor,
+          colorOpacity: 0.25,
+          interval: Duration(milliseconds: 5),
+          duration: Duration(milliseconds: 3500),
+          child: Container(
+            height: height ?? Get.height * .27,
+            width: width ?? Get.width,
+            decoration: BoxDecoration(
+              color: AppColors.toToLiteGreenColor,
+              borderRadius: BorderRadius.circular(spacerSize14),
+            ),
           ),
         ),
       ),

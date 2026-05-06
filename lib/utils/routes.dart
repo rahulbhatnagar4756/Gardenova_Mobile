@@ -23,7 +23,7 @@ import 'package:kasagardem/introduction/question/components/report_success_scree
 import 'package:kasagardem/introduction/question/question_screen.dart';
 import 'package:kasagardem/introduction/question/question_view_model.dart';
 import 'package:kasagardem/plants/allPlants/allPlantsDetails/all_plants_details_controller.dart';
-import 'package:kasagardem/plants/allPlants/allPlantsList/all_plants_list_screen.dart';
+import 'package:kasagardem/plants/allPlants/allPlantsList/add_plant_list_screen.dart';
 import 'package:kasagardem/professional/myLead/lead_details_screen.dart';
 import 'package:kasagardem/professional/myLead/my_lead_controller.dart';
 import 'package:kasagardem/professional/myLead/my_lead_screen.dart';
@@ -42,7 +42,7 @@ import 'package:kasagardem/settings/terms_and_conditions.dart';
 import 'package:kasagardem/splash_screen.dart';
 
 import '../plants/allPlants/allPlantsDetails/all_plants_details_screen.dart';
-import '../plants/allPlants/allPlantsList/all_plants_controller.dart';
+import '../plants/allPlants/allPlantsList/add_plants_controller.dart';
 import '../plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
 import '../plants/myPlants/myPlantDetails/my_plant_details_screen.dart';
 import '../plants/myPlants/myPlantsList/my_plants_controller.dart';

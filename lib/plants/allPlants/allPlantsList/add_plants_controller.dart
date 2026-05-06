@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:kasagardem/plants/model/plant_model.dart';
 import 'package:kasagardem/plants/plant_repository.dart';
+import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
@@ -23,11 +25,19 @@ class AllPlantsController extends GetxController {
   RxBool isSearching = false.obs;
   RxBool isLoadMoreRunning = false.obs;
   final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
-
+  ScrollController scrollController = ScrollController();
   @override
   void onInit() {
     isUserLoggedIn.value =
         sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200 &&
+          !isLoadMoreRunning.value &&
+          isLoadMoreVisible.value) {
+        loadMorePlants();
+      }
+    });
     callGetAllPlantListApi();
     super.onInit();
   }
@@ -38,6 +48,7 @@ class AllPlantsController extends GetxController {
     }
     allPlantList[index].isSelected = true;
     allPlantList.refresh();
+
     Get.toNamed(
       Routes.allPlantsDetails,
       arguments: {"plant_id": allPlantList[index].id, "screen_type": "add"},
@@ -46,6 +57,10 @@ class AllPlantsController extends GetxController {
 
   void navigateToNext(int index) {
     debugPrint("index:::$index");
+    if(Get.isRegistered<DashboardController>()){
+      Get.find<DashboardController>().navigateToNext(index);
+      return;
+    }
     switch (index) {
       case 0:
         Get.back();
@@ -95,7 +110,9 @@ class AllPlantsController extends GetxController {
     if (isSearching.value == false) {
       pageNumber.value++;
     }
-    getAllPlantList().then((value) => isLoadMoreRunning.value = false);
+    getAllPlantList(
+      showDefaultLoader: false
+    ).then((value) => isLoadMoreRunning.value = false);
   }
 
   Future<void> callGetAllPlantListApi({String searchName = ''}) async {
@@ -103,17 +120,19 @@ class AllPlantsController extends GetxController {
     isLoading.value = true;
     await getAllPlantList(
       searchName: searchName,
+      showDefaultLoader:false
     );
     isLoading.value = false;
   }
 
-  Future getAllPlantList({String searchName = ''}) async {
+  Future getAllPlantList({String searchName = '',bool showDefaultLoader=true}) async {
     var response = await plantsRepository.fetchAllPlants(
       pageNumber: pageNumber.value.toString(),
       //pageNumber: searchName.isNotEmpty ? null : pageNumber.value.toString(),
       pageSize: pageSize.toString(),
       //pageSize: searchName.isNotEmpty ? null : pageSize.toString(),
       searchName: searchName,
+        showDefaultLoader:showDefaultLoader
     );
     if (response != null) {
       PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(

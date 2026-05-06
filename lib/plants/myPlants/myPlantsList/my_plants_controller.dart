@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
+import 'package:kasagardem/dashboard/dashboard_controller.dart';
 
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
@@ -24,64 +25,77 @@ class MyPlantsController extends GetxController {
   String get plant => "plant";
   String get plantPlural => "plants";
   String get andCounting => "and counting";
-
+  ScrollController scrollController = ScrollController();
   @override
   void onInit() {
     isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 150 &&
+          !isLoadMoreRunning.value &&
+          isLoadMoreVisible.value) {
+        loadMorePlants();
+      }
+    });
+
     callGetMyPlantListApi();
     super.onInit();
   }
 
   void navigateToNext(int index) {
     debugPrint("index:::$index");
-    switch (index) {
-      case 0:
-        Get.back();
-        Get.toNamed(Routes.dashboard);
-        break;
-      case 1:
-        Get.back();
-        Get.toNamed(
-          Routes.recommendedProfessionals,
-          arguments: {
-            "lat":
-                SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
-                "0.0",
-            "lng":
-                SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
-                "0.0",
-          },
-        );
-        break;
-      case 2:
-        Get.back();
-        Get.back();
-        break;
-
-      case 3:
-        break;
-
-      case 4:
-        break;
-
-      case 5:
-        Get.back();
-        Get.toNamed(Routes.settings)!.then((value) {
-          if (value == true) {
-            callGetMyPlantListApi();
-          }
-        });
-        break;
-
-      case 6:
-        Get.back();
-        callGetMyPlantListApi();
-        break;
-
-      default:
-        Get.back();
-        break;
+    if(Get.isRegistered<DashboardController>()){
+      Get.find<DashboardController>().navigateToNext(index);
+      return;
     }
+    // switch (index) {
+    //   case 0:
+    //     Get.back();
+    //     Get.toNamed(Routes.dashboard);
+    //     break;
+    //   case 1:
+    //     Get.back();
+    //     Get.toNamed(
+    //       Routes.recommendedProfessionals,
+    //       arguments: {
+    //         "lat":
+    //             SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
+    //             "0.0",
+    //         "lng":
+    //             SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
+    //             "0.0",
+    //       },
+    //     );
+    //     break;
+    //   case 2:
+    //     Get.back();
+    //     Get.back();
+    //     break;
+    //
+    //   case 3:
+    //     break;
+    //
+    //   case 4:
+    //     break;
+    //
+    //   case 5:
+    //     Get.back();
+    //     Get.toNamed(Routes.settings)!.then((value) {
+    //       if (value == true) {
+    //         callGetMyPlantListApi();
+    //       }
+    //     });
+    //     break;
+    //
+    //   case 6:
+    //     Get.back();
+    //     callGetMyPlantListApi();
+    //     break;
+    //
+    //   default:
+    //     Get.back();
+    //     break;
+    // }
   }
 
   loadMorePlants() {
@@ -96,6 +110,7 @@ class MyPlantsController extends GetxController {
     myPlantList.clear();
     isLoading.value = true;
     getMyPlantList(
+
       searchName: searchName,
     ).then((value) => isLoading.value = false);
   }
@@ -107,11 +122,26 @@ class MyPlantsController extends GetxController {
       pageSize: pageSize.toString(),
       //pageSize: searchName.isNotEmpty ? null : pageSize.toString(),
       searchName: searchName,
+        showDefaultLoader:false
     );
     if (response != null) {
       debugPrint("response:::$response");
       PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(response);
       myPlantList.addAll(allPlantsResponse.data!.plants ?? []);
+
+      final List<PlantModel> mockData = List.generate(20, (index) {
+        return PlantModel(
+          id: index,
+          plantId: index,
+          commonName: "Plant ${index + 1} slkdfja lwks;fj alksdfjlk;asdfj;lkasjdf ;lkajsdf;l kajsfdsadf",
+          scientificName: "Scientific ${index + 1} asdlkf.jaskl;dfjaslkdfjsa; dfj;lkasjdf;lksajfk;lajs;lfkjasd;lfkjsa",
+          imageUrl:
+          "https://picsum.photos/200/300?random=$index",
+          wateringReminderFrequency: (index % 5) + 1,
+        );
+      });
+
+      myPlantList.addAll(mockData);
 
       isLoadMoreVisible.value = allPlantsResponse.data!.totalCount! > myPlantList.length ? true : false;
     }

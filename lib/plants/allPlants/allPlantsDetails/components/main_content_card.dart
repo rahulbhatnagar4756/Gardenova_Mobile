@@ -480,7 +480,9 @@ class MainContentCard extends StatelessWidget {
               BaseText(
                 text:
                     controller.plantDetailData.value.data?.plant?.commonName ??
-                    "N/A",
+                        AppLocalizations.of(
+                          Get.context!,
+                        )!.noDataNa,
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize20,
                 fontWeight: FontWeight.w700,

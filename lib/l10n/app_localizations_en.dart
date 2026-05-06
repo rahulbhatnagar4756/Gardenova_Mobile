@@ -1078,4 +1078,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanYourPlantForHealthAndDetails => 'Scan your plant to identify and check its health';
+
+  @override
+  String get noDataNa => 'N/A';
 }

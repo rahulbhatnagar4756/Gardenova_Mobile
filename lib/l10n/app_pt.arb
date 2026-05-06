@@ -355,5 +355,6 @@
     "region": "Region",
     "specialty": "Specialty",
     "ago": "ago",
-    "find": "Find"
+    "find": "Find",
+    "noDataNa": "N/A"
 }

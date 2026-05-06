@@ -76,7 +76,7 @@ class PlantRecommendations extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(spacerSize20),
                       child: controller.isLoading.value
-                          ? const BaseShimmer()
+                          ? const BaseShimmer(borderRadious:spacerSize20 ,)
                           : CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl:

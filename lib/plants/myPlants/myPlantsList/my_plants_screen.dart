@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
-
+import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 import '../../../base/widgets/base_app_bar.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_text.dart';
@@ -15,7 +14,7 @@ import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
-import 'components/my_plants_list.dart';
+import 'components/my_plants_list_item.dart';
 import 'my_plants_controller.dart';
 
 class MyPlantsScreen extends GetWidget<MyPlantsController> {
@@ -33,117 +32,190 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
         ),
         appBar: controller.isUserLoggedIn.value
             ? PreferredSize(
-            preferredSize: Size.fromHeight(spacerSize80),
-            child: Builder(
-              builder: (context) {
-                return CircularBottomAppBar(
-                  showMenuIcon: true,
-                  onSettingPressed: () {
-                    Scaffold.of(context).openDrawer();
+                preferredSize: Size.fromHeight(spacerSize80),
+                child: Builder(
+                  builder: (context) {
+                    return CircularBottomAppBar(
+                      showMenuIcon: true,
+                      onSettingPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
                   },
-                );
-              },
-            ))
+                ),
+              )
             : BaseAppBar(isBackButtonVisible: false),
-        // bottomNavigationBar: Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     BaseBackButton(),
-        //   ],
-        // ).marginOnly(
-        //   bottom: spacerSize15,
-        // ),
 
+        /// 🔥 BODY WITH SLIVER
         body: RefreshIndicator(
           onRefresh: () async {
+            controller.pageNumber.value = 1;
             await controller.callGetMyPlantListApi();
           },
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(
-              horizontal: spacerSize20,
-              vertical: spacerSize20,
-            ),
-            child: Column(
-              spacing: spacerSize12,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                titleWithSearch(context),
-                controller.myPlantList.isNotEmpty
-                    ? Expanded(child: MyPlantsList(controller: controller))
-                    : Expanded(child: _emptyState(context)),
-              ],
-            ),
+          child: CustomScrollView(
+            controller: controller.scrollController,
+            slivers: [
+              /// 🔹 COLLAPSIBLE HEADER
+              SliverPersistentHeader(
+                floating: true,
+                pinned: false,
+                delegate: MyPlantsHeaderDelegate(
+                  minHeight: 210.h,
+                  maxHeight: 210.h,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: spacerSize20,
+                      right: spacerSize20,
+                      // top: spacerSize20,
+                      // vertical: spacerSize20,
+                    ),
+                    child: titleWithSearch(context),
+                  ),
+                ),
+              ),
+
+              /// 🔹 EMPTY / LOADING
+              Obx(() {
+                if (controller.myPlantList.isEmpty &&
+                    controller.isLoading.value) {
+                  return SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: spacerSize50),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                  );
+                }
+
+                if (controller.myPlantList.isEmpty) {
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: _emptyState(context),
+                  );
+                }
+
+                return SliverPadding(
+                  padding: EdgeInsets.only(left: spacerSize20,right:spacerSize20,bottom: 25.h ),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      var item = controller.myPlantList[index];
+
+                      return MyPlantsListItem(
+                        item: item,
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.myPlantsDetails,
+                            arguments: item.plantId,
+                          );
+                        },
+                      );
+                    }, childCount: controller.myPlantList.length),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: .85,
+                      crossAxisSpacing: 8.w,
+                      mainAxisSpacing: 8.w,
+                    ),
+                  ),
+                );
+              }),
+
+              /// 🔹 LOAD MORE LOADER
+              SliverToBoxAdapter(
+                child: Obx(() {
+                  if (controller.isLoadMoreRunning.value) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: spacerSize20),
+                      child: const Center(
+                        child: SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                }),
+              ),
+
+              /// 🔹 EXTRA SPACE
+              SliverToBoxAdapter(child: SizedBox(height: spacerSize20)),
+            ],
           ),
         ),
       ),
     );
   }
 
+  /// 🔹 HEADER UI
   Widget titleWithSearch(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        BaseText(
-          text: AppLocalizations.of(context)!.myPlants,
-          textAlign: TextAlign.center,
-          fontFamily: AppKeys.poppins,
-          fontSize: fontSize20,
-          fontWeight: FontWeight.w600,
-        ).marginOnly(top: spacerSize10),
-        BaseText(
-          text: "${controller.myPlantList.length} "
-              "${controller.myPlantList.length == 1
-              ? AppLocalizations.of(context)!.plant
-              : controller.plantPlural} "
-              "${AppLocalizations.of(context)!.andCounting}!",
+    return Container(
+      color: AppColors.appColor,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: spacerSize20),
+                BaseText(
+                  text: AppLocalizations.of(context)!.myPlants,
+                  fontFamily: AppKeys.poppins,
+                  fontSize: fontSize20,
+                  fontWeight: FontWeight.w600,
+                ),
+                SizedBox(height: spacerSize5),
 
-          textAlign: TextAlign.center,
+                BaseText(
+                  text:
+                      "${controller.myPlantList.length} ${controller.myPlantList.length == 1 ? AppLocalizations.of(context)!.plant : controller.plantPlural} ${AppLocalizations.of(context)!.andCounting}!",
+                  fontFamily: AppKeys.inter,
+                  textColor: AppColors.liteGreyColor,
+                ),
+                SizedBox(height: spacerSize10),
 
-          fontFamily: AppKeys.inter,
-          textColor: AppColors.liteGreyColor,
-          fontSize: fontSize14,
-          fontWeight: FontWeight.w400,
-        ).marginOnly(bottom: spacerSize10,top: spacerSize5),
+                BaseButton(
+                  buttonWidth: double.infinity,
+                  buttonLabel: AppLocalizations.of(context)!.addPlant,
+                  onPressed: () {
+                    Get.toNamed(Routes.allPlantsScreen)!.then((_) {
+                      controller.callGetMyPlantListApi();
+                    });
+                  },
+                ),
 
+                SizedBox(height: spacerSize25),
 
-        Container(
-          width: double.infinity,
-          child: BaseButton(
-            bottomPadding: true,
-            textColor: AppColors.offWhite,
-            buttonLabel: AppLocalizations.of(context)!.addPlant,
-            onPressed: () => {
-              Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-              controller.callGetMyPlantListApi();
-              })
-            },
-          ),
-        ),
-        BaseTextField(
-          textEditingController: controller.searchController,
-          hintText: AppLocalizations.of(context)!.searchYourPlant,
-          hintColor: AppColors.liteGreyColor,
-          suffixIcon: Icon(Icons.search, color: AppColors.liteGreyColor),
-          onChanged: (value) {
-            if (value.isEmpty) {
-              controller.pageNumber.value = 1;
-            }
-            controller.isSearching.value = true;
-            controller.debouncer.call(
-              () => controller.callGetMyPlantListApi(searchName: value),
-            );
-            controller.isSearching.value = false;
-          },
-        ).marginOnly(bottom: spacerSize16),
-      ],
+                BaseTextField(
+                  textEditingController: controller.searchController,
+                  hintText: AppLocalizations.of(context)!.searchYourPlant,
+                  suffixIcon: Icon(
+                    Icons.search,
+                    color: AppColors.liteGreyColor,
+                  ),
+                  onChanged: (value) {
+                    controller.pageNumber.value = 1;
+                    controller.debouncer.call(() {
+                      controller.callGetMyPlantListApi(searchName: value);
+                    });
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
+  /// 🔹 EMPTY STATE
   Widget _emptyState(BuildContext context) {
     return Center(
       child: InkWell(
         onTap: () {
-          Get.toNamed(Routes.allPlantsScreen)!.then((value) {
+          Get.toNamed(Routes.allPlantsScreen)!.then((_) {
             controller.callGetMyPlantListApi();
           });
         },
@@ -157,29 +229,16 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
               fontFamily: AppKeys.poppins,
             ),
             children: [
-              TextSpan(text: "${AppLocalizations.of(context)!.tap}\t"),
-
+              TextSpan(text: "${AppLocalizations.of(context)!.tap} "),
               WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-                      controller.callGetMyPlantListApi();
-                    });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: spacerSize4),
-                    child: Image.asset(
-                      Assets.imagesAdd,
-                      height: spacerSize12,
-                      width: spacerSize12,
-                    ),
-                  ),
+                child: Image.asset(
+                  Assets.imagesAdd,
+                  height: spacerSize12,
+                  width: spacerSize12,
                 ),
               ),
-
               TextSpan(
-                text: "\t${AppLocalizations.of(context)!.toAddYourFirstPlant}",
+                text: " ${AppLocalizations.of(context)!.toAddYourFirstPlant}",
               ),
             ],
           ),

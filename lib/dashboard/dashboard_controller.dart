@@ -45,14 +45,15 @@ class DashboardController extends GetxController {
     debugPrint("index:::$index");
     switch (index) {
       case 0 :
-        Get.offNamedUntil(
-          Routes.dashboard,
-              (route) => false,
-        );
+        // Get.offNamedUntil(
+        //   Routes.dashboard,
+        //       (route) => false,
+        // );
+        Get.until((route) => route.settings.name == Routes.dashboard);
         break;
       case 1:
         if (isUserLoggedIn.value) {
-          Get.back();
+
           Get.toNamed(
             Routes.recommendedProfessionals,
             arguments: {"lat": lat, "lng": long},
@@ -93,7 +94,6 @@ class DashboardController extends GetxController {
       case 6:
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
-
         //  Get.toNamed(Routes.plantsCatalog);
         break;
 

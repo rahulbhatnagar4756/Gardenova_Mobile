@@ -74,7 +74,9 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                             .data
                                             ?.plant
                                             ?.commonName ??
-                                        "N/A",
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.noDataNa,
                                     fontFamily: AppKeys.poppins,
                                     fontSize: fontSize20,
                                     fontWeight: FontWeight.w700,

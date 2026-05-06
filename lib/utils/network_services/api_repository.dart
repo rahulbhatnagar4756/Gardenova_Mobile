@@ -19,7 +19,9 @@ import '../app_config.dart';
 
 class ApiRepository {
   ApiRepository._privateConstructor();
+
   static final ApiRepository instance = ApiRepository._privateConstructor();
+
   factory ApiRepository() => instance;
   Timer? _loaderTimer;
 
@@ -48,6 +50,7 @@ class ApiRepository {
     RxBool? isLoaderVisible,
     Map<String, String>? fields,
     Map<String, String>? base64Images,
+    bool showDefaultLoader = true,
   }) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult[0] == ConnectivityResult.none) {
@@ -69,7 +72,9 @@ class ApiRepository {
     }
     http.Response response;
     try {
-      showLoader();
+      if(showDefaultLoader) {
+        showLoader();
+      }
       switch (method.toUpperCase()) {
         case ApiKeys.get:
           response = await http.get(uri, headers: defaultHeaders);
@@ -124,7 +129,9 @@ class ApiRepository {
 
       final responseData = _returnResponse(response);
       // log("API Response::: ${jsonEncode(responseData)}");
-      hideLoader();
+      if(showDefaultLoader) {
+        hideLoader();
+      }
       if (responseData[ApiKeys.success] == true) {
         return responseData;
       } else {
@@ -148,8 +155,11 @@ class ApiRepository {
     }
   }
 
-  Future<dynamic> get(String endPoint, {Map<String, String>? headers}) async =>
-      request(ApiKeys.get, endPoint, headers: headers);
+  Future<dynamic> get(
+    String endPoint, {
+    Map<String, String>? headers,
+    bool showDefaultLoader = true,
+  }) async => request(ApiKeys.get, endPoint, headers: headers,showDefaultLoader:showDefaultLoader);
 
   Future<dynamic> post(
     String endPoint, {

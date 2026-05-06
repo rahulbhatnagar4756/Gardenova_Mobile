@@ -2236,6 +2236,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan your plant to identify and check its health'**
   String get scanYourPlantForHealthAndDetails;
+
+  /// No description provided for @noDataNa.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get noDataNa;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

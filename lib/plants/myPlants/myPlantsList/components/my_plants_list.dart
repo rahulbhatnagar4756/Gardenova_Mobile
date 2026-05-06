@@ -227,7 +227,9 @@ class MyPlantsList extends StatelessWidget {
                                     child: BaseText(
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      text: item.commonName ?? "N/A",
+                                      text: item.commonName ?? AppLocalizations.of(
+                                        context,
+                                      )!.noDataNa,
                                       fontFamily: AppKeys.poppins,
                                       fontSize: fontSize13,
                                       fontWeight: FontWeight.w700,

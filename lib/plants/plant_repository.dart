@@ -12,12 +12,14 @@ class PlantsRepository {
     String? pageNumber,
     String? pageSize,
     String? searchName,
+  bool showDefaultLoader=true
+
   }) async {
     var endUrl = "$allPlantUrl?page=$pageNumber&limit=$pageSize";
     if (searchName!= null && searchName.isNotEmpty) {
       endUrl = "$endUrl&search=$searchName";
     }
-    var plantsResponse = await ApiRepository.instance.get(endUrl);
+    var plantsResponse = await ApiRepository.instance.get(endUrl,showDefaultLoader:showDefaultLoader);
     return plantsResponse;
   }
 
@@ -55,12 +57,13 @@ class PlantsRepository {
     String? pageNumber,
     String? pageSize,
     String? searchName,
+    bool showDefaultLoader=true
   }) async {
     var endUrl = "$myPlantUrl?page=$pageNumber&limit=$pageSize";
     if (searchName != null && searchName.isNotEmpty) {
       endUrl = "$endUrl&search=$searchName";
     }
-    var plantsResponse = await ApiRepository.instance.get(endUrl);
+    var plantsResponse = await ApiRepository.instance.get(endUrl,showDefaultLoader: showDefaultLoader);
     return plantsResponse;
   }
 

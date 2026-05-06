@@ -357,5 +357,6 @@
   "ago":  "ago",
   "find":  "Find",
   "plantAnalysis": "Plant Analysis",
-  "scanYourPlantForHealthAndDetails": "Scan your plant to identify and check its health"
+  "scanYourPlantForHealthAndDetails": "Scan your plant to identify and check its health",
+  "noDataNa": "N/A"
 }
