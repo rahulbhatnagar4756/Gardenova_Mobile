@@ -31,62 +31,63 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
         // width: MediaQuery.of(context).size.width * 0.9,
         child: FullScreenDrawer(
           onTap: (index) {
-            if(Get.isRegistered<DashboardController>()) {
-              Get.find<DashboardController>().navigateToNext(index);
-            }
+            controller.navigateToNext(index);
           },
         ),
       ),
-appBar:PreferredSize(
-    preferredSize: Size.fromHeight(spacerSize80),
-    child: Builder(
-      builder: (context) {
-        return CircularBottomAppBar(
-          showMenuIcon: true,
-          onSettingPressed: () {
-            Scaffold.of(context).openDrawer();
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(spacerSize80),
+        child: Builder(
+          builder: (context) {
+            return CircularBottomAppBar(
+              showMenuIcon: true,
+              onSettingPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
           },
-        );
-      },
-    )),
+        ),
+      ),
       body: Obx(
-
         () => Stack(
           children: [
-            SafeArea(child: controller.plantDiagnosisResponse.value.data != null &&
-                    controller.isCurrentImagePlant.value
-                ? CachedNetworkImage(
-                    imageUrl:
-                        controller.plantDiagnosisResponse.value.data != null
-                        ? controller
-                              .plantDiagnosisResponse
-                              .value
-                              .data!
-                              .plantInfo!
-                              .images![0]
-                        : "",
-                    height: Get.height * .45,
-                    placeholder: (context, url) =>
-                        BaseShimmer(height: Get.height * .45),
-                    errorWidget: (context, url, error) {
-                      return BaseBorderedContainer(
-                        height: Get.height * .335,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(spacerSize10),
-                        childWidget: Icon(
-                          Icons.broken_image_rounded,
-                          size: spacerSize40,
-                          color: AppColors.offWhite10,
-                        ),
-                      );
-                    },
-                    useOldImageOnUrlChange: true,
-                    width: Get.width,
-                    fit: BoxFit.fill,
-                  )
-                : controller.isLoading.value
-                ? BaseShimmer()
-                : SizedBox()),
+            SafeArea(
+              child:
+                  controller.plantDiagnosisResponse.value.data != null &&
+                      controller.isCurrentImagePlant.value
+                  ? CachedNetworkImage(
+                      imageUrl:
+                          controller.plantDiagnosisResponse.value.data != null
+                          ? controller
+                                .plantDiagnosisResponse
+                                .value
+                                .data!
+                                .plantInfo!
+                                .images![0]
+                          : "",
+                      height: Get.height * .45,
+                      placeholder: (context, url) =>
+                          BaseShimmer(height: Get.height * .45),
+                      errorWidget: (context, url, error) {
+                        return BaseBorderedContainer(
+                          height: Get.height * .335,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(spacerSize10),
+                          childWidget: Icon(
+                            Icons.broken_image_rounded,
+                            size: spacerSize40,
+                            color: AppColors.offWhite10,
+                          ),
+                        );
+                      },
+                      useOldImageOnUrlChange: true,
+                      width: Get.width,
+                      fit: BoxFit.fill,
+                    )
+                  : controller.isLoading.value
+                  ? BaseShimmer()
+                  : SizedBox(),
+            ),
             // CircularBottomAppBar(
             //   onSettingPressed: () {
             //     Get.toNamed(Routes.settings);
@@ -115,7 +116,6 @@ appBar:PreferredSize(
                               fontSize: fontSize20,
                               fontWeight: FontWeight.bold,
                               textAlign: TextAlign.center,
-                              textColor: AppColors.offWhite,
                               fontFamily: AppKeys.poppins,
                             ),
                           )

@@ -11,6 +11,7 @@ import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
+import '../../myPlants/myPlantsList/my_plants_controller.dart';
 
 class AllPlantsController extends GetxController {
   final RxBool isUserLoggedIn = false.obs;
@@ -26,13 +27,15 @@ class AllPlantsController extends GetxController {
   RxBool isLoadMoreRunning = false.obs;
   final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
   ScrollController scrollController = ScrollController();
+
   @override
   void onInit() {
     isUserLoggedIn.value =
         sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 200 &&
+      if (scrollController.hasClients &&
+          scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 200 &&
           !isLoadMoreRunning.value &&
           isLoadMoreVisible.value) {
         loadMorePlants();
@@ -56,15 +59,16 @@ class AllPlantsController extends GetxController {
   }
 
   void navigateToNext(int index) {
-    debugPrint("index:::$index");
-    if(Get.isRegistered<DashboardController>()){
-      Get.find<DashboardController>().navigateToNext(index);
-      return;
-    }
+    debugPrint("index navigateToNext AllPlantsController:::$index");
+    // if(Get.isRegistered<DashboardController>()){
+    //   Get.find<DashboardController>().navigateToNext(index);
+    //   return;
+    // }
     switch (index) {
       case 0:
-        Get.back();
-        Get.toNamed(Routes.dashboard);
+        // Get.back();
+        // Get.toNamed(Routes.dashboard);
+        Get.until((route) => route.settings.name == Routes.dashboard);
         break;
 
       case 1:
@@ -72,8 +76,12 @@ class AllPlantsController extends GetxController {
         Get.toNamed(
           Routes.recommendedProfessionals,
           arguments: {
-            "lat": SharedPrefsService.instance.getString(AppKeys.currentLatKey) ?? 0.0,
-            "lng": SharedPrefsService.instance.getString(AppKeys.currentLongKey) ?? 0.0,
+            "lat":
+                SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
+                0.0,
+            "lng":
+                SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
+                0.0,
           },
         );
         break;
@@ -95,8 +103,20 @@ class AllPlantsController extends GetxController {
         break;
 
       case 6:
-        Get.back();
-        Get.back();
+        // Get.back();
+        // Get.back();
+        if (Get.isRegistered<MyPlantsController>()) {
+          Get.find<MyPlantsController>().callGetMyPlantListApi();
+          Get.until((route) => route.settings.name == Routes.myPlantsScreen);
+        }else{
+          Get.back();
+          Get.offNamed(Routes.myPlantsScreen);
+          // Get.back();
+        }
+        // final navigator = Navigator.of(Get.context!);
+        // navigator.popUntil((route) {
+        //   return route.settings.name == Routes.myPlantsScreen;
+        // });
         break;
 
       default:
@@ -111,28 +131,28 @@ class AllPlantsController extends GetxController {
       pageNumber.value++;
     }
     getAllPlantList(
-      showDefaultLoader: false
+      showDefaultLoader: false,
     ).then((value) => isLoadMoreRunning.value = false);
   }
 
   Future<void> callGetAllPlantListApi({String searchName = ''}) async {
     allPlantList.clear();
     isLoading.value = true;
-    await getAllPlantList(
-      searchName: searchName,
-      showDefaultLoader:false
-    );
+    await getAllPlantList(searchName: searchName, showDefaultLoader: false);
     isLoading.value = false;
   }
 
-  Future getAllPlantList({String searchName = '',bool showDefaultLoader=true}) async {
+  Future getAllPlantList({
+    String searchName = '',
+    bool showDefaultLoader = true,
+  }) async {
     var response = await plantsRepository.fetchAllPlants(
       pageNumber: pageNumber.value.toString(),
       //pageNumber: searchName.isNotEmpty ? null : pageNumber.value.toString(),
       pageSize: pageSize.toString(),
       //pageSize: searchName.isNotEmpty ? null : pageSize.toString(),
       searchName: searchName,
-        showDefaultLoader:showDefaultLoader
+      showDefaultLoader: showDefaultLoader,
     );
     if (response != null) {
       PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(

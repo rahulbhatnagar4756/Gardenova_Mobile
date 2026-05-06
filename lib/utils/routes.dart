@@ -40,6 +40,7 @@ import 'package:kasagardem/settings/settings_screen.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/settings/terms_and_conditions.dart';
 import 'package:kasagardem/splash_screen.dart';
+import 'package:kasagardem/utils/utils.dart';
 
 import '../plants/allPlants/allPlantsDetails/all_plants_details_screen.dart';
 import '../plants/allPlants/allPlantsList/add_plants_controller.dart';
@@ -89,96 +90,203 @@ class Routes {
   static const chatScreen = '/chat_screen';
   static const leadDetailsScreen = '/lead_details_screen';
   static const createRequestScreen = '/create_request_screen';
-  static const createProfessionalLeadRequestScreen = '/create_professional_request_screen';
+  static const createProfessionalLeadRequestScreen =
+      '/create_professional_request_screen';
 
   static getPages() {
     return [
-      GetPage(name: Routes.splash, page: () => const SplashScreen()),
+      GetPage(
+        name: Routes.splash,
+        page: () => const SplashScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
       GetPage(
         name: Routes.introduction,
         page: () => IntroductionScreen(),
         binding: BindingsBuilder.put(() => IntroductionScreenViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
         binding: BindingsBuilder.put(() => DashboardController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.login,
         page: () => LoginScreen(),
         binding: BindingsBuilder.put(() => LoginViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.signUp,
         page: () => RegisterScreen(),
         binding: BindingsBuilder.put(() => RegisterViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.forgotPassword,
         page: () => ForgotPassword(),
         binding: BindingsBuilder.put(() => ForgotPasswordViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
-      GetPage(name: Routes.verifyOtp, page: () => VerifyOtp()),
-      GetPage(name: Routes.resetPassword, page: () => ResetPassword()),
+      GetPage(
+        name: Routes.verifyOtp,
+        page: () => VerifyOtp(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.resetPassword,
+        page: () => ResetPassword(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
       GetPage(
         name: Routes.question,
         page: () => QuestionScreen(),
         binding: BindingsBuilder.put(() => QuestionViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
-      GetPage(name: Routes.reportSuccess, page: () => ReportSuccessScreen()),
+      GetPage(
+        name: Routes.reportSuccess,
+        page: () => ReportSuccessScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
       GetPage(
         name: Routes.settings,
         page: () => SettingsScreen(),
         binding: BindingsBuilder.put(() => SettingsViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
-      GetPage(name: Routes.profile, page: () => ProfileScreen()),
+      GetPage(
+        name: Routes.profile,
+        page: () => ProfileScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
       GetPage(
         name: Routes.changePassword,
         page: () => ChangePassword(),
         binding: BindingsBuilder.put(() => SettingsViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.recommendedProfessionals,
         page: () => RecommendedProfessionals(),
         binding: BindingsBuilder.put(() => RecommendedProfessionalsViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.requestQuoteSuccess,
         page: () => RequestQuoteSuccess(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.professionalDashboardSuccessQuote,
         page: () => ProfessionalDashboardSuccessQuote(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.privacyPolicy,
         page: () =>
             PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_pt.html'),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.termsAndConditions,
         page: () => TermsAndConditions(
           filePath: 'assets/html/terms_and_conditions_pt.html',
         ),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
-      GetPage(name: Routes.referAFriend, page: () => ComingSoon()),
+      GetPage(
+        name: Routes.referAFriend,
+        page: () => ComingSoon(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
 
       GetPage(
         name: Routes.plantDetail,
         page: () => PlantDetailScreen(),
         binding: BindingsBuilder.put(() => PlantDetailViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantsCatalog,
         page: () => PlantsCatalogScreen(),
         binding: BindingsBuilder.put(() => PlantsCatalogViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantDiagnosis,
         page: () => PlantDiagnosisScreen(),
         binding: BindingsBuilder.put(() => PlantDiagnosisViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       /// new
@@ -186,67 +294,115 @@ class Routes {
         name: Routes.allPlantsScreen,
         page: () => AllPlantsListScreen(),
         binding: BindingsBuilder.put(() => AllPlantsController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.allPlantsDetails,
         page: () => AllPlantsDetailsScreen(),
         binding: BindingsBuilder.put(() => AllPlantsDetailsController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.myPlantsScreen,
         page: () => MyPlantsScreen(),
         binding: BindingsBuilder.put(() => MyPlantsController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.myPlantsDetails,
         page: () => MyPlantDetailsScreen(),
         binding: BindingsBuilder.put(() => MyPlantDetailsController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.chooseAccountType,
         page: () => ChooseAccountTypeScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.upgradePlan,
         page: () => UpgradePlanScreen(),
         binding: BindingsBuilder.put(() => UpgradePlanController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.orderSummary,
         page: () => OrderSummaryScreen(),
         binding: BindingsBuilder.put(() => UpgradePlanController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.professionalDashboard,
         page: () => ProfessionalDashboardScreen(),
         binding: BindingsBuilder.put(() => ProfessionalDashboardController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.myLeadScreen,
         page: () => MyLeadScreen(),
         binding: BindingsBuilder.put(() => MyLeadController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
-
         name: Routes.createRequestScreen,
         page: () => CreateRequestScreen(),
-
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.createProfessionalLeadRequestScreen,
         page: () => CreateProfessionalLeadRequestScreen(),
-
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
-      GetPage(name: Routes.leadDetailsScreen, page: () => LeadDetailsScreen()),
+      GetPage(
+        name: Routes.leadDetailsScreen,
+        page: () => LeadDetailsScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
     ];
   }
 }

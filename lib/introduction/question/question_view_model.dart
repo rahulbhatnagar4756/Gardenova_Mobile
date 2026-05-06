@@ -134,7 +134,7 @@ class QuestionViewModel extends GetxController {
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
-             Get.offNamed(Routes.dashboard, arguments: {plantResponse.data!.responseId ?? ""});
+             Get.offAllNamed(Routes.dashboard, arguments: {plantResponse.data!.responseId ?? ""});
           },
         );
       }

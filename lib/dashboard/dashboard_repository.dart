@@ -8,9 +8,10 @@ class DashboardRepository {
     return "$_plantRecommendationEndPoint/$responseId";
   }
 
-  fetchPlantRecommendation(String responseId) async {
+  fetchPlantRecommendation(String responseId,{bool showDefaultLoader=true}) async {
     var plantsResponse = await ApiRepository.instance.get(
       getPlantRecommendationEndPoint(responseId),
+      showDefaultLoader: showDefaultLoader
     );
     return plantsResponse;
   }

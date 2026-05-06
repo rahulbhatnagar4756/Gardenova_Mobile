@@ -23,7 +23,7 @@ class ExpansionTileLayout extends StatelessWidget {
           text: title ?? "",
           fontFamily: AppKeys.poppins,
           fontWeight: FontWeight.bold,
-          textColor: AppColors.burntGoldLight,
+          textColor: AppColors.liteGreenColor,
           textAlign: TextAlign.left,
           fontSize: fontSize20,
         ),

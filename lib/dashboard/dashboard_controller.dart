@@ -44,16 +44,16 @@ class DashboardController extends GetxController {
   void navigateToNext(int index) {
     debugPrint("index:::$index");
     switch (index) {
-      case 0 :
+      case 0:
         // Get.offNamedUntil(
         //   Routes.dashboard,
         //       (route) => false,
         // );
-        Get.until((route) => route.settings.name == Routes.dashboard);
+        // Get.until((route) => route.settings.name == Routes.dashboard);
+        Get.back();
         break;
       case 1:
         if (isUserLoggedIn.value) {
-
           Get.toNamed(
             Routes.recommendedProfessionals,
             arguments: {"lat": lat, "lng": long},
@@ -118,6 +118,7 @@ class DashboardController extends GetxController {
     isLoading.value = true;
     var response = await dashboardRepository.fetchPlantRecommendation(
       responseId,
+      showDefaultLoader: false,
     );
     PlantRecommendationsResponseModel recommendationsResponse =
         PlantRecommendationsResponseModel.fromJson(response);

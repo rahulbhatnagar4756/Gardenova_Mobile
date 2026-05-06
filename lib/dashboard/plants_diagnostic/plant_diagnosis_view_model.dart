@@ -1,10 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_request_model.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_response_model.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_repository.dart';
+
+import '../../plants/myPlants/myPlantsList/my_plants_controller.dart';
+import '../../utils/constants/app_keys.dart';
+import '../../utils/routes.dart';
+import '../../utils/shared_prefs_service.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
   PlantDiagnosisRepository plantDiagnosisRepository =
@@ -116,5 +122,60 @@ class PlantDiagnosisViewModel extends GetxController {
       setup.value = "${setup.value}$setupData\n";
     }
   }
+  void navigateToNext(int index) {
+    debugPrint("index navigateToNext PlantDiagnosisViewModel:::$index");
+    // if(Get.isRegistered<DashboardController>()){
+    //   Get.find<DashboardController>().navigateToNext(index);
+    //   return;
+    // }
+    switch (index) {
+      case 0:
+      // Get.back();
+      // Get.back();
+        Get.key.currentState?.popUntil(
+              (route) => route.settings.name == Routes.dashboard,
+        );
+        break;
 
+      case 1:
+        Get.back();
+        Get.toNamed(
+          Routes.recommendedProfessionals,
+          arguments: {
+            "lat":
+            SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
+                0.0,
+            "lng":
+            SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
+                0.0,
+          },
+        );
+        break;
+
+      case 2:
+        Get.back();
+        Get.back();
+        break;
+
+      case 3:
+        break;
+
+      case 4:
+        break;
+
+      case 5:
+        Get.back();
+        Get.toNamed(Routes.settings);
+        break;
+
+      case 6:
+          Get.back();
+          Get.toNamed(Routes.myPlantsScreen);
+        break;
+
+      default:
+        Get.back();
+        break;
+    }
+  }
 }

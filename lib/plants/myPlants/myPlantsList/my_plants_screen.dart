@@ -17,23 +17,27 @@ import '../../../utils/routes.dart';
 import 'components/my_plants_list_item.dart';
 import 'my_plants_controller.dart';
 
-class MyPlantsScreen extends GetWidget<MyPlantsController> {
+class MyPlantsScreen extends GetView<MyPlantsController> {
   const MyPlantsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        backgroundColor: AppColors.appColor,
-        drawer: FullScreenDrawer(
-          onTap: (index) {
-            controller.navigateToNext(index);
-          },
-        ),
-        appBar: controller.isUserLoggedIn.value
-            ? PreferredSize(
-                preferredSize: Size.fromHeight(spacerSize80),
-                child: Builder(
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
+
+      /// 🔹 Drawer
+      drawer: FullScreenDrawer(
+        onTap: (index) {
+          controller.navigateToNext(index);
+        },
+      ),
+
+      /// 🔹 AppBar (only this needs Obx)
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(spacerSize80),
+        child: Obx(() {
+          return controller.isUserLoggedIn.value
+              ? Builder(
                   builder: (context) {
                     return CircularBottomAppBar(
                       showMenuIcon: true,
@@ -42,106 +46,107 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
                       },
                     );
                   },
-                ),
-              )
-            : BaseAppBar(isBackButtonVisible: false),
+                )
+              : BaseAppBar(isBackButtonVisible: false);
+        }),
+      ),
 
-        /// 🔥 BODY WITH SLIVER
-        body: RefreshIndicator(
-          onRefresh: () async {
-            controller.pageNumber.value = 1;
-            await controller.callGetMyPlantListApi();
-          },
-          child: CustomScrollView(
-            controller: controller.scrollController,
-            slivers: [
-              /// 🔹 COLLAPSIBLE HEADER
-              SliverPersistentHeader(
-                floating: true,
-                pinned: false,
-                delegate: MyPlantsHeaderDelegate(
-                  minHeight: 210.h,
-                  maxHeight: 210.h,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: spacerSize20,
-                      right: spacerSize20,
-                      // top: spacerSize20,
-                      // vertical: spacerSize20,
-                    ),
-                    child: titleWithSearch(context),
-                  ),
+      /// 🔹 BODY
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.pageNumber.value = 1;
+          await controller.callGetMyPlantListApi();
+        },
+
+        /// 🚀 IMPORTANT: NO Obx here
+        child: CustomScrollView(
+          controller: controller.scrollController,
+          slivers: [
+            /// 🔹 HEADER
+            SliverPersistentHeader(
+              floating: true,
+              pinned: false,
+              delegate: MyPlantsHeaderDelegate(
+                minHeight: 210.h,
+                maxHeight: 210.h,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+                  child: titleWithSearch(context),
                 ),
               ),
+            ),
 
-              /// 🔹 EMPTY / LOADING
-              Obx(() {
-                if (controller.myPlantList.isEmpty &&
-                    controller.isLoading.value) {
-                  return SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: spacerSize50),
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                  );
-                }
-
-                if (controller.myPlantList.isEmpty) {
-                  return SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: _emptyState(context),
-                  );
-                }
-
-                return SliverPadding(
-                  padding: EdgeInsets.only(left: spacerSize20,right:spacerSize20,bottom: 25.h ),
-                  sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      var item = controller.myPlantList[index];
-
-                      return MyPlantsListItem(
-                        item: item,
-                        onTap: () {
-                          Get.toNamed(
-                            Routes.myPlantsDetails,
-                            arguments: item.plantId,
-                          );
-                        },
-                      );
-                    }, childCount: controller.myPlantList.length),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: .85,
-                      crossAxisSpacing: 8.w,
-                      mainAxisSpacing: 8.w,
-                    ),
+            /// 🔹 LIST / EMPTY / LOADING (Obx here only)
+            Obx(() {
+              if (controller.myPlantList.isEmpty &&
+                  controller.isLoading.value) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: spacerSize50),
+                    child: const Center(child: CircularProgressIndicator()),
                   ),
                 );
-              }),
+              }
 
-              /// 🔹 LOAD MORE LOADER
-              SliverToBoxAdapter(
-                child: Obx(() {
-                  if (controller.isLoadMoreRunning.value) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: spacerSize20),
-                      child: const Center(
-                        child: SizedBox(
-                          height: 22,
-                          width: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
+              if (controller.myPlantList.isEmpty) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _emptyState(context),
+                );
+              }
+
+              return SliverPadding(
+                padding: EdgeInsets.only(
+                  left: spacerSize20,
+                  right: spacerSize20,
+                  bottom: 25.h,
+                ),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    var item = controller.myPlantList[index];
+
+                    return MyPlantsListItem(
+                      item: item,
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.myPlantsDetails,
+                          arguments: item.plantId,
+                        );
+                      },
                     );
-                  }
-                  return const SizedBox();
-                }),
-              ),
+                  }, childCount: controller.myPlantList.length),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: .85,
+                    crossAxisSpacing: 8.w,
+                    mainAxisSpacing: 8.w,
+                  ),
+                ),
+              );
+            }),
 
-              /// 🔹 EXTRA SPACE
-              SliverToBoxAdapter(child: SizedBox(height: spacerSize20)),
-            ],
-          ),
+            /// 🔹 LOAD MORE LOADER (Obx only here)
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (controller.isLoadMoreRunning.value) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: spacerSize20),
+                    child: const Center(
+                      child: SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox();
+              }),
+            ),
+
+            /// 🔹 SPACE
+            SliverToBoxAdapter(child: SizedBox(height: spacerSize20)),
+          ],
         ),
       ),
     );
@@ -180,9 +185,7 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
                   buttonWidth: double.infinity,
                   buttonLabel: AppLocalizations.of(context)!.addPlant,
                   onPressed: () {
-                    Get.toNamed(Routes.allPlantsScreen)!.then((_) {
-                      controller.callGetMyPlantListApi();
-                    });
+                    Get.toNamed(Routes.allPlantsScreen);
                   },
                 ),
 
