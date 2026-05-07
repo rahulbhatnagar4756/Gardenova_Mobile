@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 
@@ -122,9 +121,10 @@ class PlantAddSuccessDialog {
 
                   BaseButton(
                     onPressed: () {
-                      Get.back(result: true);
-                      Get.back(result: true);
-                      Get.back(result: true);
+                      // Get.back(result: true);
+                      // Get.back(result: true);
+                      // Get.back(result: true);
+                      onButtonPressed?.call();
                     },
                     backgroundColor: AppColors.burntGold,
                     buttonLabel: buttonLabel,

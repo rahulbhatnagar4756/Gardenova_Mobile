@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+
 import '../../../base/widgets/base_date_format.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_constants.dart';
+import '../../../utils/routes.dart';
 import '../../model/plant_details_model.dart';
+import '../../myPlants/myPlantsList/my_plants_controller.dart';
 import '../../plant_repository.dart';
 import 'components/plant_add_success_dialog.dart';
 
@@ -310,7 +313,20 @@ class AllPlantsDetailsController extends GetxController {
         image: plantDetailData.value.data!.plant!.imageUrl ?? "",
         description: plantDetailData.value.data!.plant!.description ?? "",
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
-        onButtonPressed: () => Get.back(),
+        onButtonPressed: () async {
+          print('on click onButton');
+          if (Get.isRegistered<MyPlantsController>()) {
+            print('on click onButton registered');
+            Get.back();
+            Get.back();
+            Get.back();
+          } else {
+            print('on click onButton registered else');
+            Get.back();
+            await Future.delayed(Duration(milliseconds: 100));
+            Get.offNamed(Routes.myPlantsScreen);
+          }
+        },
       );
     }
   }

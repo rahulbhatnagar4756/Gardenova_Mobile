@@ -60,41 +60,41 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
               backButton(),
             ],
           ),
-          floatingActionButton: Obx(
-            () => Container(
-              decoration: BoxDecoration(
-                gradient: AppColors.linearGradientForBtn,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.greenColor.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: FloatingActionButton.extended(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                onPressed: () async {
-                  controller.validateAndSubmit(context);
-                },
-                icon: Icon(
-                  controller.screenType.value == 'add' ? Icons.add : Icons.save,
-                  color: Colors.white,
-                ),
-                label: Text(
-                  controller.screenType.value == 'add'
-                      ? AppLocalizations.of(context)!.addPlant
-                      : 'Save Changes',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // floatingActionButton: Obx(
+          //   () => Container(
+          //     decoration: BoxDecoration(
+          //       gradient: AppColors.linearGradientForBtn,
+          //       borderRadius: BorderRadius.circular(16),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: AppColors.greenColor.withOpacity(0.3),
+          //           blurRadius: 10,
+          //           offset: const Offset(0, 4),
+          //         ),
+          //       ],
+          //     ),
+          //     child: FloatingActionButton.extended(
+          //       backgroundColor: Colors.transparent,
+          //       elevation: 0,
+          //       onPressed: () async {
+          //         controller.validateAndSubmit(context);
+          //       },
+          //       icon: Icon(
+          //         controller.screenType.value == 'add' ? Icons.add : Icons.save,
+          //         color: Colors.white,
+          //       ),
+          //       label: Text(
+          //         controller.screenType.value == 'add'
+          //             ? AppLocalizations.of(context)!.addPlant
+          //             : 'Save Changes',
+          //         style: TextStyle(
+          //           color: Colors.white,
+          //           fontWeight: FontWeight.w600,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ),
       ),
     );

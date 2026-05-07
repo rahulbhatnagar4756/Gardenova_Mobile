@@ -115,7 +115,11 @@ class Routes {
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
-        binding: BindingsBuilder.put(() => DashboardController()),
+        // binding: BindingsBuilder.put(() => DashboardController()) ,
+        binding: BindingsBuilder(() {
+          Get.put(DashboardController());
+          Get.put(SettingsViewModel());
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,

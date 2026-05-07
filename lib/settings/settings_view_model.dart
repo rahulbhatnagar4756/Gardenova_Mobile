@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/settings/settings_repository.dart';
+
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/routes.dart';
@@ -34,16 +36,14 @@ class SettingsViewModel extends GetxController {
 
   @override
   onInit() {
-    if (Get.arguments != null) {
-      screenType.value = Get.arguments;
+    if (Get.arguments != null && Get.arguments is String) {
+      screenType.value = Get.arguments as String;
     }
-
     if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {
       getProfileDetail();
     }
-
 
     super.onInit();
   }
@@ -88,6 +88,8 @@ class SettingsViewModel extends GetxController {
         }
       }
     }
+    print('refreshing ui please');
+    profileImage.refresh();
     screenType.refresh();
   }
 
@@ -121,6 +123,7 @@ class SettingsViewModel extends GetxController {
     }
     screenType.refresh();
   }
+
   updateProfile() async {
     String? base64String;
 
@@ -147,15 +150,18 @@ class SettingsViewModel extends GetxController {
     );
 
     if (response != null) {
-      if (base64String != null) {
-        profileImage.value = updateProfileResponse.profileImage ?? "";
-      }
+      // if (base64String != null) {
+      //   profileImage.value = updateProfileResponse.profileImage ?? "";
+      //   profileImage.refresh();
+      // }
+      getProfileDetail();
       Get.back();
-    }else {
+    } else {
       profileImage.value = '';
-      imageFile.value=File('');
+      imageFile.value = File('');
     }
   }
+
   // updateProfile() async {
   //   List<int> imageBytes = await imageFile.value.readAsBytes();
   //   String base64String = base64Encode(imageBytes);
@@ -243,7 +249,7 @@ class SettingsViewModel extends GetxController {
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
       SharedPrefsService.instance.clear();
       // Get.offAllNamed(Routes.chooseAccountType);
-      SharedPrefsService.instance.setString(AppKeys.role,  AppKeys.user);
+      SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
       Get.offAllNamed(Routes.introduction);
     }
   }

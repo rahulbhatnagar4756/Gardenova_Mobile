@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_utils/src/extensions/widget_extensions.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../base/widgets/base_text.dart';
 import '../../base/widgets/circular_bottom_app_bar.dart';
 import '../../generated/assets.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings_view_model.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_constants.dart';
@@ -41,7 +41,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
     if (SharedPrefsService.instance.getString(AppKeys.role) !=
         AppKeys.professional) {
       if (!isExternalLinkLoaded) {
-    //    callGetExternalLinkApi();
+        //    callGetExternalLinkApi();
       }
     }
     super.initState();
@@ -50,7 +50,6 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
       child: Stack(
         children: [
           Row(
@@ -85,8 +84,44 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             spacing: spacerSize5,
                             children: [
-                              SizedBox(width:spacerSize15,),
-                              Center(child: Image.asset(AppAssets.appLogo)),
+                              SizedBox(width: spacerSize15),
+                              // Center(child: Image.asset(AppAssets.appLogo)),
+                              Obx(() {
+                                final imageUrl =
+                                    Get.isRegistered<SettingsViewModel>()
+                                    ? Get.find<SettingsViewModel>()
+                                          .profileImage
+                                          .value
+                                    : "";
+
+                                return Container(
+                                  width: 45.w,
+                                  height: 45.w,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: AppColors.backgroundGrey,
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: imageUrl.isNotEmpty
+                                        ? Image.network(
+                                            imageUrl,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) {
+                                              return Image.asset(
+                                                AppAssets.appLogo,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          )
+                                        : Image.asset(
+                                            AppAssets.appLogo,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                );
+                              }),
                               Expanded(
                                 flex: 5,
                                 child: Column(
@@ -103,7 +138,9 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                       text:
                                           '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
                                     ),
-                                    SharedPrefsService.instance.getString(AppKeys.role) ==
+                                    SharedPrefsService.instance.getString(
+                                              AppKeys.role,
+                                            ) ==
                                             AppKeys.professional
                                         ? Container(
                                             padding: EdgeInsets.symmetric(
@@ -112,9 +149,10 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                             ),
                                             decoration: BoxDecoration(
                                               color: AppColors.toLiteGreenColor,
-                                              borderRadius: BorderRadius.circular(
-                                                spacerSize20,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                    spacerSize20,
+                                                  ),
                                             ),
                                             child: BaseText(
                                               text:
@@ -165,7 +203,9 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                 child: ListView(
                                   children: [
                                     drawerItem(
-                                      title: AppLocalizations.of(context)!.myLeads,
+                                      title: AppLocalizations.of(
+                                        context,
+                                      )!.myLeads,
                                       onTap: () {
                                         widget.onTap(0);
                                       },
@@ -178,14 +218,18 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                       },
                                     ),
                                     drawerItem(
-                                      title: AppLocalizations.of(context)!.wholesaleSuppliers,
+                                      title: AppLocalizations.of(
+                                        context,
+                                      )!.wholesaleSuppliers,
                                       onTap: () {
                                         widget.onTap(2);
                                       },
                                     ),
                                     drawerItem(
                                       showDivider: false,
-                                      title: AppLocalizations.of(Get.context!)!.myProfile,
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.myProfile,
                                       onTap: () {
                                         widget.onTap(3);
                                       },
@@ -197,7 +241,9 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                 child: ListView(
                                   children: [
                                     drawerItem(
-                                      title: AppLocalizations.of(Get.context!)!.home,
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.home,
                                       onTap: () {
                                         widget.onTap(0);
                                       },
@@ -209,16 +255,19 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                     //   },
                                     // ),
                                     drawerItem(
-                                      title: AppLocalizations.of(Get.context!)!.store,
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.store,
                                       onTap: () {
                                         // launchExternalUrl("https://loja.kasagardem.com.br/");
                                         BaseSnackBar.show(
-                                            title: 'Temporarily Unavailable',
-                                          message:  'The store is currently on hold. We’ll be back soon with updates.',
+                                          title: 'Temporarily Unavailable',
+                                          message:
+                                              'The store is currently on hold. We’ll be back soon with updates.',
                                         );
                                       },
                                     ),
-                                   /* drawerItem(
+                                    /* drawerItem(
                                       title: AppLocalizations.of(Get.context!)!.courses,
                                       onTap: () {
                                         launchExternalUrl(courseLink);
@@ -233,14 +282,18 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                       },
                                     ),*/
                                     drawerItem(
-                                      title: AppLocalizations.of(Get.context!)!.myProfile,
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.myProfile,
                                       onTap: () {
                                         widget.onTap(5);
                                       },
                                     ),
                                     drawerItem(
                                       showDivider: false,
-                                      title: AppLocalizations.of(Get.context!)!.myPlants,
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.myPlants,
                                       onTap: () {
                                         widget.onTap(6);
                                       },
@@ -262,25 +315,26 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
               //     ),
               //   ),
               // )
-              SizedBox(width: 32.w,)
+              SizedBox(width: 32.w),
             ],
           ),
           Positioned(
-              top:0,
-              right: 0,
-              child: GestureDetector(
-                onTap: () =>   Get.back(),
-                child: SafeArea(
-                  child: Padding(
-                    padding:  EdgeInsets.only(top:15.h,right: 15.w),
-                    child: Image.asset(
-                      Assets.backBtnDraweClose,
-                      height: 42.w,
-                      width:42.w,
-                    ),
+            top: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 15.h, right: 15.w),
+                  child: Image.asset(
+                    Assets.backBtnDraweClose,
+                    height: 42.w,
+                    width: 42.w,
                   ),
                 ),
-              ))
+              ),
+            ),
+          ),
         ],
       ),
     );

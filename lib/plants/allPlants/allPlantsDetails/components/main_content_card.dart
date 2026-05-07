@@ -8,6 +8,7 @@ import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_to
 
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
+import '../../../../base/widgets/common_click_widget.dart';
 import '../../../../base/widgets/full_screen_image_preview.dart';
 import '../../../../generated/assets.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -84,7 +85,34 @@ class MainContentCard extends StatelessWidget {
 
                 Obx(
                   () => controller.screenType.value == 'add'
-                      ? SizedBox()
+                      ? Column(
+                          spacing: 15.h,
+                          children: [
+                            Divider(color: AppColors.backgroundGrey),
+                            QuickInfoSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
+                            CareOverviewSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
+                            SpecialTraitsSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
+                            PlantHealthSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
+                            // Divider(color: AppColors.backgroundGrey),
+                            SizedBox(height: 25.h),
+                          ],
+                        )
                       : Column(
                           children: [
                             Divider(color: AppColors.backgroundGrey),
@@ -516,25 +544,7 @@ class MainContentCard extends StatelessWidget {
                           ],
                         ),
                 ),
-                Divider(color: AppColors.backgroundGrey),
-                QuickInfoSection(
-                  plant: controller.plantDetailData.value.data?.plant,
-                ),
-
-                CareOverviewSection(
-                  plant: controller.plantDetailData.value.data?.plant,
-                ),
-
-                SpecialTraitsSection(
-                  plant: controller.plantDetailData.value.data?.plant,
-                ),
-
-                PlantHealthSection(
-                  plant: controller.plantDetailData.value.data?.plant,
-                ),
-
-                Divider(color: AppColors.backgroundGrey),
-                SizedBox(height: 35.h),
+                SizedBox(height: 25.h),
                 // Obx(
                 //   () => addPlantButton(
                 //     context,
@@ -584,21 +594,99 @@ class MainContentCard extends StatelessWidget {
             ],
           ),
         ),
-        // Container(
-        //   padding: const EdgeInsets.all(spacerSize14),
-        //   decoration: BoxDecoration(
-        //     color: AppColors.greenColor,
-        //     // gradient: LinearGradient(
-        //     //   colors: [AppColors.lightGold, AppColors.burntGold],
-        //     //   begin: Alignment.topCenter,
-        //     //   end: Alignment.bottomCenter,
-        //     // ),
-        //     borderRadius: BorderRadius.circular(spacerSize12),
-        //   ),
-        //   child: Image.asset(
-        //     Assets.imagesNotification,
-        //     height: spacerSize20,
-        //     width: spacerSize20,
+        Obx(
+          () => CommonClickWidget(
+            onTap: () {
+              controller.validateAndSubmit(Get.context!);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+              decoration: BoxDecoration(
+                gradient: AppColors.linearGradientForBtn,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.greenColor.withOpacity(0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.18),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      controller.screenType.value == 'add'
+                          ? Icons.add_rounded
+                          : Icons.save_rounded,
+                      color: Colors.white,
+                      size: 15.w,
+                    ),
+                  ),
+
+                  SizedBox(width: 12.w),
+
+                  Text(
+                    controller.screenType.value == 'add'
+                        ? AppLocalizations.of(Get.context!)!.addPlant
+                        : 'Save Changes',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Obx(
+        //   () => CommonClickWidget(
+        //     onTap: () {
+        //       controller.validateAndSubmit(Get.context!);
+        //     },
+        //     child: Container(
+        //       padding: const EdgeInsets.all(spacerSize14),
+        //       decoration: BoxDecoration(
+        //         color: AppColors.greenColor,
+        //
+        //         borderRadius: BorderRadius.circular(spacerSize12),
+        //       ),
+        //       // child: Image.asset(
+        //       //   Assets.imagesNotification,
+        //       //   height: spacerSize20,
+        //       //   width: spacerSize20,
+        //       // ),
+        //       child: Row(
+        //         children: [
+        //           Icon(
+        //             controller.screenType.value == 'add'
+        //                 ? Icons.add
+        //                 : Icons.save,
+        //             color: Colors.white,
+        //             size: spacerSize20,
+        //           ),
+        //           SizedBox(width: 10.w),
+        //           Text(
+        //             controller.screenType.value == 'add'
+        //                 ? AppLocalizations.of(Get.context!)!.addPlant
+        //                 : 'Save Changes',
+        //             style: TextStyle(
+        //               color: Colors.white,
+        //               fontWeight: FontWeight.w600,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
         //   ),
         // ),
       ],
