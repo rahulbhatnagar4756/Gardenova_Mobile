@@ -15,10 +15,10 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/network_services/network_connectivity_service.dart';
-import 'package:kasagardem/utils/non_glowing_scroll_behavior.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:kasagardem/utils/utils.dart';
+
 import 'base/widgets/base_calculate_remaining_days.dart';
 
 Future<void> main() async {

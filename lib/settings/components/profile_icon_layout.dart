@@ -202,9 +202,10 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                         child: Obx(
                           () => Container(
                             decoration: BoxDecoration(
-                              color: AppColors.antiqueWhite,
+                              color: AppColors.whiteColor,
                               borderRadius: BorderRadius.circular(100),
                             ),
+                            padding: EdgeInsets.all(3.w),
                             width: 108.w,
                             height: 108.w,
                             child: CircleAvatar(
