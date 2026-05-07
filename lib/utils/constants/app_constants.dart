@@ -7,7 +7,6 @@ var enUS = Locale("en", "US");
 var ptBR = Locale("pt", "BR");
 String userRoleCode = "U";
 String appName = "Gardenova";
-// String appName = "Kasagardem";
 
 /*FontSize*/
 const double fontSize9 = 9;

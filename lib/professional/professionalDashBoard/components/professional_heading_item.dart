@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/professional/professionalDashBoard/professional_dashboard_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -46,9 +44,9 @@ class ProfessionalHeadingItem extends StatelessWidget {
               text: sectionTitle ?? "",
             ),
             Visibility(
-              visible: isFilterShow??false,
+              visible: isFilterShow ?? false,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   onTabFilter?.call();
                 },
                 child: Container(
@@ -76,5 +74,4 @@ class ProfessionalHeadingItem extends StatelessWidget {
       ],
     );
   }
-
 }

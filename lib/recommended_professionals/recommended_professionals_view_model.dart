@@ -26,8 +26,6 @@ class RecommendedProfessionalsViewModel extends GetxController {
   RxList<ProfessionalCompany> selectedProfessionalsList =
       <ProfessionalCompany>[].obs;
 
-  // RxList<ProfessionalRecommendations> professionalsList = <ProfessionalRecommendations>[].obs;
-  //RxList<ProfessionalRecommendations> selectedProfessionalsList = <ProfessionalRecommendations>[].obs;
   final RxString selectedService = ''.obs;
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController serviceController = TextEditingController();
@@ -90,22 +88,19 @@ class RecommendedProfessionalsViewModel extends GetxController {
   Future getAllProfessionalList() async {
     final response = await _recommendedProfessionalRepository
         .fetchProfessionalList(
-        latitude: lat,
-        longitude:long,
-        pageNumber: pageNumber.toString(),
-        pageSize: pageSize.toString(),
-        category: selectedService.value
-
-    );
+          latitude: lat,
+          longitude: long,
+          pageNumber: pageNumber.toString(),
+          pageSize: pageSize.toString(),
+          category: selectedService.value,
+        );
     if (response != null) {
       final apiResponse = ApiResponse.fromJson(response);
       final professionalResponse = apiResponse.data;
       professionalsList.addAll(professionalResponse?.data ?? []);
-      isLoadMoreVisible.value =true;
-
+      isLoadMoreVisible.value = true;
     }
   }
-
 
   void navigateToNext(int index) {
     debugPrint("index:::$index");

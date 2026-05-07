@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -43,14 +42,6 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
     );
   }
 
-  /*  Future<void> _loadHtmlFromAssets() async {
-    final String htmlContent = await rootBundle.loadString(widget.filePath!);
-    await _controller.loadRequest(
-
-      Uri.dataFromString(htmlContent, mimeType: 'text/html', encoding: Encoding.getByName('utf-8')),
-    );
-  }*/
-
   Future<void> loadHtmlFromAssets({required String languageCode}) async {
     debugPrint("languageCode:::$languageCode");
     final String path = languageCode == 'en'
@@ -79,11 +70,7 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: WebViewWidget(
-              controller: _controller,
-            )
-          ),
+          Expanded(child: WebViewWidget(controller: _controller)),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -93,10 +80,9 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
               buttonLabel: AppLocalizations.of(context)!.close,
               onPressed: () => Get.back(),
             ),
-          )
+          ),
         ],
       ),
     );
-
   }
 }

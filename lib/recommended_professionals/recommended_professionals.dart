@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
@@ -12,7 +9,6 @@ import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/components/heading_ui_layout.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/recommended_professionals/components/professional_card_layout.dart';
 import 'package:kasagardem/recommended_professionals/recommended_professionals_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';

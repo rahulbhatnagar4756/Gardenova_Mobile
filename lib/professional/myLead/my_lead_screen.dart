@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/professional/myLead/my_lead_controller.dart';
 
 import '../../base/widgets/base_text.dart';
@@ -21,7 +20,7 @@ class MyLeadScreen extends GetWidget<MyLeadController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CircularBottomAppBar(
+      appBar: CircularBottomAppBar(
         isBackButtonVisible: true,
         showMenuIcon: true,
         onSettingPressed: () {

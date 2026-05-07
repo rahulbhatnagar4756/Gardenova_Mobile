@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -71,11 +70,7 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: WebViewWidget(
-              controller: _controller,
-            )
-          ),
+          Expanded(child: WebViewWidget(controller: _controller)),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -85,7 +80,7 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               buttonLabel: AppLocalizations.of(context)!.close,
               onPressed: () => Get.back(),
             ),
-          )
+          ),
         ],
       ),
     );

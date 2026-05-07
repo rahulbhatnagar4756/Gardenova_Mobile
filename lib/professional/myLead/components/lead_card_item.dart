@@ -30,7 +30,11 @@ class LeadCardItem extends StatelessWidget {
       () => controller.myLeadsList.isNotEmpty
           ? ListView.builder(
               itemCount: controller.myLeadsList.length,
-              padding: EdgeInsets.only(left: spacerSize15,right: spacerSize12,bottom: 25.h),
+              padding: EdgeInsets.only(
+                left: spacerSize15,
+                right: spacerSize12,
+                bottom: 25.h,
+              ),
               itemBuilder: (context, index) {
                 var item = controller.myLeadsList[index];
                 return Container(
@@ -39,9 +43,7 @@ class LeadCardItem extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.appColor,
                     borderRadius: BorderRadius.circular(spacerSize15),
-                    border: Border.all(
-                      color: AppColors.borderLiteGreyColor,
-                    ),
+                    border: Border.all(color: AppColors.borderLiteGreyColor),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,30 +178,34 @@ class LeadCardItem extends StatelessWidget {
                             end: Alignment.centerRight,
                             colors: [
                               Colors.transparent,
-                              AppColors.blackColor.withValues(alpha: 0.6), // soft black center
+                              AppColors.blackColor.withValues(alpha: 0.6),
+                              // soft black center
                               Colors.transparent,
                             ],
                             stops: const [0.0, 0.5, 1.0],
                           ),
                         ),
                       ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 38.h,
-                      child: BaseButton(
-                        buttonPadding: EdgeInsets.only(bottom: 0),
-                        linearBackgroundColor: AppColors.linearGreenGradientForBtn,
-                        textColor: AppColors.greenColor,
-                        fontSize: fontSize15,
-                        buttonLabel:AppLocalizations.of(context)!.viewDetails,
-                        onPressed: () {
-                          Get.toNamed(
-                            Routes.leadDetailsScreen,
-                            arguments: controller.myLeadsList[index],
-                          );
-                        },
+                      SizedBox(
+                        width: double.infinity,
+                        height: 38.h,
+                        child: BaseButton(
+                          buttonPadding: EdgeInsets.only(bottom: 0),
+                          linearBackgroundColor:
+                              AppColors.linearGreenGradientForBtn,
+                          textColor: AppColors.greenColor,
+                          fontSize: fontSize15,
+                          buttonLabel: AppLocalizations.of(
+                            context,
+                          )!.viewDetails,
+                          onPressed: () {
+                            Get.toNamed(
+                              Routes.leadDetailsScreen,
+                              arguments: controller.myLeadsList[index],
+                            );
+                          },
+                        ),
                       ),
-                    )
                       // GestureDetector(
                       //   onTap: () {
                       //     Get.toNamed(

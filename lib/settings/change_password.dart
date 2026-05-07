@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_form.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/components/bottom_sheet_layout.dart';
@@ -9,7 +8,6 @@ import 'package:kasagardem/settings/components/text_field_layout.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
-
 class ChangePassword extends GetWidget<SettingsViewModel> {
   const ChangePassword({super.key});
 
@@ -17,12 +15,6 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkGreen,
-      // appBar: BaseAppBar(
-      //   isAppIconVisible: false,
-      //   title: AppLocalizations.of(context)!.changePassword,
-      //   toolbarHeightScale: 1,
-      // ),
-
       body: Container(
         height: double.infinity,
         color: AppColors.greenColor,
@@ -32,10 +24,8 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
             child: Column(
               children: [
                 ProfileIconLayout(
-
                   isEnableEditable: false,
-                  title:  AppLocalizations.of(context)!.changePassword,
-
+                  title: AppLocalizations.of(context)!.changePassword,
                 ),
                 Expanded(
                   child: BottomSheetLayout(
@@ -45,9 +35,14 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                         child: Column(
                           children: [
                             TextFieldLayout(
-                              editTextTitle: AppLocalizations.of(context)!.currentPassword,
-                              textEditingController: controller.oldPasswordController,
-                              hintText:  AppLocalizations.of(context)!.currentPassword,
+                              editTextTitle: AppLocalizations.of(
+                                context,
+                              )!.currentPassword,
+                              textEditingController:
+                                  controller.oldPasswordController,
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.currentPassword,
                               isTextObscure: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -58,11 +53,16 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                                 return null;
                               },
                             ),
-                        
+
                             TextFieldLayout(
-                              editTextTitle: AppLocalizations.of(context)!.newPassword,
-                              hintText: AppLocalizations.of(context)!.newPassword,
-                              textEditingController: controller.newPasswordController,
+                              editTextTitle: AppLocalizations.of(
+                                context,
+                              )!.newPassword,
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.newPassword,
+                              textEditingController:
+                                  controller.newPasswordController,
                               isTextObscure: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -74,9 +74,14 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               },
                             ),
                             TextFieldLayout(
-                              editTextTitle: AppLocalizations.of(context)!.confirmNewPassword,
-                              hintText: AppLocalizations.of(context)!.confirmNewPassword,
-                              textEditingController: controller.confirmPasswordController,
+                              editTextTitle: AppLocalizations.of(
+                                context,
+                              )!.confirmNewPassword,
+                              hintText: AppLocalizations.of(
+                                context,
+                              )!.confirmNewPassword,
+                              textEditingController:
+                                  controller.confirmPasswordController,
                               isTextObscure: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -84,11 +89,14 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                                     context,
                                   )!.passwordFieldCannotBeEmpty;
                                 }
-                        
-                                if (value != controller.newPasswordController.text) {
-                                  return AppLocalizations.of(context)!.passwordsDoNotMatch;
+
+                                if (value !=
+                                    controller.newPasswordController.text) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.passwordsDoNotMatch;
                                 }
-                        
+
                                 return null;
                               },
                             ),
@@ -98,12 +106,13 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                     ),
                     buttonLabel: AppLocalizations.of(context)!.saveChanges,
                     onButtonTap: () {
-                      if (controller.changePasswordFormKey.currentState!.validate()) {
+                      if (controller.changePasswordFormKey.currentState!
+                          .validate()) {
                         controller.updatePassword();
                       }
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),

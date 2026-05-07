@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 
 class AppColors {
-  // static const appColor = Color(0xFF2E3A30);
   static const appColor = Color(0xFFFFFFFF);
   static const blackColor = Color(0xFF111111);
   static const whiteColor = Color(0xFFFFFFFF);
@@ -21,9 +18,6 @@ class AppColors {
   static const toLiteGreenColor = Color(0xFF95D5B2);
   static const toToLiteGreenColor = Color(0xFFE6F7EE);
   static const chartBorderColor = Color(0xFF2D6647);
-
-
-
 
   static const antiqueWhite = Color(0xFFE4E0D4);
   static const darkBlue = Color(0xFF15387C);
@@ -69,18 +63,14 @@ class AppColors {
   static const harvestGold = Color(0xFFB2883D);
   static const mossGold = Color(0xFF706136);
   static const amberGold = Color(0xFFB48A3E);
-  static  const linearGradientForBtn =
-  LinearGradient(
-    colors: [Color(0XFF004A24),Color(0XFF00B056),],
+  static const linearGradientForBtn = LinearGradient(
+    colors: [Color(0XFF004A24), Color(0XFF00B056)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
-  static  const linearGreenGradientForBtn =
-  LinearGradient(
-    colors: [Color(0xFF01AF55),Color(0xFF01AF55),],
+  static const linearGreenGradientForBtn = LinearGradient(
+    colors: [Color(0xFF01AF55), Color(0xFF01AF55)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
-
-
 }

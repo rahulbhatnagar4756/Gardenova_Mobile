@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,8 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/network_services/app_exceptions.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
 import '../../base/dialogs/base_dialog.dart';
-import '../app_config.dart';
 
 class ApiRepository {
   ApiRepository._privateConstructor();
@@ -217,8 +218,6 @@ class ApiRepository {
             },
           );
         });
-      // SharedPrefsService.instance.clear();
-      // Get.offAllNamed(Routes.login);
       case 403:
         throw UnauthorisedException(response.body.toString());
       case 404:

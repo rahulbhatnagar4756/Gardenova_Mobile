@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../../../base/widgets/base_bordered_container.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_outline_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
@@ -140,135 +139,139 @@ class ProfessionalItem extends StatelessWidget {
 
         Expanded(
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: spacerSize10),
+            padding: EdgeInsets.symmetric(horizontal: spacerSize10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               Expanded(
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     BaseText(
-                       text: professional!.companyName ?? "",
-                       fontFamily: AppKeys.poppins,
-                       fontWeight: FontWeight.w600,
-                       fontSize: fontSize13,
-                     ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BaseText(
+                        text: professional!.companyName ?? "",
+                        fontFamily: AppKeys.poppins,
+                        fontWeight: FontWeight.w600,
+                        fontSize: fontSize13,
+                      ),
 
-                     professional?.legalName?.isNotEmpty==true? BaseText(
-                       text: professional!.legalName ?? "",
-                       textColor: AppColors.whiteColor,
-                       fontSize: fontSize11,
-                       fontWeight: FontWeight.w300,
-                       textAlign: TextAlign.start,
-                     ):const SizedBox(),
+                      professional?.legalName?.isNotEmpty == true
+                          ? BaseText(
+                              text: professional!.legalName ?? "",
+                              textColor: AppColors.whiteColor,
+                              fontSize: fontSize11,
+                              fontWeight: FontWeight.w300,
+                              textAlign: TextAlign.start,
+                            )
+                          : const SizedBox(),
 
-                     Row(crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         Expanded(
-                           child: Row(
-                             mainAxisAlignment: MainAxisAlignment.start,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             spacing: spacerSize4,
-                             children: [
-                               Image.asset(
-                                 AppAssets.location,
-                                 color: AppColors.greenColor,
-                                 scale: 3,
-                               ).marginOnly(top: spacerSize5),
-                               Expanded(
-                                 child: Column(
-                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                   children: [
-                                     BaseText(
-                                       overflow: TextOverflow.ellipsis,
-                                       maxLines: 1,
-                                       text:
-                                       '${professional!.state} ${professional!.city}',
-                                       fontSize: fontSize12,
-                                       fontWeight: FontWeight.w400,
-                                     ),
-                                     BaseText(
-                                       overflow: TextOverflow.ellipsis,
-                                       maxLines: 2,
-                                       text: professional!.address ?? "",
-                                       fontSize: fontSize10,
-                                       fontWeight: FontWeight.w400,
-                                     ),
-                                   ],
-                                 ),
-                               ),
-                             ],
-                           ),
-                         ),
-
-                       ],
-                     ).marginOnly(top: spacerSize6,),
-
-                   ],
-                 ),
-               ),
-                isSelected==false?  IgnorePointer(
-                  ignoring: true,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: spacerSize45,
-                    child: BaseOutlineButton(
-                      buttonPadding: EdgeInsets.only(bottom: 0),
-                      textColor: AppColors.greenColor,
-                      fontSize: fontSize17,
-                      buttonLabel:AppLocalizations.of(context)!.select,
-                      onPressed: () {
-                        // Get.offAllNamed(Routes.login);
-                      },
-                    ),
-                  ),
-                ):
-
-                IgnorePointer(
-                  ignoring: true,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: spacerSize45,
-                    child: BaseButton(
-                      tickPrefixIcon: true,
-                      buttonPadding: EdgeInsets.only(bottom: 0),
-                      linearBackgroundColor: AppColors.linearGreenGradientForBtn,
-                      textColor: AppColors.greenColor,
-                      fontSize: fontSize15,
-                      buttonLabel:'${AppLocalizations.of(context)!.selected}',
-                      onPressed: () {
-                        // Get.offAllNamed(Routes.login);
-                      },
-                    ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: spacerSize4,
+                              children: [
+                                Image.asset(
+                                  AppAssets.location,
+                                  color: AppColors.greenColor,
+                                  scale: 3,
+                                ).marginOnly(top: spacerSize5),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      BaseText(
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        text:
+                                            '${professional!.state} ${professional!.city}',
+                                        fontSize: fontSize12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      BaseText(
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        text: professional!.address ?? "",
+                                        fontSize: fontSize10,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ).marginOnly(top: spacerSize6),
+                    ],
                   ),
                 ),
-                SizedBox(height: 15.h,)
-                  // BaseBorderedContainer(
-                  //   height: spacerSize40,
-                  //   backgroundColor: isSelected!
-                  //       ? AppColors.burntGold
-                  //       : Colors.transparent,
-                  //   width: double.infinity,
-                  //   alignment: Alignment.center,
-                  //   padding: EdgeInsets.only(
-                  //     top: spacerSize4,
-                  //     bottom: spacerSize4,
-                  //     left: spacerSize5,
-                  //     right: spacerSize5,
-                  //   ),
-                  //   borderRadius: 10.r,
-                  //   childWidget: BaseText(
-                  //     text: isSelected!
-                  //         ? AppLocalizations.of(context)!.selected
-                  //         : AppLocalizations.of(context)!.select,
-                  //     textColor:isSelected==true? AppColors.offWhite:AppColors.greenColor,
-                  //     fontWeight: FontWeight.w400,
-                  //     fontSize: fontSize12,
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ).paddingOnly(top: 10.h),
+                isSelected == false
+                    ? IgnorePointer(
+                        ignoring: true,
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: spacerSize45,
+                          child: BaseOutlineButton(
+                            buttonPadding: EdgeInsets.only(bottom: 0),
+                            textColor: AppColors.greenColor,
+                            fontSize: fontSize17,
+                            buttonLabel: AppLocalizations.of(context)!.select,
+                            onPressed: () {
+                              // Get.offAllNamed(Routes.login);
+                            },
+                          ),
+                        ),
+                      )
+                    : IgnorePointer(
+                        ignoring: true,
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: spacerSize45,
+                          child: BaseButton(
+                            tickPrefixIcon: true,
+                            buttonPadding: EdgeInsets.only(bottom: 0),
+                            linearBackgroundColor:
+                                AppColors.linearGreenGradientForBtn,
+                            textColor: AppColors.greenColor,
+                            fontSize: fontSize15,
+                            buttonLabel:
+                                '${AppLocalizations.of(context)!.selected}',
+                            onPressed: () {
+                              // Get.offAllNamed(Routes.login);
+                            },
+                          ),
+                        ),
+                      ),
+                SizedBox(height: 15.h),
+                // BaseBorderedContainer(
+                //   height: spacerSize40,
+                //   backgroundColor: isSelected!
+                //       ? AppColors.burntGold
+                //       : Colors.transparent,
+                //   width: double.infinity,
+                //   alignment: Alignment.center,
+                //   padding: EdgeInsets.only(
+                //     top: spacerSize4,
+                //     bottom: spacerSize4,
+                //     left: spacerSize5,
+                //     right: spacerSize5,
+                //   ),
+                //   borderRadius: 10.r,
+                //   childWidget: BaseText(
+                //     text: isSelected!
+                //         ? AppLocalizations.of(context)!.selected
+                //         : AppLocalizations.of(context)!.select,
+                //     textColor:isSelected==true? AppColors.offWhite:AppColors.greenColor,
+                //     fontWeight: FontWeight.w400,
+                //     fontSize: fontSize12,
+                //     textAlign: TextAlign.center,
+                //   ),
+                // ).paddingOnly(top: 10.h),
               ],
             ),
           ),

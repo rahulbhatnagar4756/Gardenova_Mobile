@@ -51,7 +51,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
 
             Container(
               padding: EdgeInsets.symmetric(horizontal: spacerSize10),
-              margin: EdgeInsets.only( bottom: spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
               decoration: BoxDecoration(
                 color: AppColors.appColor,
                 borderRadius: BorderRadius.circular(spacerSize12),
@@ -86,46 +86,46 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-            if(leadData!.location!.address!=null)
-            BaseText(
-              text: "${AppLocalizations.of(context)!.location}:",
-              textAlign: TextAlign.center,
-              fontFamily: AppKeys.poppins,
+            if (leadData!.location!.address != null)
+              BaseText(
+                text: "${AppLocalizations.of(context)!.location}:",
+                textAlign: TextAlign.center,
+                fontFamily: AppKeys.poppins,
 
-              fontSize: fontSize20,
-              fontWeight: FontWeight.w500,
-            ).marginOnly(top: spacerSize10, bottom: spacerSize10),
+                fontSize: fontSize20,
+                fontWeight: FontWeight.w500,
+              ).marginOnly(top: spacerSize10, bottom: spacerSize10),
 
-            if(leadData!.location!.address!=null)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: spacerSize10),
-              decoration: BoxDecoration(
-                color: AppColors.appColor,
-                borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.liteGreyColor),
+            if (leadData!.location!.address != null)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: spacerSize10),
+                decoration: BoxDecoration(
+                  color: AppColors.appColor,
+                  borderRadius: BorderRadius.circular(spacerSize12),
+                  border: Border.all(color: AppColors.liteGreyColor),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildItem(
+                      "${AppLocalizations.of(context)!.city}:",
+                      leadData!.location?.city ?? "",
+                    ),
+                    buildItem(
+                      "${AppLocalizations.of(context)!.state}:",
+                      leadData!.location?.state ?? "",
+                    ),
+                    buildItem(
+                      "${AppLocalizations.of(context)!.address}:",
+                      leadData!.location?.address ?? "",
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildItem(
-                    "${AppLocalizations.of(context)!.city}:",
-                    leadData!.location?.city ?? "",
-                  ),
-                  buildItem(
-                    "${AppLocalizations.of(context)!.state}:",
-                    leadData!.location?.state ?? "",
-                  ),
-                  buildItem(
-                    "${AppLocalizations.of(context)!.address}:",
-                    leadData!.location?.address ?? "",
-                  ),
-                ],
-              ),
-            ),
 
             Container(
               padding: EdgeInsets.all(spacerSize10),
-              margin: EdgeInsets.only(bottom:spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
                 color: AppColors.appColor,
@@ -154,7 +154,7 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             ),
             Container(
               padding: EdgeInsets.all(spacerSize10),
-              margin: EdgeInsets.only(bottom:spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
 
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
@@ -210,10 +210,6 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-
-
-
-
           ],
         ),
       ),

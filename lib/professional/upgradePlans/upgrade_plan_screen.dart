@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_controller.dart';
 
-import '../../authentication/components/header_logo_layout.dart';
 import '../../base/widgets/base_app_bar.dart';
 import '../../base/widgets/base_button.dart';
-import '../../base/widgets/base_text.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_constants.dart';
-import '../../utils/constants/app_keys.dart';
-import '../../utils/routes.dart';
 import 'components/additional_coverage.dart';
 import 'components/header_card.dart';
 import 'components/plan_card.dart';
@@ -36,7 +31,7 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
               HeaderCard(controller: controller).marginOnly(top: spacerSize20),
 
               Obx(
-                    () => Align(
+                () => Align(
                   alignment: Alignment.center,
                   child: Container(
                     padding: EdgeInsets.symmetric(
@@ -84,7 +79,7 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
                   isSelected: controller.isTabAdditionalCoverage.value,
                   onTap: () {
                     if (controller.planList.any(
-                          (plan) => plan.isSelect == true,
+                      (plan) => plan.isSelect == true,
                     )) {
                       controller.changeTabAdditionalCoverage(
                         !controller.isTabAdditionalCoverage.value,
@@ -117,7 +112,7 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
                 fontSize: fontSize16,
                 textColor: Colors.white,
                 buttonWidth: double.infinity,
-              )
+              ),
 
               // Visibility(
               //   visible: controller.screenType.value == AppKeys.login,
@@ -144,7 +139,6 @@ class UpgradePlanScreen extends GetWidget<UpgradePlanController> {
             ],
           ),
         ),
-
       ),
     );
   }

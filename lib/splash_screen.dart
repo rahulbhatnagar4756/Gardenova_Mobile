@@ -1,13 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'authentication/auth_repository.dart';
-import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
+import 'authentication/auth_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,11 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       navigateToIntroductionScreen();
     }
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   // Your code here
-    //   print("UI rendered, now safe to use context");
-    // Get.toNamed(Routes.plantsCatalog);
-    // });
     super.initState();
   }
 
@@ -38,10 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      body: Center(child: SizedBox(
-        width: 220.w,
+      body: Center(
+        child: SizedBox(
+          width: 220.w,
           height: 215.h,
-          child: Image.asset(AppAssets.appLogoFull, scale: 2))),
+          child: Image.asset(AppAssets.appLogoFull, scale: 2),
+        ),
+      ),
     );
   }
 
@@ -70,7 +69,6 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         Get.offAllNamed(Routes.professionalDashboard);
       }
-      // Get.offNamed(Routes.introduction);
     });
   }
 }

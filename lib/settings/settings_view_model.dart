@@ -162,27 +162,6 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  // updateProfile() async {
-  //   List<int> imageBytes = await imageFile.value.readAsBytes();
-  //   String base64String = base64Encode(imageBytes);
-  //   UpdateProfileModel? updateProfileResponse = UpdateProfileModel()
-  //     ..profileImage = "data:image/png;base64, $base64String"
-  //     ..dateOfBirth = ""
-  //     ..gender = ""
-  //     ..bio = ""
-  //     ..occupation = ""
-  //     ..company = "";
-  //
-  //   debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
-  //   var response = await profileRepository.updateProfile(
-  //     updateProfileReq: updateProfileResponse,
-  //   );
-  //   if (response != null) {
-  //     profileImage.value = updateProfileResponse.profileImage ?? "";
-  //     Get.back();
-  //   }
-  // }
-
   updateProfessionalProfile() async {
     Map<String, dynamic> map = {};
 
