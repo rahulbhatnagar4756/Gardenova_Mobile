@@ -12,9 +12,14 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/base_text.dart';
+import '../../../base/widgets/full_screen_image_preview.dart';
 import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../allPlants/allPlantsDetails/components/care_overview_section.dart';
+import '../../allPlants/allPlantsDetails/components/plant_health_section.dart';
+import '../../allPlants/allPlantsDetails/components/quick_info_section.dart';
+import '../../allPlants/allPlantsDetails/components/special_traits_section.dart';
 import '../../model/plant_details_model.dart';
 import 'components/plant_state_item.dart';
 
@@ -42,7 +47,30 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: spacerSize300),
+                  GestureDetector(
+                    onTap: () {
+                      final imageUrl =
+                          controller
+                              .plantDetailData
+                              .value
+                              .data
+                              ?.plant
+                              ?.imageUrl ??
+                          "";
+
+                      if (imageUrl.isNotEmpty) {
+                        FullScreenImageView.open(
+                          imageUrl: imageUrl,
+                          heroTag: "plant_detail_image",
+                        );
+                      }
+                    },
+                    child: Container(
+                      height: spacerSize300,
+                      color: Colors.transparent,
+                    ),
+                  ),
+                  // const SizedBox(height: spacerSize300),
                   Container(
                     padding: const EdgeInsets.all(spacerSize20),
                     decoration: const BoxDecoration(
@@ -97,28 +125,28 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(spacerSize14),
-                              decoration: BoxDecoration(
-                                // gradient: LinearGradient(
-                                //   colors: [
-                                //     AppColors.lightGold,
-                                //     AppColors.burntGold,
-                                //   ],
-                                //   begin: Alignment.topCenter,
-                                //   end: Alignment.bottomCenter,
-                                // ),
-                                color: AppColors.greenColor,
-                                borderRadius: BorderRadius.circular(
-                                  spacerSize12,
-                                ),
-                              ),
-                              child: Image.asset(
-                                Assets.imagesNotification,
-                                height: spacerSize20,
-                                width: spacerSize20,
-                              ),
-                            ),
+                            // Container(
+                            //   padding: const EdgeInsets.all(spacerSize14),
+                            //   decoration: BoxDecoration(
+                            //     // gradient: LinearGradient(
+                            //     //   colors: [
+                            //     //     AppColors.lightGold,
+                            //     //     AppColors.burntGold,
+                            //     //   ],
+                            //     //   begin: Alignment.topCenter,
+                            //     //   end: Alignment.bottomCenter,
+                            //     // ),
+                            //     color: AppColors.greenColor,
+                            //     borderRadius: BorderRadius.circular(
+                            //       spacerSize12,
+                            //     ),
+                            //   ),
+                            //   child: Image.asset(
+                            //     Assets.imagesNotification,
+                            //     height: spacerSize20,
+                            //     width: spacerSize20,
+                            //   ),
+                            // ),
                           ],
                         ),
 
@@ -141,7 +169,6 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
 
                         statsRow(controller: controller),
                         upcomingEvents(controller: controller),
-
                         Divider(color: AppColors.backgroundGrey, height: 1),
                         sectionHeader(
                           AppLocalizations.of(Get.context!)!.plantHistory,
@@ -151,6 +178,32 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                           "${AppLocalizations.of(context)!.watered}\t2\t${AppLocalizations.of(context)!.days}\t${AppLocalizations.of(context)!.ago}",
                           AppLocalizations.of(context)!.consistent,
                         ),
+                        Divider(color: AppColors.backgroundGrey, height: 1),
+
+                        QuickInfoSection(
+                          plant: controller.plantDetailData.value.data?.plant,
+                        ),
+
+                        CareOverviewSection(
+                          plant: controller.plantDetailData.value.data?.plant,
+                        ),
+
+                        PlantHealthSection(
+                          plant: controller.plantDetailData.value.data?.plant,
+                        ),
+
+                        SpecialTraitsSection(
+                          plant: controller.plantDetailData.value.data?.plant,
+                        ),
+                        Divider(color: AppColors.backgroundGrey, height: 1),
+                        // sectionHeader(
+                        //   AppLocalizations.of(Get.context!)!.plantHistory,
+                        // ),
+                        // eventTile(
+                        //   Assets.imagesWatering,
+                        //   "${AppLocalizations.of(context)!.watered}\t2\t${AppLocalizations.of(context)!.days}\t${AppLocalizations.of(context)!.ago}",
+                        //   AppLocalizations.of(context)!.consistent,
+                        // ),
                         editPlantButton(context).marginOnly(top: spacerSize15),
                       ],
                     ),
@@ -175,9 +228,69 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
             ),
           ],
         ),
+        floatingActionButton: Container(
+          decoration: BoxDecoration(
+            gradient: AppColors.linearGradientForBtn,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.greenColor.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: FloatingActionButton.extended(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            onPressed: () async {
+              Get.toNamed(
+                Routes.allPlantsDetails,
+                arguments: {
+                  "plant_id": controller.plantId.value,
+                  "screen_type": "edit",
+                },
+              )!.then((value) {
+                if (value == true) {
+                  controller.callGetMyPlantDetailsApi();
+                }
+              });
+            },
+            icon: const Icon(Icons.edit, color: Colors.white),
+            label: Text(
+              AppLocalizations.of(context)!.editPlant,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
+
+  // return BaseButton(
+  // onPressed: () {
+  // Get.toNamed(
+  // Routes.allPlantsDetails,
+  // arguments: {
+  // "plant_id": controller.plantId.value,
+  // "screen_type": "edit",
+  // },
+  // )!.then((value) {
+  // if (value == true) {
+  // controller.callGetMyPlantDetailsApi();
+  // }
+  // });
+  // },
+  // backgroundColor: AppColors.burntGold,
+  // buttonLabel: AppLocalizations.of(context)!.editPlant,
+  // fontSize: fontSize16,
+  // textColor: Colors.white,
+  // bottomPadding: true,
+  // buttonWidth: double.infinity,
+  // );
 
   bool shouldShowUpcomingEvents(MyPlantDetailsController controller) {
     final reminder = controller.plantDetailData.value.data?.reminder;
@@ -450,12 +563,14 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
     return Container(
       padding: const EdgeInsets.all(spacerSize15),
       margin: const EdgeInsets.only(bottom: spacerSize8),
+      constraints: BoxConstraints(minWidth: 150.w),
       decoration: BoxDecoration(
         color: AppColors.toToLiteGreenColor,
         borderRadius: BorderRadius.circular(spacerSize16),
         border: Border.all(color: AppColors.liteGreenColor),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             padding: const EdgeInsets.all(spacerSize15),
@@ -484,6 +599,8 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                 text: subtitle,
                 fontFamily: AppKeys.inter,
                 fontSize: fontSize12,
+                textAlign: TextAlign.center,
+                maxLines: 3,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.liteGreyColor,
               ),
@@ -539,6 +656,7 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
   }
 
   Widget editPlantButton(BuildContext context) {
+    return SizedBox();
     return BaseButton(
       onPressed: () {
         Get.toNamed(

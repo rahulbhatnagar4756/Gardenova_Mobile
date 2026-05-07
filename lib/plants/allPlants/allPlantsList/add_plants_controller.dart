@@ -7,6 +7,7 @@ import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:kasagardem/plants/model/plant_model.dart';
 import 'package:kasagardem/plants/plant_repository.dart';
+
 import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
@@ -20,6 +21,7 @@ class AllPlantsController extends GetxController {
   PlantsRepository plantsRepository = PlantsRepository();
   RxList<PlantModel> allPlantList = <PlantModel>[].obs;
   RxBool isLoading = false.obs;
+  RxBool isRefreshing = false.obs;
   RxInt pageNumber = 1.obs;
   int pageSize = 20;
   RxBool isLoadMoreVisible = false.obs;
@@ -32,9 +34,23 @@ class AllPlantsController extends GetxController {
   void onInit() {
     isUserLoggedIn.value =
         sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+    // scrollController.addListener(() {
+    //   if (scrollController.hasClients &&
+    //       scrollController.position.pixels >=
+    //           scrollController.position.maxScrollExtent - 200 &&
+    //       !isLoadMoreRunning.value &&
+    //       isLoadMoreVisible.value) {
+    //     loadMorePlants();
+    //   }
+    // });
     scrollController.addListener(() {
-      if (scrollController.hasClients &&
-          scrollController.position.pixels >=
+      if (!scrollController.hasClients) return;
+
+      if (isRefreshing.value) return;
+
+      if (isLoading.value) return;
+
+      if (scrollController.position.pixels >=
               scrollController.position.maxScrollExtent - 200 &&
           !isLoadMoreRunning.value &&
           isLoadMoreVisible.value) {
@@ -68,7 +84,7 @@ class AllPlantsController extends GetxController {
       case 0:
         // Get.back();
         // Get.toNamed(Routes.dashboard);
-        if(Get.isRegistered<DashboardController>()){
+        if (Get.isRegistered<DashboardController>()) {
           Get.find<DashboardController>().refreshSoilAnalysis.refresh();
         }
         Get.until((route) => route.settings.name == Routes.dashboard);
@@ -131,21 +147,36 @@ class AllPlantsController extends GetxController {
     }
   }
 
-  void loadMorePlants() {
+  // void loadMorePlants() {
+  //   isLoadMoreRunning.value = true;
+  //   if (isSearching.value == false) {
+  //     pageNumber.value++;
+  //   }
+  //   getAllPlantList(
+  //     showDefaultLoader: false,
+  //   ).then((value) => isLoadMoreRunning.value = false);
+  // }
+  Future<void> loadMorePlants() async {
+    if (isRefreshing.value) return;
+
+    if (isLoading.value) return;
+
     isLoadMoreRunning.value = true;
-    if (isSearching.value == false) {
+
+    if (!isSearching.value) {
       pageNumber.value++;
     }
-    getAllPlantList(
-      showDefaultLoader: false,
-    ).then((value) => isLoadMoreRunning.value = false);
+
+    await getAllPlantList(showDefaultLoader: false);
+
+    isLoadMoreRunning.value = false;
   }
 
   Future<void> callGetAllPlantListApi({String searchName = ''}) async {
     allPlantList.clear();
     isLoading.value = true;
-    if(searchName.isEmpty){
-      isLoadMoreRunning.value=false;
+    if (searchName.isEmpty) {
+      isLoadMoreRunning.value = false;
     }
     await getAllPlantList(searchName: searchName, showDefaultLoader: false);
     isLoading.value = false;

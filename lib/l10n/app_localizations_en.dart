@@ -69,7 +69,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get and => 'and';
 
   @override
-  String get privacyPolicy => 'privacy policy';
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
   String get orRegisterWith => 'Or Register With';

@@ -21,53 +21,103 @@ class LocationService {
   }
 
   /// Core logic
+  // Future<Position> _determinePosition() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // ✅ Check if location services are enabled
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     await _showLocationServiceDialog();
+  //     throw Exception('Location services are disabled.');
+  //   }
+  //
+  //   // ✅ Check permission
+  //   permission = await Geolocator.checkPermission();
+  //
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       throw Exception('Location permission denied');
+  //     }
+  //   }
+  //
+  //   // ✅ Permanently denied
+  //   if (permission == LocationPermission.deniedForever) {
+  //     await _showPermissionDeniedDialog();
+  //     throw Exception('Permission permanently denied');
+  //   }
+  //
+  //   // ✅ Try getting current position (safe config)
+  //   try {
+  //     return await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.medium,
+  //       timeLimit: const Duration(seconds: 10),
+  //     );
+  //   } catch (e) {
+  //     debugPrint("Primary location failed: $e");
+  //     throw Exception("Unable to fetch location");
+  //     // ✅ Fallback to last known location
+  //     final lastPosition = await Geolocator.getLastKnownPosition();
+  //
+  //     if (lastPosition != null) {
+  //       return lastPosition;
+  //     }
+  //
+  //
+  //   }
+  // }
+
+
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // ✅ Check if location services are enabled
+    // Check location service
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
     if (!serviceEnabled) {
       await _showLocationServiceDialog();
       throw Exception('Location services are disabled.');
     }
 
-    // ✅ Check permission
+    // Check permission
     permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+
       if (permission == LocationPermission.denied) {
         throw Exception('Location permission denied');
       }
     }
 
-    // ✅ Permanently denied
+    // Permanently denied
     if (permission == LocationPermission.deniedForever) {
       await _showPermissionDeniedDialog();
       throw Exception('Permission permanently denied');
     }
 
-    // ✅ Try getting current position (safe config)
     try {
+      // Better for emulator & slow GPS devices
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
+        desiredAccuracy: LocationAccuracy.low,
+        timeLimit: const Duration(seconds: 20),
       );
     } catch (e) {
       debugPrint("Primary location failed: $e");
 
-      // ✅ Fallback to last known location
+      // Fallback to cached location
       final lastPosition = await Geolocator.getLastKnownPosition();
 
       if (lastPosition != null) {
+        debugPrint("Using last known location");
         return lastPosition;
       }
 
       throw Exception("Unable to fetch location");
     }
   }
-
   /// 🔹 Dialog: GPS OFF
   Future<void> _showLocationServiceDialog() async {
     await Get.dialog(

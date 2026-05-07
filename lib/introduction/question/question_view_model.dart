@@ -74,10 +74,15 @@ class QuestionViewModel extends GetxController {
     if (query.isEmpty) {
       filteredStateList.assignAll(stateList);
     } else {
-      filteredStateList.assignAll(stateList
-          .where((state) =>
-              state.name?.toLowerCase().contains(query.toLowerCase()) ?? false)
-          .toList());
+      filteredStateList.assignAll(
+        stateList
+            .where(
+              (state) =>
+                  state.name?.toLowerCase().contains(query.toLowerCase()) ??
+                  false,
+            )
+            .toList(),
+      );
     }
   }
 
@@ -92,6 +97,8 @@ class QuestionViewModel extends GetxController {
         filteredCityList.assignAll(cityList);
       }
     }
+    cityController.text = '';
+    selectedCity.value = Cities();
   }
 
   void filterCity(String query) {
@@ -99,8 +106,10 @@ class QuestionViewModel extends GetxController {
       filteredCityList.value = cityList;
     } else {
       filteredCityList.value = cityList
-          .where((city) =>
-              city.name?.toLowerCase().contains(query.toLowerCase()) ?? false)
+          .where(
+            (city) =>
+                city.name?.toLowerCase().contains(query.toLowerCase()) ?? false,
+          )
           .toList();
     }
   }
@@ -119,7 +128,6 @@ class QuestionViewModel extends GetxController {
           plantResponse.data!.responseId ?? "",
         );
 
-
         // Get.toNamed(
         //   Routes.reportSuccess,
         //   arguments: {plantResponse.data!.responseId ?? ""},
@@ -127,14 +135,17 @@ class QuestionViewModel extends GetxController {
         BaseDialog.showFullScreenDialog(
           barrieDismissible: false,
           Get.context!,
-          buttonLabel: AppLocalizations.of(
+          buttonLabel: AppLocalizations.of(Get.context!)!.viewReport,
+          dialogTitle: AppLocalizations.of(
             Get.context!,
-          )!.viewReport,
-          dialogTitle: AppLocalizations.of(Get.context!)!.yourIntelligentDiagnosisReportIsReady,
+          )!.yourIntelligentDiagnosisReportIsReady,
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
-             Get.offAllNamed(Routes.dashboard, arguments: {plantResponse.data!.responseId ?? ""});
+            Get.offAllNamed(
+              Routes.dashboard,
+              arguments: {plantResponse.data!.responseId ?? ""},
+            );
           },
         );
       }
@@ -172,7 +183,7 @@ class QuestionViewModel extends GetxController {
                     questionId: question.questionId,
                     selectedAddress: SelectedAddress(
                       city: cityController.text,
-                      state:stateController.text,
+                      state: stateController.text,
                     ),
                   ),
           );

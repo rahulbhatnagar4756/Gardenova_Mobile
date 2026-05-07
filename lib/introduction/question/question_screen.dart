@@ -129,9 +129,10 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize10),
           border: Border.all(
-            color: (question.options![index].optionText ==
-                question.selectedAnswer)
-                ? AppColors.greenColor // selected border
+            color:
+                (question.options![index].optionText == question.selectedAnswer)
+                ? AppColors
+                      .greenColor // selected border
                 : AppColors.borderLiteGreyColor,
             width: 1.2,
           ),
@@ -150,8 +151,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
 
             /// ✅ Radio Icon (Right)
             Image.asset(
-              (question.options![index].optionText ==
-                  question.selectedAnswer)
+              (question.options![index].optionText == question.selectedAnswer)
                   ? AppAssets.selectedRadioIc
                   : AppAssets.unSelectedRadioIc,
               width: 24.w,
@@ -212,9 +212,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               backgroundColor: AppColors.burntGold,
               textColor: AppColors.offWhite,
               fontSize: fontSize17,
-              buttonLabel: AppLocalizations.of(
-                context,
-              )!.continueText,
+              buttonLabel: AppLocalizations.of(context)!.continueText,
               onPressed: controller.onContinuePressed,
             ),
           ),
@@ -243,31 +241,31 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     return BaseForm(
       formKey: controller.formKey,
       child: Column(
-          spacing:spacerSize15,
-          children: [state(context), city(context)]).marginOnly(top: 26.h),
+        spacing: spacerSize15,
+        children: [state(context), city(context)],
+      ).marginOnly(top: 26.h),
     );
   }
 
-
   state(BuildContext context) {
     return InkWell(
-          onTap: () => _showStateBottomSheet(context),
-          child: BaseTextField(
-            textEditingController: controller.stateController,
-            hintText: AppLocalizations.of(context)!.selectState,
-            isTextFieldEnabled:false,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context)!.selectState;
-              }
-              return null;
-            },
-            suffixIcon:  Icon(
-              Icons.keyboard_arrow_down_outlined,
-              color: AppColors.liteGreyColor,
-            ),
-          ),
-        );
+      onTap: () => _showStateBottomSheet(context),
+      child: BaseTextField(
+        textEditingController: controller.stateController,
+        hintText: AppLocalizations.of(context)!.selectState,
+        isTextFieldEnabled: false,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return AppLocalizations.of(context)!.selectState;
+          }
+          return null;
+        },
+        suffixIcon: Icon(
+          Icons.keyboard_arrow_down_outlined,
+          color: AppColors.liteGreyColor,
+        ),
+      ),
+    );
   }
 
   city(BuildContext context) {
@@ -275,7 +273,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       onTap: () {
         if (controller.selectedState.value.name != null) {
           _showCityBottomSheet(context);
-        }else{
+        } else {
           BaseSnackBar.show(
             title: AppLocalizations.of(context)!.error,
             message: AppLocalizations.of(context)!.selectState,
@@ -285,14 +283,14 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       child: BaseTextField(
         textEditingController: controller.cityController,
         hintText: AppLocalizations.of(context)!.selectCity,
-        isTextFieldEnabled:false,
+        isTextFieldEnabled: false,
         validator: (value) {
           if (value!.isEmpty) {
             return AppLocalizations.of(context)!.selectCity;
           }
           return null;
         },
-        suffixIcon:  Icon(
+        suffixIcon: Icon(
           Icons.keyboard_arrow_down_outlined,
           color: AppColors.liteGreyColor,
         ),
@@ -329,7 +327,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
             SizedBox(height: spacerSize15),
             Expanded(
               child: Obx(
-                    () => ListView.separated(
+                () => ListView.separated(
                   itemCount: controller.filteredStateList.length,
                   separatorBuilder: (context, index) => Divider(
                     color: AppColors.offWhite.withOpacity(0.1),
@@ -347,7 +345,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       ),
                       onTap: () {
                         controller.selectedState.value = state;
-                        controller.stateController.text = state.name??"";
+                        controller.stateController.text = state.name ?? "";
                         controller.getCityList(stateCode: state.iso2);
                         Get.back();
                       },
@@ -408,7 +406,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                         fontWeight: FontWeight.w500,
                       ),
                       onTap: () {
-                        controller.cityController.text = city.name??"";
+                        controller.cityController.text = city.name ?? "";
+                        controller.formKey.currentState!.validate();
                         Get.back();
                       },
                     );
@@ -422,5 +421,4 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       isScrollControlled: true,
     );
   }
-
 }

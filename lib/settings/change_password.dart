@@ -22,6 +22,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
       //   title: AppLocalizations.of(context)!.changePassword,
       //   toolbarHeightScale: 1,
       // ),
+
       body: Container(
         height: double.infinity,
         color: AppColors.greenColor,
@@ -31,7 +32,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
             child: Column(
               children: [
                 ProfileIconLayout(
-                  
+
                   isEnableEditable: false,
                   title:  AppLocalizations.of(context)!.changePassword,
 

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
+
 import '../../../base/widgets/base_app_bar.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_text.dart';
@@ -64,6 +65,13 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
         /// 🚀 IMPORTANT: NO Obx here
         child: CustomScrollView(
           controller: controller.scrollController,
+          // physics: const AlwaysScrollableScrollPhysics(),
+          // physics: const BouncingScrollPhysics(
+          //   parent: AlwaysScrollableScrollPhysics(),
+          // ),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           slivers: [
             /// 🔹 HEADER
             SliverPersistentHeader(
@@ -122,7 +130,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                   }, childCount: controller.myPlantList.length),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: .85,
+                    childAspectRatio: .8,
                     crossAxisSpacing: 8.w,
                     mainAxisSpacing: 8.w,
                   ),

@@ -1,0 +1,67 @@
+/// =========================================================
+/// FILE: plants_diagnostic/views/diagnosis_error_view.dart
+/// CREATE NEW FILE
+/// =========================================================
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kasagardem/base/widgets/base_button.dart';
+import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
+
+class DiagnosisErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const DiagnosisErrorView({
+    super.key,
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: Colors.red,
+              size: 70.sp,
+            ),
+
+            SizedBox(height: 20.h),
+
+            BaseText(
+              text: "Something went wrong",
+              fontSize: fontSize22,
+              fontWeight: FontWeight.w700,
+              fontFamily: AppKeys.poppins,
+            ),
+
+            SizedBox(height: 10.h),
+
+            BaseText(
+              text: message,
+              textAlign: TextAlign.center,
+              textColor: AppColors.liteGreyColor,
+            ),
+
+            SizedBox(height: 30.h),
+
+            BaseButton(
+              onPressed: onRetry,
+              buttonLabel: "Try Again",
+              backgroundColor: AppColors.greenColor,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

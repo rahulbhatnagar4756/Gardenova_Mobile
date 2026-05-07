@@ -8,8 +8,11 @@ import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+
+import '../../settings/settings_view_model.dart';
 import '../../utils/shared_prefs_service.dart';
 import 'common_click_widget.dart';
+
 class CircularBottomAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const CircularBottomAppBar({
@@ -46,8 +49,13 @@ class CircularBottomAppBar extends StatelessWidget
             if (isBackButtonVisible ?? false)
               CommonClickWidget(
                 onTap: () => Get.back(result: true),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 12.w, bottom: 6.h),
+                child: Container(
+                  // color: Colors.red,
+                  padding: EdgeInsets.only(
+                    left: 12.w,
+                    bottom: 6.h,
+                    right: 20.w,
+                  ),
                   child: Image.asset(
                     AppAssets.backBtnIc,
                     width: 20.w,
@@ -63,12 +71,39 @@ class CircularBottomAppBar extends StatelessWidget
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// Logo
-                  Image.asset(
-                    AppAssets.appLogo,
-                    width: 45.w,
-                    height: 45.w,
-                  ),
+                  // Image.asset(
+                  //   AppAssets.appLogo,
+                  //   width: 45.w,
+                  //   height: 45.w,
+                  // ),
+                  Obx(() {
+                    final imageUrl = Get.isRegistered<SettingsViewModel>()
+                        ? Get.find<SettingsViewModel>().profileImage.value
+                        : "";
 
+                    return Container(
+                      width: 45.w,
+                      height: 45.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.backgroundGrey),
+                      ),
+                      child: ClipOval(
+                        child: imageUrl.isNotEmpty
+                            ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) {
+                                  return Image.asset(
+                                    AppAssets.appLogo,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                            : Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                      ),
+                    );
+                  }),
                   SizedBox(width: spacerSize10),
 
                   Expanded(
@@ -83,47 +118,49 @@ class CircularBottomAppBar extends StatelessWidget
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           text:
-                          '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
+                              '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
                         ),
 
                         SizedBox(height: 2),
 
                         SharedPrefsService.instance.getString(AppKeys.role) ==
-                            AppKeys.professional
+                                AppKeys.professional
                             ? Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: spacerSize8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.toLiteGreenColor,
-                            borderRadius: BorderRadius.circular(spacerSize20),
-                          ),
-                          child: BaseText(
-                            text:
-                            "${SharedPrefsService.instance.getString(AppKeys.remainingDays)} ${AppLocalizations.of(Get.context!)!.days} ${AppLocalizations.of(Get.context!)!.left}",
-                            fontSize: fontSize10,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontFamily: AppKeys.inter,
-                            fontWeight: FontWeight.w400,
-                            textColor: AppColors.offWhite,
-                          ),
-                        )
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: spacerSize8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.toLiteGreenColor,
+                                  borderRadius: BorderRadius.circular(
+                                    spacerSize20,
+                                  ),
+                                ),
+                                child: BaseText(
+                                  text:
+                                      "${SharedPrefsService.instance.getString(AppKeys.remainingDays)} ${AppLocalizations.of(Get.context!)!.days} ${AppLocalizations.of(Get.context!)!.left}",
+                                  fontSize: fontSize10,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontFamily: AppKeys.inter,
+                                  fontWeight: FontWeight.w400,
+                                  textColor: AppColors.offWhite,
+                                ),
+                              )
                             : BaseText(
-                          fontWeight: FontWeight.w400,
-                          fontFamily: AppKeys.inter,
-                          fontSize: fontSize12,
-                          textColor: AppColors.liteGreyColor,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          text: getGreeting(),
-                        ),
+                                fontWeight: FontWeight.w400,
+                                fontFamily: AppKeys.inter,
+                                fontSize: fontSize12,
+                                textColor: AppColors.liteGreyColor,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                text: getGreeting(),
+                              ),
                       ],
                     ),
                   ),
-                  /// Menu Icon
 
+                  /// Menu Icon
                   IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),

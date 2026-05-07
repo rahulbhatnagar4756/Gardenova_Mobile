@@ -17,6 +17,7 @@ class AppStrings {
   static const String exception = "Exception";
   static const String networkError = "Network Error";
   static const String somethingWentWrong = "Something Went Wrong";
+  static const String retry = "Retry";
   static const String google = "Google";
   static const String apple = "Apple";
   static const String login = "Login";

@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../base/widgets/base_app_bar.dart';
 import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/base_text.dart';
 import '../../../base/widgets/base_text_field.dart';
 import '../../../base/widgets/circular_bottom_app_bar.dart';
 import '../../../dashboard/components/full_drawer.dart';
-import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
@@ -48,12 +48,25 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
 
       body: RefreshIndicator(
         onRefresh: () async {
+          // controller.pageNumber.value = 1;
+          // await controller.callGetAllPlantListApi();
+          controller.isRefreshing.value = true;
+
           controller.pageNumber.value = 1;
+
           await controller.callGetAllPlantListApi();
+
+          controller.isRefreshing.value = false;
         },
         child: Obx(
           () => CustomScrollView(
             controller: controller.scrollController,
+            // physics: const BouncingScrollPhysics(
+            //   parent: AlwaysScrollableScrollPhysics(),
+            // ),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             slivers: [
               /// 🔹 HEADER (TITLE + SEARCH)
               // SliverToBoxAdapter(
@@ -226,12 +239,18 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      Assets.imagesPruning,
-                      height: spacerSize12,
-                      width: spacerSize12,
+                    // Image.asset(
+                    //   Assets.imagesPruning,
+                    //   height: spacerSize12,
+                    //   width: spacerSize12,
+                    //   color: Colors.white,
+                    // ),
+                    Icon(
+                      Icons.trending_up,
                       color: Colors.white,
+                      size: spacerSize12,
                     ),
+
                     SizedBox(width: spacerSize4),
                     BaseText(
                       text: AppLocalizations.of(context)!.trendingPlants,
@@ -287,7 +306,9 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 children: [
                   SizedBox(height: spacerSize6),
                   BaseText(
-                    text: plant.commonName ?? AppLocalizations.of(Get.context!)!.noDataNa,
+                    text:
+                        plant.commonName ??
+                        AppLocalizations.of(Get.context!)!.noDataNa,
                     fontWeight: FontWeight.w600,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

@@ -41,11 +41,11 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
           children: [
             Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 8.h, left: 12.w),
-                  child: CommonClickWidget(
-                    test: false,
-                    onTap:() => Get.back(result: true),
+                CommonClickWidget(
+                  // test: true,
+                  onTap:() => Get.back(result: true),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.h, left: 12.w,right: 15.w,bottom: 10.h),
                     child: Image.asset(
                       color:AppColors.whiteColor,
                       AppAssets.backBtnIc,
@@ -55,7 +55,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 17.w,top:7.h),
+                  padding: EdgeInsets.only(left: 17.w,top:7.h,bottom: 10.w),
 
                   // color: Colors.red,
                   child: BaseText(

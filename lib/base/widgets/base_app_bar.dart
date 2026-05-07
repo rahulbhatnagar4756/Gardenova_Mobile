@@ -207,7 +207,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                  padding: EdgeInsets.only(left: 48.w, bottom: (isAppIconVisible==true)?16.h:20.h),
+                  padding: EdgeInsets.only(left: 48.w, bottom: (isAppIconVisible==true)?16.h:30.h,),
                   // color: Colors.red,
                   child: BaseText(
                     text: title!,
@@ -222,11 +222,11 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (isBackButtonVisible ?? false)
               Align(
                 alignment:(isAppIconVisible??false)==false && (title?.isEmpty??false) ?Alignment.centerLeft: Alignment.topLeft ,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 8.h, left: 12.w),
-                  child: CommonClickWidget(
-                    test: false,
-                    onTap: onBackPressed ?? () => Get.back(result: true),
+                child: CommonClickWidget(
+                  // test: true,
+                  onTap: onBackPressed ?? () => Get.back(result: true),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.h, left: 12.w,right: 15.w,bottom: 10.w),
                     child: Image.asset(
                       AppAssets.backBtnIc,
                       width: 20.w,
