@@ -55,6 +55,8 @@ class ApiRepository {
     Map<String, String>? fields,
     Map<String, String>? base64Images,
     bool showDefaultLoader = true,
+    bool directUrl = false,
+    bool showRunTimeError = true,
   }) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult[0] == ConnectivityResult.none) {
@@ -65,7 +67,7 @@ class ApiRepository {
       return null;
     }
 
-    final uri = Uri.parse(baseUrl + endPoint);
+    final uri = directUrl ? Uri.parse(endPoint) : Uri.parse(baseUrl + endPoint);
 
     debugPrint("API Request: $uri");
 
@@ -136,7 +138,7 @@ class ApiRepository {
       if (showDefaultLoader) {
         hideLoader();
       }
-      if (responseData[ApiKeys.success] == true) {
+      if (directUrl || responseData[ApiKeys.success] == true) {
         return responseData;
       } else {
         BaseSnackBar.show(
@@ -151,10 +153,12 @@ class ApiRepository {
         print("API Request Error: $e");
         hideLoader();
       }
-      BaseSnackBar.show(
-        title: AppStrings.exception,
-        message: AppStrings.somethingWentWrong,
-      );
+      if (showRunTimeError) {
+        BaseSnackBar.show(
+          title: AppStrings.exception,
+          message: AppStrings.somethingWentWrong,
+        );
+      }
       return null;
     }
   }
@@ -163,11 +167,15 @@ class ApiRepository {
     String endPoint, {
     Map<String, String>? headers,
     bool showDefaultLoader = true,
+    bool directUrl = false,
+    bool showRunTimeError = true,
   }) async => request(
     ApiKeys.get,
     endPoint,
     headers: headers,
     showDefaultLoader: showDefaultLoader,
+    directUrl: directUrl,
+    showRunTimeError: showRunTimeError,
   );
 
   Future<dynamic> post(

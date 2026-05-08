@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../base/widgets/base_text.dart';
 import '../../base/widgets/circular_bottom_app_bar.dart';
+import '../../base/widgets/clickable_image.dart';
 import '../../generated/assets.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings_view_model.dart';
@@ -103,23 +104,38 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                       color: AppColors.backgroundGrey,
                                     ),
                                   ),
-                                  child: ClipOval(
-                                    child: imageUrl.isNotEmpty
-                                        ? Image.network(
-                                            imageUrl,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) {
-                                              return Image.asset(
-                                                AppAssets.appLogo,
-                                                fit: BoxFit.cover,
-                                              );
-                                            },
-                                          )
-                                        : Image.asset(
-                                            AppAssets.appLogo,
-                                            fit: BoxFit.cover,
-                                          ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: ClickableImage(
+                                      borderRadius: BorderRadius.circular(100),
+                                      imageUrl: imageUrl,
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      heroTag: "profile_image_appbar_drawer",
+                                      errorWidget: Image.asset(
+                                        AppAssets.appLogo,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
+                                  // child: ClipOval(
+                                  //   child: imageUrl.isNotEmpty
+                                  //       ? Image.network(
+                                  //           imageUrl,
+                                  //           fit: BoxFit.cover,
+                                  //           errorBuilder: (_, __, ___) {
+                                  //             return Image.asset(
+                                  //               AppAssets.appLogo,
+                                  //               fit: BoxFit.cover,
+                                  //             );
+                                  //           },
+                                  //         )
+                                  //       : Image.asset(
+                                  //           AppAssets.appLogo,
+                                  //           fit: BoxFit.cover,
+                                  //         ),
+                                  // ),
                                 );
                               }),
                               Expanded(

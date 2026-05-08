@@ -8,17 +8,12 @@ import '../../base/widgets/base_text.dart';
 import '../../utils/constants/app_keys.dart';
 
 class SoilAnalysis extends StatelessWidget {
-  const SoilAnalysis({super.key});
+  final List<ChartData> chartData;
+
+  const SoilAnalysis({super.key, required this.chartData});
 
   @override
   Widget build(BuildContext context) {
-    final List<ChartData> chartData = [
-      ChartData('Organic', 10, AppColors.liteYellowColor),
-      ChartData('Sand', 27, AppColors.darkGreenColor),
-      ChartData('Silt', 15, AppColors.liteGreenColor),
-      ChartData('Clay', 35, AppColors.toLiteGreenColor),
-    ];
-
     return Container(
       height: 150.h,
       padding: EdgeInsets.all(12.w),
@@ -50,9 +45,17 @@ class SoilAnalysis extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Items
-                        _buildItem(chartData[0].x, '${chartData[0].y.toInt()}%',chartData[0].color),
+                        _buildItem(
+                          chartData[0].x,
+                          '${chartData[0].y.toInt()}%',
+                          chartData[0].color,
+                        ),
                         SizedBox(height: 8.h),
-                        _buildItem(chartData[1].x, '${chartData[1].y.toInt()}%',chartData[1].color),
+                        _buildItem(
+                          chartData[1].x,
+                          '${chartData[1].y.toInt()}%',
+                          chartData[1].color,
+                        ),
                       ],
                     ),
 
@@ -61,11 +64,18 @@ class SoilAnalysis extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Items
-                        _buildItem(chartData[2].x, '${chartData[2].y.toInt()}%',chartData[2].color),
+                        _buildItem(
+                          chartData[2].x,
+                          '${chartData[2].y.toInt()}%',
+                          chartData[2].color,
+                        ),
 
                         SizedBox(height: 8.h),
-                        _buildItem(chartData[3].x, '${chartData[3].y.toInt()}%',chartData[3].color),
-
+                        _buildItem(
+                          chartData[3].x,
+                          '${chartData[3].y.toInt()}%',
+                          chartData[3].color,
+                        ),
                       ],
                     ),
                   ],
@@ -97,60 +107,62 @@ class SoilAnalysis extends StatelessWidget {
           //     ],
           //   ),
           // ),
-         Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10.w),
-                  child: SfCircularChart(
-                    key: UniqueKey(),
-                    margin: EdgeInsets.zero,
-                    series: <CircularSeries>[
-                      DoughnutSeries<ChartData, String>(
-                        dataSource: chartData,
-                        xValueMapper: (data, _) => data.x,
-                        yValueMapper: (data, _) => data.y,
-                        pointColorMapper: (data, _) => data.color,
-                        /// 🎯 shape
-                        innerRadius: '60%',
-                        radius: '100%',
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: EdgeInsets.only(left: 10.w),
+              child: SfCircularChart(
+                key: UniqueKey(),
+                margin: EdgeInsets.zero,
+                series: <CircularSeries>[
+                  DoughnutSeries<ChartData, String>(
+                    dataSource: chartData,
+                    xValueMapper: (data, _) => data.x,
+                    yValueMapper: (data, _) => data.y,
+                    pointColorMapper: (data, _) => data.color,
 
-                        /// 🔥 THIS creates real spacing
-                        explode: true,
-                        explodeAll: true,
-                        explodeOffset: '4%',
+                    /// 🎯 shape
+                    innerRadius: '60%',
+                    radius: '100%',
 
-                        /// 🎯 THIS is key for your UI
-                        // cornerStyle: CornerStyle.bothCurve,
-                        /// ❌ IMPORTANT: no rounded corners
-                        cornerStyle: CornerStyle.bothFlat,
-                        /// 🎯 dark border on each segment
-                        strokeWidth:1,
-                        strokeColor: AppColors.chartBorderColor, // dark green/blackish
+                    /// 🔥 THIS creates real spacing
+                    explode: true,
+                    explodeAll: true,
+                    explodeOffset: '4%',
 
-                        /// ❌ no fake gap
-                        dataLabelSettings: const DataLabelSettings(isVisible: false),
-                      ),
-                    ],
+                    /// 🎯 THIS is key for your UI
+                    // cornerStyle: CornerStyle.bothCurve,
+                    /// ❌ IMPORTANT: no rounded corners
+                    cornerStyle: CornerStyle.bothFlat,
+
+                    /// 🎯 dark border on each segment
+                    strokeWidth: 1,
+                    strokeColor: AppColors.chartBorderColor,
+                    // dark green/blackish
+
+                    /// ❌ no fake gap
+                    dataLabelSettings: const DataLabelSettings(
+                      isVisible: false,
+                    ),
                   ),
-                ),
-              )
-
-
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   // Reusable label widget
-  Widget _buildItem(String title, String value,Color dividerColor) {
+  Widget _buildItem(String title, String value, Color dividerColor) {
     return Row(
       children: [
         Container(
           width: 3.w,
           height: 28.h,
           decoration: BoxDecoration(
-
-            color:dividerColor,
+            color: dividerColor,
             borderRadius: BorderRadius.circular(20),
           ),
         ),
@@ -172,10 +184,9 @@ class SoilAnalysis extends StatelessWidget {
               textAlign: TextAlign.center,
               fontFamily: AppKeys.poppins,
               textColor: Colors.white,
-              fontSize:11.sp,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w500,
             ),
-
           ],
         ),
       ],
@@ -188,6 +199,6 @@ class ChartData {
   ChartData(this.x, this.y, this.color);
 
   final String x;
-  final double y;
+  double y;
   final Color color;
 }

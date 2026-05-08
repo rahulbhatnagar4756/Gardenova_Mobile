@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
@@ -14,9 +13,9 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
 import '../base/widgets/base_text.dart';
 import 'components/ai_plan_diagnosis.dart';
-import 'components/automation_suggestions.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
 
@@ -75,7 +74,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                     controller.refreshSoilAnalysis.value;
                     return HeadingUiLayout(
                       sectionTitle: AppLocalizations.of(context)!.overview,
-                      child: SoilAnalysis(),
+                      child: SoilAnalysis(chartData: controller.chartData),
                     );
                   }),
                   // const SizedBox(height: spacerSize15),

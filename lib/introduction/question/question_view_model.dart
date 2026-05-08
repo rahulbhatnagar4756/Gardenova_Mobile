@@ -17,8 +17,8 @@ import '../../base/dialogs/base_dialog.dart';
 class QuestionViewModel extends GetxController {
   late QuestionRepository questionRepository;
   final formKey = GlobalKey<FormState>();
-  RxInt currentQuestion = 1.obs;
-  int totalQuestions = 5;
+  RxInt currentQuestion = 0.obs;
+  // var totalQuestions = 5.obs;
   RxBool isUserLoggedIn = false.obs;
   RxList<Questions> questionList = <Questions>[].obs;
   RxList<States> stateList = <States>[].obs;
@@ -30,6 +30,8 @@ class QuestionViewModel extends GetxController {
   Rx<States> selectedState = States().obs;
   TextEditingController stateController = TextEditingController();
   TextEditingController cityController = TextEditingController();
+  TextEditingController stateSearchController = TextEditingController();
+  TextEditingController citySearchController = TextEditingController();
 
   @override
   onInit() {
@@ -49,6 +51,9 @@ class QuestionViewModel extends GetxController {
       );
       if (questionResponse.data != null) {
         questionList.value = questionResponse.data!.questions!;
+        if (questionList.isNotEmpty && currentQuestion.value == 0) {
+          currentQuestion.value = 1;
+        }
       }
     }
   }
@@ -92,6 +97,7 @@ class QuestionViewModel extends GetxController {
     var response = await questionRepository.fetchCities(stateCode: stateCode);
     if (response != null) {
       CityResponseModel cityResponse = CityResponseModel.fromJson(response);
+      print('cityResponse ${cityResponse.data?.cities?.length}');
       if (cityResponse.data != null) {
         cityList.value = cityResponse.data!.cities!;
         filteredCityList.assignAll(cityList);
@@ -103,14 +109,17 @@ class QuestionViewModel extends GetxController {
 
   void filterCity(String query) {
     if (query.isEmpty) {
-      filteredCityList.value = cityList;
+      filteredCityList.assignAll(cityList);
     } else {
-      filteredCityList.value = cityList
-          .where(
-            (city) =>
-                city.name?.toLowerCase().contains(query.toLowerCase()) ?? false,
-          )
-          .toList();
+      filteredCityList.assignAll(
+        cityList
+            .where(
+              (city) =>
+                  city.name?.toLowerCase().contains(query.toLowerCase()) ??
+                  false,
+            )
+            .toList(),
+      );
     }
   }
 
@@ -153,21 +162,24 @@ class QuestionViewModel extends GetxController {
   }
 
   onContinuePressed() {
-    if (currentQuestion.value != questionList.length) {
+    // currentQuestion goes from 1..questionList.length for questions,
+    // and questionList.length + 1 for the state/city tab.
+    if (currentQuestion.value <= questionList.length) {
       if (questionList[currentQuestion.value - 1].selectedAnswer == null) {
         BaseSnackBar.show(
-          title: AppLocalizations.of(Get.context!)!.error,
-          message: AppLocalizations.of(Get.context!)!.pleaseSelectAnswer,
+          title: AppLocalizations.of(Get.context!)?.error ?? '',
+          message: AppLocalizations.of(Get.context!)?.pleaseSelectAnswer ?? '',
         );
         return;
       } else {
-        if (currentQuestion.value == questionList.length - 1) {
+        // When moving to the last tab (state/city), pre-fetch states
+        if (currentQuestion.value == questionList.length) {
           getStateList();
         }
         currentQuestion++;
       }
     } else {
-      if (formKey.currentState!.validate()) {
+      if (formKey.currentState?.validate() == true) {
         answerList.clear();
         for (var question in questionList) {
           answerList.add(
@@ -194,11 +206,16 @@ class QuestionViewModel extends GetxController {
   }
 
   backPressed() {
-    if (currentQuestion.value == 1) {
+    if (currentQuestion.value <= 1) {
       Get.back();
     } else {
-      stateController.clear();
-      cityController.clear();
+      // Only clear state/city fields when leaving the state/city tab
+      if (currentQuestion.value == questionList.length + 1) {
+        stateController.clear();
+        cityController.clear();
+        stateSearchController.clear();
+        citySearchController.clear();
+      }
       currentQuestion--;
     }
   }

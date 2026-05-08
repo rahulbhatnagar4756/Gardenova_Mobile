@@ -126,6 +126,70 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                 ],
                               ),
                             ),
+
+                            // CommonClickWidget(
+                            //   onTap: () {
+                            //     Get.toNamed(
+                            //       Routes.allPlantsDetails,
+                            //       arguments: {
+                            //         "plant_id": controller.plantId.value,
+                            //         "screen_type": "edit",
+                            //       },
+                            //     )!.then((value) {
+                            //       if (value == true) {
+                            //         controller.callGetMyPlantDetailsApi();
+                            //       }
+                            //     });
+                            //   },
+                            //   child: Container(
+                            //     padding: EdgeInsets.symmetric(
+                            //       horizontal: 18.w,
+                            //       vertical: 14.h,
+                            //     ),
+                            //     decoration: BoxDecoration(
+                            //       gradient: AppColors.linearGradientForBtn,
+                            //       borderRadius: BorderRadius.circular(16),
+                            //       boxShadow: [
+                            //         BoxShadow(
+                            //           color: AppColors.greenColor.withOpacity(
+                            //             0.25,
+                            //           ),
+                            //           blurRadius: 12,
+                            //           offset: const Offset(0, 5),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //     child: Row(
+                            //       mainAxisSize: MainAxisSize.min,
+                            //       children: [
+                            //         Container(
+                            //           padding: const EdgeInsets.all(6),
+                            //           decoration: BoxDecoration(
+                            //             color: Colors.white.withOpacity(0.18),
+                            //             shape: BoxShape.circle,
+                            //           ),
+                            //           child: Icon(
+                            //             Icons.edit,
+                            //             color: Colors.white,
+                            //             size: 15.w,
+                            //           ),
+                            //         ),
+                            //
+                            //         SizedBox(width: 12.w),
+                            //
+                            //         Text(
+                            //           AppLocalizations.of(context)!.editPlant,
+                            //           style: TextStyle(
+                            //             color: Colors.white,
+                            //             fontSize: 14.sp,
+                            //             fontWeight: FontWeight.w700,
+                            //             letterSpacing: 0.3,
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                             CommonClickWidget(
                               onTap: () {
                                 Get.toNamed(
@@ -141,77 +205,20 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 18.w,
-                                  vertical: 14.h,
-                                ),
+                                padding: const EdgeInsets.all(spacerSize14),
                                 decoration: BoxDecoration(
-                                  gradient: AppColors.linearGradientForBtn,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.greenColor.withOpacity(
-                                        0.25,
-                                      ),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 5),
-                                    ),
-                                  ],
+                                  color: AppColors.greenColor,
+                                  borderRadius: BorderRadius.circular(
+                                    spacerSize12,
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.18),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
-                                        size: 15.w,
-                                      ),
-                                    ),
-
-                                    SizedBox(width: 12.w),
-
-                                    Text(
-                                      AppLocalizations.of(context)!.editPlant,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w700,
-                                        letterSpacing: 0.3,
-                                      ),
-                                    ),
-                                  ],
+                                child: Image.asset(
+                                  Assets.imagesNotification,
+                                  height: spacerSize20,
+                                  width: spacerSize20,
                                 ),
                               ),
                             ),
-
-                            // Container(
-                            //   padding: const EdgeInsets.all(spacerSize14),
-                            //   decoration: BoxDecoration(
-                            //     // gradient: LinearGradient(
-                            //     //   colors: [
-                            //     //     AppColors.lightGold,
-                            //     //     AppColors.burntGold,
-                            //     //   ],
-                            //     //   begin: Alignment.topCenter,
-                            //     //   end: Alignment.bottomCenter,
-                            //     // ),
-                            //     color: AppColors.greenColor,
-                            //     borderRadius: BorderRadius.circular(
-                            //       spacerSize12,
-                            //     ),
-                            //   ),
-                            //   child: Image.asset(
-                            //     Assets.imagesNotification,
-                            //     height: spacerSize20,
-                            //     width: spacerSize20,
-                            //   ),
-                            // ),
                           ],
                         ),
 

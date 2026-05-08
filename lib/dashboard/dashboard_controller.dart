@@ -1,9 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/dashboard/components/soil_analysis.dart';
 import 'package:kasagardem/dashboard/dashboard_repository.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -30,6 +29,12 @@ class DashboardController extends GetxController {
   final LocationService _locationService = LocationService();
   bool _isFetching = false;
   var refreshSoilAnalysis = false.obs;
+  var chartData = [
+    ChartData('Organic', 1, AppColors.liteYellowColor),
+    ChartData('Sand', 1, AppColors.darkGreenColor),
+    ChartData('Silt', 1, AppColors.liteGreenColor),
+    ChartData('Clay', 1, AppColors.toLiteGreenColor),
+  ].obs;
 
   @override
   void onInit() {
@@ -155,6 +160,7 @@ class DashboardController extends GetxController {
       // Save locally
       sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
       sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
+      // await getSoilAnalysis(lat: lat, long: long);
       // sharedPrefsService.setString("lat", lat.toString());
       // sharedPrefsService.setString("long", long.toString());
       print('getCurrentLocation t3');
@@ -171,6 +177,68 @@ class DashboardController extends GetxController {
     } finally {
       print('getCurrentLocation t7');
       _isFetching = false;
+    }
+  }
+
+  Future<void> getSoilAnalysis({
+    required double lat,
+    required double long,
+  }) async {
+    try {
+      final response = await dashboardRepository.fetchSoilAnalysis(
+        lat: lat,
+        lon: long,
+      );
+
+      if (response == null) return;
+
+      double clay = 1;
+      double sand = 1;
+      double silt = 1;
+      double organic = 1;
+
+      final layers = response.properties?.layers ?? [];
+
+      for (var layer in layers) {
+        num rawValue = (layer.depths?.first.values?.mean ?? 0) as num;
+        int dFactor = layer.unitMeasure?.dFactor ?? 1;
+        double value = rawValue.toDouble();
+
+        if (dFactor != 0) {
+          value = value / dFactor;
+        }
+
+        // If data is missing (0), default to 1 for visual representation if needed,
+        // or keep as 0 if that's preferred. The user's original code used 1.
+        if (value == 0) value = 1.0;
+
+        switch (layer.name) {
+          case "clay":
+            clay = value;
+            break;
+          case "sand":
+            sand = value;
+            break;
+          case "silt":
+            silt = value;
+            break;
+          case "soc":
+            organic = value;
+            break;
+        }
+      }
+      debugPrint(
+        "Final Soil Analysis: clay=$clay, sand=$sand, silt=$silt, organic=$organic",
+      );
+      chartData.assignAll([
+        ChartData('Organic', organic, AppColors.liteYellowColor),
+        ChartData('Sand', sand, AppColors.darkGreenColor),
+        ChartData('Silt', silt, AppColors.liteGreenColor),
+        ChartData('Clay', clay, AppColors.toLiteGreenColor),
+      ]);
+      refreshSoilAnalysis.refresh();
+    } catch (e) {
+      debugPrint("getSoilAnalysis Error ::: $e");
     }
   }
 
@@ -219,6 +287,7 @@ class DashboardController extends GetxController {
       debugPrint("Error::: $e");
     }
   }
+
   // Future<void> pickImage({required bool isCamera}) async {
   //   try {
   //     print('getCurrentLocation t8');

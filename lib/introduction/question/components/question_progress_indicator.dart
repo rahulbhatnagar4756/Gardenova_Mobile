@@ -6,7 +6,6 @@ import 'package:kasagardem/introduction/question/components/segmented_progressba
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
-import 'package:linear_progress_bar/linear_progress_bar.dart';
 
 class QuestionProgressIndicator extends StatelessWidget {
   const QuestionProgressIndicator({
@@ -20,7 +19,10 @@ class QuestionProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progressPercentage = (currentQuestion * 100) ~/ totalQuestions;
+    // final progressPercentage = (currentQuestion * 100) ~/ totalQuestions;
+    final progressPercentage = totalQuestions > 0
+        ? ((currentQuestion / totalQuestions) * 100).toInt()
+        : 0;
 
     return Column(
       children: [

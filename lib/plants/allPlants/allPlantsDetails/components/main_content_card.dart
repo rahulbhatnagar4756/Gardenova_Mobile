@@ -602,7 +602,8 @@ class MainContentCard extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
               decoration: BoxDecoration(
-                gradient: AppColors.linearGradientForBtn,
+                // gradient: AppColors.linearGradientForBtn,
+                color: AppColors.greenColor,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -615,23 +616,21 @@ class MainContentCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      controller.screenType.value == 'add'
-                          ? Icons.add_rounded
-                          : Icons.save_rounded,
-                      color: Colors.white,
-                      size: 15.w,
-                    ),
-                  ),
-
-                  SizedBox(width: 12.w),
-
+                  // Container(
+                  //   padding: const EdgeInsets.all(6),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white.withOpacity(0.18),
+                  //     shape: BoxShape.circle,
+                  //   ),
+                  //   child: Icon(
+                  //     controller.screenType.value == 'add'
+                  //         ? Icons.add_rounded
+                  //         : Icons.save_rounded,
+                  //     color: Colors.white,
+                  //     size: 15.w,
+                  //   ),
+                  // ),
+                  // SizedBox(width: 12.w),
                   Text(
                     controller.screenType.value == 'add'
                         ? AppLocalizations.of(Get.context!)!.addPlant

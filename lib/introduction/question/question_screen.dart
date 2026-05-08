@@ -51,19 +51,15 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       children: [
                         QuestionProgressIndicator(
                           currentQuestion: controller.currentQuestion.value,
-                          totalQuestions: controller.totalQuestions,
+                          totalQuestions: controller.questionList.length + 1,
                         ).marginOnly(top: 25.h),
 
                         questionLayout(),
 
                         if (controller.questionList.isNotEmpty)
-                          controller.totalQuestions ==
-                                  controller
-                                      .questionList[controller
-                                              .currentQuestion
-                                              .value -
-                                          1]
-                                      .order
+                          // State/city tab is shown when currentQuestion exceeds the question list
+                          controller.currentQuestion.value >
+                                  controller.questionList.length
                               ? answer5Layout(context)
                               : Wrap(
                                   direction: Axis.horizontal,
@@ -138,16 +134,18 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             /// ✅ Text (Left)
             Expanded(
               child: BaseText(
-                text: question.options![index].optionText ?? "",
+                text: (question.options![index].optionText ?? "").trim(),
                 fontFamily: AppKeys.poppins,
                 fontWeight: FontWeight.w500,
                 fontSize: 13.sp,
               ),
             ),
+            SizedBox(width: 5.w),
 
             /// ✅ Radio Icon (Right)
             Image.asset(
@@ -222,8 +220,14 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
   }
 
   questionLayout() {
+    // On the state/city tab, show a fixed heading instead of a question text
+    final isStateCityTab =
+        controller.questionList.isNotEmpty &&
+        controller.currentQuestion.value > controller.questionList.length;
     return BaseText(
-      text: controller.questionList.isNotEmpty
+      text: isStateCityTab
+          ? ""
+          : controller.questionList.isNotEmpty
           ? controller
                 .questionList[controller.currentQuestion.value - 1]
                 .questionText!
@@ -299,6 +303,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
   }
 
   void _showStateBottomSheet(BuildContext context) {
+    // Reset search field each time the sheet opens
+    controller.stateSearchController.clear();
+    controller.filterState('');
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -318,8 +325,10 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               fontWeight: FontWeight.w600,
               textColor: AppColors.offWhite,
             ).marginOnly(bottom: spacerSize15),
+            // Use a dedicated search controller — NOT stateController — so
+            // typing in the search box doesn't overwrite the selected value.
             BaseTextField(
-              textEditingController: controller.stateController,
+              textEditingController: controller.stateSearchController,
               hintText: AppLocalizations.of(context)!.search,
               hintColor: AppColors.liteGreyColor,
               onChanged: (value) => controller.filterState(value),
@@ -347,6 +356,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                         controller.selectedState.value = state;
                         controller.stateController.text = state.name ?? "";
                         controller.getCityList(stateCode: state.iso2);
+                        controller.stateSearchController.clear();
                         Get.back();
                       },
                     );
@@ -362,6 +372,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
   }
 
   void _showCityBottomSheet(BuildContext context) {
+    // Clear the search text only — filteredCityList is already populated by getCityList()
+    controller.citySearchController.clear();
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -381,8 +393,10 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               fontWeight: FontWeight.w600,
               textColor: AppColors.offWhite,
             ).marginOnly(bottom: spacerSize15),
+            // Use a dedicated search controller — NOT cityController — so
+            // typing in the search box doesn't overwrite the selected value.
             BaseTextField(
-              textEditingController: controller.cityController,
+              textEditingController: controller.citySearchController,
               hintText: AppLocalizations.of(context)!.search,
               onChanged: (value) => controller.filterCity(value),
             ),
@@ -406,7 +420,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                         fontWeight: FontWeight.w500,
                       ),
                       onTap: () {
+                        controller.selectedCity.value = city;
                         controller.cityController.text = city.name ?? "";
+                        controller.citySearchController.clear();
                         controller.formKey.currentState!.validate();
                         Get.back();
                       },

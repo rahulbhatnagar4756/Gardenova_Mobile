@@ -104,9 +104,12 @@ double deviceHeight = MediaQuery.of(Get.context!).size.height;
 
 class BaseSnackBar {
   static show({String title = '', String message = ''}) {
+    if (title.trim().isEmpty && message.trim().isEmpty) {
+      return;
+    }
     Get.snackbar(
-      title,
-      message,
+      title.trim(),
+      message.trim(),
       shouldIconPulse: true,
       boxShadows: [BoxShadow(color: AppColors.burntGold, spreadRadius: 1)],
       backgroundColor: AppColors.darkGreen,

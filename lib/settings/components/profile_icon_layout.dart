@@ -210,7 +210,8 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                             height: 108.w,
                             child: CircleAvatar(
                               backgroundColor: AppColors.antiqueWhite,
-                              child: ClipOval(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
                                 child: _buildProfileImage(controller),
                               ),
                             ),

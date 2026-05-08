@@ -11,6 +11,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../settings/settings_view_model.dart';
 import '../../utils/shared_prefs_service.dart';
+import 'clickable_image.dart';
 import 'common_click_widget.dart';
 
 class CircularBottomAppBar extends StatelessWidget
@@ -88,20 +89,35 @@ class CircularBottomAppBar extends StatelessWidget
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.backgroundGrey),
                       ),
-                      child: ClipOval(
-                        child: imageUrl.isNotEmpty
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) {
-                                  return Image.asset(
-                                    AppAssets.appLogo,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              )
-                            : Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ClickableImage(
+                          borderRadius: BorderRadius.circular(100),
+                          imageUrl: imageUrl,
+                          height: double.infinity,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          heroTag: "profile_image_appbar",
+                          errorWidget: Image.asset(
+                            AppAssets.appLogo,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
+                      // child: ClipOval(
+                      //   child: imageUrl.isNotEmpty
+                      //       ? Image.network(
+                      //           imageUrl,
+                      //           fit: BoxFit.cover,
+                      //           errorBuilder: (_, __, ___) {
+                      //             return Image.asset(
+                      //               AppAssets.appLogo,
+                      //               fit: BoxFit.cover,
+                      //             );
+                      //           },
+                      //         )
+                      //       : Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                      // ),
                     );
                   }),
                   SizedBox(width: spacerSize10),
