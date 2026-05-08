@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -70,6 +71,14 @@ class ApiRepository {
     final uri = directUrl ? Uri.parse(endPoint) : Uri.parse(baseUrl + endPoint);
 
     debugPrint("API Request: $uri");
+    debugPrint("API Request: $body");
+
+    log('---------------------------------');
+    log('Api data-> uri: $uri ');
+    log('Api data-> body: $uri ');
+    log('Api data-> fields: $fields ');
+    log('Api data-> headers: $headers ');
+    log('---------------------------------');
 
     final defaultHeaders = _buildDefaultHeaders();
 
@@ -135,12 +144,18 @@ class ApiRepository {
 
       final responseData = _returnResponse(response);
       // log("API Response::: ${jsonEncode(responseData)}");
-      if (showDefaultLoader) {
-        hideLoader();
-      }
+      // if (showDefaultLoader) {
+      //   hideLoader();
+      // }
       if (directUrl || responseData[ApiKeys.success] == true) {
+        log('---------------------------------response');
+        log('Api response->  ${responseData} ');
+        log('---------------------------------response');
         return responseData;
       } else {
+        log('---------------------------------responseElse');
+        log('Api response->  ${responseData[ApiKeys.message]} ');
+        log('---------------------------------responseElse');
         BaseSnackBar.show(
           title: AppStrings.exception,
           message:
@@ -151,15 +166,32 @@ class ApiRepository {
     } catch (e) {
       if (kDebugMode) {
         print("API Request Error: $e");
-        hideLoader();
+        log('---------------------------------catch');
+        log('Api response->  ${e} ');
+        log('---------------------------------catch');
       }
       if (showRunTimeError) {
-        BaseSnackBar.show(
-          title: AppStrings.exception,
-          message: AppStrings.somethingWentWrong,
-        );
+        String message = AppStrings.somethingWentWrong;
+        if (e is FetchDataException) {
+          message = e.message;
+        } else if (e is BadRequestException) {
+          message = e.message;
+        } else if (e is UnauthorisedException) {
+          message = e.message;
+        } else if (e is NotFoundException) {
+          message = e.message;
+        } else if (e is ConflictException) {
+          message = e.message;
+        }
+        BaseSnackBar.show(title: AppStrings.exception, message: message);
       }
       return null;
+    } finally {
+      log('---------------------------------finally');
+
+      if (showDefaultLoader) {
+        hideLoader();
+      }
     }
   }
 
@@ -204,13 +236,19 @@ class ApiRepository {
   dynamic _returnResponse(http.Response response) {
     debugPrint("response.statusCode:::${response.statusCode}");
 
+    String? message;
+    try {
+      final body = jsonDecode(response.body);
+      message = body['message'];
+    } catch (_) {}
+
     switch (response.statusCode) {
       case 200:
       case 201:
         final responseJson = jsonDecode(response.body);
         return responseJson;
       case 400:
-        throw BadRequestException(response.body.toString());
+        throw BadRequestException(message ?? response.body.toString());
 
       case 401:
         Future.delayed(Duration.zero, () {
@@ -226,14 +264,17 @@ class ApiRepository {
             },
           );
         });
+        return null;
       case 403:
-        throw UnauthorisedException(response.body.toString());
+        throw UnauthorisedException(message ?? response.body.toString());
       case 404:
-        throw NotFoundException(response.body.toString());
+        throw NotFoundException(message ?? response.body.toString());
+      case 409:
+        throw ConflictException(message ?? response.body.toString());
       case 500:
       default:
         throw FetchDataException(
-          '${AppStrings.serverException} ${response.statusCode}',
+          message ?? '${AppStrings.serverException} ${response.statusCode}',
         );
     }
   }

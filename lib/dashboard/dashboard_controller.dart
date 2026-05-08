@@ -160,7 +160,7 @@ class DashboardController extends GetxController {
       // Save locally
       sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
       sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
-      // await getSoilAnalysis(lat: lat, long: long);
+      await getSoilAnalysis(lat: lat, long: long);
       // sharedPrefsService.setString("lat", lat.toString());
       // sharedPrefsService.setString("long", long.toString());
       print('getCurrentLocation t3');
@@ -184,6 +184,14 @@ class DashboardController extends GetxController {
     required double lat,
     required double long,
   }) async {
+    chartData.assignAll([
+      ChartData('Organic', 15, AppColors.liteYellowColor),
+      ChartData('Sand', 40, AppColors.darkGreenColor),
+      ChartData('Silt', 25, AppColors.liteGreenColor),
+      ChartData('Clay', 20, AppColors.toLiteGreenColor),
+    ]);
+    refreshSoilAnalysis.refresh();
+    return;
     try {
       final response = await dashboardRepository.fetchSoilAnalysis(
         lat: lat,

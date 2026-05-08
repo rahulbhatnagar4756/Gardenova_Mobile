@@ -1,3 +1,5 @@
+import 'dart:developer' show log;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -305,7 +307,12 @@ class AllPlantsDetailsController extends GetxController {
       return false;
     });
     debugPrint("Filtered map :::::: $map");
+
     final response = await plantsRepository.addPlant(addPlantReq: map);
+    log('---------------------------------response');
+    log('Api response->  ${response} ');
+    log('---------------------------------response');
+
     if (response != null) {
       PlantAddSuccessDialog.show(
         Get.context!,
