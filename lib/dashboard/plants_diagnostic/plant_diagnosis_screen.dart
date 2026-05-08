@@ -15,60 +15,65 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.appColor,
-      drawer: SizedBox(
-        // width: MediaQuery.of(context).size.width * 0.9,
-        child: FullScreenDrawer(
-          onTap: (index) {
-            controller.navigateToNext(index);
-          },
+    return Obx(() {
+      final response = controller.plantDiagnosisResponse.value;
+      final data = response.data;
+      final bool isSuccess = !controller.isLoading.value && 
+                             data != null && 
+                             controller.isCurrentImagePlant.value == true;
+
+      return Scaffold(
+        backgroundColor: AppColors.appColor,
+        drawer: SizedBox(
+          child: FullScreenDrawer(
+            onTap: (index) {
+              controller.navigateToNext(index);
+            },
+          ),
         ),
-      ),
-      appBar: PreferredSize(
-        // preferredSize: Size.fromHeight(spacerSize80),
-        preferredSize: Size.fromHeight(110.h + 30.h),
-        child: Builder(
-          builder: (context) {
-            return CircularBottomAppBar(
-              isBackButtonVisible: true,
-              showMenuIcon: true,
-              onSettingPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const DiagnosisLoadingView();
-          }
+        appBar: isSuccess 
+            ? null 
+            : PreferredSize(
+                preferredSize: Size.fromHeight(110.h + 30.h),
+                child: Builder(
+                  builder: (context) {
+                    return CircularBottomAppBar(
+                      isBackButtonVisible: true,
+                      showMenuIcon: true,
+                      onSettingPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  },
+                ),
+              ),
+        body: isSuccess 
+            ? DiagnosisSuccessView(controller: controller)
+            : SafeArea(
+                child: () {
+                  if (controller.isLoading.value) {
+                    return const DiagnosisLoadingView();
+                  }
 
-          final response = controller.plantDiagnosisResponse.value;
-          final data = response.data;
+                  /// API FAILED
+                  if (data == null) {
+                    return DiagnosisErrorView(
+                      message: response.message ?? "Unable to analyze plant",
+                      onRetry: () {
+                        controller.diagnosePlant();
+                      },
+                    );
+                  }
 
-          /// API FAILED
-          if (data == null) {
-            return DiagnosisErrorView(
-              message: response.message ?? "Unable to analyze plant",
-              // onRetry: controller.callPlantDiagnosisApi,
-              onRetry: () {
-                controller.diagnosePlant();
-              },
-            );
-          }
+                  /// NOT A PLANT
+                  if (controller.isCurrentImagePlant.value == false) {
+                    return const NoPlantDetectedView();
+                  }
 
-          /// NOT A PLANT
-          if (controller.isCurrentImagePlant.value == false) {
-            return const NoPlantDetectedView();
-          }
-
-          /// SUCCESS
-          return DiagnosisSuccessView(controller: controller);
-        }),
-      ),
-    );
+                  return const SizedBox();
+                }(),
+              ),
+      );
+    });
   }
 }
