@@ -6,6 +6,7 @@ environment:
   sdk: ^3.8.1
 
 dependencies:
+  flutter_skill: ^0.2.6
   flutter:
     sdk: flutter
 

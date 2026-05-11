@@ -15,11 +15,7 @@ class MyPlantsListItem extends StatelessWidget {
   final PlantModel item;
   final VoidCallback? onTap;
 
-  const MyPlantsListItem({
-    super.key,
-    required this.item,
-    this.onTap,
-  });
+  const MyPlantsListItem({super.key, required this.item, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +42,8 @@ class MyPlantsListItem extends StatelessWidget {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: item.imageUrl ?? "",
-                placeholder: (_, __) => const BaseShimmer(borderRadious: spacerSize16,),
+                placeholder: (_, __) =>
+                    const BaseShimmer(borderRadious: spacerSize16),
                 errorWidget: (_, __, ___) =>
                     Icon(Icons.broken_image, color: AppColors.offWhite10),
               ),
@@ -68,7 +65,8 @@ class MyPlantsListItem extends StatelessWidget {
                           children: [
                             Expanded(
                               child: BaseText(
-                                text: item.commonName ??
+                                text:
+                                    item.commonName ??
                                     AppLocalizations.of(context)!.noDataNa,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -88,7 +86,7 @@ class MyPlantsListItem extends StatelessWidget {
                         SizedBox(height: spacerSize2),
 
                         BaseText(
-                          text: item.scientificName ?? "",
+                          text: item.speciesName ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           fontFamily: AppKeys.inter,
@@ -100,28 +98,29 @@ class MyPlantsListItem extends StatelessWidget {
                     ),
 
                     /// 🔹 STATUS CHIPS
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: _statusChip(
-                            icon: Icons.info,
-                            text:
-                            "85% ${AppLocalizations.of(context)!.health}",
-                            chipColor: AppColors.greenColor,
-                          ),
-                        ),
-                        SizedBox(width: spacerSize4),
-                        Flexible(
-                          child: _statusChip(
-                            icon: Icons.water_drop_outlined,
-                            text:
-                            "${AppLocalizations.of(context)!.inText} ${item.wateringReminderFrequency} ${AppLocalizations.of(context)!.day}s",
-                            chipColor: AppColors.red,
-                          ),
-                        ),
-                      ],
-                    ),
+                    /// with new data don't have data this.
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Flexible(
+                    //       child: _statusChip(
+                    //         icon: Icons.info,
+                    //         text:
+                    //         "85% ${AppLocalizations.of(context)!.health}",
+                    //         chipColor: AppColors.greenColor,
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: spacerSize4),
+                    //     Flexible(
+                    //       child: _statusChip(
+                    //         icon: Icons.water_drop_outlined,
+                    //         text:
+                    //         "${AppLocalizations.of(context)!.inText} ${item.wateringReminderFrequency} ${AppLocalizations.of(context)!.day}s",
+                    //         chipColor: AppColors.red,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

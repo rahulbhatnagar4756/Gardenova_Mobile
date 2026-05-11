@@ -9,6 +9,7 @@ class DashboardRepository {
   final String _externalLinksUrl = "api/v1/externalLinks";
 
   String getPlantRecommendationEndPoint(String responseId) {
+    log("getPlantRecommendationEndPoint responseId::::$responseId");
     return "$_plantRecommendationEndPoint/$responseId";
   }
 

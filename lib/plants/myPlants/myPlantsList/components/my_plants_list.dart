@@ -175,7 +175,7 @@ class MyPlantsList extends StatelessWidget {
           var item = controller.myPlantList[index];
           return GestureDetector(
             onTap: () {
-              Get.toNamed(Routes.myPlantsDetails, arguments: item.plantId);
+              Get.toNamed(Routes.myPlantsDetails, arguments: item.id);
             },
             child: Container(
               decoration: BoxDecoration(
@@ -227,9 +227,11 @@ class MyPlantsList extends StatelessWidget {
                                     child: BaseText(
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      text: item.commonName ?? AppLocalizations.of(
-                                        context,
-                                      )!.noDataNa,
+                                      text:
+                                          item.commonName ??
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.noDataNa,
                                       fontFamily: AppKeys.poppins,
                                       fontSize: fontSize13,
                                       fontWeight: FontWeight.w700,
@@ -246,7 +248,7 @@ class MyPlantsList extends StatelessWidget {
                               BaseText(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                text: item.scientificName ?? "",
+                                text: item.speciesName ?? "",
                                 fontFamily: AppKeys.inter,
                                 fontSize: fontSize11,
                                 fontWeight: FontWeight.w400,
@@ -255,31 +257,31 @@ class MyPlantsList extends StatelessWidget {
                             ],
                           ),
 
-                          // Status Chips Row
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: statusChip(
-                                  icon: Icons.info,
-                                  text:
-                                      "85%\t${AppLocalizations.of(context)!.health}",
-                                  // Use a green/success color for health
-                                  chipColor: AppColors
-                                      .greenColor, // Or update to AppColors.success
-                                ),
-                              ),
-                              Flexible(
-                                child: statusChip(
-                                  icon: Icons.water_drop_outlined,
-                                  text:
-                                      "${AppLocalizations.of(context)!.inText}\t${item.wateringReminderFrequency}\t${AppLocalizations.of(context)!.day}s",
-                                  // Use the harvestGold or an alert color for watering
-                                  chipColor: AppColors.red,
-                                ),
-                              ),
-                            ],
-                          ),
+                          // // Status Chips Row
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Flexible(
+                          //       child: statusChip(
+                          //         icon: Icons.info,
+                          //         text:
+                          //             "85%\t${AppLocalizations.of(context)!.health}",
+                          //         // Use a green/success color for health
+                          //         chipColor: AppColors
+                          //             .greenColor, // Or update to AppColors.success
+                          //       ),
+                          //     ),
+                          //     Flexible(
+                          //       child: statusChip(
+                          //         icon: Icons.water_drop_outlined,
+                          //         text:
+                          //             "${AppLocalizations.of(context)!.inText}\t${item.wateringReminderFrequency}\t${AppLocalizations.of(context)!.day}s",
+                          //         // Use the harvestGold or an alert color for watering
+                          //         chipColor: AppColors.red,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),

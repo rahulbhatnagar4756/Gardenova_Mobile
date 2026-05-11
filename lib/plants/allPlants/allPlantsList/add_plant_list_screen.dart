@@ -82,8 +82,8 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 floating: true,
                 pinned: false,
                 delegate: MyPlantsHeaderDelegate(
-                  minHeight: 200.h,
-                  maxHeight: 200.h,
+                  minHeight: 160.h,
+                  maxHeight: 160.h,
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: spacerSize20,
@@ -227,39 +227,39 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
               ),
               SizedBox(height: spacerSize16),
 
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacerSize10,
-                  vertical: spacerSize6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.greenColor,
-                  borderRadius: BorderRadius.circular(spacerSize20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Image.asset(
-                    //   Assets.imagesPruning,
-                    //   height: spacerSize12,
-                    //   width: spacerSize12,
-                    //   color: Colors.white,
-                    // ),
-                    Icon(
-                      Icons.trending_up,
-                      color: Colors.white,
-                      size: spacerSize12,
-                    ),
+              // Container(
+              //   padding: EdgeInsets.symmetric(
+              //     horizontal: spacerSize10,
+              //     vertical: spacerSize6,
+              //   ),
+              //   decoration: BoxDecoration(
+              //     color: AppColors.greenColor,
+              //     borderRadius: BorderRadius.circular(spacerSize20),
+              //   ),
+              //   child: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: [
+              //       // Image.asset(
+              //       //   Assets.imagesPruning,
+              //       //   height: spacerSize12,
+              //       //   width: spacerSize12,
+              //       //   color: Colors.white,
+              //       // ),
+              //       Icon(
+              //         Icons.trending_up,
+              //         color: Colors.white,
+              //         size: spacerSize12,
+              //       ),
 
-                    SizedBox(width: spacerSize4),
-                    BaseText(
-                      text: AppLocalizations.of(context)!.trendingPlants,
-                      fontSize: fontSize12,
-                      textColor: AppColors.offWhite,
-                    ),
-                  ],
-                ),
-              ),
+              //       SizedBox(width: spacerSize4),
+              //       BaseText(
+              //         text: AppLocalizations.of(context)!.trendingPlants,
+              //         fontSize: fontSize12,
+              //         textColor: AppColors.offWhite,
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           );
         },
@@ -315,7 +315,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                   ),
                   SizedBox(height: spacerSize4),
                   BaseText(
-                    text: plant.scientificName ?? "",
+                    text: plant.speciesName ?? "",
                     fontSize: fontSize12,
                     textColor: AppColors.liteGreyColor,
                     maxLines: 2,

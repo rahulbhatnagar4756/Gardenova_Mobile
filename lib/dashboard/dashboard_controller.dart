@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -38,8 +40,8 @@ class DashboardController extends GetxController {
 
   @override
   void onInit() {
+    responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      responseId = Get.arguments.toString();
       getPlantsRecommendations(responseId);
       isUserLoggedIn.value =
           sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
@@ -121,6 +123,10 @@ class DashboardController extends GetxController {
         ApiKeys.imagePath: pickedFile!.path,
       },
     );
+  }
+
+  void onScreenClick() {
+    // getPlantsRecommendations(responseId);
   }
 
   void getPlantsRecommendations(String responseId) async {

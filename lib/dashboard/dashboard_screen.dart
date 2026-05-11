@@ -30,7 +30,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
     });
     return Obx(
       () => GestureDetector(
-        onTap: () => controller.getCurrentLocation(),
+        onTap: () => controller.onScreenClick(),
         child: Scaffold(
           backgroundColor: AppColors.appColor,
           drawer: SizedBox(

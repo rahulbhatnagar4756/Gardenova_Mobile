@@ -76,7 +76,7 @@ class PlantRecommendations extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(spacerSize20),
                       child: controller.isLoading.value
-                          ? const BaseShimmer(borderRadious:spacerSize20 ,)
+                          ? const BaseShimmer(borderRadious: spacerSize20)
                           : CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl:
@@ -88,7 +88,6 @@ class PlantRecommendations extends StatelessWidget {
                                   const BaseShimmer(),
 
                               errorWidget: (context, url, error) {
-
                                 return BaseBorderedContainer(
                                   height: Get.height * .23,
                                   alignment: Alignment.center,
