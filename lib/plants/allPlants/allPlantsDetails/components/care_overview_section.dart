@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../base/widgets/base_text.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/app_color.dart';
 import '../../../../utils/constants/app_constants.dart';
 import '../../../../utils/constants/app_keys.dart';
@@ -9,10 +10,7 @@ import '../../../model/plant_details_model.dart';
 class CareOverviewSection extends StatelessWidget {
   final PlantModel? plant;
 
-  const CareOverviewSection({
-    super.key,
-    required this.plant,
-  });
+  const CareOverviewSection({super.key, required this.plant});
 
   Widget item({
     required IconData icon,
@@ -53,13 +51,33 @@ class CareOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String watering = plant?.watering ?? "";
+    String sunlight = plant?.sunlight ?? "";
+    String soil = plant?.soil ?? "";
+    String fertilizer = plant?.fertilizer ?? "";
+
+    if (watering.isEmpty) {
+      watering = AppLocalizations.of(context)!.noDataNa;
+    }
+    if (sunlight.isEmpty) {
+      sunlight = AppLocalizations.of(context)!.noDataNa;
+    }
+    if (soil.isEmpty) {
+      soil = AppLocalizations.of(context)!.noDataNa;
+    }
+    if (fertilizer.isEmpty) {
+      fertilizer = AppLocalizations.of(context)!.noDataNa;
+    }
+    if (watering.isEmpty &&
+        sunlight.isEmpty &&
+        soil.isEmpty &&
+        fertilizer.isEmpty) {
+      return SizedBox();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PlantSectionTitle(
-          title: "Care Overview",
-          icon: Icons.favorite,
-        ),
+        PlantSectionTitle(title: "Care Overview", icon: Icons.favorite),
 
         SizedBox(height: spacerSize16),
 
@@ -72,35 +90,19 @@ class CareOverviewSection extends StatelessWidget {
           ),
           child: Column(
             children: [
-              item(
-                icon: Icons.water_drop,
-                title: "Watering",
-                value: plant?.watering ?? "N/A",
-              ),
+              item(icon: Icons.water_drop, title: "Watering", value: watering),
 
               Divider(),
 
-              item(
-                icon: Icons.sunny,
-                title: "Sunlight",
-                value: plant?.sunlight ?? "N/A",
-              ),
+              item(icon: Icons.sunny, title: "Sunlight", value: sunlight),
 
               Divider(),
 
-              item(
-                icon: Icons.grass,
-                title: "Soil",
-                value: plant?.soil ?? "N/A",
-              ),
+              item(icon: Icons.grass, title: "Soil", value: soil),
 
               Divider(),
 
-              item(
-                icon: Icons.science,
-                title: "Fertilizer",
-                value: plant?.fertilizer ?? "N/A",
-              ),
+              item(icon: Icons.science, title: "Fertilizer", value: fertilizer),
             ],
           ),
         ),

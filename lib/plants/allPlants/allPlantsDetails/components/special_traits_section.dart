@@ -52,6 +52,18 @@ class SpecialTraitsSection extends StatelessWidget {
       traits.add("Human Friendly");
     }
 
+    if ((plant?.edible ?? false) == true) {
+      traits.add("Edible");
+      if (plant?.ediblePart != null &&
+          plant!.ediblePart.toString().isNotEmpty) {
+        traits.add("Edible: ${plant?.ediblePart}");
+      }
+    }
+
+    if ((plant?.vegetable ?? false) == true) {
+      traits.add("Vegetable");
+    }
+
     if (traits.isEmpty) return SizedBox();
 
     return Column(

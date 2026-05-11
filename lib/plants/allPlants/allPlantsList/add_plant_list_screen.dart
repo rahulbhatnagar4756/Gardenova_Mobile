@@ -98,12 +98,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
 
               /// 🔹 LIST DATA
               controller.allPlantList.isEmpty && controller.isLoading.value
-                  ? SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: spacerSize50),
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    )
+                  ? _shimmerList()
                   : controller.allPlantList.isEmpty
                   ? SliverFillRemaining(
                       hasScrollBody: false,
@@ -152,20 +147,22 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                       ),
                     ),
 
-              /// 🔹 BOTTOM LOAD MORE LOADER (IMPORTANT)
+              /// 🔹 BOTTOM LOAD MORE LOADER
               SliverToBoxAdapter(
                 child: Obx(() {
                   if (controller.isLoadMoreRunning.value) {
-                    return SafeArea(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: spacerSize20),
-                        child: Center(
-                          child: SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        left: spacerSize20,
+                        right: spacerSize20,
+                        bottom: spacerSize20,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(child: _shimmerCard()),
+                          SizedBox(width: spacerSize15),
+                          Expanded(child: _shimmerCard()),
+                        ],
                       ),
                     );
                   } else {
@@ -304,7 +301,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: spacerSize6),
+                  SizedBox(height: spacerSize8),
                   BaseText(
                     text:
                         plant.commonName ??
@@ -313,9 +310,9 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: spacerSize4),
+                  // SizedBox(height: spacerSize2),
                   BaseText(
-                    text: plant.speciesName ?? "",
+                    text: plant.genus ?? "",
                     fontSize: fontSize12,
                     textColor: AppColors.liteGreyColor,
                     maxLines: 2,
@@ -326,6 +323,60 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// 🔹 SHIMMER LIST
+  Widget _shimmerList() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: spacerSize15),
+            child: Row(
+              children: [
+                Expanded(child: _shimmerCard()),
+                SizedBox(width: spacerSize15),
+                Expanded(child: _shimmerCard()),
+              ],
+            ),
+          );
+        }, childCount: 4),
+      ),
+    );
+  }
+
+  /// 🔹 SHIMMER CARD
+  Widget _shimmerCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGrey.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(spacerSize16),
+        border: Border.all(color: AppColors.backgroundGrey),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const BaseShimmer(
+            height: spacerSize120,
+            width: double.infinity,
+            borderRadious: spacerSize15,
+          ),
+          Padding(
+            padding: EdgeInsets.all(spacerSize12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const BaseShimmer(height: 16, width: 100, borderRadious: 4),
+                SizedBox(height: spacerSize8),
+                const BaseShimmer(height: 12, width: 70, borderRadious: 4),
+                SizedBox(height: spacerSize4),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

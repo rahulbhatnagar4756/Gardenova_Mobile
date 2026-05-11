@@ -18,9 +18,10 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
     return Obx(() {
       final response = controller.plantDiagnosisResponse.value;
       final data = response.data;
-      final bool isSuccess = !controller.isLoading.value && 
-                             data != null && 
-                             controller.isCurrentImagePlant.value == true;
+      final bool isSuccess =
+          !controller.isLoading.value &&
+          data != null &&
+          controller.isCurrentImagePlant.value == true;
 
       return Scaffold(
         backgroundColor: AppColors.appColor,
@@ -31,8 +32,8 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
             },
           ),
         ),
-        appBar: isSuccess 
-            ? null 
+        appBar: isSuccess
+            ? null
             : PreferredSize(
                 preferredSize: Size.fromHeight(110.h + 30.h),
                 child: Builder(
@@ -47,7 +48,7 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
                   },
                 ),
               ),
-        body: isSuccess 
+        body: isSuccess
             ? DiagnosisSuccessView(controller: controller)
             : SafeArea(
                 child: () {

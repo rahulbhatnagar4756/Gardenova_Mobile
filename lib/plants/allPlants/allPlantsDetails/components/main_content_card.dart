@@ -69,6 +69,7 @@ class MainContentCard extends StatelessWidget {
                 controller.plantDetailData.value.data == null
                     ? SizedBox.shrink()
                     : BaseText(
+                        // text: "",
                         text:
                             controller
                                 .plantDetailData
@@ -76,13 +77,33 @@ class MainContentCard extends StatelessWidget {
                                 .data
                                 ?.plant
                                 ?.description ??
-                            "",
+                            AppLocalizations.of(context)!.noDataNa,
                         fontFamily: AppKeys.inter,
                         fontSize: fontSize14,
                         fontWeight: FontWeight.w400,
                         textColor: AppColors.liteGreyColor,
                       ),
 
+                // if (controller.plantDetailData.value.data?.plant?.lat != null &&
+                //     controller.plantDetailData.value.data?.plant?.lon != null)
+                //   Row(
+                //     children: [
+                //       Icon(
+                //         Icons.location_on,
+                //         size: 14.sp,
+                //         color: AppColors.greenColor,
+                //       ),
+                //       SizedBox(width: 4.w),
+                //       BaseText(
+                //         text:
+                //             "Location: ${controller.plantDetailData.value.data?.plant?.lat?.toStringAsFixed(4)}, ${controller.plantDetailData.value.data?.plant?.lon?.toStringAsFixed(4)}",
+                //         fontFamily: AppKeys.inter,
+                //         fontSize: fontSize12,
+                //         fontWeight: FontWeight.w400,
+                //         textColor: AppColors.liteGreyColor,
+                //       ),
+                //     ],
+                //   ),
                 Obx(
                   () => controller.screenType.value == 'add'
                       ? Column(
@@ -579,18 +600,35 @@ class MainContentCard extends StatelessWidget {
               ),
               BaseText(
                 text:
-                    controller
-                        .plantDetailData
-                        .value
-                        .data
-                        ?.plant
-                        ?.scientificName ??
+                    controller.plantDetailData.value.data?.plant?.speciesName ??
                     "",
                 fontFamily: AppKeys.inter,
                 fontSize: fontSize14,
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.liteGreyColor,
               ),
+              if (controller
+                          .plantDetailData
+                          .value
+                          .data
+                          ?.plant
+                          ?.inatCommonName !=
+                      null &&
+                  controller
+                      .plantDetailData
+                      .value
+                      .data!
+                      .plant!
+                      .inatCommonName!
+                      .isNotEmpty)
+                BaseText(
+                  text:
+                      "Also known as: ${controller.plantDetailData.value.data?.plant?.inatCommonName}",
+                  fontFamily: AppKeys.inter,
+                  fontSize: fontSize12,
+                  fontWeight: FontWeight.w400,
+                  textColor: AppColors.liteGreyColor,
+                ),
             ],
           ),
         ),

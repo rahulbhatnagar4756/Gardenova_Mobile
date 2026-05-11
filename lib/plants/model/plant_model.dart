@@ -215,41 +215,300 @@ class PlantData {
 // }
 
 // new model below
+// class PlantModel {
+//   String? id;
+//   String? speciesName;
+//   String? commonName;
+//   String? imageUrl;
+//   int? relevance;
+
+//   bool isSelected;
+
+//   PlantModel({
+//     this.id,
+//     this.speciesName,
+//     this.commonName,
+//     this.imageUrl,
+//     this.relevance,
+//     this.isSelected = false,
+//   });
+
+//   PlantModel.fromJson(Map<String, dynamic>? json)
+//     : id = json?['id']?.toString(),
+//       speciesName = json?['species_name']?.toString(),
+//       commonName = json?['common_name']?.toString(),
+//       imageUrl = json?['image_url']?.toString(),
+//       relevance = json?['relevance'] is num
+//           ? (json?['relevance'] as num).toInt()
+//           : int.tryParse(json?['relevance']?.toString() ?? '0'),
+//       isSelected = false;
+
+//   Map<String, dynamic> toJson() {
+//     return {
+//       "id": id,
+//       "species_name": speciesName,
+//       "common_name": commonName,
+//       "image_url": imageUrl,
+//       "relevance": relevance,
+//     };
+//   }
+// }
+// new new model
 class PlantModel {
+  String? userPlantId;
+
+  /// UPDATED: int -> String
   String? id;
-  String? speciesName;
+
+  /// UPDATED: int -> String
+  String? plantId;
+
   String? commonName;
+  String? scientificName;
+  String? family;
+  String? genus;
   String? imageUrl;
+
+  String? healthStatus;
+
+  /// NEW
+  String? addedAt;
+
+  /// NEW
   int? relevance;
+
+  /// Watering
+  bool? wateringNotificationEnabled;
+  String? wateringPreferredTime;
+  int? wateringReminderFrequency;
+  String? lastWateredAt;
+  String? nextWateredAt;
+
+  /// Fertilizer
+  bool? fertilizerNotificationEnabled;
+  String? fertilizerPreferredTime;
+  int? fertilizerReminderFrequency;
+  String? lastFertilizedAt;
+  String? nextFertilizedAt;
+
+  /// Pruning
+  bool? pruningNotificationEnabled;
+  int? pruningReminderFrequency;
+  String? lastPrunedAt;
+  String? nextPrunedAt;
+
+  /// Generic care
+  bool? genericNotificationEnabled;
+  int? genericCareReminderFrequency;
+  String? lastGenericCareAt;
+  String? nextGenericCareAt;
+
+  /// Dates
+  String? createdAt;
+  String? updatedAt;
 
   bool isSelected;
 
   PlantModel({
     this.id,
-    this.speciesName,
+    this.userPlantId,
+    this.plantId,
     this.commonName,
+    this.scientificName,
+    this.family,
+    this.genus,
     this.imageUrl,
+    this.healthStatus,
+    this.addedAt,
     this.relevance,
+    this.wateringNotificationEnabled,
+    this.wateringPreferredTime,
+    this.wateringReminderFrequency,
+    this.lastWateredAt,
+    this.nextWateredAt,
+    this.fertilizerNotificationEnabled,
+    this.fertilizerPreferredTime,
+    this.fertilizerReminderFrequency,
+    this.lastFertilizedAt,
+    this.nextFertilizedAt,
+    this.pruningNotificationEnabled,
+    this.pruningReminderFrequency,
+    this.lastPrunedAt,
+    this.nextPrunedAt,
+    this.genericNotificationEnabled,
+    this.genericCareReminderFrequency,
+    this.lastGenericCareAt,
+    this.nextGenericCareAt,
+    this.createdAt,
+    this.updatedAt,
     this.isSelected = false,
   });
 
   PlantModel.fromJson(Map<String, dynamic>? json)
     : id = json?['id']?.toString(),
-      speciesName = json?['species_name']?.toString(),
+
+      userPlantId = json?['user_plant_id']?.toString(),
+
+      /// UPDATED
+      plantId = json?['plant_id']?.toString(),
+
       commonName = json?['common_name']?.toString(),
+
+      scientificName = json?['scientific_name']?.toString(),
+
+      family = json?['family']?.toString(),
+
+      genus = json?['genus']?.toString(),
+
       imageUrl = json?['image_url']?.toString(),
-      relevance = json?['relevance'] is num
-          ? (json?['relevance'] as num).toInt()
-          : int.tryParse(json?['relevance']?.toString() ?? '0'),
+
+      healthStatus = json?['health_status']?.toString(),
+
+      /// NEW
+      addedAt = json?['added_at']?.toString(),
+
+      /// NEW
+      relevance = _parseInt(json?['relevance']),
+
+      /// Watering
+      wateringNotificationEnabled = _parseBool(
+        json?['watering_notification_enabled'],
+      ),
+
+      wateringPreferredTime = json?['watering_preferred_time']?.toString(),
+
+      wateringReminderFrequency = _parseInt(
+        json?['watering_reminder_frequency'],
+      ),
+
+      lastWateredAt = json?['last_watered_at']?.toString(),
+
+      nextWateredAt = json?['next_watered_at']?.toString(),
+
+      /// Fertilizer
+      fertilizerNotificationEnabled = _parseBool(
+        json?['fertilizer_notification_enabled'],
+      ),
+
+      fertilizerPreferredTime = json?['fertilizer_preferred_time']?.toString(),
+
+      fertilizerReminderFrequency = _parseInt(
+        json?['fertilizer_reminder_frequency'],
+      ),
+
+      lastFertilizedAt = json?['last_fertilized_at']?.toString(),
+
+      nextFertilizedAt = json?['next_fertilized_at']?.toString(),
+
+      /// Pruning
+      pruningNotificationEnabled = _parseBool(
+        json?['pruning_notification_enabled'],
+      ),
+
+      pruningReminderFrequency = _parseInt(json?['pruning_reminder_frequency']),
+
+      lastPrunedAt = json?['last_pruned_at']?.toString(),
+
+      nextPrunedAt = json?['next_pruned_at']?.toString(),
+
+      /// Generic Care
+      genericNotificationEnabled = _parseBool(
+        json?['generic_notification_enabled'],
+      ),
+
+      genericCareReminderFrequency = _parseInt(
+        json?['generic_care_reminder_frequency'],
+      ),
+
+      lastGenericCareAt = json?['last_generic_care_at']?.toString(),
+
+      nextGenericCareAt = json?['next_generic_care_at']?.toString(),
+
+      /// Dates
+      createdAt = json?['created_at']?.toString(),
+
+      updatedAt = json?['updated_at']?.toString(),
+
       isSelected = false;
 
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "species_name": speciesName,
+      "user_plant_id": userPlantId,
+      "plant_id": plantId,
       "common_name": commonName,
+      "scientific_name": scientificName,
+      "family": family,
+      "genus": genus,
       "image_url": imageUrl,
+      "health_status": healthStatus,
+
+      /// NEW
+      "added_at": addedAt,
       "relevance": relevance,
+
+      /// Watering
+      "watering_notification_enabled": wateringNotificationEnabled,
+
+      "watering_preferred_time": wateringPreferredTime,
+
+      "watering_reminder_frequency": wateringReminderFrequency,
+
+      "last_watered_at": lastWateredAt,
+      "next_watered_at": nextWateredAt,
+
+      /// Fertilizer
+      "fertilizer_notification_enabled": fertilizerNotificationEnabled,
+
+      "fertilizer_preferred_time": fertilizerPreferredTime,
+
+      "fertilizer_reminder_frequency": fertilizerReminderFrequency,
+
+      "last_fertilized_at": lastFertilizedAt,
+      "next_fertilized_at": nextFertilizedAt,
+
+      /// Pruning
+      "pruning_notification_enabled": pruningNotificationEnabled,
+
+      "pruning_reminder_frequency": pruningReminderFrequency,
+
+      "last_pruned_at": lastPrunedAt,
+      "next_pruned_at": nextPrunedAt,
+
+      /// Generic Care
+      "generic_notification_enabled": genericNotificationEnabled,
+
+      "generic_care_reminder_frequency": genericCareReminderFrequency,
+
+      "last_generic_care_at": lastGenericCareAt,
+
+      "next_generic_care_at": nextGenericCareAt,
+
+      /// Dates
+      "created_at": createdAt,
+      "updated_at": updatedAt,
     };
+  }
+
+  /// =========================
+  /// SAFE HELPERS
+  /// =========================
+
+  static bool _parseBool(dynamic value) {
+    if (value == null) return false;
+
+    if (value is bool) return value;
+
+    final val = value.toString().toLowerCase();
+
+    return val == "true" || val == "1";
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+
+    if (value is int) return value;
+
+    return int.tryParse(value.toString());
   }
 }

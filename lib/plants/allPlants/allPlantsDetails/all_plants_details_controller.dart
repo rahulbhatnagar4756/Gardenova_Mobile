@@ -2,6 +2,7 @@ import 'dart:developer' show log;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
 import '../../../base/widgets/base_date_format.dart';
@@ -32,6 +33,8 @@ class AllPlantsDetailsController extends GetxController {
   PlantsRepository plantsRepository = PlantsRepository();
   Rx<PlantDetailsResponseModel> plantDetailData =
       PlantDetailsResponseModel().obs;
+  RxBool isLoading = false.obs;
+  RxString errorMessage = "".obs;
   final List<int> frequencyOptions = [
     1,
     2,
@@ -53,6 +56,9 @@ class AllPlantsDetailsController extends GetxController {
       plantId.value = Get.arguments['plant_id'].toString();
       screenType.value = Get.arguments['screen_type'].toString();
     }
+    print(
+      'AllPlantsDetailsController plantId $plantId and screenType $screenType',
+    );
     if (screenType.value == "add") {
       callGetPlantDetailsApi();
     } else {
@@ -265,23 +271,50 @@ class AllPlantsDetailsController extends GetxController {
   }
 
   Future callGetPlantDetailsApi() async {
-    var response = await plantsRepository.fetchPlantDetail(
-      plantId: plantId.value,
-    );
-    if (response != null) {
-      plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+    isLoading.value = true;
+    errorMessage.value = "";
+    try {
+      var response = await plantsRepository.fetchPlantDetail(
+        plantId: plantId.value,
+      );
+      if (response != null) {
+        plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        if (plantDetailData.value.data == null) {
+          errorMessage.value = "No plant details found";
+        }
+      } else {
+        errorMessage.value = "Failed to fetch plant details";
+      }
+    } catch (e) {
+      errorMessage.value = "Something went wrong: $e";
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future callGetMyPlantDetailsApi() async {
-    var response = await plantsRepository.fetchMyPlantDetail(
-      plantId: plantId.value,
-    );
-    if (response != null) {
-      userPlantId.value = response['data']['user_plant_id'].toString();
-      debugPrint("userPlantId:::: ${userPlantId.value}");
-      plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
-      setDataForUpdate();
+    isLoading.value = true;
+    errorMessage.value = "";
+    try {
+      var response = await plantsRepository.fetchMyPlantDetail(
+        plantId: plantId.value,
+      );
+      if (response != null) {
+        userPlantId.value = response['data']['user_plant_id'].toString();
+        debugPrint("userPlantId:::: ${userPlantId.value}");
+        plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        if (plantDetailData.value.data == null) {
+          errorMessage.value = "No plant details found";
+        } else {
+          setDataForUpdate();
+        }
+      } else {
+        errorMessage.value = "Failed to fetch plant details";
+      }
+    } catch (e) {
+      errorMessage.value = "Something went wrong: $e";
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -318,7 +351,8 @@ class AllPlantsDetailsController extends GetxController {
         Get.context!,
         title: plantDetailData.value.data!.plant!.commonName ?? "",
         image: plantDetailData.value.data!.plant!.imageUrl ?? "",
-        description: plantDetailData.value.data!.plant!.description ?? "",
+        description: "",
+        // description: plantDetailData.value.data!.plant!.description ?? "",
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
         onButtonPressed: () async {
           print('on click onButton');
@@ -335,6 +369,9 @@ class AllPlantsDetailsController extends GetxController {
           }
         },
       );
+    }
+    if (Get.isRegistered<MyPlantsController>()) {
+      Get.find<MyPlantsController>().callGetMyPlantListApi();
     }
   }
 
@@ -360,6 +397,9 @@ class AllPlantsDetailsController extends GetxController {
     debugPrint("response:::::$response");
     if (response != null) {
       Get.back(result: true);
+    }
+    if (Get.isRegistered<MyPlantsController>()) {
+      Get.find<MyPlantsController>().callGetMyPlantListApi();
     }
   }
 

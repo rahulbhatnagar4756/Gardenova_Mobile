@@ -22,6 +22,8 @@ import 'package:kasagardem/introduction/introduction_screen_view_model.dart';
 import 'package:kasagardem/introduction/question/components/report_success_screen.dart';
 import 'package:kasagardem/introduction/question/question_screen.dart';
 import 'package:kasagardem/introduction/question/question_view_model.dart';
+import 'package:kasagardem/landscape_design/landscape_design_screen.dart';
+import 'package:kasagardem/landscape_design/landscape_design_view_model.dart';
 import 'package:kasagardem/plants/allPlants/allPlantsDetails/all_plants_details_controller.dart';
 import 'package:kasagardem/plants/allPlants/allPlantsList/add_plant_list_screen.dart';
 import 'package:kasagardem/professional/myLead/lead_details_screen.dart';
@@ -92,6 +94,7 @@ class Routes {
   static const createRequestScreen = '/create_request_screen';
   static const createProfessionalLeadRequestScreen =
       '/create_professional_request_screen';
+  static const landscapeDesign = '/landscape_design';
 
   static getPages() {
     return [
@@ -402,6 +405,15 @@ class Routes {
       GetPage(
         name: Routes.leadDetailsScreen,
         page: () => LeadDetailsScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.landscapeDesign,
+        page: () => const LandscapeDesignScreen(),
+        binding: BindingsBuilder.put(() => LandscapeDesignViewModel()),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,

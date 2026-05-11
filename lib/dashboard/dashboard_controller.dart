@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,8 @@ import '../base/dialogs/base_dialog.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_service.dart';
+
+enum ImagePickerSource { diagnosis, landscape }
 
 class DashboardController extends GetxController {
   RxList<PlantRecommendationsResponse> plantRecommendationList =
@@ -120,6 +121,15 @@ class DashboardController extends GetxController {
       arguments: {
         ApiKeys.latitude: position!.latitude,
         ApiKeys.longitude: position!.longitude,
+        ApiKeys.imagePath: pickedFile!.path,
+      },
+    );
+  }
+
+  void goToLandscapeDesign(XFile? pickedFile) {
+    Get.toNamed(
+      Routes.landscapeDesign,
+      arguments: {
         ApiKeys.imagePath: pickedFile!.path,
       },
     );
@@ -256,12 +266,15 @@ class DashboardController extends GetxController {
     }
   }
 
-  Future<void> pickImage({required bool isCamera}) async {
+  Future<void> pickImage({
+    required bool isCamera,
+    ImagePickerSource source = ImagePickerSource.diagnosis,
+  }) async {
     try {
-      print('pickImage t1');
+      print('pickImage t1 source: $source');
 
-      // Fetch location first if not available
-      if (position == null) {
+      // Fetch location first if not available (only for diagnosis)
+      if (source == ImagePickerSource.diagnosis && position == null) {
         print('pickImage t2');
 
         await getCurrentLocation();
@@ -294,7 +307,11 @@ class DashboardController extends GetxController {
           Get.back();
         }
 
-        goToPlantDiagnosis(pickedFile);
+        if (source == ImagePickerSource.diagnosis) {
+          goToPlantDiagnosis(pickedFile);
+        } else {
+          goToLandscapeDesign(pickedFile);
+        }
       }
     } catch (e) {
       print('pickImage t5');

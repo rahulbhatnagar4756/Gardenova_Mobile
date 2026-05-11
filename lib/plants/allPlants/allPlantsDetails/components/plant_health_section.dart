@@ -9,15 +9,9 @@ import 'plant_section_title.dart';
 class PlantHealthSection extends StatelessWidget {
   final PlantModel? plant;
 
-  const PlantHealthSection({
-    super.key,
-    required this.plant,
-  });
+  const PlantHealthSection({super.key, required this.plant});
 
-  Widget item({
-    required String title,
-    required String value,
-  }) {
+  Widget item({required String title, required String value}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: spacerSize16),
       child: Column(
@@ -46,13 +40,22 @@ class PlantHealthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String diseases = plant?.diseases ?? "";
+    String pruning = plant?.pruning ?? "";
+    String climate = plant?.climate ?? "";
+    if (diseases.isEmpty) {
+      diseases = "No information available";
+    }
+    if (pruning.isEmpty) {
+      pruning = "No pruning information";
+    }
+    if (climate.isEmpty) {
+      climate = "No climate information";
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PlantSectionTitle(
-          title: "Plant Health",
-          icon: Icons.health_and_safety,
-        ),
+        PlantSectionTitle(title: "Plant Health", icon: Icons.health_and_safety),
 
         SizedBox(height: spacerSize16),
 
@@ -67,21 +70,11 @@ class PlantHealthSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              item(title: "Diseases", value: diseases),
 
-              item(
-                title: "Diseases",
-                value: plant?.diseases ?? "No information available",
-              ),
+              item(title: "Pruning", value: pruning),
 
-              item(
-                title: "Pruning",
-                value: plant?.pruning ?? "No pruning information",
-              ),
-
-              item(
-                title: "Climate",
-                value: plant?.climate ?? "No climate information",
-              ),
+              item(title: "Climate", value: climate),
             ],
           ),
         ),

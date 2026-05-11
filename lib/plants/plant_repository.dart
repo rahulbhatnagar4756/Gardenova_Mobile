@@ -12,20 +12,23 @@ class PlantsRepository {
     String? pageNumber,
     String? pageSize,
     String? searchName,
-  bool showDefaultLoader=true
-
+    bool showDefaultLoader = true,
   }) async {
     var endUrl = "$allPlantUrl?page=$pageNumber&limit=$pageSize";
-    if (searchName!= null && searchName.isNotEmpty) {
+    if (searchName != null && searchName.isNotEmpty) {
       endUrl = "$endUrl&search=$searchName";
     }
-    var plantsResponse = await ApiRepository.instance.get(endUrl,showDefaultLoader:showDefaultLoader);
+    var plantsResponse = await ApiRepository.instance.get(
+      endUrl,
+      showDefaultLoader: showDefaultLoader,
+    );
     return plantsResponse;
   }
 
   fetchPlantDetail({String? plantId}) async {
     var plantsDetailResponse = await ApiRepository.instance.get(
       "$getAllPlantDetailUrl$plantId",
+      showDefaultLoader: false,
     );
     return plantsDetailResponse;
   }
@@ -33,6 +36,8 @@ class PlantsRepository {
   fetchMyPlantDetail({String? plantId}) async {
     var plantsDetailResponse = await ApiRepository.instance.get(
       "$getMyPlantDetailUrl$plantId",
+      showDefaultLoader: false,
+      showRunTimeError: false,
     );
     return plantsDetailResponse;
   }
@@ -57,14 +62,16 @@ class PlantsRepository {
     String? pageNumber,
     String? pageSize,
     String? searchName,
-    bool showDefaultLoader=true
+    bool showDefaultLoader = true,
   }) async {
     var endUrl = "$myPlantUrl?page=$pageNumber&limit=$pageSize";
     if (searchName != null && searchName.isNotEmpty) {
       endUrl = "$endUrl&search=$searchName";
     }
-    var plantsResponse = await ApiRepository.instance.get(endUrl,showDefaultLoader: showDefaultLoader);
+    var plantsResponse = await ApiRepository.instance.get(
+      endUrl,
+      showDefaultLoader: showDefaultLoader,
+    );
     return plantsResponse;
   }
-
 }

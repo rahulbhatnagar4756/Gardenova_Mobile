@@ -5,6 +5,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 
 import '../../../base/widgets/base_button.dart';
+import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/clickable_image.dart';
 import '../../../l10n/app_localizations.dart';
 import 'all_plants_details_controller.dart';
@@ -15,87 +16,260 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => GestureDetector(
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return _loadingView();
+      }
+
+      if (controller.errorMessage.value.isNotEmpty) {
+        return _errorView(controller.errorMessage.value);
+      }
+
+      if (controller.plantDetailData.value.data == null) {
+        return _noDataView();
+      }
+
+      return GestureDetector(
         onTap: () => controller.testing(),
         child: Scaffold(
           backgroundColor: AppColors.appColor,
           body: Stack(
             children: [
-              controller.plantDetailData.value.data == null
-                  ? Container()
-                  : Positioned(top: 0, left: 0, right: 0, child: imageCard()),
+              Positioned(top: 0, left: 0, right: 0, child: imageCard()),
               MainContentCard(controller: controller),
-              // Positioned(
-              //   top: 0,
-              //   left: 0,
-              //   right: 0,
-              //   height: spacerSize350,
-              //   child: IgnorePointer(
-              //     ignoring: false,
-              //     child: Material(
-              //       color: Colors.transparent,
-              //       child: InkWell(
-              //         onTap: () {
-              //           final imageUrl =
-              //               controller
-              //                   .plantDetailData
-              //                   .value
-              //                   .data
-              //                   ?.plant
-              //                   ?.imageUrl ??
-              //               "";
-              //
-              //           if (imageUrl.isNotEmpty) {
-              //             FullScreenImageView.open(
-              //               imageUrl: imageUrl,
-              //               heroTag: "plant_detail_image",
-              //             );
-              //           }
-              //         },
-              //       ),
-              //     ),
-              //   ),
-              // ),
               backButton(),
             ],
           ),
-          // floatingActionButton: Obx(
-          //   () => Container(
-          //     decoration: BoxDecoration(
-          //       gradient: AppColors.linearGradientForBtn,
-          //       borderRadius: BorderRadius.circular(16),
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: AppColors.greenColor.withOpacity(0.3),
-          //           blurRadius: 10,
-          //           offset: const Offset(0, 4),
-          //         ),
-          //       ],
-          //     ),
-          //     child: FloatingActionButton.extended(
-          //       backgroundColor: Colors.transparent,
-          //       elevation: 0,
-          //       onPressed: () async {
-          //         controller.validateAndSubmit(context);
-          //       },
-          //       icon: Icon(
-          //         controller.screenType.value == 'add' ? Icons.add : Icons.save,
-          //         color: Colors.white,
-          //       ),
-          //       label: Text(
-          //         controller.screenType.value == 'add'
-          //             ? AppLocalizations.of(context)!.addPlant
-          //             : 'Save Changes',
-          //         style: TextStyle(
-          //           color: Colors.white,
-          //           fontWeight: FontWeight.w600,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ),
+      );
+    });
+  }
+
+  Widget _loadingView() {
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
+      body: Stack(
+        children: [
+          // 1. Image Shimmer
+          const BaseShimmer(height: spacerSize350),
+
+          // 2. Content Card Shimmer
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: spacerSize300),
+                Container(
+                  padding: const EdgeInsets.all(spacerSize20),
+                  decoration: const BoxDecoration(
+                    color: AppColors.appColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(spacerSize30),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title Shimmer
+                      const BaseShimmer(
+                        height: 30,
+                        width: 200,
+                        borderRadious: 8,
+                      ),
+                      const SizedBox(height: 12),
+                      // Subtitle Shimmer
+                      const BaseShimmer(
+                        height: 20,
+                        width: 150,
+                        borderRadious: 6,
+                      ),
+                      const SizedBox(height: 24),
+                      // Description Shimmer
+                      const BaseShimmer(height: 16, borderRadious: 4),
+                      const SizedBox(height: 8),
+                      const BaseShimmer(height: 16, borderRadious: 4),
+                      const SizedBox(height: 8),
+                      const BaseShimmer(
+                        height: 16,
+                        width: 200,
+                        borderRadious: 4,
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Quick Info Shimmer (Horizontal List)
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: List.generate(
+                            4,
+                            (index) => const Padding(
+                              padding: EdgeInsets.only(right: 12),
+                              child: BaseShimmer(
+                                height: 110,
+                                width: 140,
+                                borderRadious: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Care Overview Shimmer Section
+                      const BaseShimmer(
+                        height: 25,
+                        width: 150,
+                        borderRadious: 6,
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(spacerSize16),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundGrey.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(spacerSize18),
+                          border: Border.all(color: AppColors.backgroundGrey),
+                        ),
+                        child: Column(
+                          children: List.generate(
+                            4,
+                            (index) => Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const BaseShimmer(
+                                      height: 24,
+                                      width: 24,
+                                      borderRadious: 12,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const BaseShimmer(
+                                      height: 14,
+                                      width: 100,
+                                      borderRadious: 4,
+                                    ),
+                                    const Spacer(),
+                                    const BaseShimmer(
+                                      height: 12,
+                                      width: 60,
+                                      borderRadious: 4,
+                                    ),
+                                  ],
+                                ),
+                                if (index < 3)
+                                  const Divider(
+                                    color: AppColors.backgroundGrey,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Special Traits Shimmer Section
+                      const BaseShimmer(
+                        height: 25,
+                        width: 150,
+                        borderRadious: 6,
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: List.generate(
+                          5,
+                          (index) => const BaseShimmer(
+                            height: 35,
+                            width: 110,
+                            borderRadious: 100,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Plant Health Shimmer
+                      const BaseShimmer(
+                        height: 25,
+                        width: 150,
+                        borderRadious: 6,
+                      ),
+                      const SizedBox(height: 16),
+                      const BaseShimmer(height: 120, borderRadious: 18),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Back Button
+          backButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _errorView(String message) {
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
+      body: Stack(
+        children: [
+          backButton(),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 60, color: Colors.red),
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  ),
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    if (controller.screenType.value == "add") {
+                      controller.callGetPlantDetailsApi();
+                    } else {
+                      controller.callGetMyPlantDetailsApi();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.greenColor,
+                  ),
+                  child: Text("Retry", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _noDataView() {
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
+      body: Stack(
+        children: [
+          backButton(),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.eco_outlined, size: 60, color: AppColors.greenColor),
+                SizedBox(height: 16),
+                Text(
+                  "No details found for this plant.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -137,22 +311,6 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
         ),
       ),
     );
-    // return Container(
-    //   color: AppColors.charcoalGrey,
-    //   child: CachedNetworkImage(
-    //     height: spacerSize350,
-    //     width: double.infinity,
-    //     fit: BoxFit.cover,
-    //     imageUrl: controller.plantDetailData.value.data?.plant?.imageUrl ?? "",
-    //     placeholder: (context, url) =>
-    //         BaseShimmer(height: spacerSize350, width: double.infinity),
-    //     errorWidget: (context, url, error) => Icon(
-    //       Icons.broken_image,
-    //       color: AppColors.offWhite,
-    //       size: spacerSize40,
-    //     ),
-    //   ),
-    // );
   }
 
   Widget backButton() {

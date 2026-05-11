@@ -214,7 +214,18 @@ class ApiRepository {
     String endPoint, {
     dynamic body,
     Map<String, String>? headers,
-  }) async => request(ApiKeys.post, endPoint, body: body, headers: headers);
+    bool showDefaultLoader = true,
+    bool directUrl = false,
+    bool showRunTimeError = true,
+  }) async => request(
+    ApiKeys.post,
+    endPoint,
+    body: body,
+    headers: headers,
+    showDefaultLoader: showDefaultLoader,
+    directUrl: directUrl,
+    showRunTimeError: showRunTimeError,
+  );
 
   Future<dynamic> patch(
     String endPoint,

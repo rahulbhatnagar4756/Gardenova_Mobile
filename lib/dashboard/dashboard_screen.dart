@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
+import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
+import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
+import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_view_model.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
@@ -91,7 +95,20 @@ class DashboardScreen extends GetWidget<DashboardController> {
                     )!.aIPlantDiagnosis,
                     child: AiPlantDiagnosisCard(
                       onTap: () {
-                        openImagePickerBottomSheet();
+                        openImagePickerBottomSheet(
+                          source: ImagePickerSource.diagnosis,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: spacerSize15),
+                  HeadingUiLayout(
+                    sectionTitle: "AI Landscape Design",
+                    child: LandscapeDesignCard(
+                      onTap: () {
+                        openImagePickerBottomSheet(
+                          source: ImagePickerSource.landscape,
+                        );
                       },
                     ),
                   ),
@@ -104,6 +121,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       children: [PlantRecommendations(controller: controller)],
                     ),
                   ),
+                  SizedBox(height: 60.h),
                 ],
               ).marginOnly(left: spacerSize20, right: spacerSize20),
             ),
@@ -161,7 +179,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
     );
   }
 
-  openImagePickerBottomSheet() {
+  openImagePickerBottomSheet({
+    ImagePickerSource source = ImagePickerSource.diagnosis,
+  }) {
     return Get.bottomSheet(
       Container(
         height: Get.height * .2,
@@ -174,7 +194,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
                 // Get.back();
-                controller.pickImage(isCamera: true);
+                controller.pickImage(isCamera: true, source: source);
               },
             ),
             ListTile(
@@ -182,7 +202,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
               title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
               onTap: () async {
                 // Get.back();
-                controller.pickImage(isCamera: false);
+                controller.pickImage(isCamera: false, source: source);
               },
             ),
           ],
