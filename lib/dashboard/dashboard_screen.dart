@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
 import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
-import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_view_model.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
@@ -15,11 +13,10 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-
 import '../base/widgets/base_text.dart';
-import 'components/ai_plan_diagnosis.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
 
@@ -65,7 +62,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   isAppIconVisible: false,
                 ),
 
-          body: Container(
+          body: SizedBox(
             // color: Colors.red,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -103,7 +100,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   ),
                   const SizedBox(height: spacerSize15),
                   HeadingUiLayout(
-                    sectionTitle: "AI Landscape Design",
+                    sectionTitle: AppStrings.aiLandscapeDesign,
                     child: LandscapeDesignCard(
                       onTap: () {
                         openImagePickerBottomSheet(
@@ -139,36 +136,36 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 onPressed: () {
                   Get.toNamed(Routes.allPlantsScreen);
                   return;
-                  if (controller.isUserLoggedIn.value) {
-                    Get.toNamed(
-                      Routes.recommendedProfessionals,
-                      arguments: {
-                        "lat": controller.lat,
-                        "lng": controller.long,
-                      },
-                      // arguments: controller.responseId,
-                    );
-                  } else {
-                    BaseDialog.showAlertDialog(
-                      context: Get.context!,
-                      onButtonPressed: () {
-                        Get.back();
-                        Get.toNamed(
-                          Routes.login,
-                          arguments: {"question_state_passed": true},
-                        );
-                      },
-                      title: AppLocalizations.of(
-                        Get.context!,
-                      )!.login.toUpperCase(),
-                      description: AppLocalizations.of(
-                        Get.context!,
-                      )!.pleaseLoginToSeeRecommendedProfessionals,
-                      buttonLabel: AppLocalizations.of(
-                        Get.context!,
-                      )!.login.toUpperCase(),
-                    );
-                  }
+                  // if (controller.isUserLoggedIn.value) {
+                  //   Get.toNamed(
+                  //     Routes.recommendedProfessionals,
+                  //     arguments: {
+                  //       "lat": controller.lat,
+                  //       "lng": controller.long,
+                  //     },
+                  //     // arguments: controller.responseId,
+                  //   );
+                  // } else {
+                  //   BaseDialog.showAlertDialog(
+                  //     context: Get.context!,
+                  //     onButtonPressed: () {
+                  //       Get.back();
+                  //       Get.toNamed(
+                  //         Routes.login,
+                  //         arguments: {"question_state_passed": true},
+                  //       );
+                  //     },
+                  //     title: AppLocalizations.of(
+                  //       Get.context!,
+                  //     )!.login.toUpperCase(),
+                  //     description: AppLocalizations.of(
+                  //       Get.context!,
+                  //     )!.pleaseLoginToSeeRecommendedProfessionals,
+                  //     buttonLabel: AppLocalizations.of(
+                  //       Get.context!,
+                  //     )!.login.toUpperCase(),
+                  //   );
+                  // }
                 },
               ),
               // BaseBackButton(),
@@ -179,10 +176,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
     );
   }
 
-  openImagePickerBottomSheet({
+  void openImagePickerBottomSheet({
     ImagePickerSource source = ImagePickerSource.diagnosis,
   }) {
-    return Get.bottomSheet(
+    Get.bottomSheet(
       Container(
         height: Get.height * .2,
         color: AppColors.offWhite,

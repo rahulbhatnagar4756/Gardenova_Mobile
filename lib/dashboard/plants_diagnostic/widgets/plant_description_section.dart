@@ -9,6 +9,7 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class PlantDescriptionSection extends StatelessWidget {
   final String description;
@@ -33,7 +34,7 @@ class PlantDescriptionSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: "Plant Description",
+            text: AppStrings.plantDescription,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w700,
             fontSize: fontSize18,

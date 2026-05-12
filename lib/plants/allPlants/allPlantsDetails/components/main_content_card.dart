@@ -600,8 +600,13 @@ class MainContentCard extends StatelessWidget {
               ),
               BaseText(
                 text:
-                    controller.plantDetailData.value.data?.plant?.speciesName ??
-                    "",
+                    controller
+                        .plantDetailData
+                        .value
+                        .data
+                        ?.plant
+                        ?.scientificName ??
+                    AppLocalizations.of(Get.context!)!.noDataNa,
                 fontFamily: AppKeys.inter,
                 fontSize: fontSize14,
                 fontWeight: FontWeight.w400,

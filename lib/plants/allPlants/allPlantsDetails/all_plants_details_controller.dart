@@ -2,7 +2,6 @@ import 'dart:developer' show log;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
 import '../../../base/widgets/base_date_format.dart';

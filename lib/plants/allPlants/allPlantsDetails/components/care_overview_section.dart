@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/app_color.dart';
@@ -77,7 +78,7 @@ class CareOverviewSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PlantSectionTitle(title: "Care Overview", icon: Icons.favorite),
+        PlantSectionTitle(title: AppStrings.careOverview, icon: Icons.favorite),
 
         SizedBox(height: spacerSize16),
 
@@ -90,19 +91,31 @@ class CareOverviewSection extends StatelessWidget {
           ),
           child: Column(
             children: [
-              item(icon: Icons.water_drop, title: "Watering", value: watering),
+              item(
+                icon: Icons.water_drop,
+                title: AppStrings.watering,
+                value: watering,
+              ),
 
               Divider(),
 
-              item(icon: Icons.sunny, title: "Sunlight", value: sunlight),
+              item(
+                icon: Icons.sunny,
+                title: AppStrings.sunlight,
+                value: sunlight,
+              ),
 
               Divider(),
 
-              item(icon: Icons.grass, title: "Soil", value: soil),
+              item(icon: Icons.grass, title: AppStrings.soil, value: soil),
 
               Divider(),
 
-              item(icon: Icons.science, title: "Fertilizer", value: fertilizer),
+              item(
+                icon: Icons.science,
+                title: AppStrings.fertilizer,
+                value: fertilizer,
+              ),
             ],
           ),
         ),

@@ -12,13 +12,12 @@ import 'package:kasagardem/dashboard/plants_diagnostic/widgets/diagnosis_section
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
+import '../../../utils/constants/app_strings.dart';
+
 class SymptomsSection extends StatelessWidget {
   final Issues issue;
 
-  const SymptomsSection({
-    super.key,
-    required this.issue,
-  });
+  const SymptomsSection({super.key, required this.issue});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class SymptomsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: issue.name ?? "Issue",
+            text: issue.name ?? AppStrings.issue,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.bold,
             fontSize: fontSize18,
@@ -39,8 +38,7 @@ class SymptomsSection extends StatelessWidget {
             spacing: 10.w,
             runSpacing: 10.h,
             children: [
-              ...(issue.symptoms ?? [])
-                  .map((e) => DiagnosisChip(label: e))
+              ...(issue.symptoms ?? []).map((e) => DiagnosisChip(label: e)),
             ],
           ),
         ],

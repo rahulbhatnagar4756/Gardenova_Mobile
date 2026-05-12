@@ -11,7 +11,6 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../base/widgets/base_calculate_remaining_days.dart';
-import '../../utils/utils.dart';
 
 class LoginViewModel extends GetxController with SocialSignInMixin {
   TextEditingController emailController = TextEditingController();

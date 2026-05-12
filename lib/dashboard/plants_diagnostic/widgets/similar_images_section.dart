@@ -6,6 +6,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../../base/widgets/clickable_image.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class SimilarImagesSection extends StatelessWidget {
   final List<String> images;
@@ -21,7 +22,7 @@ class SimilarImagesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: "Similar Plant Images",
+            text: AppStrings.similarPlantImages,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.bold,
             fontSize: fontSize18,

@@ -6,8 +6,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class ToxicityWarningCard extends StatelessWidget {
   final String toxicity;
@@ -40,11 +42,11 @@ class ToxicityWarningCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BaseText(
-                  text: "Toxicity Warning",
+                  text: AppStrings.toxicityWarning,
                   fontFamily: AppKeys.poppins,
                   fontWeight: FontWeight.w700,
                   fontSize: fontSize16,
-                  textColor: Colors.red,
+                  textColor: AppColors.red,
                 ),
 
                 SizedBox(height: 8.h),

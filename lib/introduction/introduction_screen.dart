@@ -8,7 +8,6 @@ import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/introduction/introduction_screen_view_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -152,7 +151,7 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
     );
   }
 
-  itemsLayout(int itemIndex) {
+  Widget itemsLayout(int itemIndex) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.greenColor.withValues(alpha: 0.1),

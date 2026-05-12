@@ -111,10 +111,12 @@ class BaseSnackBar {
       title.trim(),
       message.trim(),
       shouldIconPulse: true,
-      boxShadows: [BoxShadow(color: AppColors.burntGold, spreadRadius: 1)],
+      boxShadows: [BoxShadow(color: AppColors.greenColor, spreadRadius: 1)],
       backgroundColor: AppColors.darkGreen,
       colorText: AppColors.offWhite,
-      icon: Image.asset(AppAssets.appLogo).marginOnly(left: spacerSize5),
+      icon: Image.asset(
+        AppAssets.appLogo,
+      ).marginOnly(left: spacerSize5,),
     );
   }
 }

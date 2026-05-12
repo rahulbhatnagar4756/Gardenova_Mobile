@@ -5,7 +5,6 @@ import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
-import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/components/heading_ui_layout.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -32,24 +31,10 @@ class RecommendedProfessionals
     return Obx(
       () => Scaffold(
         backgroundColor: AppColors.appColor,
-        appBar: controller.isUserLoggedIn.value && false
-            ? PreferredSize(
-                preferredSize: const Size.fromHeight(spacerSize80),
-                child: Builder(
-                  builder: (context) {
-                    return CircularBottomAppBar(
-                      showMenuIcon: true,
-                      onSettingPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  },
-                ),
-              )
-            : BaseAppBar(
-                isAppIconVisible: false,
-                title: AppLocalizations.of(context)!.recommendedProfessionals,
-              ),
+        appBar: BaseAppBar(
+          isAppIconVisible: false,
+          title: AppLocalizations.of(context)!.recommendedProfessionals,
+        ),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: spacerSize20,

@@ -10,14 +10,12 @@ import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_res
 import 'package:kasagardem/dashboard/plants_diagnostic/widgets/diagnosis_section_card.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class TaxonomySection extends StatelessWidget {
   final Taxonomy? taxonomy;
 
-  const TaxonomySection({
-    super.key,
-    required this.taxonomy,
-  });
+  const TaxonomySection({super.key, required this.taxonomy});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,7 @@ class TaxonomySection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: "Plant Taxonomy",
+            text: AppStrings.plantTaxonomy,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w700,
             fontSize: fontSize18,
@@ -36,10 +34,10 @@ class TaxonomySection extends StatelessWidget {
 
           SizedBox(height: 16.h),
 
-          _tile("Kingdom", taxonomy?.kingdom),
-          _tile("Family", taxonomy?.family),
-          _tile("Genus", taxonomy?.genus),
-          _tile("Order", taxonomy?.order),
+          _tile(AppStrings.kingdom, taxonomy?.kingdom),
+          _tile(AppStrings.family, taxonomy?.family),
+          _tile(AppStrings.genus, taxonomy?.genus),
+          _tile(AppStrings.order, taxonomy?.order),
         ],
       ),
     );
@@ -52,15 +50,9 @@ class TaxonomySection extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: BaseText(
-              text: title,
-              fontWeight: FontWeight.w700,
-            ),
+            child: BaseText(text: title, fontWeight: FontWeight.w700),
           ),
-          Expanded(
-            flex: 3,
-            child: BaseText(text: value ?? "-"),
-          ),
+          Expanded(flex: 3, child: BaseText(text: value ?? "-")),
         ],
       ),
     );

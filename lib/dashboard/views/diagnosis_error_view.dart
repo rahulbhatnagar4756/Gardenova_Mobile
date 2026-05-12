@@ -10,6 +10,7 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class DiagnosisErrorView extends StatelessWidget {
   final String message;
@@ -29,16 +30,12 @@ class DiagnosisErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline_rounded,
-              color: Colors.red,
-              size: 70.sp,
-            ),
+            Icon(Icons.error_outline_rounded, color: Colors.red, size: 70.sp),
 
             SizedBox(height: 20.h),
 
             BaseText(
-              text: "Something went wrong",
+              text: AppStrings.somethingWentWrong,
               fontSize: fontSize22,
               fontWeight: FontWeight.w700,
               fontFamily: AppKeys.poppins,
@@ -56,7 +53,7 @@ class DiagnosisErrorView extends StatelessWidget {
 
             BaseButton(
               onPressed: onRetry,
-              buttonLabel: "Try Again",
+              buttonLabel: AppStrings.tryAgain,
               backgroundColor: AppColors.greenColor,
             ),
           ],

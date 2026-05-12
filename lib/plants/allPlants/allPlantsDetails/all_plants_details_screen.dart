@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
@@ -263,7 +264,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                 Icon(Icons.eco_outlined, size: 60, color: AppColors.greenColor),
                 SizedBox(height: 16),
                 Text(
-                  "No details found for this plant.",
+                  AppStrings.noDetailsFoundForThisPlant,
                   style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
               ],

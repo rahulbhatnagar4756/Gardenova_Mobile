@@ -13,7 +13,6 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-
 import '../base/widgets/common_click_widget.dart';
 import '../utils/constants/app_assets.dart';
 import '../utils/utils.dart';
@@ -56,7 +55,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  settingItemsLayout(BuildContext context) {
+  Widget settingItemsLayout(BuildContext context) {
     if (SharedPrefsService.instance.getString(AppKeys.role) !=
         AppKeys.professional) {
       return Column(
@@ -198,7 +197,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     }
   }
 
-  subscriptionPlanCard() {
+  Widget subscriptionPlanCard() {
     return Obx(
       () => controller.professionalProfileData.value != null
           ? Stack(
@@ -360,7 +359,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                       Container(
                         padding: EdgeInsets.all(spacerSize14),
                         decoration: BoxDecoration(
-                          color: AppColors.whiteColor.withOpacity(0.15),
+                          color: AppColors.whiteColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(spacerSize16),
                         ),
                         child: Column(
@@ -475,7 +474,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  _changeLanguage() {
+  void _changeLanguage() {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
@@ -507,13 +506,13 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  getTitle() {
+  String getTitle() {
     return Get.locale == enUS
         ? AppLocalizations.of(Get.context!)!.changeToPortugese
         : AppLocalizations.of(Get.context!)!.changeToEnglish;
   }
 
-  logout() {
+  void logout() {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
@@ -529,7 +528,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  deleteAccountDialog() {
+  void deleteAccountDialog() {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,

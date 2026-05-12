@@ -16,6 +16,7 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../../base/widgets/clickable_image.dart';
 import '../../base/widgets/expandable_text.dart';
@@ -57,7 +58,7 @@ class DiagnosisSuccessView extends StatelessWidget {
     final plantName =
         (plant.commonNames != null && plant.commonNames!.isNotEmpty)
         ? plant.commonNames!.first
-        : "Unknown Plant";
+        : AppStrings.unknownPlant;
 
     /// 🛡️ SAFE IMAGE ACCESS
     final imageUrl = (plant.images != null && plant.images!.isNotEmpty)
@@ -158,7 +159,8 @@ class DiagnosisSuccessView extends StatelessWidget {
                     DiagnosisSummaryCard(
                       plantName: plantName,
                       isHealthy: health?.isHealthy ?? false,
-                      issueName: firstIssue?.name ?? "No disease detected",
+                      issueName:
+                          firstIssue?.name ?? AppStrings.noDiseaseDetected,
                       confidence: data.confidence ?? 0,
                     ),
 
@@ -254,7 +256,7 @@ class DiagnosisSuccessView extends StatelessWidget {
             children: [
               BaseText(
                 text: _toTitleCase(
-                  plant.commonNames?.join(", ") ?? "Unknown Plant",
+                  plant.commonNames?.join(", ") ?? AppStrings.unknownPlant,
                 ),
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize20,
@@ -277,8 +279,8 @@ class DiagnosisSuccessView extends StatelessWidget {
           onTap: () {
             // Functionality to be implemented in the future
             BaseSnackBar.show(
-              title: "Coming Soon",
-              message: "Add Plant functionality will be available soon!",
+              title: AppStrings.comingSoon,
+              message: AppStrings.addPlantFunctionalityWillBeAvailableSoon,
             );
           },
           child: Container(
@@ -314,14 +316,14 @@ class DiagnosisSuccessView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BaseText(
-          text: "Care Guide",
+          text: AppStrings.careGuide,
           fontSize: fontSize18,
           fontWeight: FontWeight.bold,
           fontFamily: AppKeys.poppins,
         ),
         SizedBox(height: spacerSize12),
         CareInfoTile(
-          title: "Watering",
+          title: AppStrings.watering,
           value: (plant.careGuide?.watering ?? "").trim().isEmpty
               ? "-"
               : plant.careGuide!.watering!,
@@ -329,7 +331,7 @@ class DiagnosisSuccessView extends StatelessWidget {
         ),
         SizedBox(height: 12.h),
         CareInfoTile(
-          title: "Light Condition",
+          title: AppStrings.lightCondition,
           value: (plant.careGuide?.lightCondition ?? "").trim().isEmpty
               ? "-"
               : plant.careGuide!.lightCondition!,
@@ -337,7 +339,7 @@ class DiagnosisSuccessView extends StatelessWidget {
         ),
         SizedBox(height: 12.h),
         CareInfoTile(
-          title: "Soil Type",
+          title: AppStrings.soilType,
           value: (plant.careGuide?.soilType ?? "").trim().isEmpty
               ? "-"
               : plant.careGuide!.soilType!,

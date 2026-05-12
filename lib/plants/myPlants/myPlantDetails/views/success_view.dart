@@ -17,7 +17,6 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-import 'package:kasagardem/utils/utils.dart';
 
 class MyPlantDetailsSuccessView extends StatelessWidget {
   final MyPlantDetailsController controller;

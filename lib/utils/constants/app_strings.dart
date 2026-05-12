@@ -61,4 +61,74 @@ class AppStrings {
   static const String time = "Time";
   static const String date = "Date";
   static const String criticalCare = "Critical Care";
+
+  static const String locationDisabled = "Location Disabled";
+
+  static const String enableLocationServices =
+      "Please enable location services to continue.";
+
+  static const String openSettings = "Open Settings";
+
+  static const String permissionRequired = "Permission Required";
+
+  static const String locationPermissionPermanentlyDenied =
+      "Location permission is permanently denied. Enable it from settings.";
+
+  static const String locationServicesDisabled =
+      "Location services are disabled.";
+
+  static const String locationPermissionDenied = "Location permission denied";
+
+  static const String permissionPermanentlyDenied =
+      "Permission permanently denied";
+
+  static const String unableToFetchLocation = "Unable to fetch location";
+
+  static const String aiLandscapeDesign = "AI Landscape Design";
+  static const String designModernLushAndInspiringOutdoorSpacesWithAi =
+      "Design modern, lush, and inspiring outdoor spaces with AI.";
+  static const String possibleCauses = "Possible Causes";
+  static const String plantLooksHealthy = "Plant Looks Healthy";
+  static const String plantNeedsAttention = "Plant Needs Attention";
+  static const String noDiseaseDetected = "No Disease Detected";
+  static const String mainIssue = "Main Issue";
+  static const String plant = "Plant";
+  static const String aiConfidence = "AI Confidence";
+  static const String healthScore = "Health Score";
+  static const String plantLooksHealthyWithEmoji = "Plant Looks Healthy 🌿";
+  static const String plantDescription = "Plant Description";
+  static const String similarPlantImages = "Similar Plant Images";
+  static const String wateringSchedule = "Watering Schedule";
+  static const String fertilizingSchedule = "Fertilizing Schedule";
+  static const String pruningSchedule = "Pruning Schedule";
+  static const String pestControlSchedule = "Pest Control Schedule";
+  static const String diseaseControlSchedule = "Disease Control Schedule";
+  static const String issue = "Issue";
+  static const String plantTaxonomy = "Plant Taxonomy";
+  static const String kingdom = "Kingdom";
+  static const String family = "Family";
+  static const String genus = "Genus";
+  static const String order = "Order";
+  static const String toxicityWarning = "Toxicity Warning";
+  static const String treatmentGuide = "Treatment Guide";
+  static const String tryAgain = "Try Again";
+  static const String unknownPlant = "Unknown Plant";
+  static const String noPlantDetected = "No Plant Detected";
+  static const String pleaseUpload =
+      "Please upload a clearer plant image for better diagnosis.";
+
+  static const String careGuide = "Care Guide";
+  static const String lightCondition = "Light Condition";
+  static const String soilType = "Soil Type";
+
+  static const String comingSoon = "Coming Soon";
+  static const String addPlantFunctionalityWillBeAvailableSoon =
+      "Add Plant functionality will be available soon!";
+  static const String noDetailsFoundForThisPlant =
+      "No details found for this plant.";
+  static const String careOverview = "Care Overview";
+  static const String fertilizer = "Fertilizer";
+  static const String sunlight = "Sunlight";
+  static const String soil = "Soil";
+
 }

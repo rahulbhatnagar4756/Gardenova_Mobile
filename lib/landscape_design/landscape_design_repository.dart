@@ -4,7 +4,9 @@ import 'model/landscape_design_model.dart';
 class LandscapeDesignRepository {
   final String _landscapeDesignEndPoint = "api/v1/landscape/";
 
-  generateLandscapeDesign({LandscapeDesignRequestModel? request}) async {
+  dynamic generateLandscapeDesign({
+    LandscapeDesignRequestModel? request,
+  }) async {
     var response = await ApiRepository.instance.post(
       _landscapeDesignEndPoint,
       body: request,
@@ -12,5 +14,20 @@ class LandscapeDesignRepository {
       showRunTimeError: false,
     );
     return response;
+    // await Future.delayed(Duration(seconds: 1));
+    // var response = {
+    //   "success": true,
+    //   "message": "Landscape generated successfully",
+    //   "data": {
+    //     "originalUrl":
+    //         "https://thumbs.dreamstime.com/b/rohnert-park-california-jan-interior-photos-empty-apartment-rental-white-gray-walls-hardwood-floor-living-spaces-303544810.jpg",
+    //     "gardenUrl":
+    //         // "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQawujaS3Jy1KjCRhrF_4cwFzEjnUD76L8CsQ&s",
+    //         "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    //     "description":
+    //         "A luxurious modern tropical garden featuring green grass, palm trees, decorative pathways, ambient lighting, wooden seating, colorful flower beds, and a peaceful outdoor atmosphere.",
+    //   },
+    // };
+    // return response;
   }
 }

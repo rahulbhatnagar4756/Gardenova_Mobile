@@ -12,7 +12,6 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
-import '../../utils/routes.dart';
 
 class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
   const VerifyOtp({super.key});

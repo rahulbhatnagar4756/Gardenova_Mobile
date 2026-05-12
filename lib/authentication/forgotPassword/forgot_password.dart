@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
 import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_model.dart';
@@ -11,9 +10,6 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
-
-import '../../utils/routes.dart';
-import '../../utils/utils.dart';
 
 class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
   const ForgotPassword({super.key});

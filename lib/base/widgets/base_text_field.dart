@@ -4,8 +4,9 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
+// ignore: must_be_immutable
 class BaseTextField extends StatelessWidget {
-    BaseTextField({
+  BaseTextField({
     super.key,
     this.textEditingController,
     this.labelText,
@@ -51,7 +52,7 @@ class BaseTextField extends StatelessWidget {
         color: textColor,
         fontWeight: FontWeight.w300,
         fontFamily: AppKeys.inter,
-        fontSize: fontSize ,
+        fontSize: fontSize,
       ),
       decoration: InputDecoration(
         labelText: labelText,
@@ -70,7 +71,7 @@ class BaseTextField extends StatelessWidget {
           fontSize: fontSize,
         ),
         hintStyle: TextStyle(
-          color: hintColor?? AppColors.liteGreyColor,
+          color: hintColor ?? AppColors.liteGreyColor,
           fontWeight: FontWeight.w300,
           fontFamily: AppKeys.inter,
           fontSize: hintFontSize,
@@ -86,7 +87,6 @@ class BaseTextField extends StatelessWidget {
         enabledBorder: borderColor(
           color: AppColors.borderGreyColor,
           width: 1.0,
-
         ),
         errorBorder: borderColor(color: AppColors.red),
         focusedErrorBorder: borderColor(color: AppColors.red),
@@ -111,7 +111,7 @@ class BaseTextField extends StatelessWidget {
     );
   }
 
-  borderColor({required Color? color, double width = 0.0}) {
+  OutlineInputBorder borderColor({required Color? color, double width = 0.0}) {
     return OutlineInputBorder(
       borderSide: BorderSide(color: color!, width: width),
       borderRadius: BorderRadius.all(Radius.circular(spacerSize10)),

@@ -135,10 +135,6 @@ class AllPlantsController extends GetxController {
           Get.offNamed(Routes.myPlantsScreen);
           // Get.back();
         }
-        // final navigator = Navigator.of(Get.context!);
-        // navigator.popUntil((route) {
-        //   return route.settings.name == Routes.myPlantsScreen;
-        // });
         break;
 
       default:
@@ -147,15 +143,6 @@ class AllPlantsController extends GetxController {
     }
   }
 
-  // void loadMorePlants() {
-  //   isLoadMoreRunning.value = true;
-  //   if (isSearching.value == false) {
-  //     pageNumber.value++;
-  //   }
-  //   getAllPlantList(
-  //     showDefaultLoader: false,
-  //   ).then((value) => isLoadMoreRunning.value = false);
-  // }
   Future<void> loadMorePlants() async {
     if (isRefreshing.value) return;
 

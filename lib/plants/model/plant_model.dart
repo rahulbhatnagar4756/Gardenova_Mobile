@@ -265,6 +265,7 @@ class PlantModel {
 
   String? commonName;
   String? scientificName;
+  String? speciesName;
   String? family;
   String? genus;
   String? imageUrl;
@@ -313,6 +314,7 @@ class PlantModel {
     this.id,
     this.userPlantId,
     this.plantId,
+    this.speciesName,
     this.commonName,
     this.scientificName,
     this.family,
@@ -348,6 +350,7 @@ class PlantModel {
     : id = json?['id']?.toString(),
 
       userPlantId = json?['user_plant_id']?.toString(),
+      speciesName = json?['species_name']?.toString(),
 
       /// UPDATED
       plantId = json?['plant_id']?.toString(),
@@ -437,6 +440,7 @@ class PlantModel {
       "user_plant_id": userPlantId,
       "plant_id": plantId,
       "common_name": commonName,
+      "species_name": speciesName,
       "scientific_name": scientificName,
       "family": family,
       "genus": genus,

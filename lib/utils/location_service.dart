@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../l10n/app_localizations.dart';
 import 'constants/app_constants.dart';
@@ -30,7 +31,7 @@ class LocationService {
 
     if (!serviceEnabled) {
       await _showLocationServiceDialog();
-      throw Exception('Location services are disabled.');
+      throw Exception(AppStrings.locationServicesDisabled);
     }
 
     // Check permission
@@ -40,14 +41,14 @@ class LocationService {
       permission = await Geolocator.requestPermission();
 
       if (permission == LocationPermission.denied) {
-        throw Exception('Location permission denied');
+        throw Exception(AppStrings.locationPermissionDenied);
       }
     }
 
     // Permanently denied
     if (permission == LocationPermission.deniedForever) {
       await _showPermissionDeniedDialog();
-      throw Exception('Permission permanently denied');
+      throw Exception(AppStrings.permissionPermanentlyDenied);
     }
 
     try {
@@ -67,7 +68,7 @@ class LocationService {
         return lastPosition;
       }
 
-      throw Exception("Unable to fetch location");
+      throw Exception(AppStrings.unableToFetchLocation);
     }
   }
 
@@ -75,16 +76,21 @@ class LocationService {
   Future<void> _showLocationServiceDialog() async {
     await Get.dialog(
       AlertDialog(
-        title: const Text("Location Disabled"),
-        content: const Text("Please enable location services to continue."),
+        title: const Text(AppStrings.locationDisabled),
+
+        content: const Text(AppStrings.enableLocationServices),
+
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text(AppStrings.cancel),
+          ),
           TextButton(
             onPressed: () async {
               await Geolocator.openLocationSettings();
               Get.back();
             },
-            child: const Text("Open Settings"),
+            child: const Text(AppStrings.openSettings),
           ),
         ],
       ),
@@ -95,18 +101,19 @@ class LocationService {
   Future<void> _showPermissionDeniedDialog() async {
     await Get.dialog(
       AlertDialog(
-        title: const Text("Permission Required"),
-        content: const Text(
-          "Location permission is permanently denied. Enable it from settings.",
-        ),
+        title: const Text(AppStrings.permissionRequired),
+        content: const Text(AppStrings.locationPermissionPermanentlyDenied),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text(AppStrings.cancel),
+          ),
           TextButton(
             onPressed: () async {
               await Geolocator.openAppSettings();
               Get.back();
             },
-            child: const Text("Open Settings"),
+            child: const Text(AppStrings.openSettings),
           ),
         ],
       ),

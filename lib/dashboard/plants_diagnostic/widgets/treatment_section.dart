@@ -11,6 +11,7 @@ import 'package:kasagardem/dashboard/plants_diagnostic/widgets/diagnosis_section
 import 'package:kasagardem/dashboard/plants_diagnostic/widgets/treatment_step_tile.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class TreatmentSection extends StatelessWidget {
   final Treatment? treatment;
@@ -29,7 +30,7 @@ class TreatmentSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: "Treatment Guide",
+            text:AppStrings.treatmentGuide,
             fontWeight: FontWeight.w700,
             fontFamily: AppKeys.poppins,
             fontSize: fontSize18,

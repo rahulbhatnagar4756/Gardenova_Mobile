@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/clickable_image.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
@@ -69,11 +70,105 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const BaseText(
-                      text: "Landscape Transformation",
-                      fontSize: fontSize22,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppKeys.poppins,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const BaseText(
+                          text: "Landscape Transformation",
+                          fontSize: fontSize22,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppKeys.poppins,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: spacerSize16),
+
+                    /// 🔹 STYLE SELECTION DROPDOWN
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: spacerSize16.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.liteGreenColor.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Obx(
+                        () => DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: controller.selectedStyle.value,
+                            dropdownColor: AppColors.appColor,
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: AppColors.greenColor,
+                            ),
+                            isExpanded: true,
+                            items: controller.gardenStyles.map((String style) {
+                              return DropdownMenuItem<String>(
+                                value: style,
+                                child: BaseText(
+                                  text: style
+                                      .replaceAll('_', ' ')
+                                      .toUpperCase(),
+                                  fontSize: fontSize14,
+                                  textColor: AppColors.blackColor,
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String? newStyle) {
+                              if (newStyle != null) {
+                                controller.updateStyle(newStyle);
+                              }
+                            },
+                            selectedItemBuilder: (BuildContext context) {
+                              return controller.gardenStyles.map((
+                                String style,
+                              ) {
+                                return Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: BaseText(
+                                    text: style
+                                        .replaceAll('_', ' ')
+                                        .toUpperCase(),
+                                    fontSize: fontSize14,
+                                    textColor: AppColors.blackColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                );
+                              }).toList();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: spacerSize16),
+
+                    /// 🔹 REGENERATE BUTTON
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.greenColor,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        onPressed: () => controller.generateLandscapeDesign(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.refresh, color: Colors.white, size: 20.sp),
+                            const SizedBox(width: 8),
+                            const BaseText(
+                              text: "Regenerate Design",
+                              textColor: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     const SizedBox(height: spacerSize16),
 
@@ -116,11 +211,41 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                     const SizedBox(height: spacerSize24),
 
                     /// 🔹 COMPARISON SECTION
-                    const BaseText(
-                      text: "Original Vision",
-                      fontSize: fontSize18,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: AppKeys.poppins,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const BaseText(
+                          text: "Original Vision",
+                          fontSize: fontSize18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: AppKeys.poppins,
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.download,
+                                color: AppColors.greenColor,
+                                size: 20,
+                              ),
+                              onPressed: () =>
+                                  controller.downloadAndSaveToGallery(
+                                    data.originalUrl ?? "",
+                                  ),
+                            ),
+                            // IconButton(
+                            //   icon: const Icon(
+                            //     Icons.share,
+                            //     color: AppColors.greenColor,
+                            //     size: 20,
+                            //   ),
+                            //   onPressed: () => controller.downloadAndShareImage(
+                            //     data.originalUrl ?? "",
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     ClipRRect(
@@ -156,6 +281,49 @@ class LandscapeDesignSuccessView extends StatelessWidget {
               ),
             ),
           ),
+        ),
+
+        /// 🔹 TOP ACTION BUTTONS (DOWNLOAD & SHARE)
+        Positioned(
+          top: spacerSize16.h + spacerSize30.h,
+          right: spacerSize16.w,
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.black45,
+                child: IconButton(
+                  icon: const Icon(Icons.download, color: Colors.white),
+                  onPressed: () => controller.downloadAndSaveToGallery(
+                    controller.landscapeResponse.value.data?.gardenUrl ?? "",
+                  ),
+                ),
+              ),
+              // const SizedBox(width: 8),
+              // CircleAvatar(
+              //   backgroundColor: Colors.black45,
+              //   child: IconButton(
+              //     icon: const Icon(Icons.share, color: Colors.white),
+              //     onPressed: () => controller.downloadAndShareImage(
+              //       controller.landscapeResponse.value.data?.gardenUrl ?? "",
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+
+        /// 🔹 DOWNLOAD LOADING OVERLAY
+        Obx(
+          () => controller.isDownloading.value
+              ? Container(
+                  color: Colors.black26,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.greenColor,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
       ],
     );

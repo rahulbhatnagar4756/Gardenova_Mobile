@@ -19,10 +19,9 @@ class QuestionProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final progressPercentage = (currentQuestion * 100) ~/ totalQuestions;
-    final progressPercentage = totalQuestions > 0
-        ? ((currentQuestion / totalQuestions) * 100).toInt()
-        : 0;
+    final progressPercentage = (totalQuestions > 0
+        ? (((currentQuestion / totalQuestions) * 100).toInt())
+        : 0);
 
     return Column(
       children: [

@@ -9,6 +9,7 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class DiagnosisSummaryCard extends StatelessWidget {
   final String plantName;
@@ -57,8 +58,8 @@ class DiagnosisSummaryCard extends StatelessWidget {
               Expanded(
                 child: BaseText(
                   text: isHealthy
-                      ? "Plant Looks Healthy"
-                      : "Plant Needs Attention",
+                      ? AppStrings.plantLooksHealthy
+                      : AppStrings.plantNeedsAttention,
                   fontFamily: AppKeys.poppins,
                   fontWeight: FontWeight.w700,
                   fontSize: fontSize18,
@@ -69,15 +70,18 @@ class DiagnosisSummaryCard extends StatelessWidget {
 
           SizedBox(height: 18.h),
 
-          _item("Plant", plantName),
+          _item(AppStrings.plant, plantName),
 
           SizedBox(height: 10.h),
 
-          _item("Main Issue", isHealthy ? "No Disease Detected" : issueName),
+          _item(
+            AppStrings.mainIssue,
+            isHealthy ? AppStrings.noDiseaseDetected : issueName,
+          ),
 
           // SizedBox(height: 10.h),
 
-          // _item("AI Confidence", "${confidence.toStringAsFixed(0)}%"),
+          // _item(AppStrings.aiConfidence, "${confidence.toStringAsFixed(0)}%"),
         ],
       ),
     );

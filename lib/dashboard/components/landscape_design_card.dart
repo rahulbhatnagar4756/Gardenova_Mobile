@@ -4,6 +4,7 @@ import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class LandscapeDesignCard extends StatelessWidget {
   final VoidCallback? onTap;
@@ -48,13 +49,14 @@ class LandscapeDesignCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BaseText(
-                    text: "AI Landscape Design",
+                    text: AppStrings.aiLandscapeDesign,
                     fontWeight: FontWeight.w600,
                     fontSize: fontSize16,
                   ),
                   SizedBox(height: spacerSize5),
                   BaseText(
-                    text: "Transform your empty space into a beautiful garden vision.",
+                    text: AppStrings
+                        .designModernLushAndInspiringOutdoorSpacesWithAi,
                     fontSize: fontSize12,
                     fontWeight: FontWeight.w400,
                   ),
@@ -63,11 +65,11 @@ class LandscapeDesignCard extends StatelessWidget {
             ),
 
             /// 🔹 Arrow Icon
-             Icon(
+            Icon(
               Icons.arrow_forward_ios,
               size: 16,
               color: AppColors.liteGreyColor,
-            )
+            ),
           ],
         ),
       ),

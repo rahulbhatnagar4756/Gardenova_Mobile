@@ -9,6 +9,7 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class NoPlantDetectedView extends StatelessWidget {
   const NoPlantDetectedView({super.key});
@@ -30,7 +31,7 @@ class NoPlantDetectedView extends StatelessWidget {
             SizedBox(height: 20.h),
 
             BaseText(
-              text: "No Plant Detected",
+              text: AppStrings.noPlantDetected,
               fontSize: fontSize24,
               fontWeight: FontWeight.bold,
               fontFamily: AppKeys.poppins,
@@ -39,7 +40,7 @@ class NoPlantDetectedView extends StatelessWidget {
             SizedBox(height: 12.h),
 
             BaseText(
-              text: "Please upload a clearer plant image for better diagnosis.",
+              text: AppStrings.pleaseUpload,
               textAlign: TextAlign.center,
               textColor: AppColors.liteGreyColor,
             ),

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../generated/assets.dart';
-import '../../recommended_professionals/components/service_bottom_sheet.dart';
-import '../../recommended_professionals/recommended_professionals_view_model.dart';
 
 class HeadingUiLayout extends StatelessWidget {
   final String? sectionTitle;

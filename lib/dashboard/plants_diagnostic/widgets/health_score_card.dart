@@ -11,6 +11,7 @@ import 'package:kasagardem/dashboard/plants_diagnostic/widgets/diagnosis_section
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class HealthScoreCard extends StatelessWidget {
   final HealthStatus? healthStatus;
@@ -26,8 +27,8 @@ class HealthScoreCard extends StatelessWidget {
         children: [
           BaseText(
             text: (healthStatus?.isHealthy ?? false) == true
-                ? "Plant Looks Healthy 🌿"
-                : "Plant Needs Attention",
+                ? AppStrings.plantLooksHealthyWithEmoji
+                : AppStrings.plantNeedsAttention,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w700,
             fontSize: fontSize18,
@@ -50,7 +51,7 @@ class HealthScoreCard extends StatelessWidget {
           SizedBox(height: 10.h),
 
           BaseText(
-            text: "${score.toStringAsFixed(0)}% Health Score",
+            text: "${score.toStringAsFixed(0)}% ${AppStrings.healthScore}",
             textColor: AppColors.liteGreyColor,
           ),
         ],

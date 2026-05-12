@@ -9,6 +9,7 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class CausesSection extends StatelessWidget {
   final List<String> causes;
@@ -33,7 +34,7 @@ class CausesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BaseText(
-            text: "Possible Causes",
+            text: AppStrings.possibleCauses,
             fontFamily: AppKeys.poppins,
             fontWeight: FontWeight.w700,
             fontSize: fontSize18,

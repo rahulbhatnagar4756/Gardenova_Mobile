@@ -312,7 +312,11 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                   ),
                   // SizedBox(height: spacerSize2),
                   BaseText(
-                    text: plant.genus ?? "",
+                    // text: plant.genus ??  AppLocalizations.of(Get.context!)!.noDataNa
+                    text:
+                        plant.speciesName ??
+                        AppLocalizations.of(Get.context!)!.noDataNa,
+                    // text: plant.commonName ??  AppLocalizations.of(Get.context!)!.noDataNa, // need to check
                     fontSize: fontSize12,
                     textColor: AppColors.liteGreyColor,
                     maxLines: 2,

@@ -34,7 +34,7 @@ class LandscapeDesignLoadingView extends StatelessWidget {
                     top: Radius.circular(spacerSize30),
                   ),
                   border: Border(
-                    top: BorderSide(color: AppColors.greenColor, width: 1),
+                    top: BorderSide(color: AppColors.grey, width: 1),
                   ),
                 ),
                 child: Column(

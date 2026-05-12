@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:gal/gal.dart';
+import 'package:http/http.dart' as http;
+import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'landscape_design_repository.dart';
 import 'model/landscape_design_model.dart';
 
@@ -11,9 +16,23 @@ class LandscapeDesignViewModel extends GetxController {
   Rx<LandscapeDesignResponseModel> landscapeResponse =
       LandscapeDesignResponseModel().obs;
   RxBool isLoading = false.obs;
+  RxBool isDownloading = false.obs;
   RxString errorMessage = "".obs;
   RxString selectedStyle = "modern".obs;
-
+  final gardenStyles = [
+    "modern",
+    "luxury",
+    "luxury_modern",
+    "tropical",
+    "modern_tropical",
+    "japanese",
+    "minimalist",
+    "mediterranean",
+    "cottage",
+    "contemporary",
+    "eco_friendly",
+    "desert",
+  ];
   @override
   void onInit() {
     super.onInit();
@@ -40,8 +59,7 @@ class LandscapeDesignViewModel extends GetxController {
         imageBase64: base64String,
         prefs: Prefs(style: selectedStyle.value),
       );
-      // await Future.delayed(const Duration(seconds: 2));
-      // throw Exception("An error testing");
+
       var response = await _repository.generateLandscapeDesign(
         request: request,
       );
@@ -61,6 +79,113 @@ class LandscapeDesignViewModel extends GetxController {
       errorMessage.value = "An error occurred: $e";
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void updateStyle(String style) {
+    selectedStyle.value = style;
+  }
+
+  Future<void> updateStyleAndRegenerate(String style) async {
+    selectedStyle.value = style;
+    await generateLandscapeDesign();
+  }
+
+  Future<void> downloadAndShareImage(String url) async {
+    if (url.isEmpty) return;
+
+    try {
+      isDownloading.value = true;
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        String fileName = url.split('/').last.split('?').first;
+
+        // Ensure we have a valid extension
+        if (!fileName.contains('.')) {
+          final contentType = response.headers['content-type'];
+          if (contentType != null) {
+            if (contentType.contains('image/png')) {
+              fileName += '.png';
+            } else if (contentType.contains('image/jpeg')) {
+              fileName += '.jpg';
+            } else if (contentType.contains('image/gif')) {
+              fileName += '.gif';
+            } else if (contentType.contains('image/webp')) {
+              fileName += '.webp';
+            } else {
+              fileName += '.jpg'; // Fallback
+            }
+          } else {
+            fileName += '.jpg'; // Fallback
+          }
+        }
+
+        final file = File('${tempDir.path}/$fileName');
+        await file.writeAsBytes(response.bodyBytes);
+
+        await Share.shareXFiles([
+          XFile(file.path),
+        ], text: 'Check out my garden design!');
+      } else {
+        errorMessage.value = "Failed to download image";
+      }
+    } catch (e) {
+      errorMessage.value = "Error sharing image: $e";
+    } finally {
+      isDownloading.value = false;
+    }
+  }
+
+  Future<void> downloadAndSaveToGallery(String url) async {
+    if (url.isEmpty) return;
+    print('on Click downloadAndSaveToGallery $url');
+    try {
+      isDownloading.value = true;
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        String fileName = url.split('/').last.split('?').first;
+
+        // Ensure we have a valid extension
+        if (!fileName.contains('.')) {
+          final contentType = response.headers['content-type'];
+          if (contentType != null) {
+            if (contentType.contains('image/png')) {
+              fileName += '.png';
+            } else if (contentType.contains('image/jpeg')) {
+              fileName += '.jpg';
+            } else if (contentType.contains('image/gif')) {
+              fileName += '.gif';
+            } else if (contentType.contains('image/webp')) {
+              fileName += '.webp';
+            } else {
+              fileName += '.jpg'; // Fallback
+            }
+          } else {
+            fileName += '.jpg'; // Fallback
+          }
+        }
+
+        final file = File('${tempDir.path}/$fileName');
+        await file.writeAsBytes(response.bodyBytes);
+
+        await Gal.putImage(file.path);
+        Get.snackbar(
+          "Success",
+          "Image saved to gallery",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.greenColor,
+          colorText: AppColors.whiteColor,
+        );
+      } else {
+        errorMessage.value = "Failed to download image";
+      }
+    } catch (e) {
+      print('Error saving image: $e');
+      errorMessage.value = "Error saving image: $e";
+    } finally {
+      isDownloading.value = false;
     }
   }
 }
