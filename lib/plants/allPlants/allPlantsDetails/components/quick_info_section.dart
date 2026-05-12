@@ -5,7 +5,7 @@ import 'plant_info_card.dart';
 import 'plant_section_title.dart';
 
 class QuickInfoSection extends StatelessWidget {
-  final PlantModel? plant;
+  final PlantModelDetails? plant;
 
   const QuickInfoSection({super.key, required this.plant});
 

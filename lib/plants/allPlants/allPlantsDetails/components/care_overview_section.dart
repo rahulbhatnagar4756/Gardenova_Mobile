@@ -9,7 +9,7 @@ import 'plant_section_title.dart';
 import '../../../model/plant_details_model.dart';
 
 class CareOverviewSection extends StatelessWidget {
-  final PlantModel? plant;
+  final PlantModelDetails? plant;
 
   const CareOverviewSection({super.key, required this.plant});
 

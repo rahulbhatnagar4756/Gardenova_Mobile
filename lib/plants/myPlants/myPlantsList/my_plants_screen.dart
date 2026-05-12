@@ -110,7 +110,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                         onTap: () {
                           Get.toNamed(
                             Routes.myPlantsDetails,
-                            arguments: item.id,
+                            arguments: item.plantId,
                           )?.then((value) {
                             Utils.hideKeyboard();
                           });

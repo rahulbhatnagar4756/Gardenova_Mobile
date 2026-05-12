@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
@@ -16,9 +17,11 @@ class LandscapeDesignViewModel extends GetxController {
   Rx<LandscapeDesignResponseModel> landscapeResponse =
       LandscapeDesignResponseModel().obs;
   RxBool isLoading = false.obs;
+  RxBool isRegenerating = false.obs;
   RxBool isDownloading = false.obs;
   RxString errorMessage = "".obs;
   RxString selectedStyle = "modern".obs;
+  String lastGeneratedStyle = "";
   final gardenStyles = [
     "modern",
     "luxury",
@@ -43,12 +46,28 @@ class LandscapeDesignViewModel extends GetxController {
   }
 
   Future<void> generateLandscapeDesign() async {
+    if (selectedStyle.value == lastGeneratedStyle &&
+        landscapeResponse.value.data != null) {
+      Get.snackbar(
+        "Notice",
+        "This style is already applied",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.liteGreenColor,
+        colorText: AppColors.whiteColor,
+      );
+      return;
+    }
+
     if (imageFile!.value.path.isEmpty) {
       errorMessage.value = "No image selected";
       return;
     }
 
-    isLoading.value = true;
+    if (landscapeResponse.value.data == null) {
+      isLoading.value = true;
+    } else {
+      isRegenerating.value = true;
+    }
     errorMessage.value = "";
 
     try {
@@ -68,6 +87,9 @@ class LandscapeDesignViewModel extends GetxController {
         landscapeResponse.value = LandscapeDesignResponseModel.fromJson(
           response,
         );
+        if (landscapeResponse.value.success == true) {
+          lastGeneratedStyle = selectedStyle.value;
+        }
         if (landscapeResponse.value.success != true) {
           errorMessage.value =
               landscapeResponse.value.message ?? "Generation failed";
@@ -79,6 +101,7 @@ class LandscapeDesignViewModel extends GetxController {
       errorMessage.value = "An error occurred: $e";
     } finally {
       isLoading.value = false;
+      isRegenerating.value = false;
     }
   }
 
@@ -91,55 +114,55 @@ class LandscapeDesignViewModel extends GetxController {
     await generateLandscapeDesign();
   }
 
-  Future<void> downloadAndShareImage(String url) async {
-    if (url.isEmpty) return;
+  // Future<void> downloadAndShareImage(String url) async {
+  //   if (url.isEmpty) return;
 
-    try {
-      isDownloading.value = true;
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final tempDir = await getTemporaryDirectory();
-        String fileName = url.split('/').last.split('?').first;
+  //   try {
+  //     isDownloading.value = true;
+  //     final response = await http.get(Uri.parse(url));
+  //     if (response.statusCode == 200) {
+  //       final tempDir = await getTemporaryDirectory();
+  //       String fileName = url.split('/').last.split('?').first;
 
-        // Ensure we have a valid extension
-        if (!fileName.contains('.')) {
-          final contentType = response.headers['content-type'];
-          if (contentType != null) {
-            if (contentType.contains('image/png')) {
-              fileName += '.png';
-            } else if (contentType.contains('image/jpeg')) {
-              fileName += '.jpg';
-            } else if (contentType.contains('image/gif')) {
-              fileName += '.gif';
-            } else if (contentType.contains('image/webp')) {
-              fileName += '.webp';
-            } else {
-              fileName += '.jpg'; // Fallback
-            }
-          } else {
-            fileName += '.jpg'; // Fallback
-          }
-        }
+  //       // Ensure we have a valid extension
+  //       if (!fileName.contains('.')) {
+  //         final contentType = response.headers['content-type'];
+  //         if (contentType != null) {
+  //           if (contentType.contains('image/png')) {
+  //             fileName += '.png';
+  //           } else if (contentType.contains('image/jpeg')) {
+  //             fileName += '.jpg';
+  //           } else if (contentType.contains('image/gif')) {
+  //             fileName += '.gif';
+  //           } else if (contentType.contains('image/webp')) {
+  //             fileName += '.webp';
+  //           } else {
+  //             fileName += '.jpg'; // Fallback
+  //           }
+  //         } else {
+  //           fileName += '.jpg'; // Fallback
+  //         }
+  //       }
 
-        final file = File('${tempDir.path}/$fileName');
-        await file.writeAsBytes(response.bodyBytes);
+  //       final file = File('${tempDir.path}/$fileName');
+  //       await file.writeAsBytes(response.bodyBytes);
 
-        await Share.shareXFiles([
-          XFile(file.path),
-        ], text: 'Check out my garden design!');
-      } else {
-        errorMessage.value = "Failed to download image";
-      }
-    } catch (e) {
-      errorMessage.value = "Error sharing image: $e";
-    } finally {
-      isDownloading.value = false;
-    }
-  }
+  //       await Share.shareXFiles([
+  //         XFile(file.path),
+  //       ], text: 'Check out my garden design!');
+  //     } else {
+  //       errorMessage.value = "Failed to download image";
+  //     }
+  //   } catch (e) {
+  //     errorMessage.value = "Error sharing image: $e";
+  //   } finally {
+  //     isDownloading.value = false;
+  //   }
+  // }
 
   Future<void> downloadAndSaveToGallery(String url) async {
     if (url.isEmpty) return;
-    print('on Click downloadAndSaveToGallery $url');
+    debugPrint('on Click downloadAndSaveToGallery $url');
     try {
       isDownloading.value = true;
       final response = await http.get(Uri.parse(url));
@@ -182,7 +205,7 @@ class LandscapeDesignViewModel extends GetxController {
         errorMessage.value = "Failed to download image";
       }
     } catch (e) {
-      print('Error saving image: $e');
+      debugPrint('Error saving image: $e');
       errorMessage.value = "Error saving image: $e";
     } finally {
       isDownloading.value = false;

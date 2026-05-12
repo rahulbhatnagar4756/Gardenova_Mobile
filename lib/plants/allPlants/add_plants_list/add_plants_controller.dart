@@ -5,12 +5,12 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:kasagardem/plants/model/plant_model.dart';
 import 'package:kasagardem/plants/plant_repository.dart';
 import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
+import '../../model/add_plantss_model.dart';
 import '../../myPlants/myPlantsList/my_plants_controller.dart';
 
 class AllPlantsController extends GetxController {
@@ -18,7 +18,7 @@ class AllPlantsController extends GetxController {
   SharedPrefsService sharedPrefsService = SharedPrefsService();
   TextEditingController searchController = TextEditingController();
   PlantsRepository plantsRepository = PlantsRepository();
-  RxList<PlantModel> allPlantList = <PlantModel>[].obs;
+  RxList<Plants> allPlantList = <Plants>[].obs;
   RxBool isLoading = false.obs;
   RxBool isRefreshing = false.obs;
   RxInt pageNumber = 1.obs;
@@ -52,11 +52,11 @@ class AllPlantsController extends GetxController {
   }
 
   void selectPlant(int index) {
-    for (var element in allPlantList) {
-      element.isSelected = false;
-    }
-    allPlantList[index].isSelected = true;
-    allPlantList.refresh();
+    // for (var element in allPlantList) {
+    //   element.isSelected = false;
+    // }
+    // allPlantList[index].isSelected = true;
+    // allPlantList.refresh();
 
     Get.toNamed(
       Routes.allPlantsDetails,
@@ -164,9 +164,7 @@ class AllPlantsController extends GetxController {
       showDefaultLoader: showDefaultLoader,
     );
     if (response != null) {
-      PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(
-        response,
-      );
+      AddPlantsModel allPlantsResponse = AddPlantsModel.fromJson(response);
       allPlantList.addAll(allPlantsResponse.data!.plants ?? []);
       isLoadMoreVisible.value =
           allPlantsResponse.data!.totalCount! > allPlantList.length

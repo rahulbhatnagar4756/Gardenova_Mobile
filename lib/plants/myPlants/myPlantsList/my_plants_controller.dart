@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
-
+import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
-import '../../model/plant_model.dart';
 import '../../plant_repository.dart';
 
 class MyPlantsController extends GetxController {
@@ -14,7 +13,7 @@ class MyPlantsController extends GetxController {
   SharedPrefsService sharedPrefsService = SharedPrefsService();
   TextEditingController searchController = TextEditingController();
   PlantsRepository plantsRepository = PlantsRepository();
-  RxList<PlantModel> myPlantList = <PlantModel>[].obs;
+  RxList<Plants> myPlantList = <Plants>[].obs;
   RxBool isLoading = false.obs;
   RxInt pageNumber = 1.obs;
   int pageSize = 20;
@@ -28,7 +27,7 @@ class MyPlantsController extends GetxController {
   String get plantPlural => "plants";
 
   String get andCounting => "and counting";
-   ScrollController scrollController  = ScrollController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void onInit() {
@@ -56,7 +55,7 @@ class MyPlantsController extends GetxController {
     // }
     switch (index) {
       case 0:
-        if(Get.isRegistered<DashboardController>()){
+        if (Get.isRegistered<DashboardController>()) {
           Get.find<DashboardController>().refreshSoilAnalysis.refresh();
         }
         Get.until((route) => route.settings.name == Routes.dashboard);
@@ -125,15 +124,13 @@ class MyPlantsController extends GetxController {
   Future getMyPlantList({String searchName = ''}) async {
     var response = await plantsRepository.fetchMyPlants(
       pageNumber: pageNumber.value.toString(),
-      //pageNumber: searchName.isNotEmpty ? null : pageNumber.value.toString(),
       pageSize: pageSize.toString(),
-      //pageSize: searchName.isNotEmpty ? null : pageSize.toString(),
       searchName: searchName,
       showDefaultLoader: false,
     );
     if (response != null) {
       debugPrint("response:::$response");
-      PlantResponseModel allPlantsResponse = PlantResponseModel.fromJson(
+      MyPlantsListingModel allPlantsResponse = MyPlantsListingModel.fromJson(
         response,
       );
 

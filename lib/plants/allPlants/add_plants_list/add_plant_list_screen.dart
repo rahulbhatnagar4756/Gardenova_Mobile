@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/plants/model/add_plantss_model.dart' show Plants;
 
 import '../../../base/widgets/base_app_bar.dart';
 import '../../../base/widgets/base_shimmer.dart';
@@ -12,7 +13,6 @@ import '../../../dashboard/components/full_drawer.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
-import '../../model/plant_model.dart';
 import '../../myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 import 'add_plants_controller.dart';
 
@@ -82,8 +82,8 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 floating: true,
                 pinned: false,
                 delegate: MyPlantsHeaderDelegate(
-                  minHeight: 160.h,
-                  maxHeight: 160.h,
+                  minHeight: 170.h,
+                  maxHeight: 170.h,
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: spacerSize20,
@@ -116,10 +116,10 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                             int firstIndex = rowIndex * 2;
                             int secondIndex = firstIndex + 1;
 
-                            PlantModel firstPlant =
+                            Plants firstPlant =
                                 controller.allPlantList[firstIndex];
 
-                            PlantModel? secondPlant =
+                            Plants? secondPlant =
                                 secondIndex < controller.allPlantList.length
                                 ? controller.allPlantList[secondIndex]
                                 : null;
@@ -265,7 +265,15 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
   }
 
   /// 🔹 CARD
-  Widget plantCard(PlantModel plant, int index) {
+  Widget plantCard(Plants plant, int index) {
+    String title =
+        plant.commonName ?? AppLocalizations.of(Get.context!)!.noDataNa;
+    String description = plant.scientificName ?? '';
+    if (description.isEmpty) {
+      description = plant.family ?? AppLocalizations.of(Get.context!)!.noDataNa;
+    }
+    title = title.trim();
+    description = description.trim();
     return GestureDetector(
       onTap: () {
         controller.selectPlant(index);
@@ -290,7 +298,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 height: spacerSize120,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                imageUrl: plant.imageUrl ?? "",
+                imageUrl: plant.imageOriginalUrl ?? "",
                 placeholder: (_, __) =>
                     BaseShimmer(borderRadious: spacerSize15),
                 errorWidget: (_, __, ___) => Icon(Icons.broken_image),
@@ -303,20 +311,14 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 children: [
                   SizedBox(height: spacerSize8),
                   BaseText(
-                    text:
-                        plant.commonName ??
-                        AppLocalizations.of(Get.context!)!.noDataNa,
+                    text: title,
                     fontWeight: FontWeight.w600,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   // SizedBox(height: spacerSize2),
                   BaseText(
-                    // text: plant.genus ??  AppLocalizations.of(Get.context!)!.noDataNa
-                    text:
-                        plant.speciesName ??
-                        AppLocalizations.of(Get.context!)!.noDataNa,
-                    // text: plant.commonName ??  AppLocalizations.of(Get.context!)!.noDataNa, // need to check
+                    text: description,
                     fontSize: fontSize12,
                     textColor: AppColors.liteGreyColor,
                     maxLines: 2,

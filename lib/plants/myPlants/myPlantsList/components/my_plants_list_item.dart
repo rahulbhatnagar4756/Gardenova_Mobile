@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 import '../../../../base/widgets/base_shimmer.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/app_color.dart';
 import '../../../../utils/constants/app_constants.dart';
 import '../../../../utils/constants/app_keys.dart';
-import '../../../model/plant_model.dart';
 
 class MyPlantsListItem extends StatelessWidget {
-  final PlantModel item;
+  final Plants item;
   final VoidCallback? onTap;
 
   const MyPlantsListItem({super.key, required this.item, this.onTap});
@@ -39,7 +39,8 @@ class MyPlantsListItem extends StatelessWidget {
                 height: 105.h,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                imageUrl: item.imageUrl ?? "",
+                imageUrl:
+                    item.imageOriginalUrl ?? (item.imageOriginalUrl ?? ""),
                 placeholder: (_, __) =>
                     const BaseShimmer(borderRadious: spacerSize16),
                 errorWidget: (_, __, ___) =>
@@ -84,9 +85,11 @@ class MyPlantsListItem extends StatelessWidget {
                         SizedBox(height: spacerSize2),
 
                         BaseText(
-                          text:
-                              item.genus ??
-                              AppLocalizations.of(context)!.noDataNa,
+                          text: (item.otherName?.isNotEmpty ?? false)
+                              ? item.otherName ??
+                                    "${AppLocalizations.of(context)!.noDataNa}: ${item.otherName}"
+                              : item.genus ??
+                                    AppLocalizations.of(context)!.noDataNa,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           fontFamily: AppKeys.inter,

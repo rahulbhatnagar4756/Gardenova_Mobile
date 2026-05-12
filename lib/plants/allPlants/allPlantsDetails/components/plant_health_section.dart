@@ -7,7 +7,7 @@ import '../../../model/plant_details_model.dart';
 import 'plant_section_title.dart';
 
 class PlantHealthSection extends StatelessWidget {
-  final PlantModel? plant;
+  final PlantModelDetails? plant;
 
   const PlantHealthSection({super.key, required this.plant});
 

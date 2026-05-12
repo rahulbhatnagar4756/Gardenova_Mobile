@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'landscape_design_view_model.dart';
 import 'views/error_view.dart';
 import 'views/loading_view.dart';
+import 'views/processing_view.dart';
 import 'views/success_view.dart';
 
 class LandscapeDesignScreen extends GetWidget<LandscapeDesignViewModel> {
@@ -25,7 +27,7 @@ class LandscapeDesignScreen extends GetWidget<LandscapeDesignViewModel> {
 
       if (controller.landscapeResponse.value.data == null) {
         return LandscapeDesignErrorView(
-          errorMessage: "No design data found",
+          errorMessage: AppStrings.noDesignDataFound.tr,
           onRetry: () => controller.generateLandscapeDesign(),
         );
       }

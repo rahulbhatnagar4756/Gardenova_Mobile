@@ -130,5 +130,5 @@ class AppStrings {
   static const String fertilizer = "Fertilizer";
   static const String sunlight = "Sunlight";
   static const String soil = "Soil";
-
+  static const String noDesignDataFound = "No design data found";
 }

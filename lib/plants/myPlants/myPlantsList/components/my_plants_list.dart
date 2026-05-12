@@ -57,7 +57,7 @@ class MyPlantsList extends StatelessWidget {
                       // Fixed height for image area
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      imageUrl: item.imageUrl ?? "",
+                      imageUrl: item.imageOriginalUrl ?? "",
                       placeholder: (context, url) => const BaseShimmer(),
                       errorWidget: (context, url, error) =>
                           Icon(Icons.broken_image, color: AppColors.offWhite10),

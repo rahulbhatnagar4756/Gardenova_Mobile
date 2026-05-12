@@ -155,6 +155,7 @@ class AllPlantsDetailsController extends GetxController {
         }
       }
     }
+    print('validate api add screenType.value ${screenType.value}');
     if (screenType.value == "add") {
       callAddPlantApi();
     } else {
@@ -393,12 +394,12 @@ class AllPlantsDetailsController extends GetxController {
       userPlantId: userPlantId.value,
       editPlantReq: map,
     );
-    debugPrint("response:::::$response");
+    debugPrint("response::::: callEditPlantApi $response");
     if (response != null) {
       Get.back(result: true);
-    }
-    if (Get.isRegistered<MyPlantsController>()) {
-      Get.find<MyPlantsController>().callGetMyPlantListApi();
+      if (Get.isRegistered<MyPlantsController>()) {
+        Get.find<MyPlantsController>().callGetMyPlantListApi();
+      }
     }
   }
 

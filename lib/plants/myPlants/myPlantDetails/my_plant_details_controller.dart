@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../model/plant_details_model.dart';
+import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
 import '../../plant_repository.dart';
 
 class MyPlantDetailsController extends GetxController {
   RxString plantId = "".obs;
   PlantsRepository plantsRepository = PlantsRepository();
-  Rx<PlantDetailsResponseModel> plantDetailData =
-      PlantDetailsResponseModel().obs;
+  Rx<MyPlantDetailModel> plantDetailData = MyPlantDetailModel().obs;
 
   RxBool isLoading = false.obs;
   RxString errorMessage = "".obs;
@@ -28,12 +28,13 @@ class MyPlantDetailsController extends GetxController {
         plantId: plantId.value,
       );
       if (response != null) {
-        plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        plantDetailData.value = MyPlantDetailModel.fromJson(response);
       } else {
         errorMessage.value = "No plant data found";
       }
     } catch (e) {
       errorMessage.value = "An error occurred: $e";
+      debugPrint("MyPlantDetailsController callGetMyPlantDetailsApi: $e");
     } finally {
       isLoading.value = false;
     }

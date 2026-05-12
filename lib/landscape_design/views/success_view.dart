@@ -312,6 +312,50 @@ class LandscapeDesignSuccessView extends StatelessWidget {
           ),
         ),
 
+        /// 🔹 REGENERATING OVERLAY (20% Transparent)
+        Obx(
+          () => controller.isRegenerating.value
+              ? Container(
+                  color: Colors.black.withOpacity(0.2),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(spacerSize20),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              const CircularProgressIndicator(
+                                color: AppColors.greenColor,
+                                strokeWidth: 3,
+                              ),
+                              const SizedBox(height: 16),
+                              const BaseText(
+                                text: "AI Processing...",
+                                fontWeight: FontWeight.bold,
+                                textColor: AppColors.greenColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+
         /// 🔹 DOWNLOAD LOADING OVERLAY
         Obx(
           () => controller.isDownloading.value

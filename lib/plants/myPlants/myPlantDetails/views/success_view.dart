@@ -9,8 +9,9 @@ import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/generated/assets.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/plants/model/plant_details_model.dart';
-import 'package:kasagardem/plants/myPlants/myPlantDetails/components/plant_state_item.dart';
+import 'package:kasagardem/plants/myPlants/myPlantDetails/components/plant_state_item.dart'
+    show PlantStateItem;
+import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -32,7 +33,8 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
           width: double.infinity,
           fit: BoxFit.cover,
           imageUrl:
-              controller.plantDetailData.value.data?.plant?.imageUrl ?? "",
+              controller.plantDetailData.value.data?.plant?.imageRegularUrl ??
+              "",
           placeholder: (context, url) =>
               const BaseShimmer(height: spacerSize350, width: double.infinity),
           errorWidget: (context, url, error) =>
@@ -44,7 +46,12 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   final imageUrl =
-                      controller.plantDetailData.value.data?.plant?.imageUrl ??
+                      controller
+                          .plantDetailData
+                          .value
+                          .data
+                          ?.plant
+                          ?.imageOriginalUrl ??
                       "";
 
                   if (imageUrl.isNotEmpty) {
@@ -103,7 +110,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                                         .value
                                         .data
                                         ?.plant
-                                        ?.speciesName ??
+                                        ?.scientificName ??
                                     "",
                                 fontFamily: AppKeys.inter,
                                 fontSize: fontSize14,
