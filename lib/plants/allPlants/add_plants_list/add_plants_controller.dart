@@ -7,7 +7,6 @@ import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:kasagardem/plants/model/plant_model.dart';
 import 'package:kasagardem/plants/plant_repository.dart';
-
 import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
@@ -34,15 +33,6 @@ class AllPlantsController extends GetxController {
   void onInit() {
     isUserLoggedIn.value =
         sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
-    // scrollController.addListener(() {
-    //   if (scrollController.hasClients &&
-    //       scrollController.position.pixels >=
-    //           scrollController.position.maxScrollExtent - 200 &&
-    //       !isLoadMoreRunning.value &&
-    //       isLoadMoreVisible.value) {
-    //     loadMorePlants();
-    //   }
-    // });
     scrollController.addListener(() {
       if (!scrollController.hasClients) return;
 
@@ -76,14 +66,8 @@ class AllPlantsController extends GetxController {
 
   void navigateToNext(int index) {
     debugPrint("index navigateToNext AllPlantsController:::$index");
-    // if(Get.isRegistered<DashboardController>()){
-    //   Get.find<DashboardController>().navigateToNext(index);
-    //   return;
-    // }
     switch (index) {
       case 0:
-        // Get.back();
-        // Get.toNamed(Routes.dashboard);
         if (Get.isRegistered<DashboardController>()) {
           Get.find<DashboardController>().refreshSoilAnalysis.refresh();
         }
@@ -125,7 +109,7 @@ class AllPlantsController extends GetxController {
         // Get.back();
         // Get.back();
         if (Get.isRegistered<MyPlantsController>()) {
-          var con = Get.find<MyPlantsController>();
+          // var con = Get.find<MyPlantsController>();
           // con.searchController.text = '';
           // con.myPlantList.clear();
           // con.callGetMyPlantListApi();
@@ -175,9 +159,7 @@ class AllPlantsController extends GetxController {
   }) async {
     var response = await plantsRepository.fetchAllPlants(
       pageNumber: pageNumber.value.toString(),
-      //pageNumber: searchName.isNotEmpty ? null : pageNumber.value.toString(),
       pageSize: pageSize.toString(),
-      //pageSize: searchName.isNotEmpty ? null : pageSize.toString(),
       searchName: searchName,
       showDefaultLoader: showDefaultLoader,
     );

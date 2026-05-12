@@ -39,8 +39,8 @@ class QuestionProgressIndicator extends StatelessWidget {
         if (totalQuestions > 0)
           LayoutBuilder(
             builder: (context, constraints) {
-              final progressWidth =
-                  (currentQuestion / totalQuestions) * constraints.maxWidth;
+              // final progressWidth =
+              //     (currentQuestion / totalQuestions) * constraints.maxWidth;
               return Stack(
                 children: [
                   SegmentedProgressBar(

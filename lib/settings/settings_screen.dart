@@ -474,37 +474,37 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  void _changeLanguage() {
-    BaseDialog.showAlertDialog(
-      context: Get.context!,
-      buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
-      title: AppLocalizations.of(Get.context!)!.changeLanguage,
-      description: AppLocalizations.of(
-        Get.context!,
-      )!.areYouSureYouWantToChangeTheLanguage,
-      onButtonPressed: () {
-        Get.updateLocale(Get.locale == enUS ? ptBR : enUS);
-        Get.reloadAll();
-        SharedPrefsService.instance.setString(
-          AppKeys.selectedLang,
-          Get.locale!.languageCode.toString(),
-        );
+  // void _changeLanguage() {
+  //   BaseDialog.showAlertDialog(
+  //     context: Get.context!,
+  //     buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
+  //     title: AppLocalizations.of(Get.context!)!.changeLanguage,
+  //     description: AppLocalizations.of(
+  //       Get.context!,
+  //     )!.areYouSureYouWantToChangeTheLanguage,
+  //     onButtonPressed: () {
+  //       Get.updateLocale(Get.locale == enUS ? ptBR : enUS);
+  //       Get.reloadAll();
+  //       SharedPrefsService.instance.setString(
+  //         AppKeys.selectedLang,
+  //         Get.locale!.languageCode.toString(),
+  //       );
 
-        if (SharedPrefsService.instance.getString(AppKeys.role) ==
-            AppKeys.professional) {
-          Get.back(result: true);
-          Get.back(result: true);
-        } else {
-          Get.back(result: true);
-          if (Get.arguments == 'question') {
-            Get.offAllNamed(Routes.introduction);
-          } else {
-            Get.back(result: true);
-          }
-        }
-      },
-    );
-  }
+  //       if (SharedPrefsService.instance.getString(AppKeys.role) ==
+  //           AppKeys.professional) {
+  //         Get.back(result: true);
+  //         Get.back(result: true);
+  //       } else {
+  //         Get.back(result: true);
+  //         if (Get.arguments == 'question') {
+  //           Get.offAllNamed(Routes.introduction);
+  //         } else {
+  //           Get.back(result: true);
+  //         }
+  //       }
+  //     },
+  //   );
+  // }
 
   String getTitle() {
     return Get.locale == enUS

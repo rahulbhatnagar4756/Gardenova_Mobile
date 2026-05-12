@@ -6,7 +6,6 @@ import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_form.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
-import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/introduction/question/components/question_progress_indicator.dart';
 import 'package:kasagardem/introduction/question/models/question_response_model.dart';
 import 'package:kasagardem/introduction/question/question_view_model.dart';
@@ -14,9 +13,7 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
-import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-
 import '../../utils/constants/app_assets.dart';
 
 class QuestionScreen extends GetWidget<QuestionViewModel> {
@@ -35,13 +32,14 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           controller.backPressed();
         },
         child: Scaffold(
-          appBar: controller.isUserLoggedIn.value && false
-              ? CircularBottomAppBar(
-                  onSettingPressed: () {
-                    Get.toNamed(Routes.settings, arguments: 'question');
-                  },
-                )
-              : BaseAppBar(onBackPressed: controller.backPressed),
+          // appBar: controller.isUserLoggedIn.value && false
+          //     ? CircularBottomAppBar(
+          //         onSettingPressed: () {
+          //           Get.toNamed(Routes.settings, arguments: 'question');
+          //         },
+          //       )
+          //     : BaseAppBar(onBackPressed: controller.backPressed),
+          appBar: BaseAppBar(onBackPressed: controller.backPressed),
           backgroundColor: AppColors.appColor,
           body: Obx(
             () =>
@@ -103,7 +101,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     );
   }
 
-  answersLayout({
+  Widget answersLayout({
     int index = 0,
     required Questions question,
     required BuildContext context,
@@ -196,7 +194,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     // );
   }
 
-  continueAndBackLayout(BuildContext context) {
+  Widget continueAndBackLayout(BuildContext context) {
     return Positioned(
       bottom: spacerSize0,
       left: 0,
@@ -219,7 +217,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     );
   }
 
-  questionLayout() {
+  Widget questionLayout() {
     // On the state/city tab, show a fixed heading instead of a question text
     final isStateCityTab =
         controller.questionList.isNotEmpty &&
@@ -241,7 +239,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     ).marginOnly(top: 29.h);
   }
 
-  answer5Layout(BuildContext context) {
+  Widget answer5Layout(BuildContext context) {
     return BaseForm(
       formKey: controller.formKey,
       child: Column(
@@ -251,7 +249,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     );
   }
 
-  state(BuildContext context) {
+  Widget state(BuildContext context) {
     return InkWell(
       onTap: () => _showStateBottomSheet(context),
       child: BaseTextField(
@@ -272,7 +270,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     );
   }
 
-  city(BuildContext context) {
+  Widget city(BuildContext context) {
     return InkWell(
       onTap: () {
         if (controller.selectedState.value.name != null) {
@@ -339,7 +337,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                 () => ListView.separated(
                   itemCount: controller.filteredStateList.length,
                   separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withOpacity(0.1),
+                    color: AppColors.offWhite.withValues(alpha: 0.1),
                     height: 1,
                   ),
                   itemBuilder: (context, index) {
@@ -406,7 +404,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                 () => ListView.separated(
                   itemCount: controller.filteredCityList.length,
                   separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withOpacity(0.1),
+                    color: AppColors.offWhite.withValues(alpha: 0.1),
                     height: 1,
                   ),
                   itemBuilder: (context, index) {
