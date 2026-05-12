@@ -18,6 +18,13 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import '../../../allPlants/allPlantsDetails/components/care_overview_section.dart';
+import '../../../allPlants/allPlantsDetails/components/plant_classification_section.dart';
+import '../../../allPlants/allPlantsDetails/components/plant_health_section.dart';
+import '../../../allPlants/allPlantsDetails/components/plant_propagation_section.dart';
+import '../../../allPlants/allPlantsDetails/components/quick_info_section.dart';
+import '../../../allPlants/allPlantsDetails/components/special_traits_section.dart';
+import '../../../model/plant_details_model.dart' show PlantModelDetails;
 
 class MyPlantDetailsSuccessView extends StatelessWidget {
   final MyPlantDetailsController controller;
@@ -161,15 +168,10 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                     _statsRow(controller: controller),
                     _upcomingEvents(controller: controller),
                     const Divider(color: AppColors.backgroundGrey, height: 1),
-                    _sectionHeader(
-                      AppLocalizations.of(Get.context!)!.plantHistory,
-                    ),
-                    _eventTile(
-                      Assets.imagesWatering,
-                      "${AppLocalizations.of(context)!.watered}\t2\t${AppLocalizations.of(context)!.days}\t${AppLocalizations.of(context)!.ago}",
-                      AppLocalizations.of(context)!.consistent,
-                    ),
-                    _editPlantButton(context).marginOnly(top: spacerSize15),
+                    _buildPlantHistory(context),
+
+                    // const Divider(color: AppColors.backgroundGrey, height: 1),
+                    _buildCareSections(context),
                   ],
                 ),
               ),
@@ -199,7 +201,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     final reminder = controller.plantDetailData.value.data?.reminder;
     return reminder?.nextWateredAt != null ||
         reminder?.fertilizerReminderFrequency != null ||
-        reminder?.pruningReminderFrequency != null && false;
+        reminder?.pruningReminderFrequency != null;
   }
 
   Widget _upcomingEvents({required MyPlantDetailsController controller}) {
@@ -271,6 +273,47 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
   }
 
   Widget _progressCard(BuildContext context) {
+    final plant = controller.plantDetailData.value.data?.plant;
+    if (plant == null) return const SizedBox();
+
+    // Calculate completion percentage
+    int totalFields = 20; // Choosing 20 key fields to track
+    int filledFields = 0;
+
+    if (plant.commonName != null && plant.commonName!.isNotEmpty)
+      filledFields++;
+    if (plant.scientificName != null && plant.scientificName!.isNotEmpty)
+      filledFields++;
+    if (plant.family != null && plant.family!.isNotEmpty) filledFields++;
+    if (plant.genus != null && plant.genus!.isNotEmpty) filledFields++;
+    if (plant.origin != null && plant.origin!.isNotEmpty) filledFields++;
+    if (plant.type != null && plant.type!.isNotEmpty) filledFields++;
+    if (plant.cycle != null && plant.cycle!.isNotEmpty) filledFields++;
+    if (plant.watering != null && plant.watering!.isNotEmpty) filledFields++;
+    if (plant.sunlight != null && plant.sunlight!.isNotEmpty) filledFields++;
+    if (plant.hardinessMin != null) filledFields++;
+    if (plant.hardinessMax != null) filledFields++;
+    if (plant.careLevel != null && plant.careLevel!.isNotEmpty) filledFields++;
+    if (plant.growthRate != null && plant.growthRate!.isNotEmpty)
+      filledFields++;
+    if (plant.maintenance != null && plant.maintenance!.isNotEmpty)
+      filledFields++;
+    if (plant.soil != null && plant.soil!.isNotEmpty) filledFields++;
+    if (plant.pruningMonth != null && plant.pruningMonth!.isNotEmpty)
+      filledFields++;
+    if (plant.propagation != null && plant.propagation!.isNotEmpty)
+      filledFields++;
+    if (plant.description != null && plant.description!.isNotEmpty)
+      filledFields++;
+    if (plant.imageRegularUrl != null && plant.imageRegularUrl!.isNotEmpty)
+      filledFields++;
+    if (plant.careGuidesUrl != null && plant.careGuidesUrl!.isNotEmpty)
+      filledFields++;
+
+    double percentage = filledFields / totalFields;
+    if (percentage > 1.0) percentage = 1.0;
+    int displayPercentage = (percentage * 100).toInt();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,8 +346,8 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                     fontSize: fontSize12,
                     fontWeight: FontWeight.w400,
                   ),
-                  const BaseText(
-                    text: '65%',
+                  BaseText(
+                    text: '$displayPercentage%',
                     fontFamily: AppKeys.inter,
                     fontSize: fontSize12,
                     fontWeight: FontWeight.w400,
@@ -315,20 +358,21 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(spacerSize10),
                 child: LinearProgressIndicator(
-                  value: 0.65,
+                  value: percentage,
                   backgroundColor: AppColors.blackColor.withValues(alpha: 0.2),
                   valueColor: const AlwaysStoppedAnimation(
                     AppColors.greenColor,
                   ),
                 ),
               ),
-              BaseText(
-                text: AppLocalizations.of(context)!.addMissingInfo,
-                fontFamily: AppKeys.inter,
-                fontSize: fontSize12,
-                fontWeight: FontWeight.w400,
-                textColor: AppColors.liteGreyColor,
-              ),
+              if (displayPercentage < 100)
+                BaseText(
+                  text: AppLocalizations.of(context)!.addMissingInfo,
+                  fontFamily: AppKeys.inter,
+                  fontSize: fontSize12,
+                  fontWeight: FontWeight.w400,
+                  textColor: AppColors.liteGreyColor,
+                ),
             ],
           ),
         ),
@@ -451,6 +495,157 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPlantHistory(BuildContext context) {
+    final reminder = controller.plantDetailData.value.data?.reminder;
+    if (reminder == null) return const SizedBox();
+
+    List<Widget> historyTiles = [];
+
+    if (reminder.lastWateredAt != null) {
+      historyTiles.add(
+        _eventTile(
+          Assets.imagesWatering,
+          "${AppLocalizations.of(context)!.watered} ${_getTimeAgo(reminder.lastWateredAt!)}",
+          AppLocalizations.of(context)!.consistent,
+        ),
+      );
+    }
+
+    if (reminder.lastFertilizedAt != null) {
+      historyTiles.add(
+        _eventTile(
+          Assets.imagesFertilizing,
+          "Fertilized ${_getTimeAgo(reminder.lastFertilizedAt!)}",
+          "Growing well",
+        ),
+      );
+    }
+
+    if (reminder.lastPrunedAt != null) {
+      historyTiles.add(
+        _eventTile(
+          Assets.imagesPruning,
+          "Pruned ${_getTimeAgo(reminder.lastPrunedAt!)}",
+          "Maintaining shape",
+        ),
+      );
+    }
+
+    if (historyTiles.isEmpty) return const SizedBox();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(AppLocalizations.of(context)!.plantHistory),
+        SizedBox(height: spacerSize12),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: historyTiles
+                .map((tile) => tile.marginOnly(right: spacerSize12))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getTimeAgo(DateTime date) {
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) {
+      return "${diff.inDays} days ago";
+    } else if (diff.inHours > 0) {
+      return "${diff.inHours} hours ago";
+    } else if (diff.inMinutes > 0) {
+      return "${diff.inMinutes} minutes ago";
+    } else {
+      return "Just now";
+    }
+  }
+
+  Widget _buildCareSections(BuildContext context) {
+    final plant = controller.plantDetailData.value.data?.plant;
+    if (plant == null) return const SizedBox();
+
+    // Map the MyPlantDetails.PlantDetails to PlantModelDetails
+    // Since the classes have similar fields but are different types
+    final plantModel = _convertToPlantModelDetails(plant);
+
+    return Column(
+      spacing: spacerSize16,
+      children: [
+        QuickInfoSection(plant: plantModel),
+        CareOverviewSection(plant: plantModel),
+        PlantClassificationSection(plant: plantModel),
+        PlantPropagationSection(plant: plantModel),
+        SpecialTraitsSection(plant: plantModel),
+        PlantHealthSection(plant: plantModel),
+      ],
+    );
+  }
+
+  PlantModelDetails _convertToPlantModelDetails(PlantDetails plant) {
+    // This is a mapping helper to reuse existing components
+    return PlantModelDetails(
+      id: plant.plantId,
+      commonName: plant.commonName,
+      scientificName: plant.scientificName,
+      otherName: plant.otherName,
+      family: plant.family,
+      genus: plant.genus,
+      speciesEpithet: plant.speciesEpithet,
+      origin: plant.origin,
+      type: plant.type,
+      cycle: plant.cycle,
+      watering: plant.watering,
+      wateringBenchmarkValue: plant.wateringBenchmarkValue,
+      wateringBenchmarkUnit: plant.wateringBenchmarkUnit,
+      sunlight: plant.sunlight,
+      soil: plant.soil,
+      hardinessMin: plant.hardinessMin,
+      hardinessMax: plant.hardinessMax,
+      dimensionType: plant.dimensionType,
+      dimensionMinValue: plant.dimensionMinValue?.toString(),
+      dimensionMaxValue: plant.dimensionMaxValue?.toString(),
+      dimensionUnit: plant.dimensionUnit,
+      growthRate: plant.growthRate,
+      maintenance: plant.maintenance,
+      careLevel: plant.careLevel,
+      careGuidesUrl: plant.careGuidesUrl,
+      pruningMonth: plant.pruningMonth,
+      propagation: plant.propagation,
+      attracts: plant.attracts,
+      pestSusceptibility: plant.pestSusceptibility,
+      plantAnatomy: plant.plantAnatomy,
+      droughtTolerant: plant.droughtTolerant,
+      saltTolerant: plant.saltTolerant,
+      thorny: plant.thorny,
+      invasive: plant.invasive,
+      tropical: plant.tropical,
+      indoor: plant.indoor,
+      flowers: plant.flowers,
+      cones: plant.cones,
+      fruits: plant.fruits,
+      edibleFruit: plant.edibleFruit,
+      leaf: plant.leaf,
+      edibleLeaf: plant.edibleLeaf,
+      seeds: plant.seeds,
+      cuisine: plant.cuisine,
+      medicinal: plant.medicinal,
+      poisonousToHumans: plant.poisonousToHumans,
+      poisonousToPets: plant.poisonousToPets,
+      floweringSeason: plant.floweringSeason,
+      harvestSeason: plant.harvestSeason,
+      description: plant.description,
+      imageOriginalUrl: plant.imageOriginalUrl,
+      imageRegularUrl: plant.imageRegularUrl,
+      imageMediumUrl: plant.imageMediumUrl,
+      imageSmallUrl: plant.imageSmallUrl,
+      imageThumbnail: plant.imageThumbnail,
+      imageLicense: plant.imageLicense,
     );
   }
 

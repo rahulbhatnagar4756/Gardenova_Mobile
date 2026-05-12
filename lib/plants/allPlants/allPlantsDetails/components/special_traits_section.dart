@@ -52,16 +52,56 @@ class SpecialTraitsSection extends StatelessWidget {
       traits.add("Human Friendly");
     }
 
-    if ((plant?.edible ?? false) == true) {
-      traits.add("Edible");
-      if (plant?.ediblePart != null &&
-          plant!.ediblePart.toString().isNotEmpty) {
-        traits.add("Edible: ${plant?.ediblePart}");
-      }
+    if ((plant?.edibleFruit ?? false) == true) {
+      traits.add("Edible Fruit");
     }
 
-    if ((plant?.vegetable ?? false) == true) {
-      traits.add("Vegetable");
+    if ((plant?.edibleLeaf ?? false) == true) {
+      traits.add("Edible Leaf");
+    }
+
+    if ((plant?.medicinal ?? false) == true) {
+      traits.add("Medicinal");
+    }
+
+    if ((plant?.cuisine ?? false) == true) {
+      traits.add("Cuisine");
+    }
+
+    if ((plant?.flowers ?? false) == true) {
+      traits.add("Flowers");
+    }
+
+    if ((plant?.fruits ?? false) == true) {
+      traits.add("Fruits");
+    }
+
+    if ((plant?.cones ?? false) == true) {
+      traits.add("Cones");
+    }
+
+    if ((plant?.leaf ?? false) == true) {
+      traits.add("Leaf");
+    }
+
+    if ((plant?.seeds ?? false) == true) {
+      traits.add("Seeds");
+    }
+
+    if ((plant?.thorny ?? false) == true) {
+      traits.add("Thorny");
+    }
+
+    if ((plant?.invasive ?? false) == true) {
+      traits.add("Invasive");
+    }
+
+    if ((plant?.tropical ?? false) == true) {
+      traits.add("Tropical");
+    }
+
+    if ((plant?.saltTolerant ?? false) == true) {
+      traits.add("Salt Tolerant");
     }
 
     if (traits.isEmpty) return SizedBox();

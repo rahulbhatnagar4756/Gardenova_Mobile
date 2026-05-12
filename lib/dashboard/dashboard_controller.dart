@@ -288,6 +288,17 @@ class DashboardController extends GetxController {
 
       print('pickImage t3');
 
+      if (isCamera && source == ImagePickerSource.diagnosis) {
+        final result = await Get.toNamed(Routes.cameraCapture);
+        if (result != null && result is XFile) {
+          if (Get.isBottomSheetOpen ?? false) {
+            Get.back();
+          }
+          goToPlantDiagnosis(result);
+        }
+        return;
+      }
+
       final ImagePicker picker = ImagePicker();
 
       final XFile? pickedFile = await picker.pickImage(

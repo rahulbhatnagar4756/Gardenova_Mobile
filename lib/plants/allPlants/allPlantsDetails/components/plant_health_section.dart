@@ -40,22 +40,18 @@ class PlantHealthSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String diseases = plant?.diseases ?? "";
-    String pruning = plant?.pruning ?? "";
-    String climate = plant?.climate ?? "";
-    if (diseases.isEmpty) {
-      diseases = "No information available";
+    String maintenance = plant?.maintenance ?? "";
+    String pests = plant?.pestSusceptibility?.toString() ?? "";
+    String anatomy = plant?.plantAnatomy ?? "";
+
+    if (maintenance.isEmpty && pests.isEmpty && anatomy.isEmpty) {
+      return SizedBox();
     }
-    if (pruning.isEmpty) {
-      pruning = "No pruning information";
-    }
-    if (climate.isEmpty) {
-      climate = "No climate information";
-    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PlantSectionTitle(title: "Plant Health", icon: Icons.health_and_safety),
+        PlantSectionTitle(title: "Plant Details", icon: Icons.info_outline),
 
         SizedBox(height: spacerSize16),
 
@@ -70,11 +66,12 @@ class PlantHealthSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              item(title: "Diseases", value: diseases),
-
-              item(title: "Pruning", value: pruning),
-
-              item(title: "Climate", value: climate),
+              if (maintenance.isNotEmpty)
+                item(title: "Maintenance", value: maintenance),
+              if (pests.isNotEmpty && pests != "null")
+                item(title: "Pest Susceptibility", value: pests),
+              if (anatomy.isNotEmpty)
+                item(title: "Plant Anatomy", value: anatomy),
             ],
           ),
         ),

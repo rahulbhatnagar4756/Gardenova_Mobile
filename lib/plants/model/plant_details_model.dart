@@ -52,6 +52,289 @@ class PlantDetailsData {
 }
 
 class PlantModelDetails {
+  /// IDS
+  int? id;
+
+  /// NAMES
+  String? commonName;
+  String? scientificName;
+  String? otherName;
+  String? family;
+  String? genus;
+  String? speciesEpithet;
+
+  /// BASIC INFO
+  String? origin;
+  String? type;
+  String? cycle;
+  String? watering;
+  String? wateringBenchmarkValue;
+  String? wateringBenchmarkUnit;
+  String? sunlight;
+  String? soil;
+
+  /// HARDINESS
+  String? hardinessMin;
+  String? hardinessMax;
+
+  /// DIMENSION
+  String? dimensionType;
+  String? dimensionMinValue;
+  String? dimensionMaxValue;
+  String? dimensionUnit;
+
+  /// CARE
+  String? growthRate;
+  String? maintenance;
+  String? careLevel;
+  String? careGuidesUrl;
+  String? pruningMonth;
+  String? propagation;
+
+  /// EXTRA
+  String? attracts;
+  dynamic pestSusceptibility;
+  String? plantAnatomy;
+
+  /// FLAGS
+  bool? droughtTolerant;
+  bool? saltTolerant;
+  bool? thorny;
+  bool? invasive;
+  bool? tropical;
+  bool? indoor;
+  bool? flowers;
+  bool? cones;
+  bool? fruits;
+  bool? edibleFruit;
+  bool? leaf;
+  bool? edibleLeaf;
+  bool? seeds;
+  bool? cuisine;
+  bool? medicinal;
+  bool? poisonousToHumans;
+  bool? poisonousToPets;
+
+  /// SEASONS
+  String? floweringSeason;
+  String? harvestSeason;
+
+  /// DESCRIPTION
+  String? description;
+
+  /// IMAGES
+  String? imageOriginalUrl;
+  String? imageRegularUrl;
+  String? imageMediumUrl;
+  String? imageSmallUrl;
+  String? imageThumbnail;
+  String? imageLicense;
+
+  /// COMMON IMAGE
+  String? imageUrl;
+
+  PlantModelDetails({
+    this.id,
+    this.commonName,
+    this.scientificName,
+    this.otherName,
+    this.family,
+    this.genus,
+    this.speciesEpithet,
+    this.origin,
+    this.type,
+    this.cycle,
+    this.watering,
+    this.wateringBenchmarkValue,
+    this.wateringBenchmarkUnit,
+    this.sunlight,
+    this.soil,
+    this.hardinessMin,
+    this.hardinessMax,
+    this.dimensionType,
+    this.dimensionMinValue,
+    this.dimensionMaxValue,
+    this.dimensionUnit,
+    this.growthRate,
+    this.maintenance,
+    this.careLevel,
+    this.careGuidesUrl,
+    this.pruningMonth,
+    this.propagation,
+    this.attracts,
+    this.pestSusceptibility,
+    this.plantAnatomy,
+    this.droughtTolerant,
+    this.saltTolerant,
+    this.thorny,
+    this.invasive,
+    this.tropical,
+    this.indoor,
+    this.flowers,
+    this.cones,
+    this.fruits,
+    this.edibleFruit,
+    this.leaf,
+    this.edibleLeaf,
+    this.seeds,
+    this.cuisine,
+    this.medicinal,
+    this.poisonousToHumans,
+    this.poisonousToPets,
+    this.floweringSeason,
+    this.harvestSeason,
+    this.description,
+    this.imageOriginalUrl,
+    this.imageRegularUrl,
+    this.imageMediumUrl,
+    this.imageSmallUrl,
+    this.imageThumbnail,
+    this.imageLicense,
+    this.imageUrl,
+  });
+
+  PlantModelDetails.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return;
+
+    /// IDS
+    id = _parseInt(json['id']);
+
+    /// NAMES
+    commonName = json['common_name']?.toString();
+    scientificName = json['scientific_name']?.toString();
+    otherName = json['other_name']?.toString();
+    family = json['family']?.toString();
+    genus = json['genus']?.toString();
+    speciesEpithet = json['species_epithet']?.toString();
+
+    /// BASIC INFO
+    origin = json['origin']?.toString();
+    type = json['type']?.toString();
+    cycle = json['cycle']?.toString();
+    watering = json['watering']?.toString();
+
+    wateringBenchmarkValue =
+        json['watering_benchmark_value']?.toString();
+
+    wateringBenchmarkUnit =
+        json['watering_benchmark_unit']?.toString();
+
+    sunlight = json['sunlight']?.toString();
+    soil = json['soil']?.toString();
+
+    /// HARDINESS
+    hardinessMin = json['hardiness_min']?.toString();
+    hardinessMax = json['hardiness_max']?.toString();
+
+    /// DIMENSION
+    dimensionType = json['dimension_type']?.toString();
+
+    dimensionMinValue =
+        json['dimension_min_value']?.toString();
+
+    dimensionMaxValue =
+        json['dimension_max_value']?.toString();
+
+    dimensionUnit = json['dimension_unit']?.toString();
+
+    /// CARE
+    growthRate = json['growth_rate']?.toString();
+    maintenance = json['maintenance']?.toString();
+    careLevel = json['care_level']?.toString();
+
+    careGuidesUrl = json['care_guides_url']?.toString();
+
+    pruningMonth = json['pruning_month']?.toString();
+
+    propagation = json['propagation']?.toString();
+
+    /// EXTRA
+    attracts = json['attracts']?.toString();
+
+    pestSusceptibility = json['pest_susceptibility'];
+
+    plantAnatomy = json['plant_anatomy']?.toString();
+
+    /// FLAGS
+    droughtTolerant = _parseBool(json['drought_tolerant']);
+    saltTolerant = _parseBool(json['salt_tolerant']);
+    thorny = _parseBool(json['thorny']);
+    invasive = _parseBool(json['invasive']);
+    tropical = _parseBool(json['tropical']);
+    indoor = _parseBool(json['indoor']);
+    flowers = _parseBool(json['flowers']);
+    cones = _parseBool(json['cones']);
+    fruits = _parseBool(json['fruits']);
+    edibleFruit = _parseBool(json['edible_fruit']);
+    leaf = _parseBool(json['leaf']);
+    edibleLeaf = _parseBool(json['edible_leaf']);
+    seeds = _parseBool(json['seeds']);
+    cuisine = _parseBool(json['cuisine']);
+    medicinal = _parseBool(json['medicinal']);
+
+    poisonousToHumans =
+        _parseBool(json['poisonous_to_humans']);
+
+    poisonousToPets =
+        _parseBool(json['poisonous_to_pets']);
+
+    /// SEASONS
+    floweringSeason = json['flowering_season']?.toString();
+
+    harvestSeason = json['harvest_season']?.toString();
+
+    /// DESCRIPTION
+    description = json['description']?.toString();
+
+    /// IMAGES
+    imageOriginalUrl =
+        json['image_original_url']?.toString();
+
+    imageRegularUrl =
+        json['image_regular_url']?.toString();
+
+    imageMediumUrl =
+        json['image_medium_url']?.toString();
+
+    imageSmallUrl =
+        json['image_small_url']?.toString();
+
+    imageThumbnail =
+        json['image_thumbnail']?.toString();
+
+    imageLicense = json['image_license']?.toString();
+
+    /// COMMON IMAGE
+    imageUrl =
+        imageRegularUrl ??
+        imageMediumUrl ??
+        imageSmallUrl ??
+        imageThumbnail ??
+        imageOriginalUrl;
+  }
+
+  /// HELPERS
+
+  static bool _parseBool(dynamic value) {
+    if (value == null) return false;
+
+    if (value is bool) return value;
+
+    final val = value.toString().toLowerCase();
+
+    return val == "true" || val == "1";
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+
+    if (value is int) return value;
+
+    return int.tryParse(value.toString());
+  }
+}
+/*
+class PlantModelDetails {
   /// =========================
   /// IDS
   /// =========================
@@ -129,7 +412,10 @@ class PlantModelDetails {
 
   String? soil;
   dynamic climate;
-  dynamic origin;
+  String? origin;
+
+  String? hardinessMin;
+  String? hardinessMax;
 
   /// =========================
   /// CARE
@@ -139,7 +425,7 @@ class PlantModelDetails {
   String? pruning;
   String? pruningMonth;
 
-  dynamic propagation;
+  String? propagation;
 
   dynamic pest;
   dynamic pestSusceptibility;
@@ -314,6 +600,8 @@ class PlantModelDetails {
     this.imageThumbnail,
     this.imageLicense,
     this.careGuidesUrl,
+    this.hardinessMin,
+    this.hardinessMax,
   });
 
   PlantModelDetails.fromJson(Map<String, dynamic>? json) {
@@ -424,7 +712,11 @@ class PlantModelDetails {
 
     climate = json['climate'];
 
-    origin = json['origin'];
+    origin = json['origin']?.toString();
+
+    hardinessMin = json['hardiness_min']?.toString();
+
+    hardinessMax = json['hardiness_max']?.toString();
 
     /// =========================
     /// CARE
@@ -436,7 +728,7 @@ class PlantModelDetails {
 
     pruningMonth = json['pruning_month']?.toString();
 
-    propagation = json['propagation'];
+    propagation = json['propagation']?.toString();
 
     pest = json['pest'];
 
@@ -583,6 +875,7 @@ class PlantModelDetails {
   }
 }
 
+*/
 class ReminderModel {
   /// 🌱 Watering
   int? wateringReminderFrequency;

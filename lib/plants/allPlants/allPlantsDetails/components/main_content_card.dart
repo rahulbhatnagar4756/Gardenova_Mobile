@@ -8,6 +8,7 @@ import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_to
 
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
+import '../../../../base/widgets/base_webview_screen.dart';
 import '../../../../base/widgets/common_click_widget.dart';
 import '../../../../base/widgets/full_screen_image_preview.dart';
 import '../../../../generated/assets.dart';
@@ -18,7 +19,9 @@ import '../../../../utils/constants/app_keys.dart';
 import '../all_plants_details_controller.dart';
 import 'care_overview_section.dart';
 import 'frequency_bottom_sheet.dart';
+import 'plant_classification_section.dart';
 import 'plant_health_section.dart';
+import 'plant_propagation_section.dart';
 import 'quick_info_section.dart';
 import 'special_traits_section.dart';
 
@@ -120,6 +123,16 @@ class MainContentCard extends StatelessWidget {
                                   controller.plantDetailData.value.data?.plant,
                             ),
 
+                            PlantClassificationSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
+                            PlantPropagationSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
+
                             SpecialTraitsSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
@@ -129,6 +142,56 @@ class MainContentCard extends StatelessWidget {
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
+
+                            if (controller
+                                    .plantDetailData
+                                    .value
+                                    .data
+                                    ?.plant
+                                    ?.careGuidesUrl !=
+                                null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    final url = controller
+                                        .plantDetailData
+                                        .value
+                                        .data
+                                        ?.plant
+                                        ?.careGuidesUrl;
+                                    final title =
+                                        controller
+                                            .plantDetailData
+                                            .value
+                                            .data
+                                            ?.plant
+                                            ?.commonName ??
+                                        "Care Guide";
+
+                                    if (url != null && url.isNotEmpty) {
+                                      Get.to(
+                                        () => BaseWebViewScreen(
+                                          url: url,
+                                          title: "$title Care Guide",
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(Icons.menu_book),
+                                  label: Text("View Detailed Care Guide"),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.greenColor,
+                                    side: BorderSide(
+                                      color: AppColors.greenColor,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    minimumSize: Size(double.infinity, 50),
+                                  ),
+                                ),
+                              ),
 
                             // Divider(color: AppColors.backgroundGrey),
                             SizedBox(height: 25.h),
@@ -612,23 +675,18 @@ class MainContentCard extends StatelessWidget {
                 fontWeight: FontWeight.w400,
                 textColor: AppColors.liteGreyColor,
               ),
-              if (controller
-                          .plantDetailData
-                          .value
-                          .data
-                          ?.plant
-                          ?.inatCommonName !=
+              if (controller.plantDetailData.value.data?.plant?.otherName !=
                       null &&
                   controller
                       .plantDetailData
                       .value
                       .data!
                       .plant!
-                      .inatCommonName!
+                      .otherName!
                       .isNotEmpty)
                 BaseText(
                   text:
-                      "Also known as: ${controller.plantDetailData.value.data?.plant?.inatCommonName}",
+                      "Also known as: ${controller.plantDetailData.value.data?.plant?.otherName}",
                   fontFamily: AppKeys.inter,
                   fontSize: fontSize12,
                   fontWeight: FontWeight.w400,

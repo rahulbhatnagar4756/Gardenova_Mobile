@@ -190,7 +190,8 @@ class DashboardScreen extends GetWidget<DashboardController> {
               leading: Icon(Icons.camera_alt, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
-                // Get.back();
+                Get.back();
+                await Future.delayed(Duration(milliseconds: 200));
                 controller.pickImage(isCamera: true, source: source);
               },
             ),
@@ -198,7 +199,8 @@ class DashboardScreen extends GetWidget<DashboardController> {
               leading: Icon(Icons.photo_library, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
               onTap: () async {
-                // Get.back();
+                Get.back();
+                await Future.delayed(Duration(milliseconds: 200));
                 controller.pickImage(isCamera: false, source: source);
               },
             ),

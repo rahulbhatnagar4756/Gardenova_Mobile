@@ -14,18 +14,21 @@ class QuickInfoSection extends StatelessWidget {
     bool isIndoor = plant?.indoor ?? false;
     String careLevel = plant?.careLevel ?? "";
     String growthRate = plant?.growthRate ?? "";
-    String blooming = plant?.blooming ?? "";
-    if (isIndoor == false) {
-      isIndoor = false;
-    }
+    String floweringSeason = plant?.floweringSeason ?? "";
+    String cycle = plant?.cycle ?? "";
+    String plantType = plant?.type ?? AppLocalizations.of(context)!.noDataNa;
+
     if (careLevel.isEmpty) {
       careLevel = AppLocalizations.of(context)!.noDataNa;
     }
     if (growthRate.isEmpty) {
       growthRate = AppLocalizations.of(context)!.noDataNa;
     }
-    if (blooming.isEmpty) {
-      blooming = AppLocalizations.of(context)!.noDataNa;
+    if (floweringSeason.isEmpty) {
+      floweringSeason = AppLocalizations.of(context)!.noDataNa;
+    }
+    if (cycle.isEmpty) {
+      cycle = AppLocalizations.of(context)!.noDataNa;
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,26 +68,44 @@ class QuickInfoSection extends StatelessWidget {
               PlantInfoCard(
                 icon: Icons.category,
                 title: "Plant Type",
+                value: plantType,
+              ),
+
+              SizedBox(width: 12),
+              PlantInfoCard(
+                icon: Icons.thermostat,
+                title: "Hardiness",
                 value:
-                    plant?.plantType ?? AppLocalizations.of(context)!.noDataNa,
+                    (plant?.hardinessMin != null && plant?.hardinessMax != null)
+                    ? "Zone ${plant?.hardinessMin}-${plant?.hardinessMax}"
+                    : AppLocalizations.of(context)!.noDataNa,
+              ),
+
+              SizedBox(width: 12),
+              PlantInfoCard(
+                icon: Icons.straighten,
+                title: "Dimensions",
+                value:
+                    (plant?.dimensionMinValue != null &&
+                        plant?.dimensionMaxValue != null)
+                    ? "${plant?.dimensionMinValue}-${plant?.dimensionMaxValue} ${plant?.dimensionUnit ?? ""}"
+                    : AppLocalizations.of(context)!.noDataNa,
               ),
 
               SizedBox(width: 12),
 
               PlantInfoCard(
                 icon: Icons.nature,
-                title: "Growth Habit",
-                value:
-                    plant?.growthHabit ??
-                    AppLocalizations.of(context)!.noDataNa,
+                title: "Cycle",
+                value: cycle,
               ),
 
               SizedBox(width: 12),
 
               PlantInfoCard(
                 icon: Icons.local_florist,
-                title: "Blooming",
-                value: blooming,
+                title: "Flowering",
+                value: floweringSeason,
               ),
             ],
           ),

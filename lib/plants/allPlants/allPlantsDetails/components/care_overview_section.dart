@@ -55,7 +55,13 @@ class CareOverviewSection extends StatelessWidget {
     String watering = plant?.watering ?? "";
     String sunlight = plant?.sunlight ?? "";
     String soil = plant?.soil ?? "";
-    String fertilizer = plant?.fertilizer ?? "";
+    // String fertilizer = plant?.fertilizer ?? "";
+    String pruningMonth = plant?.pruningMonth ?? "";
+
+    if (watering.isNotEmpty && plant?.wateringBenchmarkValue != null) {
+      watering =
+          "$watering (${plant!.wateringBenchmarkValue} ${plant!.wateringBenchmarkUnit ?? ""})";
+    }
 
     if (watering.isEmpty) {
       watering = AppLocalizations.of(context)!.noDataNa;
@@ -66,13 +72,18 @@ class CareOverviewSection extends StatelessWidget {
     if (soil.isEmpty) {
       soil = AppLocalizations.of(context)!.noDataNa;
     }
-    if (fertilizer.isEmpty) {
-      fertilizer = AppLocalizations.of(context)!.noDataNa;
+    // if (fertilizer.isEmpty) {
+    //   fertilizer = AppLocalizations.of(context)!.noDataNa;
+    // }
+    if (pruningMonth.isEmpty) {
+      pruningMonth = AppLocalizations.of(context)!.noDataNa;
     }
-    if (watering.isEmpty &&
-        sunlight.isEmpty &&
-        soil.isEmpty &&
-        fertilizer.isEmpty) {
+
+    if (watering == AppLocalizations.of(context)!.noDataNa &&
+        sunlight == AppLocalizations.of(context)!.noDataNa &&
+        soil == AppLocalizations.of(context)!.noDataNa
+    // &&fertilizer == AppLocalizations.of(context)!.noDataNa
+    ) {
       return SizedBox();
     }
     return Column(
@@ -109,13 +120,21 @@ class CareOverviewSection extends StatelessWidget {
 
               item(icon: Icons.grass, title: AppStrings.soil, value: soil),
 
-              Divider(),
+              // Divider(),
 
-              item(
-                icon: Icons.science,
-                title: AppStrings.fertilizer,
-                value: fertilizer,
-              ),
+              // item(
+              //   icon: Icons.science,
+              //   title: AppStrings.fertilizer,
+              //   value: fertilizer,
+              // ),
+              if (pruningMonth != AppLocalizations.of(context)!.noDataNa) ...[
+                Divider(),
+                item(
+                  icon: Icons.content_cut,
+                  title: "Pruning Season",
+                  value: pruningMonth,
+                ),
+              ],
             ],
           ),
         ),

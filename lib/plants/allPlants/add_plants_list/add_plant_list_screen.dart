@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/plants/model/add_plantss_model.dart' show Plants;
+import 'package:kasagardem/plants/model/add_plants_model.dart' show Plants;
 
 import '../../../base/widgets/base_app_bar.dart';
 import '../../../base/widgets/base_shimmer.dart';

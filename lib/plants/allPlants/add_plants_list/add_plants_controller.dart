@@ -10,7 +10,7 @@ import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
-import '../../model/add_plantss_model.dart';
+import '../../model/add_plants_model.dart';
 import '../../myPlants/myPlantsList/my_plants_controller.dart';
 
 class AllPlantsController extends GetxController {

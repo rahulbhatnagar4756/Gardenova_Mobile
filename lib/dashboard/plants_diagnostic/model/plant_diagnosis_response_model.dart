@@ -270,7 +270,9 @@ class Issues {
     _type = json['type'];
     _probability = json['probability'];
     _severity = json['severity'];
-    _description = json['description'];
+    _description = json['description'] is Map
+        ? json['description']['value']
+        : json['description'];
     _symptoms = json['symptoms'] != null ? json['symptoms'].cast<String>() : [];
     _causes = json['causes'] != null ? json['causes'].cast<String>() : [];
     _treatment = json['treatment'] != null
@@ -429,7 +431,9 @@ class PlantInfo {
         ? json['commonNames'].cast<String>()
         : [];
     _probability = json['probability'];
-    _description = json['description'];
+    _description = json['description'] is Map
+        ? json['description']['value']
+        : json['description'];
     _taxonomy = json['taxonomy'] != null
         ? Taxonomy.fromJson(json['taxonomy'])
         : null;
@@ -437,9 +441,13 @@ class PlantInfo {
     _careGuide = json['careGuide'] != null
         ? CareGuide.fromJson(json['careGuide'])
         : null;
-    _uses = json['uses'];
-    _toxicity = json['toxicity'];
-    _culturalSignificance = json['culturalSignificance'];
+    _uses = json['uses'] is Map ? json['uses']['value'] : json['uses'];
+    _toxicity = json['toxicity'] is Map
+        ? json['toxicity']['value']
+        : json['toxicity'];
+    _culturalSignificance = json['culturalSignificance'] is Map
+        ? json['culturalSignificance']['value']
+        : json['culturalSignificance'];
   }
 
   String? _scientificName;

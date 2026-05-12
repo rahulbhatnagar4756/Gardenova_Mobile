@@ -17,6 +17,7 @@ import 'package:kasagardem/dashboard/plant_recommendations/plants_catalog/plants
 import 'package:kasagardem/dashboard/plant_recommendations/plants_catalog/plants_catalog_view_model.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_screen.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_view_model.dart';
+import 'package:kasagardem/dashboard/plants_diagnostic/camera_capture_screen.dart';
 import 'package:kasagardem/introduction/introduction_screen.dart';
 import 'package:kasagardem/introduction/introduction_screen_view_model.dart';
 import 'package:kasagardem/introduction/question/components/report_success_screen.dart';
@@ -95,6 +96,7 @@ class Routes {
   static const createProfessionalLeadRequestScreen =
       '/create_professional_request_screen';
   static const landscapeDesign = '/landscape_design';
+  static const cameraCapture = '/camera_capture';
 
   static getPages() {
     return [
@@ -414,6 +416,14 @@ class Routes {
         name: Routes.landscapeDesign,
         page: () => const LandscapeDesignScreen(),
         binding: BindingsBuilder.put(() => LandscapeDesignViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.cameraCapture,
+        page: () => const CameraCaptureScreen(),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
