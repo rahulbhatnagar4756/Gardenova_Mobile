@@ -18,13 +18,14 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import '../../../allPlants/allPlantsDetails/components/care_guide_section.dart';
 import '../../../allPlants/allPlantsDetails/components/care_overview_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_classification_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_health_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_propagation_section.dart';
 import '../../../allPlants/allPlantsDetails/components/quick_info_section.dart';
 import '../../../allPlants/allPlantsDetails/components/special_traits_section.dart';
-import '../../../model/plant_details_model.dart' show PlantModelDetails;
+import '../../../model/plant_details_model.dart' show PlantModelDetails, Care;
 
 class MyPlantDetailsSuccessView extends StatelessWidget {
   final MyPlantDetailsController controller;
@@ -177,7 +178,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
 
                     // const Divider(color: AppColors.backgroundGrey, height: 1),
                     _buildCareSections(context),
-                    SizedBox(height: spacerSize16),
+                    SizedBox(height: 25.h),
                   ],
                 ),
               ),
@@ -601,10 +602,11 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
       children: [
         QuickInfoSection(plant: plantModel),
         CareOverviewSection(plant: plantModel),
+        if (controller.plantDetailData.value.data?.care != null)
+          CareGuideSection(care: controller.plantDetailData.value.data!.care!),
         PlantClassificationSection(plant: plantModel),
         PlantPropagationSection(plant: plantModel),
         SpecialTraitsSection(plant: plantModel),
-        PlantHealthSection(plant: plantModel),
       ],
     );
   }

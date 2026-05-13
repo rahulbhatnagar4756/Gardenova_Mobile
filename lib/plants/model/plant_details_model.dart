@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../utils/utils.dart';
 
 class PlantDetailsResponseModel {
@@ -24,12 +26,43 @@ class PlantDetailsResponseModel {
   }
 }
 
+class Care {
+  final String? watering;
+  final String? sunlight;
+  final String? pruning;
+
+  Care({this.watering, this.sunlight, this.pruning});
+
+  Care copyWith({String? watering, String? sunlight, String? pruning}) => Care(
+    watering: watering ?? this.watering,
+    sunlight: sunlight ?? this.sunlight,
+    pruning: pruning ?? this.pruning,
+  );
+
+  factory Care.fromJson(String str) => Care.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory Care.fromMap(Map<String, dynamic> json) => Care(
+    watering: json["watering"],
+    sunlight: json["sunlight"],
+    pruning: json["pruning"],
+  );
+
+  Map<String, dynamic> toMap() => {
+    "watering": watering,
+    "sunlight": sunlight,
+    "pruning": pruning,
+  };
+}
+
 class PlantDetailsData {
   PlantModelDetails? plant;
   bool? alreadyAdded;
+  Care? care;
   ReminderModel? reminder;
 
-  PlantDetailsData({this.plant, this.alreadyAdded, this.reminder});
+  PlantDetailsData({this.plant, this.alreadyAdded, this.reminder, this.care});
 
   PlantDetailsData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
@@ -39,6 +72,7 @@ class PlantDetailsData {
         : null;
 
     alreadyAdded = Utils.parseBool(json['AlreadyAdded']);
+    care = json['care'] != null ? Care.fromMap(json['care']) : null;
 
     reminder = json['reminder'] != null
         ? ReminderModel.fromJson(json['reminder'])

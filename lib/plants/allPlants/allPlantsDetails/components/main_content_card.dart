@@ -24,6 +24,8 @@ import 'plant_health_section.dart';
 import 'plant_propagation_section.dart';
 import 'quick_info_section.dart';
 import 'special_traits_section.dart';
+import 'care_guide_section.dart';
+import '../../../../dashboard/plants_diagnostic/widgets/care_info_tile.dart';
 
 class MainContentCard extends StatelessWidget {
   final AllPlantsDetailsController controller;
@@ -110,91 +112,101 @@ class MainContentCard extends StatelessWidget {
                 Obx(
                   () => controller.screenType.value == 'add'
                       ? Column(
-                          spacing: 15.h,
+                          // spacing: 15.h,
                           children: [
                             Divider(color: AppColors.backgroundGrey),
+                            SizedBox(height: 15.h),
                             QuickInfoSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
-
+                            SizedBox(height: 15.h),
                             CareOverviewSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
+                            SizedBox(height: 15.h),
+                            if (controller.plantDetailData.value.data?.care !=
+                                null)
+                              CareGuideSection(
+                                care: controller
+                                    .plantDetailData
+                                    .value
+                                    .data!
+                                    .care!,
+                              ),
 
                             PlantClassificationSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
-
+                            SizedBox(height: 15.h),
                             PlantPropagationSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
-
+                            SizedBox(height: 15.h),
                             SpecialTraitsSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
-
+                            SizedBox(height: 15.h),
                             PlantHealthSection(
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
+                            SizedBox(height: 15.h),
+                            // if (controller
+                            //         .plantDetailData
+                            //         .value
+                            //         .data
+                            //         ?.plant
+                            //         ?.careGuidesUrl !=
+                            //     null)
+                            //   Padding(
+                            //     padding: const EdgeInsets.only(top: 8.0),
+                            //     child: OutlinedButton.icon(
+                            //       onPressed: () {
+                            //         final url = controller
+                            //             .plantDetailData
+                            //             .value
+                            //             .data
+                            //             ?.plant
+                            //             ?.careGuidesUrl;
+                            //         final title =
+                            //             controller
+                            //                 .plantDetailData
+                            //                 .value
+                            //                 .data
+                            //                 ?.plant
+                            //                 ?.commonName ??
+                            //             "Care Guide";
 
-                            if (controller
-                                    .plantDetailData
-                                    .value
-                                    .data
-                                    ?.plant
-                                    ?.careGuidesUrl !=
-                                null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: OutlinedButton.icon(
-                                  onPressed: () {
-                                    final url = controller
-                                        .plantDetailData
-                                        .value
-                                        .data
-                                        ?.plant
-                                        ?.careGuidesUrl;
-                                    final title =
-                                        controller
-                                            .plantDetailData
-                                            .value
-                                            .data
-                                            ?.plant
-                                            ?.commonName ??
-                                        "Care Guide";
-
-                                    if (url != null && url.isNotEmpty) {
-                                      Get.to(
-                                        () => BaseWebViewScreen(
-                                          url: url,
-                                          title: "$title Care Guide",
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  icon: Icon(Icons.menu_book),
-                                  label: Text("View Detailed Care Guide"),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppColors.greenColor,
-                                    side: BorderSide(
-                                      color: AppColors.greenColor,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    minimumSize: Size(double.infinity, 50),
-                                  ),
-                                ),
-                              ),
+                            //         if (url != null && url.isNotEmpty) {
+                            //           Get.to(
+                            //             () => BaseWebViewScreen(
+                            //               url: url,
+                            //               title: "$title Care Guide",
+                            //             ),
+                            //           );
+                            //         }
+                            //       },
+                            //       icon: Icon(Icons.menu_book),
+                            //       label: Text("View Detailed Care Guide"),
+                            //       style: OutlinedButton.styleFrom(
+                            //         foregroundColor: AppColors.greenColor,
+                            //         side: BorderSide(
+                            //           color: AppColors.greenColor,
+                            //         ),
+                            //         shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(12),
+                            //         ),
+                            //         minimumSize: Size(double.infinity, 50),
+                            //       ),
+                            //     ),
+                            //   ),
 
                             // Divider(color: AppColors.backgroundGrey),
-                            SizedBox(height: 25.h),
                           ],
                         )
                       : Column(

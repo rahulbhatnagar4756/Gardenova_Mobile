@@ -47,7 +47,7 @@ class CareInfoTile extends StatelessWidget {
               children: [
                 BaseText(
                   text: title,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   fontFamily: AppKeys.poppins,
                 ),
 

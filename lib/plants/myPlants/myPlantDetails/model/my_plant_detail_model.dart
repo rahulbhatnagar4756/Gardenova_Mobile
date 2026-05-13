@@ -1,3 +1,5 @@
+import 'package:kasagardem/plants/model/plant_details_model.dart' show Care;
+
 class MyPlantDetailModel {
   bool? success;
   String? message;
@@ -21,9 +23,10 @@ class MyPlantDetailModel {
 class PlantDetailData {
   int? userPlantId;
   PlantDetails? plant;
+  Care? care;
   ReminderModel? reminder;
 
-  PlantDetailData({this.userPlantId, this.plant, this.reminder});
+  PlantDetailData({this.userPlantId, this.plant, this.reminder, this.care});
 
   PlantDetailData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
@@ -31,6 +34,8 @@ class PlantDetailData {
     userPlantId = json['user_plant_id'];
 
     plant = json['plant'] != null ? PlantDetails.fromJson(json['plant']) : null;
+
+    care = json['care'] != null ? Care.fromMap(json['care']) : null;
 
     reminder = json['reminder'] != null
         ? ReminderModel.fromJson(json['reminder'])
@@ -407,7 +412,6 @@ class ReminderModel {
       return null;
     }
   }
-  
 
   Map<String, dynamic> toJson() {
     return {
