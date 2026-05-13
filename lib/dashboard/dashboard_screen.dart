@@ -78,6 +78,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  SizedBox(height: 10.h),
                   Obx(() {
                     controller.refreshSoilAnalysis.value;
                     return HeadingUiLayout(
@@ -195,7 +196,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
         context: Get.context!,
         onButtonPressed: () {
           Get.back();
-          Get.toNamed(Routes.login, arguments: {"question_state_passed": true});
+          Get.offAllNamed(
+            Routes.login,
+            arguments: {"question_state_passed": true},
+          );
         },
         title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
         description: source == ImagePickerSource.diagnosis

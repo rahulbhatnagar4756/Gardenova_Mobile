@@ -31,6 +31,8 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       ..roleCode = userRoleCode
       ..phoneNumber = phoneNoController.text;
 
+      
+
     var registerResponse = await authRepository.registerUser(
       registerReq: requestModel,
     );

@@ -302,11 +302,11 @@ class PlantModelDetails {
 
     /// COMMON IMAGE
     imageUrl =
-        imageRegularUrl ??
+        imageOriginalUrl ??
         imageMediumUrl ??
         imageSmallUrl ??
         imageThumbnail ??
-        imageOriginalUrl;
+        imageRegularUrl;
   }
 }
 

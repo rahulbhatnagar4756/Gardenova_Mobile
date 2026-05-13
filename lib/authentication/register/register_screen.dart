@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
@@ -14,7 +15,6 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
-
 import '../../utils/constants/app_strings.dart';
 import '../components/social_login_layout.dart';
 
@@ -54,8 +54,10 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                         orRegisterWith(context),
                         /*  orRegisterWith(context),
                   ,*/
-                        SocialLoginLayout(registerController: controller, type: AppStrings.register).paddingOnly(bottom: 25.h),
-
+                        SocialLoginLayout(
+                          registerController: controller,
+                          type: AppStrings.register,
+                        ).paddingOnly(bottom: 25.h),
                       ],
                     ),
                   ).marginSymmetric(
@@ -88,7 +90,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         textEditingController: controller.passwordController,
         errorText: AppLocalizations.of(context)!.passwordCannotBeEmpty,
         suffixIcon: IconButton(
-          color: AppColors.offWhite,
+          color: AppColors.greyIconColor,
           onPressed: () {
             controller.isPasswordObscure.value =
                 !controller.isPasswordObscure.value;
@@ -97,6 +99,21 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
               ? Icon(Icons.visibility_outlined)
               : Icon(Icons.visibility_off_outlined),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return AppLocalizations.of(context)!.passwordCannotBeEmpty;
+          }
+          if (value.length <= 6) {
+            return "Password must be more than 6 characters";
+          }
+          if (!RegExp(r'[A-Z]').hasMatch(value)) {
+            return "Password must have at least one capital letter";
+          }
+          if (!RegExp(r'[!@#\$&*~%]').hasMatch(value)) {
+            return "Password must have at least one special character";
+          }
+          return null;
+        },
       ),
     );
   }
@@ -106,15 +123,61 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+      validator: (value) {
+        // if (value == null || value.isEmpty) {
+        //   return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        // }
+        // if (!GetUtils.isEmail(value)) {
+        //   return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        // }
+        // return null;
+        final email = value?.trim() ?? '';
+
+        if (email.isEmpty) {
+          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        }
+
+        // No spaces allowed
+        if (email.contains(' ')) {
+          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        }
+
+        // Strong email regex
+        final emailRegex = RegExp(
+          r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov|co|io|info|biz)$",
+        );
+
+        if (!emailRegex.hasMatch(email)) {
+          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        }
+
+        // Prevent consecutive dots
+        if (email.contains('..')) {
+          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
+        }
+
+        return null;
+      },
     ).marginOnly(bottom: spacerSize10);
   }
 
+  // need to change
   phoneNoField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
       keyboardType: TextInputType.phone,
       textEditingController: controller.phoneNoController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return AppLocalizations.of(context)!.pleaseEnterValidPhoneNo;
+        }
+        if (value.length < 7) {
+          return "Phone number is too short";
+        }
+        return null;
+      },
     ).marginOnly(bottom: spacerSize10);
   }
 
@@ -199,7 +262,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   }
 
   register(BuildContext context) {
-    return SizedBox(width: double.infinity,
+    return SizedBox(
+      width: double.infinity,
       child: BaseButton(
         bottomPadding: true,
         onPressed: () {
@@ -234,7 +298,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h,top: 28.h);
+    ).marginOnly(bottom: 15.h, top: 28.h);
   }
 
   divider() {

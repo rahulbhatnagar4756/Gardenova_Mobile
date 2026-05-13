@@ -10,6 +10,7 @@ import '../../../dashboard/dashboard_controller.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
+import '../../../utils/utils.dart';
 import '../../model/add_plants_model.dart';
 import '../../myPlants/myPlantsList/my_plants_controller.dart';
 
@@ -57,11 +58,13 @@ class AllPlantsController extends GetxController {
     // }
     // allPlantList[index].isSelected = true;
     // allPlantList.refresh();
-
+    Utils.hideKeyboard();
     Get.toNamed(
       Routes.allPlantsDetails,
       arguments: {"plant_id": allPlantList[index].id, "screen_type": "add"},
-    );
+    )?.then((value) {
+      Utils.hideKeyboard();
+    });
   }
 
   void navigateToNext(int index) {

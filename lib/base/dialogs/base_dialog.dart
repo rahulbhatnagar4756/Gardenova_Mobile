@@ -54,10 +54,19 @@ class BaseDialog {
                     child: CommonClickWidget(
                       onTap: () => Get.back(),
                       child: Container(
-                        padding: EdgeInsets.only(top:15.w,right: 15.w,left: 15.w,bottom: 3.h),
+                        padding: EdgeInsets.only(
+                          top: 15.w,
+                          right: 15.w,
+                          left: 15.w,
+                          bottom: 3.h,
+                        ),
                         color: Colors.transparent,
-                        child: Image.asset(AppAssets.closeIc, width: 33.w,
-                          height: 33.w,),
+                        child: Image.asset(
+                          color: AppColors.greenColor,
+                          AppAssets.closeIc,
+                          width: 33.w,
+                          height: 33.w,
+                        ),
                       ),
                     ),
                   ),
@@ -70,7 +79,6 @@ class BaseDialog {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-
                         SuccessIconLayout(),
                         BaseText(
                           text: dialogTitle ?? "",
@@ -88,7 +96,8 @@ class BaseDialog {
                           fontSize: 16.sp,
                           textAlign: TextAlign.center,
                         ).marginOnly(bottom: spacerSize30),
-                        SizedBox(width: double.infinity,
+                        SizedBox(
+                          width: double.infinity,
                           child: BaseButton(
                             onPressed: onButtonPressed,
                             backgroundColor: AppColors.burntGold,
@@ -159,6 +168,7 @@ class BaseDialog {
       ),
     );
   }
+
   static void showUnauthorizedDialog({
     required BuildContext context,
     required VoidCallback onLoginPressed,

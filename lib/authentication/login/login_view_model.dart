@@ -39,9 +39,9 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           ? dotenv.env['iosClientId']!
           : dotenv.env['androidClientId']!,
     );
-    if(kDebugMode){
-      emailController.text='bishav@yopmail.com';
-      passwordController.text='Aditya@123';
+    if (kDebugMode) {
+      emailController.text = 'bishav@yopmail.com';
+      passwordController.text = 'Test@123';
     }
   }
 
@@ -133,7 +133,6 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   void getProfileDetail() async {
-    
     var response = await authRepository.fetchProfile();
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
@@ -201,5 +200,4 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       );*/
     }
   }
-
 }

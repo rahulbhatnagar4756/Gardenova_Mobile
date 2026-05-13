@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -23,6 +24,8 @@ class BaseTextField extends StatelessWidget {
     this.isTextFieldEnabled = true,
     this.onChanged,
     this.validator,
+    this.inputFormatters,
+    this.focusNode,
   });
 
   final TextEditingController? textEditingController;
@@ -41,6 +44,8 @@ class BaseTextField extends StatelessWidget {
   double? hintFontSize = 13.sp;
   final Function(String)? onChanged;
   final FormFieldValidator<String>? validator;
+  final List<dynamic>? inputFormatters;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +113,8 @@ class BaseTextField extends StatelessWidget {
       },
       obscureText: isTextObscure,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters?.cast<TextInputFormatter>(),
+      focusNode: focusNode,
     );
   }
 

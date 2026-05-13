@@ -11,7 +11,10 @@ class SettingsRepository {
   final String _deleteAccountUrl = 'api/v1/userProfile/soft-delete';
 
   fetchProfile() async {
-    var profileResponse = await ApiRepository.instance.get(profileEndPoint);
+    var profileResponse = await ApiRepository.instance.get(
+      profileEndPoint,
+      showDefaultLoader: false,
+    );
     return profileResponse;
   }
 
@@ -40,14 +43,10 @@ class SettingsRepository {
     return profileResponse;
   }
 
-  changePassword(String oldPassword,String password) async {
+  changePassword(String oldPassword, String password) async {
     var changePasswordResponse = await ApiRepository.instance.patch(
       changePasswordEndPoint,
-      {
-        ApiKeys.oldPassword:oldPassword,
-        ApiKeys.password: password,
-
-      },
+      {ApiKeys.oldPassword: oldPassword, ApiKeys.password: password},
     );
     return changePasswordResponse;
   }

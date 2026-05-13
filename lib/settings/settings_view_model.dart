@@ -83,6 +83,7 @@ class SettingsViewModel extends GetxController {
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
         response,
+        
       );
       if (profileResponse.data != null) {
         name.value = profileResponse.data!.name!;

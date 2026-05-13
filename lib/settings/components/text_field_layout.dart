@@ -68,7 +68,7 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
               ? IconButton(
                   icon: Icon(
                     isObscure ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.offWhite,
+                    color: AppColors.liteGreyColor,
                   ),
                   onPressed: () {
                     setState(() {

@@ -40,7 +40,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
           width: double.infinity,
           fit: BoxFit.cover,
           imageUrl:
-              controller.plantDetailData.value.data?.plant?.imageRegularUrl ??
+              controller.plantDetailData.value.data?.plant?.imageOriginalUrl ??
               "",
           placeholder: (context, url) =>
               const BaseShimmer(height: spacerSize350, width: double.infinity),
@@ -168,15 +168,12 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                     const Divider(color: AppColors.backgroundGrey, height: 1),
                     SizedBox(height: spacerSize16),
                     _progressCard(context),
-
                     _statsRow(controller: controller),
-
                     _upcomingEvents(controller: controller),
                     SizedBox(height: spacerSize16),
                     const Divider(color: AppColors.backgroundGrey, height: 1),
                     SizedBox(height: spacerSize16),
                     _buildPlantHistory(context),
-                    SizedBox(height: spacerSize16),
 
                     // const Divider(color: AppColors.backgroundGrey, height: 1),
                     _buildCareSections(context),
@@ -311,39 +308,16 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     final plant = controller.plantDetailData.value.data?.plant;
     if (plant == null) return const SizedBox();
 
-    // Calculate completion percentage
-    int totalFields = 20; // Choosing 20 key fields to track
+    // Calculate completion percentage based ONLY on reminder settings
+    int totalFields = 4; // Watering, Fertilizing, Pruning, General Care
     int filledFields = 0;
 
-    if (plant.commonName != null && plant.commonName!.isNotEmpty)
-      filledFields++;
-    if (plant.scientificName != null && plant.scientificName!.isNotEmpty)
-      filledFields++;
-    if (plant.family != null && plant.family!.isNotEmpty) filledFields++;
-    if (plant.genus != null && plant.genus!.isNotEmpty) filledFields++;
-    if (plant.origin != null && plant.origin!.isNotEmpty) filledFields++;
-    if (plant.type != null && plant.type!.isNotEmpty) filledFields++;
-    if (plant.cycle != null && plant.cycle!.isNotEmpty) filledFields++;
-    if (plant.watering != null && plant.watering!.isNotEmpty) filledFields++;
-    if (plant.sunlight != null && plant.sunlight!.isNotEmpty) filledFields++;
-    if (plant.hardinessMin != null) filledFields++;
-    if (plant.hardinessMax != null) filledFields++;
-    if (plant.careLevel != null && plant.careLevel!.isNotEmpty) filledFields++;
-    if (plant.growthRate != null && plant.growthRate!.isNotEmpty)
-      filledFields++;
-    if (plant.maintenance != null && plant.maintenance!.isNotEmpty)
-      filledFields++;
-    if (plant.soil != null && plant.soil!.isNotEmpty) filledFields++;
-    if (plant.pruningMonth != null && plant.pruningMonth!.isNotEmpty)
-      filledFields++;
-    if (plant.propagation != null && plant.propagation!.isNotEmpty)
-      filledFields++;
-    if (plant.description != null && plant.description!.isNotEmpty)
-      filledFields++;
-    if (plant.imageRegularUrl != null && plant.imageRegularUrl!.isNotEmpty)
-      filledFields++;
-    if (plant.careGuidesUrl != null && plant.careGuidesUrl!.isNotEmpty)
-      filledFields++;
+    // Include reminder settings in progress
+    final reminder = controller.plantDetailData.value.data?.reminder;
+    if (reminder?.wateringNotificationEnabled == true) filledFields++;
+    if (reminder?.fertilizerNotificationEnabled == true) filledFields++;
+    if (reminder?.puringNotificationEnabled == true) filledFields++;
+    if (reminder?.genericNotificationEnabled == true) filledFields++;
 
     double percentage = filledFields / totalFields;
     if (percentage > 1.0) percentage = 1.0;
@@ -538,14 +512,15 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     final reminder = controller.plantDetailData.value.data?.reminder;
     if (reminder == null) return const SizedBox();
 
+    final loc = AppLocalizations.of(context)!;
     List<Widget> historyTiles = [];
 
     if (reminder.lastWateredAt != null) {
       historyTiles.add(
         _eventTile(
           Assets.imagesWatering,
-          "${AppLocalizations.of(context)!.watered} ${_getTimeAgo(reminder.lastWateredAt!)}",
-          AppLocalizations.of(context)!.consistent,
+          loc.watering,
+          _getTimeAgo(reminder.lastWateredAt!),
         ),
       );
     }
@@ -554,8 +529,8 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
       historyTiles.add(
         _eventTile(
           Assets.imagesFertilizing,
-          "Fertilized ${_getTimeAgo(reminder.lastFertilizedAt!)}",
-          "Growing well",
+          loc.fertilizing,
+          _getTimeAgo(reminder.lastFertilizedAt!),
         ),
       );
     }
@@ -564,8 +539,18 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
       historyTiles.add(
         _eventTile(
           Assets.imagesPruning,
-          "Pruned ${_getTimeAgo(reminder.lastPrunedAt!)}",
-          "Maintaining shape",
+          loc.pruning,
+          _getTimeAgo(reminder.lastPrunedAt!),
+        ),
+      );
+    }
+
+    if (reminder.lastGenericCareAt != null) {
+      historyTiles.add(
+        _eventTile(
+          Assets.imagesGeneralNoti,
+          loc.general,
+          _getTimeAgo(reminder.lastGenericCareAt!),
         ),
       );
     }
@@ -575,7 +560,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _sectionHeader(AppLocalizations.of(context)!.plantHistory),
+        _sectionHeader(loc.plantHistory),
         SizedBox(height: spacerSize12),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -585,6 +570,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                 .toList(),
           ),
         ),
+        SizedBox(height: spacerSize16),
       ],
     );
   }
@@ -685,7 +671,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     );
   }
 
-  Widget _editPlantButton(BuildContext context) {
-    return const SizedBox();
-  }
+  // Widget _editPlantButton(BuildContext context) {
+  //   return const SizedBox();
+  // }
 }

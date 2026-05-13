@@ -215,7 +215,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                   controller.isSearching.value = true;
 
                   controller.debouncer.call(() {
-                    FocusScope.of(Get.context!).unfocus();
+                    // FocusScope.of(Get.context!).unfocus();
                     controller.callGetAllPlantListApi(searchName: value);
                   });
 

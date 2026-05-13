@@ -55,7 +55,7 @@ class PlantRecommendations extends StatelessWidget {
                 ),
                 scrollDirection: Axis.horizontal,
                 itemCount: controller.isLoading.value
-                    ? 5
+                    ? 7
                     : controller.plantRecommendationList.length,
                 itemBuilder: (context, index) {
                   PlantRecommendationsResponse? item;
