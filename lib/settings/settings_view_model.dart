@@ -42,7 +42,11 @@ class SettingsViewModel extends GetxController {
     if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {
-      getProfileDetail();
+      bool isUserLoggedIn =
+          SharedPrefsService().getBool(AppKeys.isLoggedIn) ?? false;
+      if (isUserLoggedIn) {
+        getProfileDetail();
+      }
     }
 
     super.onInit();

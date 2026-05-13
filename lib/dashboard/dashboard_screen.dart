@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import '../base/dialogs/base_dialog.dart';
 import '../base/widgets/base_text.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
@@ -60,6 +61,12 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   isBackButtonVisible: true,
                   title: AppLocalizations.of(context)!.report,
                   isAppIconVisible: false,
+                  onBackPressed: () {
+                    Get.offAllNamed(
+                      Routes.login,
+                      arguments: {"question_state_passed": true},
+                    );
+                  },
                 ),
 
           body: SizedBox(
@@ -127,47 +134,51 @@ class DashboardScreen extends GetWidget<DashboardController> {
           bottomNavigationBar: Wrap(
             runSpacing: spacerSize5,
             children: [
-              BaseButton(
-                bottomPadding: true,
-                buttonLabel: AppLocalizations.of(context)!.addPlant,
-                // )!.viewRecommendedProfessionals,
-                buttonWidth: Get.width,
-                fontSize: fontSize15,
-                onPressed: () {
-                  Get.toNamed(Routes.allPlantsScreen);
-                  return;
-                  // if (controller.isUserLoggedIn.value) {
-                  //   Get.toNamed(
-                  //     Routes.recommendedProfessionals,
-                  //     arguments: {
-                  //       "lat": controller.lat,
-                  //       "lng": controller.long,
-                  //     },
-                  //     // arguments: controller.responseId,
-                  //   );
-                  // } else {
-                  //   BaseDialog.showAlertDialog(
-                  //     context: Get.context!,
-                  //     onButtonPressed: () {
-                  //       Get.back();
-                  //       Get.toNamed(
-                  //         Routes.login,
-                  //         arguments: {"question_state_passed": true},
-                  //       );
-                  //     },
-                  //     title: AppLocalizations.of(
-                  //       Get.context!,
-                  //     )!.login.toUpperCase(),
-                  //     description: AppLocalizations.of(
-                  //       Get.context!,
-                  //     )!.pleaseLoginToSeeRecommendedProfessionals,
-                  //     buttonLabel: AppLocalizations.of(
-                  //       Get.context!,
-                  //     )!.login.toUpperCase(),
-                  //   );
-                  // }
-                },
-              ),
+              Obx(() {
+                return controller.isUserLoggedIn.value == false
+                    ? SizedBox()
+                    : BaseButton(
+                        bottomPadding: true,
+                        buttonLabel: AppLocalizations.of(context)!.addPlant,
+
+                        buttonWidth: Get.width,
+                        fontSize: fontSize15,
+                        onPressed: () {
+                          Get.toNamed(Routes.allPlantsScreen);
+                          return;
+                          // if (controller.isUserLoggedIn.value) {
+                          //   Get.toNamed(
+                          //     Routes.recommendedProfessionals,
+                          //     arguments: {
+                          //       "lat": controller.lat,
+                          //       "lng": controller.long,
+                          //     },
+                          //     // arguments: controller.responseId,
+                          //   );
+                          // } else {
+                          //   BaseDialog.showAlertDialog(
+                          //     context: Get.context!,
+                          //     onButtonPressed: () {
+                          //       Get.back();
+                          //       Get.toNamed(
+                          //         Routes.login,
+                          //         arguments: {"question_state_passed": true},
+                          //       );
+                          //     },
+                          //     title: AppLocalizations.of(
+                          //       Get.context!,
+                          //     )!.login.toUpperCase(),
+                          //     description: AppLocalizations.of(
+                          //       Get.context!,
+                          //     )!.pleaseLoginToSeeRecommendedProfessionals,
+                          //     buttonLabel: AppLocalizations.of(
+                          //       Get.context!,
+                          //     )!.login.toUpperCase(),
+                          //   );
+                          // }
+                        },
+                      );
+              }),
               // BaseBackButton(),
             ],
           ).marginSymmetric(horizontal: spacerSize20),
@@ -179,6 +190,22 @@ class DashboardScreen extends GetWidget<DashboardController> {
   void openImagePickerBottomSheet({
     ImagePickerSource source = ImagePickerSource.diagnosis,
   }) {
+    if (controller.isUserLoggedIn.value == false) {
+      BaseDialog.showAlertDialog(
+        context: Get.context!,
+        onButtonPressed: () {
+          Get.back();
+          Get.toNamed(Routes.login, arguments: {"question_state_passed": true});
+        },
+        title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+        description: source == ImagePickerSource.diagnosis
+            ? AppStrings.pleaseLoginToSeeAiDiagnosis
+            : AppStrings.pleaseLoginToMakeAiLandscapeDesign,
+        buttonLabel: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+      );
+      return;
+    }
+
     Get.bottomSheet(
       Container(
         height: Get.height * .2,

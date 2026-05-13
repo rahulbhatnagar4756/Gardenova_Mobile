@@ -124,21 +124,21 @@ class Plants {
   bool? _wateringNotificationEnabled;
   String? _wateringPreferredTime;
   int? _wateringReminderFrequency;
-  Null? _lastWateredAt;
-  Null? _nextWateredAt;
+  String? _lastWateredAt;
+  String? _nextWateredAt;
   bool? _fertilizerNotificationEnabled;
   String? _fertilizerPreferredTime;
   int? _fertilizerReminderFrequency;
-  Null? _lastFertilizedAt;
-  Null? _nextFertilizedAt;
+  String? _lastFertilizedAt;
+  String? _nextFertilizedAt;
   bool? _pruningNotificationEnabled;
   int? _pruningReminderFrequency;
-  Null? _lastPrunedAt;
-  Null? _nextPrunedAt;
+  String? _lastPrunedAt;
+  String? _nextPrunedAt;
   bool? _genericNotificationEnabled;
   int? _genericCareReminderFrequency;
-  Null? _lastGenericCareAt;
-  Null? _nextGenericCareAt;
+  String? _lastGenericCareAt;
+  String? _nextGenericCareAt;
   String? _addedAt;
   String? _createdAt;
   String? _updatedAt;
@@ -161,21 +161,21 @@ class Plants {
     bool? wateringNotificationEnabled,
     String? wateringPreferredTime,
     int? wateringReminderFrequency,
-    Null? lastWateredAt,
-    Null? nextWateredAt,
+    String? lastWateredAt,
+    String? nextWateredAt,
     bool? fertilizerNotificationEnabled,
     String? fertilizerPreferredTime,
     int? fertilizerReminderFrequency,
-    Null? lastFertilizedAt,
-    Null? nextFertilizedAt,
+    String? lastFertilizedAt,
+    String? nextFertilizedAt,
     bool? pruningNotificationEnabled,
     int? pruningReminderFrequency,
-    Null? lastPrunedAt,
-    Null? nextPrunedAt,
+    String? lastPrunedAt,
+    String? nextPrunedAt,
     bool? genericNotificationEnabled,
     int? genericCareReminderFrequency,
-    Null? lastGenericCareAt,
-    Null? nextGenericCareAt,
+    String? lastGenericCareAt,
+    String? nextGenericCareAt,
     String? addedAt,
     String? createdAt,
     String? updatedAt,
@@ -325,10 +325,10 @@ class Plants {
   int? get wateringReminderFrequency => _wateringReminderFrequency;
   set wateringReminderFrequency(int? wateringReminderFrequency) =>
       _wateringReminderFrequency = wateringReminderFrequency;
-  Null? get lastWateredAt => _lastWateredAt;
-  set lastWateredAt(Null? lastWateredAt) => _lastWateredAt = lastWateredAt;
-  Null? get nextWateredAt => _nextWateredAt;
-  set nextWateredAt(Null? nextWateredAt) => _nextWateredAt = nextWateredAt;
+  String? get lastWateredAt => _lastWateredAt;
+  set lastWateredAt(String? lastWateredAt) => _lastWateredAt = lastWateredAt;
+  String? get nextWateredAt => _nextWateredAt;
+  set nextWateredAt(String? nextWateredAt) => _nextWateredAt = nextWateredAt;
   bool? get fertilizerNotificationEnabled => _fertilizerNotificationEnabled;
   set fertilizerNotificationEnabled(bool? fertilizerNotificationEnabled) =>
       _fertilizerNotificationEnabled = fertilizerNotificationEnabled;
@@ -338,11 +338,11 @@ class Plants {
   int? get fertilizerReminderFrequency => _fertilizerReminderFrequency;
   set fertilizerReminderFrequency(int? fertilizerReminderFrequency) =>
       _fertilizerReminderFrequency = fertilizerReminderFrequency;
-  Null? get lastFertilizedAt => _lastFertilizedAt;
-  set lastFertilizedAt(Null? lastFertilizedAt) =>
+  String? get lastFertilizedAt => _lastFertilizedAt;
+  set lastFertilizedAt(String? lastFertilizedAt) =>
       _lastFertilizedAt = lastFertilizedAt;
-  Null? get nextFertilizedAt => _nextFertilizedAt;
-  set nextFertilizedAt(Null? nextFertilizedAt) =>
+  String? get nextFertilizedAt => _nextFertilizedAt;
+  set nextFertilizedAt(String? nextFertilizedAt) =>
       _nextFertilizedAt = nextFertilizedAt;
   bool? get pruningNotificationEnabled => _pruningNotificationEnabled;
   set pruningNotificationEnabled(bool? pruningNotificationEnabled) =>
@@ -350,21 +350,21 @@ class Plants {
   int? get pruningReminderFrequency => _pruningReminderFrequency;
   set pruningReminderFrequency(int? pruningReminderFrequency) =>
       _pruningReminderFrequency = pruningReminderFrequency;
-  Null? get lastPrunedAt => _lastPrunedAt;
-  set lastPrunedAt(Null? lastPrunedAt) => _lastPrunedAt = lastPrunedAt;
-  Null? get nextPrunedAt => _nextPrunedAt;
-  set nextPrunedAt(Null? nextPrunedAt) => _nextPrunedAt = nextPrunedAt;
+  String? get lastPrunedAt => _lastPrunedAt;
+  set lastPrunedAt(String? lastPrunedAt) => _lastPrunedAt = lastPrunedAt;
+  String? get nextPrunedAt => _nextPrunedAt;
+  set nextPrunedAt(String? nextPrunedAt) => _nextPrunedAt = nextPrunedAt;
   bool? get genericNotificationEnabled => _genericNotificationEnabled;
   set genericNotificationEnabled(bool? genericNotificationEnabled) =>
       _genericNotificationEnabled = genericNotificationEnabled;
   int? get genericCareReminderFrequency => _genericCareReminderFrequency;
   set genericCareReminderFrequency(int? genericCareReminderFrequency) =>
       _genericCareReminderFrequency = genericCareReminderFrequency;
-  Null? get lastGenericCareAt => _lastGenericCareAt;
-  set lastGenericCareAt(Null? lastGenericCareAt) =>
+  String? get lastGenericCareAt => _lastGenericCareAt;
+  set lastGenericCareAt(String? lastGenericCareAt) =>
       _lastGenericCareAt = lastGenericCareAt;
-  Null? get nextGenericCareAt => _nextGenericCareAt;
-  set nextGenericCareAt(Null? nextGenericCareAt) =>
+  String? get nextGenericCareAt => _nextGenericCareAt;
+  set nextGenericCareAt(String? nextGenericCareAt) =>
       _nextGenericCareAt = nextGenericCareAt;
   String? get addedAt => _addedAt;
   set addedAt(String? addedAt) => _addedAt = addedAt;

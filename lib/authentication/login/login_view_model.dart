@@ -133,6 +133,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   void getProfileDetail() async {
+    
     var response = await authRepository.fetchProfile();
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(

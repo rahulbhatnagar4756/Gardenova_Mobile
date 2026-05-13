@@ -7,7 +7,6 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/routes.dart';
 
-
 class RegisterViewModel extends GetxController with SocialSignInMixin {
   RxBool isPasswordObscure = true.obs;
   RxBool isUserAgreedToTerms = false.obs;
@@ -36,6 +35,7 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       registerReq: requestModel,
     );
     isShowLoader.value = false;
+    debugPrint("registerResponse: $registerResponse");
     if (registerResponse != null) {
       registerSuccessDialog();
     }
@@ -71,6 +71,4 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
   onCheckTermsAndCondition() {
     isUserAgreedToTerms.value = !isUserAgreedToTerms.value;
   }
-
-
 }

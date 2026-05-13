@@ -131,4 +131,10 @@ class AppStrings {
   static const String sunlight = "Sunlight";
   static const String soil = "Soil";
   static const String noDesignDataFound = "No design data found";
+
+  static const String pleaseLoginToSeeAiDiagnosis =
+      "Please log in to scan your plant, identify it, and check its health using AI.";
+
+  static const String pleaseLoginToMakeAiLandscapeDesign =
+      "Please log in to use AI-powered modern design and landscape design features.";
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
-import 'package:kasagardem/utils/constants/app_constants.dart';
 
 class CameraCaptureScreen extends StatefulWidget {
   const CameraCaptureScreen({super.key});
@@ -135,7 +134,7 @@ class _CameraCaptureScreenState extends State<CameraCaptureScreen> {
         // Darkened background outside the viewfinder
         ColorFiltered(
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.5),
+            Colors.black.withValues(alpha: .5),
             BlendMode.srcOut,
           ),
           child: Stack(

@@ -6,7 +6,6 @@ import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'landscape_design_repository.dart';
 import 'model/landscape_design_model.dart';
 

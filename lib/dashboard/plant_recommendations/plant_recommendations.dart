@@ -10,6 +10,7 @@ import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart'
     show PlantRecommendationsResponse;
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import '../../base/dialogs/base_dialog.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_keys.dart';
@@ -64,6 +65,29 @@ class PlantRecommendations extends StatelessWidget {
                   return CommonClickWidget(
                     onTap: () {
                       if (item != null) {
+                        if (controller.isUserLoggedIn.value == false) {
+                          BaseDialog.showAlertDialog(
+                            context: Get.context!,
+                            onButtonPressed: () {
+                              Get.back();
+                              Get.offAllNamed(
+                                Routes.login,
+                                arguments: {"question_state_passed": true},
+                              );
+                            },
+                            title: AppLocalizations.of(
+                              Get.context!,
+                            )!.login.toUpperCase(),
+                            description: AppLocalizations.of(
+                              Get.context!,
+                            )!.pleaseLoginToSeeRecommendedProfessionals,
+                            buttonLabel: AppLocalizations.of(
+                              Get.context!,
+                            )!.login.toUpperCase(),
+                          );
+                          return;
+                        }
+
                         Get.toNamed(
                           Routes.allPlantsDetails,
                           arguments: {

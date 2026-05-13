@@ -85,7 +85,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                   ),
                 ),
                 child: Column(
-                  spacing: spacerSize16,
+                  // spacing: spacerSize16,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
@@ -156,6 +156,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                         ),
                       ],
                     ),
+                    SizedBox(height: spacerSize16),
                     BaseText(
                       text: "",
                       fontFamily: AppKeys.inter,
@@ -163,15 +164,23 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                       textColor: AppColors.liteGreyColor,
                     ),
+                    SizedBox(height: spacerSize16),
                     const Divider(color: AppColors.backgroundGrey, height: 1),
+                    SizedBox(height: spacerSize16),
                     _progressCard(context),
+
                     _statsRow(controller: controller),
+
                     _upcomingEvents(controller: controller),
+                    SizedBox(height: spacerSize16),
                     const Divider(color: AppColors.backgroundGrey, height: 1),
+                    SizedBox(height: spacerSize16),
                     _buildPlantHistory(context),
+                    SizedBox(height: spacerSize16),
 
                     // const Divider(color: AppColors.backgroundGrey, height: 1),
                     _buildCareSections(context),
+                    SizedBox(height: spacerSize16),
                   ],
                 ),
               ),
@@ -200,50 +209,76 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
   bool _shouldShowUpcomingEvents(MyPlantDetailsController controller) {
     final reminder = controller.plantDetailData.value.data?.reminder;
     return reminder?.nextWateredAt != null ||
-        reminder?.fertilizerReminderFrequency != null ||
-        reminder?.pruningReminderFrequency != null;
+        reminder?.nextFertilizedAt != null ||
+        reminder?.nextPrunedAt != null ||
+        reminder?.nextGenericCareAt != null;
   }
 
   Widget _upcomingEvents({required MyPlantDetailsController controller}) {
-    if (!_shouldShowUpcomingEvents(controller)) {
+    final reminder = controller.plantDetailData.value.data?.reminder;
+    if (reminder == null || !_shouldShowUpcomingEvents(controller)) {
       return const SizedBox();
     }
+
     final context = Get.context!;
+    final loc = AppLocalizations.of(context)!;
+    List<Widget> eventTiles = [];
+
+    if (reminder.nextWateredAt != null) {
+      eventTiles.add(
+        _eventTile(
+          Assets.imagesWatering,
+          loc.watering,
+          "${loc.scheduledFor} ${_getDayName(context, reminder.nextWateredAt)}",
+        ),
+      );
+    }
+
+    if (reminder.nextFertilizedAt != null) {
+      eventTiles.add(
+        _eventTile(
+          Assets.imagesFertilizing,
+          loc.fertilizing,
+          "${loc.scheduledFor} ${_getDayName(context, reminder.nextFertilizedAt)}",
+        ),
+      );
+    }
+
+    if (reminder.nextPrunedAt != null) {
+      eventTiles.add(
+        _eventTile(
+          Assets.imagesPruning,
+          loc.pruning,
+          "${loc.scheduledFor} ${_getDayName(context, reminder.nextPrunedAt)}",
+        ),
+      );
+    }
+
+    if (reminder.nextGenericCareAt != null) {
+      eventTiles.add(
+        _eventTile(
+          Assets.imagesGeneralNoti,
+          loc.general,
+          "${loc.scheduledFor} ${_getDayName(context, reminder.nextGenericCareAt)}",
+        ),
+      );
+    }
+
+    if (eventTiles.isEmpty) return const SizedBox();
+
     return Column(
       spacing: spacerSize16,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(color: AppColors.backgroundGrey, height: 1),
-        _sectionHeader(AppLocalizations.of(context)!.upcomingEvents),
-        Row(
-          children: [
-            Flexible(
-              child: _eventTile(
-                Assets.imagesWatering,
-                AppLocalizations.of(context)!.watering,
-                controller
-                            .plantDetailData
-                            .value
-                            .data
-                            ?.reminder
-                            ?.nextWateredAt ==
-                        null
-                    ? ""
-                    : "${AppLocalizations.of(context)!.scheduledFor} "
-                          "${_getDayName(context, controller.plantDetailData.value.data?.reminder?.nextWateredAt)}",
-              ),
-            ),
-            SizedBox(width: 15.w),
-            Flexible(
-              child: _eventTile(
-                Assets.imagesFertilizing,
-                AppLocalizations.of(context)!.fertilizing,
-                "${AppLocalizations.of(context)!.scheduledFor} "
-                "${AppLocalizations.of(context)!.next} "
-                "${AppLocalizations.of(context)!.week}",
-              ),
-            ),
-          ],
+        _sectionHeader(loc.upcomingEvents),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: eventTiles
+                .map((tile) => tile.marginOnly(right: spacerSize12))
+                .toList(),
+          ),
         ),
       ],
     );
@@ -393,7 +428,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: spacerSize8),
+              const SizedBox(height: spacerSize16),
               const Divider(color: AppColors.backgroundGrey, height: 1),
               const SizedBox(height: spacerSize16),
               BaseText(
@@ -404,9 +439,10 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                 textColor: AppColors.greenColor,
               ).marginOnly(bottom: spacerSize20),
               _buildReminderList(controller),
+              const SizedBox(height: spacerSize16),
             ],
           )
-        : const SizedBox();
+        : const SizedBox(height: spacerSize16);
   }
 
   Widget _buildReminderList(MyPlantDetailsController controller) {
@@ -425,14 +461,14 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                 label: loc?.water ?? '',
                 value:
                     "${loc!.inText.capitalizeFirst} ${reminder.wateringReminderFrequency} ${loc.week}",
-              ),
+              ).marginOnly(right: spacerSize20),
             if ((reminder.fertilizerReminderFrequency ?? 0) > 0)
               PlantStateItem(
                 icon: Assets.imagesFertilizing,
                 label: loc!.fertilizing,
                 value:
                     "${loc.every} ${reminder.fertilizerReminderFrequency} ${loc.week}",
-              ),
+              ).marginOnly(right: spacerSize20),
             if ((reminder.pruningReminderFrequency ?? 0) > 0)
               PlantStateItem(
                 icon: Assets.imagesPruning,

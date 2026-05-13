@@ -696,57 +696,64 @@ class MainContentCard extends StatelessWidget {
           ),
         ),
         Obx(
-          () => CommonClickWidget(
-            onTap: () {
-              controller.validateAndSubmit(Get.context!);
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
-              decoration: BoxDecoration(
-                // gradient: AppColors.linearGradientForBtn,
-                color: AppColors.greenColor,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.greenColor.withOpacity(0.25),
-                    blurRadius: 12,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Container(
-                  //   padding: const EdgeInsets.all(6),
-                  //   decoration: BoxDecoration(
-                  //     color: Colors.white.withOpacity(0.18),
-                  //     shape: BoxShape.circle,
-                  //   ),
-                  //   child: Icon(
-                  //     controller.screenType.value == 'add'
-                  //         ? Icons.add_rounded
-                  //         : Icons.save_rounded,
-                  //     color: Colors.white,
-                  //     size: 15.w,
-                  //   ),
-                  // ),
-                  // SizedBox(width: 12.w),
-                  Text(
-                    controller.screenType.value == 'add'
-                        ? AppLocalizations.of(Get.context!)!.addPlant
-                        : 'Save Changes',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
+          () =>
+              (controller.plantDetailData.value.data?.alreadyAdded ?? false) !=
+                  false
+              ? SizedBox()
+              : CommonClickWidget(
+                  onTap: () {
+                    controller.validateAndSubmit(Get.context!);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.w,
+                      vertical: 14.h,
+                    ),
+                    decoration: BoxDecoration(
+                      // gradient: AppColors.linearGradientForBtn,
+                      color: AppColors.greenColor,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.greenColor.withOpacity(0.25),
+                          blurRadius: 12,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Container(
+                        //   padding: const EdgeInsets.all(6),
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.white.withOpacity(0.18),
+                        //     shape: BoxShape.circle,
+                        //   ),
+                        //   child: Icon(
+                        //     controller.screenType.value == 'add'
+                        //         ? Icons.add_rounded
+                        //         : Icons.save_rounded,
+                        //     color: Colors.white,
+                        //     size: 15.w,
+                        //   ),
+                        // ),
+                        // SizedBox(width: 12.w),
+                        Text(
+                          controller.screenType.value == 'add'
+                              ? AppLocalizations.of(Get.context!)!.addPlant
+                              : 'Save Changes',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
         ),
         // Obx(
         //   () => CommonClickWidget(

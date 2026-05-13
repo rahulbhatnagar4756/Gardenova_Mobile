@@ -1,3 +1,5 @@
+import '../../utils/utils.dart';
+
 class PlantDetailsResponseModel {
   bool? success;
   String? message;
@@ -13,30 +15,21 @@ class PlantDetailsResponseModel {
       return;
     }
 
-    success = _parseBool(json['success']);
+    success = Utils.parseBool(json['success']);
     message = json['message']?.toString();
 
     data = json['data'] != null
         ? PlantDetailsData.fromJson(json['data'])
         : null;
   }
-
-  static bool _parseBool(dynamic value) {
-    if (value == null) return false;
-
-    if (value is bool) return value;
-
-    final val = value.toString().toLowerCase();
-
-    return val == "true" || val == "1";
-  }
 }
 
 class PlantDetailsData {
   PlantModelDetails? plant;
+  bool? alreadyAdded;
   ReminderModel? reminder;
 
-  PlantDetailsData({this.plant, this.reminder});
+  PlantDetailsData({this.plant, this.alreadyAdded, this.reminder});
 
   PlantDetailsData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
@@ -45,10 +38,24 @@ class PlantDetailsData {
         ? PlantModelDetails.fromJson(json['plant'])
         : null;
 
+    alreadyAdded = Utils.parseBool(json['AlreadyAdded']);
+
     reminder = json['reminder'] != null
         ? ReminderModel.fromJson(json['reminder'])
         : null;
   }
+
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = <String, dynamic>{};
+  //   if (plant != null) {
+  //     data['plant'] = plant!.toJson();
+  //   }
+  //   data['alreadyAdded'] = alreadyAdded;
+  //   if (reminder != null) {
+  //     data['reminder'] = reminder!.toJson();
+  //   }
+  //   return data;
+  // }
 }
 
 class PlantModelDetails {
@@ -197,7 +204,7 @@ class PlantModelDetails {
     if (json == null) return;
 
     /// IDS
-    id = _parseInt(json['id']);
+    id = Utils.parseInt(json['id']);
 
     /// NAMES
     commonName = json['common_name']?.toString();
@@ -213,11 +220,9 @@ class PlantModelDetails {
     cycle = json['cycle']?.toString();
     watering = json['watering']?.toString();
 
-    wateringBenchmarkValue =
-        json['watering_benchmark_value']?.toString();
+    wateringBenchmarkValue = json['watering_benchmark_value']?.toString();
 
-    wateringBenchmarkUnit =
-        json['watering_benchmark_unit']?.toString();
+    wateringBenchmarkUnit = json['watering_benchmark_unit']?.toString();
 
     sunlight = json['sunlight']?.toString();
     soil = json['soil']?.toString();
@@ -229,11 +234,9 @@ class PlantModelDetails {
     /// DIMENSION
     dimensionType = json['dimension_type']?.toString();
 
-    dimensionMinValue =
-        json['dimension_min_value']?.toString();
+    dimensionMinValue = json['dimension_min_value']?.toString();
 
-    dimensionMaxValue =
-        json['dimension_max_value']?.toString();
+    dimensionMaxValue = json['dimension_max_value']?.toString();
 
     dimensionUnit = json['dimension_unit']?.toString();
 
@@ -256,27 +259,25 @@ class PlantModelDetails {
     plantAnatomy = json['plant_anatomy']?.toString();
 
     /// FLAGS
-    droughtTolerant = _parseBool(json['drought_tolerant']);
-    saltTolerant = _parseBool(json['salt_tolerant']);
-    thorny = _parseBool(json['thorny']);
-    invasive = _parseBool(json['invasive']);
-    tropical = _parseBool(json['tropical']);
-    indoor = _parseBool(json['indoor']);
-    flowers = _parseBool(json['flowers']);
-    cones = _parseBool(json['cones']);
-    fruits = _parseBool(json['fruits']);
-    edibleFruit = _parseBool(json['edible_fruit']);
-    leaf = _parseBool(json['leaf']);
-    edibleLeaf = _parseBool(json['edible_leaf']);
-    seeds = _parseBool(json['seeds']);
-    cuisine = _parseBool(json['cuisine']);
-    medicinal = _parseBool(json['medicinal']);
+    droughtTolerant = Utils.parseBool(json['drought_tolerant']);
+    saltTolerant = Utils.parseBool(json['salt_tolerant']);
+    thorny = Utils.parseBool(json['thorny']);
+    invasive = Utils.parseBool(json['invasive']);
+    tropical = Utils.parseBool(json['tropical']);
+    indoor = Utils.parseBool(json['indoor']);
+    flowers = Utils.parseBool(json['flowers']);
+    cones = Utils.parseBool(json['cones']);
+    fruits = Utils.parseBool(json['fruits']);
+    edibleFruit = Utils.parseBool(json['edible_fruit']);
+    leaf = Utils.parseBool(json['leaf']);
+    edibleLeaf = Utils.parseBool(json['edible_leaf']);
+    seeds = Utils.parseBool(json['seeds']);
+    cuisine = Utils.parseBool(json['cuisine']);
+    medicinal = Utils.parseBool(json['medicinal']);
 
-    poisonousToHumans =
-        _parseBool(json['poisonous_to_humans']);
+    poisonousToHumans = Utils.parseBool(json['poisonous_to_humans']);
 
-    poisonousToPets =
-        _parseBool(json['poisonous_to_pets']);
+    poisonousToPets = Utils.parseBool(json['poisonous_to_pets']);
 
     /// SEASONS
     floweringSeason = json['flowering_season']?.toString();
@@ -287,20 +288,15 @@ class PlantModelDetails {
     description = json['description']?.toString();
 
     /// IMAGES
-    imageOriginalUrl =
-        json['image_original_url']?.toString();
+    imageOriginalUrl = json['image_original_url']?.toString();
 
-    imageRegularUrl =
-        json['image_regular_url']?.toString();
+    imageRegularUrl = json['image_regular_url']?.toString();
 
-    imageMediumUrl =
-        json['image_medium_url']?.toString();
+    imageMediumUrl = json['image_medium_url']?.toString();
 
-    imageSmallUrl =
-        json['image_small_url']?.toString();
+    imageSmallUrl = json['image_small_url']?.toString();
 
-    imageThumbnail =
-        json['image_thumbnail']?.toString();
+    imageThumbnail = json['image_thumbnail']?.toString();
 
     imageLicense = json['image_license']?.toString();
 
@@ -312,27 +308,8 @@ class PlantModelDetails {
         imageThumbnail ??
         imageOriginalUrl;
   }
-
-  /// HELPERS
-
-  static bool _parseBool(dynamic value) {
-    if (value == null) return false;
-
-    if (value is bool) return value;
-
-    final val = value.toString().toLowerCase();
-
-    return val == "true" || val == "1";
-  }
-
-  static int? _parseInt(dynamic value) {
-    if (value == null) return null;
-
-    if (value is int) return value;
-
-    return int.tryParse(value.toString());
-  }
 }
+
 /*
 class PlantModelDetails {
   /// =========================
@@ -928,61 +905,65 @@ class ReminderModel {
     if (json == null) return;
 
     /// 🌱 Watering
-    wateringReminderFrequency = _parseInt(json['watering_reminder_frequency']);
+    wateringReminderFrequency = Utils.parseInt(
+      json['watering_reminder_frequency'],
+    );
 
-    wateringNotificationEnabled = _parseBool(
+    wateringNotificationEnabled = Utils.parseBool(
       json['watering_notification_enabled'],
     );
 
     wateringPreferredTime = json['watering_preferred_time']?.toString();
 
-    nextWateredAt = _parseDate(json['next_watered_at']);
+    nextWateredAt = Utils.parseDate(json['next_watered_at']);
 
-    lastWateredAt = _parseDate(json['last_watered_at']);
+    lastWateredAt = Utils.parseDate(json['last_watered_at']);
 
     /// 🌿 Fertilizer
-    fertilizerReminderFrequency = _parseInt(
+    fertilizerReminderFrequency = Utils.parseInt(
       json['fertilizer_reminder_frequency'],
     );
 
-    fertilizerNotificationEnabled = _parseBool(
+    fertilizerNotificationEnabled = Utils.parseBool(
       json['fertilizer_notification_enabled'],
     );
 
     fertilizerPreferredTime = json['fertilizer_preferred_time']?.toString();
 
-    nextFertilizedAt = _parseDate(json['next_fertilized_at']);
+    nextFertilizedAt = Utils.parseDate(json['next_fertilized_at']);
 
-    lastFertilizedAt = _parseDate(json['last_fertilized_at']);
+    lastFertilizedAt = Utils.parseDate(json['last_fertilized_at']);
 
     /// ✂️ Pruning
-    pruningReminderFrequency = _parseInt(json['pruning_reminder_frequency']);
+    pruningReminderFrequency = Utils.parseInt(
+      json['pruning_reminder_frequency'],
+    );
 
     /// API TYPO FIX
-    // pruningNotificationEnabled = _parseBool(
+    // pruningNotificationEnabled = Utils.parseBool(
     //   json['puring_notification_enabled'],
     // );
-    pruningNotificationEnabled = _parseBool(
+    pruningNotificationEnabled = Utils.parseBool(
       json['puring_notification_enabled'] ??
           json['pruning_notification_enabled'],
     );
 
-    nextPrunedAt = _parseDate(json['next_pruned_at']);
+    nextPrunedAt = Utils.parseDate(json['next_pruned_at']);
 
-    lastPrunedAt = _parseDate(json['last_pruned_at']);
+    lastPrunedAt = Utils.parseDate(json['last_pruned_at']);
 
     /// 🧪 Generic Care
-    genericCareReminderFrequency = _parseInt(
+    genericCareReminderFrequency = Utils.parseInt(
       json['generic_care_reminder_frequency'],
     );
 
-    genericNotificationEnabled = _parseBool(
+    genericNotificationEnabled = Utils.parseBool(
       json['generic_notification_enabled'],
     );
 
-    nextGenericCareAt = _parseDate(json['next_generic_care_at']);
+    nextGenericCareAt = Utils.parseDate(json['next_generic_care_at']);
 
-    lastGenericCareAt = _parseDate(json['last_generic_care_at']);
+    lastGenericCareAt = Utils.parseDate(json['last_generic_care_at']);
   }
 
   Map<String, dynamic> toJson() {
@@ -1024,32 +1005,4 @@ class ReminderModel {
   /// =========================
   /// SAFE HELPERS
   /// =========================
-
-  static bool _parseBool(dynamic value) {
-    if (value == null) return false;
-
-    if (value is bool) return value;
-
-    final val = value.toString().toLowerCase();
-
-    return val == "true" || val == "1";
-  }
-
-  static int _parseInt(dynamic value) {
-    if (value == null) return 0;
-
-    if (value is int) return value;
-
-    return int.tryParse(value.toString()) ?? 0;
-  }
-
-  static DateTime? _parseDate(dynamic value) {
-    if (value == null) return null;
-
-    try {
-      return DateTime.parse(value.toString()).toLocal();
-    } catch (_) {
-      return null;
-    }
-  }
 }
