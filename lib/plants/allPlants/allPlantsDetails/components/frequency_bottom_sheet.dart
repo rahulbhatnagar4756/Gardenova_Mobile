@@ -50,7 +50,7 @@ class FrequencyBottomSheet extends StatelessWidget {
                 text: AppLocalizations.of(context)!.selectFrequency,
                 fontFamily: AppKeys.inter,
                 fontWeight: FontWeight.w500,
-                textColor: AppColors.darkGold,
+                textColor: AppColors.greenColor,
                 fontSize: fontSize16,
               ),
               IconButton(
@@ -60,33 +60,33 @@ class FrequencyBottomSheet extends StatelessWidget {
             ],
           ),
 
-      ListView.separated(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemCount: controller.frequencyOptions.length,
-        separatorBuilder: (context, index) =>
-            Divider(color: AppColors.offWhite10),
-        itemBuilder: (context, index) {
-          final value = controller.frequencyOptions[index];
+          ListView.separated(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: controller.frequencyOptions.length,
+            separatorBuilder: (context, index) =>
+                Divider(color: AppColors.offWhite10),
+            itemBuilder: (context, index) {
+              final value = controller.frequencyOptions[index];
 
-          return GestureDetector(
-            onTap: () {
-              updateFrequency(value);
-              Get.back();
+              return GestureDetector(
+                onTap: () {
+                  updateFrequency(value);
+                  Get.back();
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: spacerSize6),
+                  child: BaseText(
+                    text: _getFrequencyText(value),
+                    fontFamily: AppKeys.inter,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.white,
+                    fontSize: fontSize15,
+                  ),
+                ),
+              );
             },
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: spacerSize6),
-              child: BaseText(
-                text: _getFrequencyText(value),
-                fontFamily: AppKeys.inter,
-                fontWeight: FontWeight.w500,
-                textColor: Colors.white,
-                fontSize: fontSize15,
-              ),
-            ),
-          );
-        },
-      ),
+          ),
         ],
       ),
     );
