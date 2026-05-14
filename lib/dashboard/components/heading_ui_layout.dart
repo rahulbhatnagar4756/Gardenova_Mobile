@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -12,6 +13,7 @@ class HeadingUiLayout extends StatelessWidget {
   final double spacing;
   final bool? isFilterShow;
   final Function()? onTabFilter;
+  final double? titleLeftPadding;
 
 
   const HeadingUiLayout({
@@ -20,7 +22,8 @@ class HeadingUiLayout extends StatelessWidget {
     this.sectionTitle,
     this.spacing = spacerSize10,
     this.isFilterShow =false,
-    this.onTabFilter
+    this.onTabFilter ,
+    this.titleLeftPadding=0
   });
 
   @override
@@ -39,7 +42,7 @@ class HeadingUiLayout extends StatelessWidget {
               fontSize: fontSize17,
               fontWeight: FontWeight.w500,
               text: sectionTitle ?? "",
-            ),
+            ).marginOnly(left: titleLeftPadding ?? 0),
             Visibility(
               visible: isFilterShow??false,
               child: InkWell(

@@ -110,42 +110,58 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     )
                   : SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: spacerSize20),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, rowIndex) {
-                            int firstIndex = rowIndex * 2;
-                            int secondIndex = firstIndex + 1;
+                      sliver: SliverGrid(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          Plants plant = controller.allPlantList[index];
 
-                            Plants firstPlant =
-                                controller.allPlantList[firstIndex];
-
-                            Plants? secondPlant =
-                                secondIndex < controller.allPlantList.length
-                                ? controller.allPlantList[secondIndex]
-                                : null;
-
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: spacerSize15),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: plantCard(firstPlant, firstIndex),
-                                  ),
-                                  SizedBox(width: spacerSize15),
-                                  Expanded(
-                                    child: secondPlant != null
-                                        ? plantCard(secondPlant, secondIndex)
-                                        : SizedBox(),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          childCount: (controller.allPlantList.length / 2)
-                              .ceil(),
+                          return plantCard(plant, index);
+                        }, childCount: controller.allPlantList.length),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.9, // adjust based on card height
+                          crossAxisSpacing: spacerSize15,
+                          mainAxisSpacing: spacerSize15,
                         ),
                       ),
                     ),
+              // : SliverPadding(
+              //     padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+              //     sliver: SliverList(
+              //       delegate: SliverChildBuilderDelegate(
+              //         (context, rowIndex) {
+              //           int firstIndex = rowIndex * 2;
+              //           int secondIndex = firstIndex + 1;
+
+              //           Plants firstPlant =
+              //               controller.allPlantList[firstIndex];
+
+              //           Plants? secondPlant =
+              //               secondIndex < controller.allPlantList.length
+              //               ? controller.allPlantList[secondIndex]
+              //               : null;
+
+              //           return Padding(
+              //             padding: EdgeInsets.only(bottom: spacerSize15),
+              //             child: Row(
+              //               children: [
+              //                 Expanded(
+              //                   child: plantCard(firstPlant, firstIndex),
+              //                 ),
+              //                 SizedBox(width: spacerSize15),
+              //                 Expanded(
+              //                   child: secondPlant != null
+              //                       ? plantCard(secondPlant, secondIndex)
+              //                       : SizedBox(),
+              //                 ),
+              //               ],
+              //             ),
+              //           );
+              //         },
+              //         childCount: (controller.allPlantList.length / 2)
+              //             .ceil(),
+              //       ),
+              //     ),
+              //   ),
 
               /// 🔹 BOTTOM LOAD MORE LOADER
               SliverToBoxAdapter(
@@ -153,6 +169,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                   if (controller.isLoadMoreRunning.value) {
                     return Padding(
                       padding: EdgeInsets.only(
+                        top: spacerSize20,
                         left: spacerSize20,
                         right: spacerSize20,
                         bottom: spacerSize20,
@@ -313,7 +330,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                   BaseText(
                     text: title,
                     fontWeight: FontWeight.w600,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   // SizedBox(height: spacerSize2),
@@ -321,7 +338,8 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     text: description,
                     fontSize: fontSize12,
                     textColor: AppColors.liteGreyColor,
-                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   SizedBox(height: spacerSize10),
                 ],

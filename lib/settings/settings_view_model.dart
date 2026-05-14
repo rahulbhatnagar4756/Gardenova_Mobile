@@ -14,6 +14,7 @@ import 'package:kasagardem/settings/settings_repository.dart';
 
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
+import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
 
@@ -61,6 +62,17 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> pickImage({required bool isCamera}) async {
+    print('pickImage gallery t0 source:  $isCamera');
+    // Permission check
+    if (isCamera) {
+      bool hasPermission = await PermissionManager.handleCameraPermission();
+      print('pickImage gallery t0.5 hasPermission: $hasPermission');
+      if (!hasPermission) {
+        return;
+      }
+      print('pickImage gallery t0.5 source: $hasPermission');
+    }
+
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile = await picker.pickImage(
@@ -83,7 +95,6 @@ class SettingsViewModel extends GetxController {
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
         response,
-        
       );
       if (profileResponse.data != null) {
         name.value = profileResponse.data!.name!;

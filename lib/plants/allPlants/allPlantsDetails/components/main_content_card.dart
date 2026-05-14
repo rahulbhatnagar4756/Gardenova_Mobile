@@ -8,7 +8,6 @@ import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_to
 
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
-import '../../../../base/widgets/base_webview_screen.dart';
 import '../../../../base/widgets/common_click_widget.dart';
 import '../../../../base/widgets/full_screen_image_preview.dart';
 import '../../../../generated/assets.dart';
@@ -25,7 +24,6 @@ import 'plant_propagation_section.dart';
 import 'quick_info_section.dart';
 import 'special_traits_section.dart';
 import 'care_guide_section.dart';
-import '../../../../dashboard/plants_diagnostic/widgets/care_info_tile.dart';
 
 class MainContentCard extends StatelessWidget {
   final AllPlantsDetailsController controller;

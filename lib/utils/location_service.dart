@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
+import '../base/dialogs/base_dialog.dart';
 import '../l10n/app_localizations.dart';
 import 'constants/app_constants.dart';
 
@@ -73,50 +74,78 @@ class LocationService {
   }
 
   /// 🔹 Dialog: GPS OFF
+  // Future<void> _showLocationServiceDialog() async {
+  //   await Get.dialog(
+  //     AlertDialog(
+  //       title: const Text(AppStrings.locationDisabled),
+
+  //       content: const Text(AppStrings.enableLocationServices),
+
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Get.back(),
+  //           child: const Text(AppStrings.cancel),
+  //         ),
+  //         TextButton(
+  //           onPressed: () async {
+  //             await Geolocator.openLocationSettings();
+  //             Get.back();
+  //           },
+  //           child: const Text(AppStrings.openSettings),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // /// 🔹 Dialog: Permission permanently denied
+  // Future<void> _showPermissionDeniedDialog() async {
+  //   await Get.dialog(
+  //     AlertDialog(
+  //       title: const Text(AppStrings.permissionRequired),
+  //       content: const Text(AppStrings.locationPermissionPermanentlyDenied),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Get.back(),
+  //           child: const Text(AppStrings.cancel),
+  //         ),
+  //         TextButton(
+  //           onPressed: () async {
+  //             await Geolocator.openAppSettings();
+  //             Get.back();
+  //           },
+  //           child: const Text(AppStrings.openSettings),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  /// LOCATION SERVICE OFF
   Future<void> _showLocationServiceDialog() async {
-    await Get.dialog(
-      AlertDialog(
-        title: const Text(AppStrings.locationDisabled),
-
-        content: const Text(AppStrings.enableLocationServices),
-
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text(AppStrings.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              await Geolocator.openLocationSettings();
-              Get.back();
-            },
-            child: const Text(AppStrings.openSettings),
-          ),
-        ],
-      ),
+    BaseDialog.showAlertDialog(
+      context: Get.context!,
+      title: AppStrings.locationDisabled,
+      description: AppStrings.enableLocationServices,
+      buttonLabel: AppStrings.openSettings,
+      onButtonPressed: () async {
+        Get.back();
+        await Geolocator.openLocationSettings();
+      },
     );
   }
 
-  /// 🔹 Dialog: Permission permanently denied
+  /// LOCATION PERMISSION DENIED FOREVER
   Future<void> _showPermissionDeniedDialog() async {
-    await Get.dialog(
-      AlertDialog(
-        title: const Text(AppStrings.permissionRequired),
-        content: const Text(AppStrings.locationPermissionPermanentlyDenied),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text(AppStrings.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              await Geolocator.openAppSettings();
-              Get.back();
-            },
-            child: const Text(AppStrings.openSettings),
-          ),
-        ],
-      ),
+    BaseDialog.showAlertDialog(
+      context: Get.context!,
+      title: AppStrings.permissionRequired,
+      description: AppStrings.locationPermissionPermanentlyDenied,
+      buttonLabel: AppStrings.openSettings,
+      onButtonPressed: () async {
+        Get.back();
+        await Geolocator.openAppSettings();
+      },
     );
   }
 }

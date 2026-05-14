@@ -119,7 +119,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                     }, childCount: controller.myPlantList.length),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: .84,
+                      childAspectRatio: .81,
                       crossAxisSpacing: 8.w,
                       mainAxisSpacing: 8.w,
                     ),

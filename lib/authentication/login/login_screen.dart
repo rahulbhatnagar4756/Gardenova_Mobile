@@ -42,75 +42,77 @@ class LoginScreen extends GetWidget<LoginViewModel> {
       }else{
           Get.back();
         }},*/
-      child: Scaffold(
-        backgroundColor: AppColors.appColor,
-        appBar:  BaseAppBar(
-          // isAppIconVisible: false,
-          isBackButtonVisible: Get.key.currentState!.canPop(),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child:
-                    BaseForm(
-                      formKey: controller.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          // BasBBackButton(),
-                          Obx(
-                            () => HeaderLogoLayout(
-                              title: AppLocalizations.of(context)!.loginAccount,
-                              subTitle:
-                                  controller.accountType.value ==
-                                      AppKeys.professional
-                                  ? AppLocalizations.of(
-                                      context,
-                                    )!.loginAccountProfessionalSubTitle
-                                  : AppLocalizations.of(
-                                      context,
-                                    )!.loginAccountSubTitle,
+      child: GestureDetector(onTap: ()=>controller.onTapClick(),
+        child: Scaffold(
+          backgroundColor: AppColors.appColor,
+          appBar:  BaseAppBar(
+            // isAppIconVisible: false,
+            isBackButtonVisible: Get.key.currentState!.canPop(),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child:
+                      BaseForm(
+                        formKey: controller.formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            // BasBBackButton(),
+                            Obx(
+                              () => HeaderLogoLayout(
+                                title: AppLocalizations.of(context)!.loginAccount,
+                                subTitle:
+                                    controller.accountType.value ==
+                                        AppKeys.professional
+                                    ? AppLocalizations.of(
+                                        context,
+                                      )!.loginAccountProfessionalSubTitle
+                                    : AppLocalizations.of(
+                                        context,
+                                      )!.loginAccountSubTitle,
+                              ),
                             ),
-                          ),
-                          emailField(context),
-                          passwordField(context),
-                          forgotPassword(context),
-                          login(context),
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: orLoginWith(context),
-                          ),
-
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: SocialLoginLayout(
-                              loginController: controller,
-                              type: AppStrings.login,
+                            emailField(context),
+                            passwordField(context),
+                            forgotPassword(context),
+                            login(context),
+                            Visibility(
+                              visible:
+                                  controller.accountType.value !=
+                                  AppKeys.professional,
+                              child: orLoginWith(context),
                             ),
-                          ),
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: dontHaveAnAccount(context),
-                            ).marginOnly(top: 130.h),
-                          ),
-                        ],
+        
+                            Visibility(
+                              visible:
+                                  controller.accountType.value !=
+                                  AppKeys.professional,
+                              child: SocialLoginLayout(
+                                loginController: controller,
+                                type: AppStrings.login,
+                              ),
+                            ),
+                            Visibility(
+                              visible:
+                                  controller.accountType.value !=
+                                  AppKeys.professional,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: dontHaveAnAccount(context),
+                              ).marginOnly(top: 130.h),
+                            ),
+                          ],
+                        ),
+                      ).marginSymmetric(
+                        horizontal: spacerSize20,
+                        vertical: spacerSize0,
                       ),
-                    ).marginSymmetric(
-                      horizontal: spacerSize20,
-                      vertical: spacerSize0,
-                    ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

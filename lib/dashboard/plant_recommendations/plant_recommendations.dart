@@ -45,6 +45,10 @@ class PlantRecommendations extends StatelessWidget {
                 ),
               )
             : GridView.builder(
+                padding: EdgeInsets.only(
+                  left: spacerSize20,
+                  right: spacerSize20,
+                ),
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

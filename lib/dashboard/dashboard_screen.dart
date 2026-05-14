@@ -84,7 +84,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                     return HeadingUiLayout(
                       sectionTitle: AppLocalizations.of(context)!.overview,
                       child: SoilAnalysis(chartData: controller.chartData),
-                    );
+                    ).marginOnly(left: spacerSize20, right: spacerSize20);
                   }),
                   // const SizedBox(height: spacerSize15),
                   // HeadingUiLayout(
@@ -105,7 +105,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                         );
                       },
                     ),
-                  ),
+                  ).marginOnly(left: spacerSize20, right: spacerSize20),
                   const SizedBox(height: spacerSize15),
                   HeadingUiLayout(
                     sectionTitle: AppStrings.aiLandscapeDesign,
@@ -116,9 +116,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
                         );
                       },
                     ),
-                  ),
+                  ).marginOnly(left: spacerSize20, right: spacerSize20),
                   const SizedBox(height: spacerSize15),
                   HeadingUiLayout(
+                    titleLeftPadding: spacerSize20,
                     sectionTitle: AppLocalizations.of(
                       context,
                     )!.plantRecommendations,
@@ -128,7 +129,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   ),
                   SizedBox(height: 60.h),
                 ],
-              ).marginOnly(left: spacerSize20, right: spacerSize20),
+              ),
             ),
           ),
 

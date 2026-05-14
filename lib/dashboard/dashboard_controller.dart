@@ -14,6 +14,7 @@ import '../base/dialogs/base_dialog.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_service.dart';
+import '../utils/permission_manager.dart';
 
 enum ImagePickerSource { diagnosis, landscape }
 
@@ -268,6 +269,17 @@ class DashboardController extends GetxController {
     ImagePickerSource source = ImagePickerSource.diagnosis,
   }) async {
     try {
+      print('pickImage t0 source: $source AND $isCamera');
+      // Permission check
+      if (isCamera) {
+        bool hasPermission = await PermissionManager.handleCameraPermission();
+        print('pickImage t0.5 hasPermission: $hasPermission');
+        if (!hasPermission) {
+          return;
+        }
+        print('pickImage t0.5 source: $source');
+      }
+
       print('pickImage t1 source: $source');
 
       // Fetch location first if not available (only for diagnosis)

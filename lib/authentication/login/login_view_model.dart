@@ -200,4 +200,6 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       );*/
     }
   }
+
+  onTapClick() {}
 }

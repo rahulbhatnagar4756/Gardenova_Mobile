@@ -21,11 +21,10 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../../allPlants/allPlantsDetails/components/care_guide_section.dart';
 import '../../../allPlants/allPlantsDetails/components/care_overview_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_classification_section.dart';
-import '../../../allPlants/allPlantsDetails/components/plant_health_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_propagation_section.dart';
 import '../../../allPlants/allPlantsDetails/components/quick_info_section.dart';
 import '../../../allPlants/allPlantsDetails/components/special_traits_section.dart';
-import '../../../model/plant_details_model.dart' show PlantModelDetails, Care;
+import '../../../model/plant_details_model.dart' show PlantModelDetails;
 
 class MyPlantDetailsSuccessView extends StatelessWidget {
   final MyPlantDetailsController controller;
