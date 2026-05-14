@@ -119,6 +119,8 @@ class Plants {
   bool? _edibleFruit;
   bool? _flowers;
   bool? _indoor;
+
+  String? _imageUrl;
   String? _imageOriginalUrl;
   String? _healthStatus;
   bool? _wateringNotificationEnabled;
@@ -156,6 +158,7 @@ class Plants {
     bool? edibleFruit,
     bool? flowers,
     bool? indoor,
+    String? imageurl,
     String? imageOriginalUrl,
     String? healthStatus,
     bool? wateringNotificationEnabled,
@@ -216,6 +219,9 @@ class Plants {
     }
     if (imageOriginalUrl != null) {
       this._imageOriginalUrl = imageOriginalUrl;
+    }
+    if (imageUrl != null) {
+      this._imageUrl = imageUrl;
     }
     if (healthStatus != null) {
       this._healthStatus = healthStatus;
@@ -311,9 +317,15 @@ class Plants {
   set flowers(bool? flowers) => _flowers = flowers;
   bool? get indoor => _indoor;
   set indoor(bool? indoor) => _indoor = indoor;
+
   String? get imageOriginalUrl => _imageOriginalUrl;
   set imageOriginalUrl(String? imageOriginalUrl) =>
       _imageOriginalUrl = imageOriginalUrl;
+  String? get imageUrl => _imageUrl;
+  set imageUrl(String? imageUrl) => _imageUrl = imageUrl;
+
+
+
   String? get healthStatus => _healthStatus;
   set healthStatus(String? healthStatus) => _healthStatus = healthStatus;
   bool? get wateringNotificationEnabled => _wateringNotificationEnabled;
@@ -388,6 +400,7 @@ class Plants {
     _flowers = json['flowers'];
     _indoor = json['indoor'];
     _imageOriginalUrl = json['image_original_url'];
+    _imageUrl = json['image_url'];
     _healthStatus = json['health_status'];
     _wateringNotificationEnabled = json['watering_notification_enabled'];
     _wateringPreferredTime = json['watering_preferred_time'];
@@ -427,6 +440,7 @@ class Plants {
     data['flowers'] = this._flowers;
     data['indoor'] = this._indoor;
     data['image_original_url'] = this._imageOriginalUrl;
+    data['image_url'] = this._imageUrl;
     data['health_status'] = this._healthStatus;
     data['watering_notification_enabled'] = this._wateringNotificationEnabled;
     data['watering_preferred_time'] = this._wateringPreferredTime;

@@ -90,7 +90,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         textEditingController: controller.passwordController,
         errorText: AppLocalizations.of(context)!.passwordCannotBeEmpty,
         suffixIcon: IconButton(
-          color: AppColors.greyIconColor,
+          color: AppColors.liteGreyColor,
           onPressed: () {
             controller.isPasswordObscure.value =
                 !controller.isPasswordObscure.value;
@@ -101,17 +101,24 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return AppLocalizations.of(context)!.passwordCannotBeEmpty;
+            return AppLocalizations.of(context)!.passwordFieldCannotBeEmpty;
           }
-          if (value.length <= 6) {
-            return "Password must be more than 6 characters";
+
+          // Minimum 8 characters
+          if (value.length < 8) {
+            return 'Password must be at least 8 characters';
           }
+
+          // At least one uppercase letter
           if (!RegExp(r'[A-Z]').hasMatch(value)) {
-            return "Password must have at least one capital letter";
+            return 'Password must contain at least one capital letter';
           }
-          if (!RegExp(r'[!@#\$&*~%]').hasMatch(value)) {
-            return "Password must have at least one special character";
+
+          // At least one special character
+          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+            return 'Password must contain at least one special character';
           }
+
           return null;
         },
       ),

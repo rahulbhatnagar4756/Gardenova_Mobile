@@ -21,6 +21,7 @@ mixin SocialSignInMixin {
   Future<UserCredential?> signInWithGoogle(
     VoidCallback registerGoogleToken,
   ) async {
+    debugPrint("signInWithGoogle .idToken::::::: start");
     try {
       final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
@@ -28,7 +29,9 @@ mixin SocialSignInMixin {
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
-      debugPrint("googleAuth.idToken:::::::${googleAuth.idToken}");
+      debugPrint(
+        "signInWithGoogle googleAuth.idToken:::::::${googleAuth.idToken}",
+      );
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);
       registerGoogleToken();
@@ -37,7 +40,7 @@ mixin SocialSignInMixin {
       debugPrint(e.message);
       return null;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('signInWithGoogle signInWithGoogle $e');
       return null;
     } finally {}
   }

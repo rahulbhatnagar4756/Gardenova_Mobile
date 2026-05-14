@@ -299,7 +299,12 @@ class PlantRecommendationsResponse {
     _genusName = json['genusName'];
     _familyName = json['familyName'];
     _commonName = json['commonName'];
-    _image = json['image'];
+    // _image = json['image'];
+    if (json.containsKey('image_url')) {
+      _image = json['image_url'] ?? json['image'] ?? '';
+    } else {
+      _image = json['image'];
+    }
     _plantType = json['plantType'];
     _growthHabit = json['growthHabit'];
     _edible = json['edible'];
@@ -398,6 +403,7 @@ class PlantRecommendationsResponse {
     map['familyName'] = _familyName;
     map['commonName'] = _commonName;
     map['image'] = _image;
+    map['image_url'] = _image;
     map['plantType'] = _plantType;
     map['growthHabit'] = _growthHabit;
     map['edible'] = _edible;

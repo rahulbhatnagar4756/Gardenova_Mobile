@@ -22,6 +22,7 @@ class ForgotPasswordViewModel extends GetxController {
   late final FocusNode focusNode;
   late final GlobalKey<FormState> sendOtpFormKey;
   late final GlobalKey<FormState> verifyOtpFormKey;
+  final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
   AuthRepository authRepository = AuthRepository();
   Timer? timer;
   RxInt start = 300.obs;
@@ -99,9 +100,7 @@ class ForgotPasswordViewModel extends GetxController {
       BaseDialog.showFullScreenDialog(
         barrieDismissible: false,
         Get.context!,
-        buttonLabel: AppLocalizations.of(
-          Get.context!,
-        )!.backToLogin,
+        buttonLabel: AppLocalizations.of(Get.context!)!.backToLogin,
         dialogTitle: AppLocalizations.of(Get.context!)!.passwordChanged,
         dialogDescription: AppLocalizations.of(
           Get.context!,
@@ -123,6 +122,4 @@ class ForgotPasswordViewModel extends GetxController {
     focusNode.dispose();
     super.dispose();
   }
-
-
 }

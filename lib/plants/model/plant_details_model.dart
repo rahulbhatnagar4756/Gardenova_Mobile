@@ -335,12 +335,22 @@ class PlantModelDetails {
     imageLicense = json['image_license']?.toString();
 
     /// COMMON IMAGE
-    imageUrl =
-        imageOriginalUrl ??
-        imageMediumUrl ??
-        imageSmallUrl ??
-        imageThumbnail ??
-        imageRegularUrl;
+    if (json.containsKey('image_url') && json['image_url'] != null) {
+      imageUrl =
+          json['image_url'] ??
+          imageOriginalUrl ??
+          imageMediumUrl ??
+          imageSmallUrl ??
+          imageThumbnail ??
+          imageRegularUrl;
+    } else {
+      imageUrl =
+          imageOriginalUrl ??
+          imageMediumUrl ??
+          imageSmallUrl ??
+          imageThumbnail ??
+          imageRegularUrl;
+    }
   }
 }
 

@@ -20,6 +20,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../../allPlants/allPlantsDetails/components/care_guide_section.dart';
 import '../../../allPlants/allPlantsDetails/components/care_overview_section.dart';
+import '../../../allPlants/allPlantsDetails/components/plant_basic_requirements_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_classification_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_propagation_section.dart';
 import '../../../allPlants/allPlantsDetails/components/quick_info_section.dart';
@@ -599,6 +600,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
     return Column(
       spacing: spacerSize16,
       children: [
+        PlantBasicRequirementsSection(plant: plantModel),
         QuickInfoSection(plant: plantModel),
         CareOverviewSection(plant: plantModel),
         if (controller.plantDetailData.value.data?.care != null)
