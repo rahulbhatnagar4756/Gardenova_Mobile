@@ -44,12 +44,31 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                                 context,
                               )!.currentPassword,
                               isTextObscure: true,
+                                        
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return AppLocalizations.of(
                                     context,
                                   )!.passwordFieldCannotBeEmpty;
                                 }
+
+                                // Minimum 8 characters
+                                if (value.length < 8) {
+                                  return 'Password must be at least 8 characters';
+                                }
+
+                                // At least one uppercase letter
+                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                  return 'Password must contain at least one capital letter';
+                                }
+
+                                // At least one special character
+                                if (!RegExp(
+                                  r'[!@#$%^&*(),.?":{}|<>]',
+                                ).hasMatch(value)) {
+                                  return 'Password must contain at least one special character';
+                                }
+
                                 return null;
                               },
                             ),
@@ -70,6 +89,24 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                                     context,
                                   )!.passwordFieldCannotBeEmpty;
                                 }
+
+                                // Minimum 8 characters
+                                if (value.length < 8) {
+                                  return 'Password must be at least 8 characters';
+                                }
+
+                                // At least one uppercase letter
+                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                  return 'Password must contain at least one capital letter';
+                                }
+
+                                // At least one special character
+                                if (!RegExp(
+                                  r'[!@#$%^&*(),.?":{}|<>]',
+                                ).hasMatch(value)) {
+                                  return 'Password must contain at least one special character';
+                                }
+
                                 return null;
                               },
                             ),

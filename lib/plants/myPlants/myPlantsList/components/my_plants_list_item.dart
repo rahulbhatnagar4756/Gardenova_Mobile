@@ -39,8 +39,7 @@ class MyPlantsListItem extends StatelessWidget {
                 height: 105.h,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                imageUrl:
-                    item.imageOriginalUrl ?? (item.imageOriginalUrl ?? ""),
+                imageUrl: item.imageUrl ?? (item.imageOriginalUrl ?? ""),
                 placeholder: (_, __) =>
                     const BaseShimmer(borderRadious: spacerSize16),
                 errorWidget: (_, __, ___) =>

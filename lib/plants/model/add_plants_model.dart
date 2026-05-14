@@ -45,14 +45,14 @@ class Data {
   int? _totalCount;
   int? _limit;
   List<Plants>? _plants;
-  
 
-  Data(
-      {int? currentPage,
-      int? totalPages,
-      int? totalCount,
-      int? limit,
-      List<Plants>? plants}) {
+  Data({
+    int? currentPage,
+    int? totalPages,
+    int? totalCount,
+    int? limit,
+    List<Plants>? plants,
+  }) {
     if (currentPage != null) {
       this._currentPage = currentPage;
     }
@@ -111,6 +111,7 @@ class Plants {
   int? _id;
   String? _commonName;
   String? _scientificName;
+  String? _imageUrl;
   String? _imageOriginalUrl;
   String? _family;
   String? _type;
@@ -121,19 +122,21 @@ class Plants {
   bool? _edibleFruit;
   int? _relevance;
 
-  Plants(
-      {int? id,
-      String? commonName,
-      String? scientificName,
-      String? imageOriginalUrl,
-      String? family,
-      String? type,
-      String? cycle,
-      String? watering,
-      bool? indoor,
-      bool? medicinal,
-      bool? edibleFruit,
-      int? relevance}) {
+  Plants({
+    int? id,
+    String? commonName,
+    String? scientificName,
+    String? imageUrl,
+    String? imageOriginalUrl,
+    String? family,
+    String? type,
+    String? cycle,
+    String? watering,
+    bool? indoor,
+    bool? medicinal,
+    bool? edibleFruit,
+    int? relevance,
+  }) {
     if (id != null) {
       this._id = id;
     }
@@ -146,6 +149,10 @@ class Plants {
     if (imageOriginalUrl != null) {
       this._imageOriginalUrl = imageOriginalUrl;
     }
+    if (imageUrl != null) {
+      this._imageUrl = imageUrl;
+    }
+
     if (family != null) {
       this._family = family;
     }
@@ -182,6 +189,10 @@ class Plants {
   String? get imageOriginalUrl => _imageOriginalUrl;
   set imageOriginalUrl(String? imageOriginalUrl) =>
       _imageOriginalUrl = imageOriginalUrl;
+
+  String? get imageUrl => _imageUrl;
+  set imageUrl(String? imageUrl) => _imageUrl = imageUrl;
+
   String? get family => _family;
   set family(String? family) => _family = family;
   String? get type => _type;
@@ -204,6 +215,7 @@ class Plants {
     _commonName = json['common_name'];
     _scientificName = json['scientific_name'];
     _imageOriginalUrl = json['image_original_url'];
+    _imageUrl = json['image_url'];
     _family = json['family'];
     _type = json['type'];
     _cycle = json['cycle'];
@@ -220,6 +232,9 @@ class Plants {
     data['common_name'] = this._commonName;
     data['scientific_name'] = this._scientificName;
     data['image_original_url'] = this._imageOriginalUrl;
+
+    data['image_url'] = this._imageUrl;
+
     data['family'] = this._family;
     data['type'] = this._type;
     data['cycle'] = this._cycle;

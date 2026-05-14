@@ -315,7 +315,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 height: spacerSize120,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                imageUrl: plant.imageOriginalUrl ?? "",
+                imageUrl: plant.imageUrl ?? plant.imageOriginalUrl ?? "",
                 placeholder: (_, __) =>
                     BaseShimmer(borderRadious: spacerSize15),
                 errorWidget: (_, __, ___) => Icon(Icons.broken_image),

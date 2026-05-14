@@ -13,6 +13,11 @@ class CareOverviewSection extends StatelessWidget {
 
   const CareOverviewSection({super.key, required this.plant});
 
+  String _cap(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1);
+  }
+
   Widget item({
     required IconData icon,
     required String title,
@@ -52,11 +57,11 @@ class CareOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String watering = plant?.watering ?? "";
-    String sunlight = plant?.sunlight ?? "";
-    String soil = plant?.soil ?? "";
+    String watering = _cap(plant?.watering ?? "");
+    String sunlight = _cap(plant?.sunlight ?? "");
+    String soil = _cap(plant?.soil ?? "");
     // String fertilizer = plant?.fertilizer ?? "";
-    String pruningMonth = plant?.pruningMonth ?? "";
+    String pruningMonth = _cap(plant?.pruningMonth ?? "");
 
     if (watering.isNotEmpty && plant?.wateringBenchmarkValue != null) {
       watering =

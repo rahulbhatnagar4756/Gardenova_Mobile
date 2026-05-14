@@ -24,8 +24,6 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return PopScope(
       canPop: true,
       /* onPopInvokedWithResult: (result, didPop) {
@@ -42,10 +40,11 @@ class LoginScreen extends GetWidget<LoginViewModel> {
       }else{
           Get.back();
         }},*/
-      child: GestureDetector(onTap: ()=>controller.onTapClick(),
+      child: GestureDetector(
+        onTap: () => controller.onTapClick(),
         child: Scaffold(
           backgroundColor: AppColors.appColor,
-          appBar:  BaseAppBar(
+          appBar: BaseAppBar(
             // isAppIconVisible: false,
             isBackButtonVisible: Get.key.currentState!.canPop(),
           ),
@@ -62,7 +61,9 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                             // BasBBackButton(),
                             Obx(
                               () => HeaderLogoLayout(
-                                title: AppLocalizations.of(context)!.loginAccount,
+                                title: AppLocalizations.of(
+                                  context,
+                                )!.loginAccount,
                                 subTitle:
                                     controller.accountType.value ==
                                         AppKeys.professional
@@ -84,7 +85,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                                   AppKeys.professional,
                               child: orLoginWith(context),
                             ),
-        
+
                             Visibility(
                               visible:
                                   controller.accountType.value !=

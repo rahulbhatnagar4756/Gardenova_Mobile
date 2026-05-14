@@ -1,4 +1,4 @@
-package com.kasagardem.enterprise
+package com.gardenova.digisoft
 
 import io.flutter.embedding.android.FlutterActivity
 

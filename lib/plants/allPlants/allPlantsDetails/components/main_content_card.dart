@@ -24,6 +24,7 @@ import 'plant_propagation_section.dart';
 import 'quick_info_section.dart';
 import 'special_traits_section.dart';
 import 'care_guide_section.dart';
+import 'plant_basic_requirements_section.dart';
 
 class MainContentCard extends StatelessWidget {
   final AllPlantsDetailsController controller;
@@ -113,6 +114,11 @@ class MainContentCard extends StatelessWidget {
                           // spacing: 15.h,
                           children: [
                             Divider(color: AppColors.backgroundGrey),
+                            SizedBox(height: 15.h),
+                            PlantBasicRequirementsSection(
+                              plant:
+                                  controller.plantDetailData.value.data?.plant,
+                            ),
                             SizedBox(height: 15.h),
                             QuickInfoSection(
                               plant:

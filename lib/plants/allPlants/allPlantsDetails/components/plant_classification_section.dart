@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../utils/constants/app_color.dart';
 import '../../../../utils/constants/app_constants.dart';
@@ -10,6 +11,11 @@ class PlantClassificationSection extends StatelessWidget {
   final PlantModelDetails? plant;
 
   const PlantClassificationSection({super.key, required this.plant});
+
+  String _cap(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1);
+  }
 
   Widget item({required String title, required String value}) {
     return Padding(
@@ -23,6 +29,7 @@ class PlantClassificationSection extends StatelessWidget {
             fontSize: fontSize13,
             fontWeight: FontWeight.w500,
           ),
+          SizedBox(width: 50.w),
           Flexible(
             child: BaseText(
               text: value,
@@ -63,19 +70,19 @@ class PlantClassificationSection extends StatelessWidget {
           child: Column(
             children: [
               if (plant?.family != null) ...[
-                item(title: "Family", value: plant!.family!),
+                item(title: "Family", value: _cap(plant!.family!)),
                 Divider(),
               ],
               if (plant?.genus != null) ...[
-                item(title: "Genus", value: plant!.genus!),
+                item(title: "Genus", value: _cap(plant!.genus!)),
               ],
               if (plant?.speciesEpithet != null) ...[
                 Divider(),
-                item(title: "Species", value: plant!.speciesEpithet!),
+                item(title: "Species", value: _cap(plant!.speciesEpithet!)),
               ],
               if (plant?.origin != null && plant!.origin!.isNotEmpty) ...[
                 Divider(),
-                item(title: "Origin", value: plant!.origin!),
+                item(title: "Origin", value: _cap(plant!.origin!)),
               ],
             ],
           ),

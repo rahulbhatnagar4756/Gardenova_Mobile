@@ -108,6 +108,7 @@ class PlantDetails {
   bool? poisonousToPets;
   String? careGuidesUrl;
 
+  String? imageUrl;
   String? imageOriginalUrl;
   String? imageRegularUrl;
   String? imageMediumUrl;
@@ -171,6 +172,7 @@ class PlantDetails {
     this.poisonousToHumans,
     this.poisonousToPets,
     this.careGuidesUrl,
+    this.imageUrl,
     this.imageOriginalUrl,
     this.imageRegularUrl,
     this.imageMediumUrl,
@@ -240,6 +242,22 @@ class PlantDetails {
 
     careGuidesUrl = json['care_guides_url'];
 
+    if (json.containsKey('image_url') && json['image_url'] != null) {
+      imageUrl =
+          json['image_url'] ??
+          imageOriginalUrl ??
+          imageMediumUrl ??
+          imageSmallUrl ??
+          imageThumbnail ??
+          imageRegularUrl;
+    } else {
+      imageUrl =
+          imageOriginalUrl ??
+          imageMediumUrl ??
+          imageSmallUrl ??
+          imageThumbnail ??
+          imageRegularUrl;
+    }
     imageOriginalUrl = json['image_original_url'];
     imageRegularUrl = json['image_regular_url'];
     imageMediumUrl = json['image_medium_url'];
@@ -305,6 +323,7 @@ class PlantDetails {
       'poisonous_to_humans': poisonousToHumans,
       'poisonous_to_pets': poisonousToPets,
       'care_guides_url': careGuidesUrl,
+      'image_url': imageUrl,
       'image_original_url': imageOriginalUrl,
       'image_regular_url': imageRegularUrl,
       'image_medium_url': imageMediumUrl,
