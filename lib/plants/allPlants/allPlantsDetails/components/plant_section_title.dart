@@ -7,29 +7,27 @@ import '../../../../utils/constants/app_keys.dart';
 class PlantSectionTitle extends StatelessWidget {
   final String title;
   final IconData icon;
+  final Color? color;
 
   const PlantSectionTitle({
     super.key,
     required this.title,
     required this.icon,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: AppColors.greenColor,
-          size: spacerSize18,
-        ),
+        Icon(icon, color: color ?? AppColors.greenColor, size: spacerSize18),
         SizedBox(width: spacerSize8),
         BaseText(
           text: title,
           fontFamily: AppKeys.poppins,
           fontSize: fontSize15,
           fontWeight: FontWeight.w700,
-          textColor: AppColors.greenColor,
+          textColor: color ?? AppColors.greenColor,
         ),
       ],
     );

@@ -15,15 +15,14 @@ class HeadingUiLayout extends StatelessWidget {
   final Function()? onTabFilter;
   final double? titleLeftPadding;
 
-
   const HeadingUiLayout({
     super.key,
     this.child,
     this.sectionTitle,
     this.spacing = spacerSize10,
-    this.isFilterShow =false,
-    this.onTabFilter ,
-    this.titleLeftPadding=0
+    this.isFilterShow = false,
+    this.onTabFilter,
+    this.titleLeftPadding = 0,
   });
 
   @override
@@ -44,9 +43,9 @@ class HeadingUiLayout extends StatelessWidget {
               text: sectionTitle ?? "",
             ).marginOnly(left: titleLeftPadding ?? 0),
             Visibility(
-              visible: isFilterShow??false,
+              visible: isFilterShow ?? false,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   onTabFilter?.call();
                 },
                 child: Container(
@@ -69,5 +68,4 @@ class HeadingUiLayout extends StatelessWidget {
       ],
     );
   }
-
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
 import 'package:kasagardem/dashboard/dashboard_repository.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
@@ -32,6 +33,7 @@ class DashboardController extends GetxController {
   final LocationService _locationService = LocationService();
   bool _isFetching = false;
   var refreshSoilAnalysis = false.obs;
+  var selectedNavType = BottomNavType.home.obs;
   var chartData = [
     ChartData('Organic', 1, AppColors.liteYellowColor),
     ChartData('Sand', 1, AppColors.darkGreenColor),
@@ -138,9 +140,14 @@ class DashboardController extends GetxController {
   }
 
   void getPlantsRecommendations(String responseId) async {
+    String recommendationId =
+        sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
+    if (recommendationId.trim().isEmpty) {
+      recommendationId = responseId;
+    }
     isLoading.value = true;
     var response = await dashboardRepository.fetchPlantRecommendation(
-      responseId,
+      recommendationId,
       showDefaultLoader: false,
     );
     PlantRecommendationsResponseModel recommendationsResponse =

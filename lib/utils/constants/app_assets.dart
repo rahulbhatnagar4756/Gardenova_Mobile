@@ -10,6 +10,19 @@ class AppAssets {
   static const editPencilIc = 'assets/images/edit_pencil_ic.png';
 
   //
+  static const aiAnalysisIc = 'assets/images/plant_analysis_ic.png';
+  static const aiLandscapeDesignIc = 'assets/images/ai_landscape_ic.png';
+  static const rightArrowIc = 'assets/images/right_arrow_ic.png';
+  static const soilAnalysisIc = 'assets/images/soil_analysis_ic.png';
+
+  // bottom nav ic
+  static const homeIc = 'assets/images/home_ic.png';
+  static const scanIc = 'assets/images/scan_ic.png';
+  static const plantIc = 'assets/images/plants_ic.png';
+  static const reportIc = 'assets/images/reports_ic.png';
+  static const profileIc = 'assets/images/profile_ic.png';
+
+  //
   static const cart = 'assets/images/cart.png';
   static const edit = 'assets/images/edit.png';
   static const brain = 'assets/images/brain.png';

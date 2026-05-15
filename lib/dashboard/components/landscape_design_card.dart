@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/dashboard/components/common_component_dashboardview.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
+import '../../utils/constants/app_assets.dart';
 
 class LandscapeDesignCard extends StatelessWidget {
   final VoidCallback? onTap;
@@ -13,6 +15,16 @@ class LandscapeDesignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: CommonComponentDashboardView(
+        title: AppStrings.aiLandscapeDesign,
+        description: AppStrings.designModernLushAndInspiringOutdoorSpacesWithAi,
+        image: AppAssets.aiLandscapeDesignIc,
+      ),
+    );
+
     return GestureDetector(
       onTap: onTap,
       child: BaseBorderedContainer(

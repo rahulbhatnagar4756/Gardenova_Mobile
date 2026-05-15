@@ -21,132 +21,115 @@ class IntroductionScreen extends GetWidget<IntroductionScreenViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (result, didPop) {
-        if (didPop != null) return;
-        BaseDialog.showAlertDialog(
-          context: context,
-          title: appName,
-          description: AppLocalizations.of(context)!.exitAppContent,
-          buttonLabel: AppLocalizations.of(context)!.exit,
-          onButtonPressed: () {
-            SystemNavigator.pop();
-          },
-        );
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.appColor,
-        appBar: const BaseAppBar(
-          isBackButtonVisible: false,
-        ),
-        body: Column(
-          children: [
-            // Align(
-            //   alignment: Alignment.topCenter,
-            //   child: Image.asset(
-            //     AppAssets.appLogo,
-            //     width: 60.w,
-            //     height: 60.w,
-            //   ),
-            // ),
-
-            BaseText(
-              textAlign: TextAlign.center,
-              fontWeight: FontWeight.w600,
-              fontFamily: AppKeys.poppins,
-              fontSize: 25.sp,
-              text: AppLocalizations.of(context)!.startIntelligentDiagnosis,
-            ).marginOnly(
-              top: spacerSize30,
-              bottom: spacerSize15,
-              left: 15.w,
-              right: 15.w,
-            ),
-
-            BaseText(
-              textAlign: TextAlign.center,
-              textColor: AppColors.liteGreyColor,
-              fontWeight: FontWeight.w400,
-              fontFamily: AppKeys.inter,
-              fontSize: 14.sp,
-              text: AppLocalizations.of(
-                context,
-              )!.startIntelligentDiagnosisDesc,
-            ).marginOnly(bottom: spacerSize30, left: 10.w, right: 10.w),
-
-            ListView(
-              shrinkWrap: true,
-              physics: RangeMaintainingScrollPhysics(),
-              children: List.generate(
-                controller.introductionList.length,
-                    (itemIndex) => itemsLayout(itemIndex),
+    return Obx(
+      () => PopScope(
+        canPop: controller.cameFromSetting.value,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          BaseDialog.showAlertDialog(
+            context: context,
+            title: appName,
+            description: AppLocalizations.of(context)!.exitAppContent,
+            buttonLabel: AppLocalizations.of(context)!.exit,
+            onButtonPressed: () {
+              SystemNavigator.pop();
+            },
+          );
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.appColor,
+          appBar: BaseAppBar(
+            isBackButtonVisible: controller.cameFromSetting.value,
+          ),
+          body: Column(
+            children: [
+              BaseText(
+                textAlign: TextAlign.center,
+                fontWeight: FontWeight.w600,
+                fontFamily: AppKeys.poppins,
+                fontSize: 25.sp,
+                text: AppLocalizations.of(context)!.startIntelligentDiagnosis,
+              ).marginOnly(
+                top: spacerSize30,
+                bottom: spacerSize15,
+                left: 15.w,
+                right: 15.w,
               ),
-            ),
-            SizedBox(height: 36.h),
 
-            // Obx(
-            //   () => !controller.isUserLoggedIn.value
-            //       ? GestureDetector(
-            //           onTap: () {
-            //             Get.offAllNamed(Routes.login);
-            //           },
-            //           child: BaseText(
-            //             text: AppLocalizations.of(context)!.login,
-            //             fontSize: fontSize16,
-            //             fontWeight: FontWeight.w400,
-            //             textColor: AppColors.offWhite,
-            //           ),
-            //         ).marginOnly(top: spacerSize5, bottom: spacerSize15)
-            //       : SizedBox(height: spacerSize35),
-            // ),
-          ],
-        ).marginSymmetric(horizontal: spacerSize20),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Obx(
-                    () => SizedBox(
-              width: double.infinity,
-              child: BaseButton(
-                bottomPadding: controller.isUserLoggedIn.value?true:false,
-                textColor: AppColors.offWhite,
-                fontSize: fontSize17,
-                buttonLabel: AppLocalizations.of(context)!.startDiagnosis,
-                onPressed: () {
-                  Get.toNamed(Routes.question);
-                },
+              BaseText(
+                textAlign: TextAlign.center,
+                textColor: AppColors.liteGreyColor,
+                fontWeight: FontWeight.w400,
+                fontFamily: AppKeys.inter,
+                fontSize: 14.sp,
+                text: AppLocalizations.of(
+                  context,
+                )!.startIntelligentDiagnosisDesc,
+              ).marginOnly(bottom: spacerSize30, left: 10.w, right: 10.w),
+
+              ListView(
+                shrinkWrap: true,
+                physics: RangeMaintainingScrollPhysics(),
+                children: List.generate(
+                  controller.introductionList.length,
+                  (itemIndex) => itemsLayout(itemIndex),
+                ),
               ),
-            )),
-            Obx(
-                  () => !controller.isUserLoggedIn.value
-                  ? Column(
-                children: [
-                  SizedBox(height: 11.h),
-                  SizedBox(
-                    width: double.infinity,
-                    child: BaseOutlineButton(
-                      bottomPadding: true,
-                      textColor: AppColors.greenColor,
-                      fontSize: fontSize17,
-                      buttonLabel: AppLocalizations.of(
-                        context,
-                      )!.login,
-                      onPressed: () {
-                        SharedPrefsService.instance.setString(AppKeys.role,  AppKeys.user);
-                        Get.toNamed(Routes.login);
-                        // Get.offAllNamed(Routes.chooseAccountType);
-                      },
-                    ),
+              SizedBox(height: 36.h),
+            ],
+          ).marginSymmetric(horizontal: spacerSize20),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  child: BaseButton(
+                    bottomPadding: controller.isUserLoggedIn.value
+                        ? true
+                        : false,
+                    textColor: AppColors.offWhite,
+                    fontSize: fontSize17,
+                    buttonLabel: AppLocalizations.of(context)!.startDiagnosis,
+                    onPressed: () {
+                      Get.toNamed(
+                        Routes.question,
+                        arguments: controller.cameFromSetting.value,
+                      );
+                    },
                   ),
-                ],
-              )
-                  : const SizedBox(),
-            ),
-
-          ],
-        ).marginSymmetric(horizontal: spacerSize20),
-        resizeToAvoidBottomInset: true,
+                ),
+              ),
+              Obx(
+                () => !controller.isUserLoggedIn.value
+                    ? Column(
+                        children: [
+                          SizedBox(height: 11.h),
+                          SizedBox(
+                            width: double.infinity,
+                            child: BaseOutlineButton(
+                              bottomPadding: true,
+                              textColor: AppColors.greenColor,
+                              fontSize: fontSize17,
+                              buttonLabel: AppLocalizations.of(context)!.login,
+                              onPressed: () {
+                                SharedPrefsService.instance.setString(
+                                  AppKeys.role,
+                                  AppKeys.user,
+                                );
+                                Get.toNamed(Routes.login);
+                                // Get.offAllNamed(Routes.chooseAccountType);
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
+              ),
+            ],
+          ).marginSymmetric(horizontal: spacerSize20),
+          resizeToAvoidBottomInset: true,
+        ),
       ),
     );
   }

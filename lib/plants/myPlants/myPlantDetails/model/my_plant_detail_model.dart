@@ -1,4 +1,4 @@
-import 'package:kasagardem/plants/model/plant_details_model.dart' show Care;
+import 'package:kasagardem/plants/model/plant_details_model.dart' show Care, DiseaseModel;
 
 class MyPlantDetailModel {
   bool? success;
@@ -20,13 +20,73 @@ class MyPlantDetailModel {
   }
 }
 
+// class DiseaseModel {
+//   String? _host;
+//   String? _description;
+//   String? _solution;
+//   String? _localImageDiseasePath;
+
+//   DiseaseModel({
+//     String? host,
+//     String? description,
+//     String? solution,
+//     String? localImageDiseasePath,
+//   }) {
+//     if (host != null) {
+//       this._host = host;
+//     }
+//     if (description != null) {
+//       this._description = description;
+//     }
+//     if (solution != null) {
+//       this._solution = solution;
+//     }
+//     if (localImageDiseasePath != null) {
+//       this._localImageDiseasePath = localImageDiseasePath;
+//     }
+//   }
+
+//   String? get host => _host;
+//   set host(String? host) => _host = host;
+//   String? get description => _description;
+//   set description(String? description) => _description = description;
+//   String? get solution => _solution;
+//   set solution(String? solution) => _solution = solution;
+//   String? get localImageDiseasePath => _localImageDiseasePath;
+//   set localImageDiseasePath(String? localImageDiseasePath) =>
+//       _localImageDiseasePath = localImageDiseasePath;
+
+//   DiseaseModel.fromJson(Map<String, dynamic> json) {
+//     _host = json['host'];
+//     _description = json['description'];
+//     _solution = json['solution'];
+//     _localImageDiseasePath = json['local_image_disease_path'];
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['host'] = this._host;
+//     data['description'] = this._description;
+//     data['solution'] = this._solution;
+//     data['local_image_disease_path'] = this._localImageDiseasePath;
+//     return data;
+//   }
+// }
+
 class PlantDetailData {
   int? userPlantId;
   PlantDetails? plant;
   Care? care;
+  DiseaseModel? disease;
   ReminderModel? reminder;
 
-  PlantDetailData({this.userPlantId, this.plant, this.reminder, this.care});
+  PlantDetailData({
+    this.userPlantId,
+    this.plant,
+    this.reminder,
+    this.care,
+    this.disease,
+  });
 
   PlantDetailData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
@@ -36,6 +96,10 @@ class PlantDetailData {
     plant = json['plant'] != null ? PlantDetails.fromJson(json['plant']) : null;
 
     care = json['care'] != null ? Care.fromMap(json['care']) : null;
+
+    if (json['disease'] != null) {
+      disease = DiseaseModel.fromJson(json['disease']);
+    }
 
     reminder = json['reminder'] != null
         ? ReminderModel.fromJson(json['reminder'])
@@ -47,6 +111,7 @@ class PlantDetailData {
       'user_plant_id': userPlantId,
       'plant': plant?.toJson(),
       'reminder': reminder?.toJson(),
+      'disease': disease?.toJson(),
     };
   }
 }

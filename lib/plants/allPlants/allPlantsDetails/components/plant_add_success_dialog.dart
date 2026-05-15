@@ -58,7 +58,7 @@ class PlantAddSuccessDialog {
                             Assets.closeIc,
                             height: 33.w,
                             width: 33.w,
-                            color: AppColors.greyIconColor,
+                            color: AppColors.greenColor,
                           ),
                         ),
                       ),
@@ -108,14 +108,18 @@ class PlantAddSuccessDialog {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24.h),
-                  BaseText(
-                    text: description,
-                    fontFamily: AppKeys.inter,
-                    fontSize: fontSize14,
-                    fontWeight: FontWeight.w400,
-                    textColor: AppColors.liteGreyColor,
-                  ),
+                  description.isEmpty
+                      ? const SizedBox()
+                      : SizedBox(height: 24.h),
+                  description.isEmpty
+                      ? const SizedBox()
+                      : BaseText(
+                          text: description,
+                          fontFamily: AppKeys.inter,
+                          fontSize: fontSize14,
+                          fontWeight: FontWeight.w400,
+                          textColor: AppColors.liteGreyColor,
+                        ),
 
                   SizedBox(height: 35.h),
 

@@ -15,9 +15,11 @@ class IntroductionScreenViewModel extends GetxController {
   CarouselSliderController buttonCarouselController =
       CarouselSliderController();
   late IntroductionRepository introductionRepository;
+  var cameFromSetting = false.obs;
 
   @override
   Future<void> onInit() async {
+    cameFromSetting.value = Get.arguments as bool? ?? false;
     sharedPrefsService = SharedPrefsService();
     introductionRepository = IntroductionRepository();
     introductionList = introductionRepository.fetchIntroductionList(

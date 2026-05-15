@@ -65,7 +65,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 1)).then((value) {
       if (SharedPrefsService.instance.getString(AppKeys.role) !=
           AppKeys.professional) {
-        Get.offAllNamed(Routes.introduction);
+        // need change
+        // Get.offAllNamed(Routes.introduction);
+        Get.offAllNamed(Routes.dashboard);
       } else {
         Get.offAllNamed(Routes.professionalDashboard);
       }

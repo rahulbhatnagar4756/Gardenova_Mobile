@@ -25,75 +25,78 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       controller.isUserLoggedIn.value =
           SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     });
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        controller.backPressed();
-      },
-      child: Scaffold(
-        // appBar: controller.isUserLoggedIn.value && false
-        //     ? CircularBottomAppBar(
-        //         onSettingPressed: () {
-        //           Get.toNamed(Routes.settings, arguments: 'question');
-        //         },
-        //       )
-        //     : BaseAppBar(onBackPressed: controller.backPressed),
-        appBar: BaseAppBar(onBackPressed: controller.backPressed),
-        backgroundColor: AppColors.appColor,
-        body: Obx(
-          () =>
-              Stack(
-                children: [
-                  Column(
-                    children: [
-                      QuestionProgressIndicator(
-                        currentQuestion: controller.currentQuestion.value,
-                        totalQuestions: controller.questionList.length + 1,
-                      ).marginOnly(top: 25.h),
+    return Obx(
+      () => PopScope(
+        canPop: controller.currentQuestion.value == 1,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          controller.backPressed();
+        },
+        child: Scaffold(
+          // appBar: controller.isUserLoggedIn.value && false
+          //     ? CircularBottomAppBar(
+          //         onSettingPressed: () {
+          //           Get.toNamed(Routes.settings, arguments: 'question');
+          //         },
+          //       )
+          //     : BaseAppBar(onBackPressed: controller.backPressed),
+          appBar: BaseAppBar(onBackPressed: controller.backPressed),
+          backgroundColor: AppColors.appColor,
+          body: Obx(
+            () =>
+                Stack(
+                  children: [
+                    Column(
+                      children: [
+                        QuestionProgressIndicator(
+                          currentQuestion: controller.currentQuestion.value,
+                          totalQuestions: controller.questionList.length + 1,
+                        ).marginOnly(top: 25.h),
 
-                      questionLayout(),
+                        questionLayout(),
 
-                      if (controller.questionList.isNotEmpty)
-                        // State/city tab is shown when currentQuestion exceeds the question list
-                        controller.currentQuestion.value >
-                                controller.questionList.length
-                            ? answer5Layout(context)
-                            : Wrap(
-                                direction: Axis.horizontal,
-                                alignment: WrapAlignment.center,
-                                spacing: spacerSize10,
-                                runSpacing: spacerSize10,
-                                children: List.generate(
-                                  controller
-                                      .questionList[controller
-                                              .currentQuestion
-                                              .value -
-                                          1]
-                                      .options!
-                                      .length,
-                                  (index) {
-                                    return answersLayout(
-                                      question:
-                                          controller.questionList[controller
-                                                  .currentQuestion
-                                                  .value -
-                                              1],
-                                      index: index,
-                                      context: context,
-                                    );
-                                  },
-                                ),
-                              ).marginOnly(top: 26.h),
-                    ],
-                  ),
-                  continueAndBackLayout(context),
-                ],
-              ).marginOnly(
-                top: spacerSize20,
-                bottom: spacerSize15,
-                right: spacerSize20,
-                left: spacerSize20,
-              ),
+                        if (controller.questionList.isNotEmpty)
+                          // State/city tab is shown when currentQuestion exceeds the question list
+                          controller.currentQuestion.value >
+                                  controller.questionList.length
+                              ? answer5Layout(context)
+                              : Wrap(
+                                  direction: Axis.horizontal,
+                                  alignment: WrapAlignment.center,
+                                  spacing: spacerSize10,
+                                  runSpacing: spacerSize10,
+                                  children: List.generate(
+                                    controller
+                                        .questionList[controller
+                                                .currentQuestion
+                                                .value -
+                                            1]
+                                        .options!
+                                        .length,
+                                    (index) {
+                                      return answersLayout(
+                                        question:
+                                            controller.questionList[controller
+                                                    .currentQuestion
+                                                    .value -
+                                                1],
+                                        index: index,
+                                        context: context,
+                                      );
+                                    },
+                                  ),
+                                ).marginOnly(top: 26.h),
+                      ],
+                    ),
+                    continueAndBackLayout(context),
+                  ],
+                ).marginOnly(
+                  top: spacerSize20,
+                  bottom: spacerSize15,
+                  right: spacerSize20,
+                  left: spacerSize20,
+                ),
+          ),
         ),
       ),
     );

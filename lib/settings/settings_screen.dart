@@ -15,6 +15,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/widgets/common_click_widget.dart';
 import '../utils/constants/app_assets.dart';
+import '../utils/constants/app_strings.dart';
 import '../utils/utils.dart';
 
 class SettingsScreen extends GetWidget<SettingsViewModel> {
@@ -67,6 +68,14 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               controller.confirmPasswordController.clear();
               controller.newPasswordController.clear();
               Get.toNamed(Routes.changePassword);
+            },
+          ),
+          SizedBox(height: 10.h),
+          SettingsItemLayout(
+            icon: Icons.history,
+            title: AppStrings.changeDiagnosis,
+            onTap: () {
+              Get.toNamed(Routes.introduction, arguments: true);
             },
           ),
           // SizedBox(height: 10.h,),
@@ -131,6 +140,16 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             SettingsItemLayout(
               icon: Icons.lock_outline_rounded,
               title: AppLocalizations.of(context)!.changePassword,
+              onTap: () {
+                controller.confirmPasswordController.clear();
+                controller.newPasswordController.clear();
+                Get.toNamed(Routes.changePassword);
+              },
+            ),
+
+            SettingsItemLayout(
+              icon: Icons.design_services_outlined,
+              title: AppStrings.changeDiagnosis,
               onTap: () {
                 controller.confirmPasswordController.clear();
                 controller.newPasswordController.clear();

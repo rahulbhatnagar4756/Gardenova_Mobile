@@ -9,6 +9,7 @@ import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_to
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../base/widgets/common_click_widget.dart';
+import '../../../../base/widgets/expandable_text.dart';
 import '../../../../base/widgets/full_screen_image_preview.dart';
 import '../../../../generated/assets.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -25,6 +26,7 @@ import 'quick_info_section.dart';
 import 'special_traits_section.dart';
 import 'care_guide_section.dart';
 import 'plant_basic_requirements_section.dart';
+import 'plant_disease_section.dart';
 
 class MainContentCard extends StatelessWidget {
   final AllPlantsDetailsController controller;
@@ -69,25 +71,20 @@ class MainContentCard extends StatelessWidget {
                 controller.plantDetailData.value.data == null
                     ? SizedBox.shrink()
                     : plantTitle(),
-                // need to change here
-                controller.plantDetailData.value.data == null
-                    ? SizedBox.shrink()
-                    : BaseText(
-                        // text: "",
-                        text:
-                            controller
-                                .plantDetailData
-                                .value
-                                .data
-                                ?.plant
-                                ?.description ??
-                            AppLocalizations.of(context)!.noDataNa,
-                        fontFamily: AppKeys.inter,
-                        fontSize: fontSize14,
-                        fontWeight: FontWeight.w400,
-                        textColor: AppColors.liteGreyColor,
-                      ),
 
+                ExpandableText(
+                  text:
+                      controller
+                          .plantDetailData
+                          .value
+                          .data
+                          ?.plant
+                          ?.description ??
+                      "",
+                  trimLines: 3,
+                  textColor: AppColors.liteGreyColor,
+                  lineHeight: 1.5,
+                ),
                 // if (controller.plantDetailData.value.data?.plant?.lat != null &&
                 //     controller.plantDetailData.value.data?.plant?.lon != null)
                 //   Row(
@@ -124,6 +121,22 @@ class MainContentCard extends StatelessWidget {
                               plant:
                                   controller.plantDetailData.value.data?.plant,
                             ),
+                            if (controller
+                                    .plantDetailData
+                                    .value
+                                    .data
+                                    ?.disease !=
+                                null) ...[
+                              SizedBox(height: 15.h),
+                              PlantDiseaseSection(
+                                disease: controller
+                                    .plantDetailData
+                                    .value
+                                    .data!
+                                    .disease,
+                                showImage: true,
+                              ),
+                            ],
                             SizedBox(height: 15.h),
                             CareOverviewSection(
                               plant:
@@ -216,6 +229,24 @@ class MainContentCard extends StatelessWidget {
                       : Column(
                           children: [
                             Divider(color: AppColors.backgroundGrey),
+                            if (controller
+                                    .plantDetailData
+                                    .value
+                                    .data
+                                    ?.disease !=
+                                null) ...[
+                              SizedBox(height: 15.h),
+                              PlantDiseaseSection(
+                                disease: controller
+                                    .plantDetailData
+                                    .value
+                                    .data!
+                                    .disease,
+                                showImage: true,
+                              ),
+                              SizedBox(height: 15.h),
+                              Divider(color: AppColors.backgroundGrey),
+                            ],
                             Obx(
                               () => PlantToggleCard(
                                 icon: Assets.imagesWatering,

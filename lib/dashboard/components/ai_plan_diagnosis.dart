@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/dashboard/components/common_component_dashboardview.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+
+import '../../utils/constants/app_assets.dart';
 
 class AiPlantDiagnosisCard extends StatelessWidget {
   final VoidCallback? onTap;
@@ -14,36 +16,49 @@ class AiPlantDiagnosisCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: BaseBorderedContainer(
-        height: spacerSize125,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(
-          horizontal: spacerSize15,
-          vertical: spacerSize15,
-        ),
-        childWidget: Row(
-          children: [
-            /// 🔹 Icon Container (same pattern as your suggestionItem)
-            BaseBorderedContainer(
-              height: spacerSize60,
-              width: spacerSize60,
-              borderRadius: spacerSize100,
-              backgroundColor: AppColors.whiteColor,
-              borderColor: Colors.transparent,
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(spacerSize0),
-              childWidget:
-              Icon(Icons.camera_alt_outlined,size: 50.w,color: AppColors.greenColor,)
-              // Image.asset(
-              //
-              //
-              //   AppAssets.camera, // 👈 add camera/scan icon
-              //   color: AppColors.greenColor,
-              //   scale: 2,
-              // ),
+      child: CommonComponentDashboardView(
+        title: AppLocalizations.of(context)!.plantAnalysis,
+        description: AppLocalizations.of(
+          context,
+        )!.scanYourPlantForHealthAndDetails,
+        image: AppAssets.aiAnalysisIc,
+      ),
+    );
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(13.r),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 18,
+              spreadRadius: 1,
+              offset: const Offset(0, 5),
             ),
-
+          ],
+        ),
+        // height: spacerSize125,
+        width: double.infinity,
+        padding: EdgeInsets.only(
+          left: 16.w,
+          top: 15.h,
+          bottom: 15.h,
+          right: 4.w,
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              AppAssets.aiAnalysisIc,
+              width: 40.w,
+              height: 40.w,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
             SizedBox(width: spacerSize15),
 
             /// 🔹 Text Section
@@ -55,25 +70,34 @@ class AiPlantDiagnosisCard extends StatelessWidget {
                   BaseText(
                     text: AppLocalizations.of(context)!.plantAnalysis,
                     fontWeight: FontWeight.w600,
-                    fontSize: fontSize16,
+                    fontSize: 15.sp,
                   ),
-                  SizedBox(height: spacerSize5),
+                  SizedBox(height: 3.h),
                   BaseText(
-                    text: AppLocalizations.of(context)!
-                        .scanYourPlantForHealthAndDetails,
-                    fontSize: fontSize12,
+                    text: AppLocalizations.of(
+                      context,
+                    )!.scanYourPlantForHealthAndDetails,
+                    fontSize: (10.5).sp,
                     fontWeight: FontWeight.w400,
                   ),
                 ],
               ),
             ),
+            SizedBox(width: spacerSize15),
 
             /// 🔹 Arrow Icon (optional UX improvement)
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: AppColors.liteGreyColor,
-            )
+            // Icon(
+            //   Icons.arrow_forward_ios,
+            //   size: 16,
+            //   color: AppColors.liteGreyColor,
+            // ),
+            Image.asset(
+              AppAssets.rightArrowIc,
+              width: 55.w,
+              height: 55.w,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
           ],
         ),
       ),

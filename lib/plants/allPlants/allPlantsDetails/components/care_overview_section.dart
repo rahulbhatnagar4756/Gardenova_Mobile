@@ -12,11 +12,26 @@ class CareOverviewSection extends StatelessWidget {
   final PlantModelDetails? plant;
 
   const CareOverviewSection({super.key, required this.plant});
-
   String _cap(String s) {
     if (s.isEmpty) return s;
+
+    // If it contains '|', treat it as list
+    if (s.contains('|')) {
+      return s
+          .split('|')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .map((e) => e[0].toUpperCase() + e.substring(1))
+          .join(', ');
+    }
+
+    // Normal single value
     return s[0].toUpperCase() + s.substring(1);
   }
+  // String _cap(String s) {
+  //   if (s.isEmpty) return s;
+  //   return s[0].toUpperCase() + s.substring(1);
+  // }
 
   Widget item({
     required IconData icon,

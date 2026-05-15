@@ -124,6 +124,7 @@ class BaseDialog {
     required String title,
     required String description,
     required String buttonLabel,
+    Function()? onCancelDialog,
   }) {
     showDialog(
       context: context,
@@ -166,7 +167,10 @@ class BaseDialog {
           ),
         ],
       ),
-    );
+    ).then((value) {
+      print('onCancel diaog called');
+      onCancelDialog?.call();
+    });
   }
 
   static void showUnauthorizedDialog({

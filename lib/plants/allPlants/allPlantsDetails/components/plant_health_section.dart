@@ -10,6 +10,22 @@ class PlantHealthSection extends StatelessWidget {
   final PlantModelDetails? plant;
 
   const PlantHealthSection({super.key, required this.plant});
+  String _cap(String s) {
+    if (s.isEmpty) return s;
+
+    // If it contains '|', treat it as list
+    if (s.contains('|')) {
+      return s
+          .split('|')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .map((e) => e[0].toUpperCase() + e.substring(1))
+          .join(', ');
+    }
+
+    // Normal single value
+    return s[0].toUpperCase() + s.substring(1);
+  }
 
   Widget item({required String title, required String value}) {
     return Padding(
@@ -27,7 +43,7 @@ class PlantHealthSection extends StatelessWidget {
           SizedBox(height: spacerSize6),
 
           BaseText(
-            text: value,
+            text: _cap(value),
             fontFamily: AppKeys.inter,
             fontSize: fontSize12,
             fontWeight: FontWeight.w400,

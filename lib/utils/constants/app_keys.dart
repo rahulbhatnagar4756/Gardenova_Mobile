@@ -2,6 +2,7 @@ class AppKeys {
   static const multipleChoiceType = 1;
   static const dropDownType = 2;
   static const idToken = 'id_token';
+ 
   static const isLoggedIn = 'is_logged_in';
   static const isGuestLoggedIn = 'is_guest_logged_in';
   static const users = 'users';

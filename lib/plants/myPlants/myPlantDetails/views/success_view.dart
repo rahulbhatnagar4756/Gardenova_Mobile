@@ -9,6 +9,8 @@ import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/generated/assets.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_health_section.dart'
+    show PlantHealthSection;
 import 'package:kasagardem/plants/myPlants/myPlantDetails/components/plant_state_item.dart'
     show PlantStateItem;
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
@@ -18,10 +20,12 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import '../../../../base/widgets/expandable_text.dart';
 import '../../../allPlants/allPlantsDetails/components/care_guide_section.dart';
 import '../../../allPlants/allPlantsDetails/components/care_overview_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_basic_requirements_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_classification_section.dart';
+import '../../../allPlants/allPlantsDetails/components/plant_disease_section.dart';
 import '../../../allPlants/allPlantsDetails/components/plant_propagation_section.dart';
 import '../../../allPlants/allPlantsDetails/components/quick_info_section.dart';
 import '../../../allPlants/allPlantsDetails/components/special_traits_section.dart';
@@ -158,12 +162,32 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: spacerSize16),
-                    BaseText(
-                      text: "",
-                      fontFamily: AppKeys.inter,
-                      fontSize: fontSize14,
-                      fontWeight: FontWeight.w400,
+                    // BaseText(
+                    //   text:
+                    //       controller
+                    //           .plantDetailData
+                    //           .value
+                    //           .data
+                    //           ?.plant
+                    //           ?.description ??
+                    //       "",
+                    //   fontFamily: AppKeys.inter,
+                    //   fontSize: fontSize14,
+                    //   fontWeight: FontWeight.w400,
+                    //   textColor: AppColors.liteGreyColor,
+                    // ),
+                    ExpandableText(
+                      text:
+                          controller
+                              .plantDetailData
+                              .value
+                              .data
+                              ?.plant
+                              ?.description ??
+                          "",
+                      trimLines: 3,
                       textColor: AppColors.liteGreyColor,
+                      lineHeight: 1.5,
                     ),
                     SizedBox(height: spacerSize16),
                     const Divider(color: AppColors.backgroundGrey, height: 1),
@@ -602,12 +626,19 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
       children: [
         PlantBasicRequirementsSection(plant: plantModel),
         QuickInfoSection(plant: plantModel),
+        if (controller.plantDetailData.value.data?.disease != null)
+          PlantDiseaseSection(
+            disease: controller.plantDetailData.value.data!.disease,
+            showImage: true,
+          ),
         CareOverviewSection(plant: plantModel),
         if (controller.plantDetailData.value.data?.care != null)
           CareGuideSection(care: controller.plantDetailData.value.data!.care!),
         PlantClassificationSection(plant: plantModel),
         PlantPropagationSection(plant: plantModel),
         SpecialTraitsSection(plant: plantModel),
+        PlantHealthSection(plant: plantModel),
+        SizedBox(height: 15.h),
       ],
     );
   }

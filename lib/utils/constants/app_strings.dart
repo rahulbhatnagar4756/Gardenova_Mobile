@@ -137,4 +137,12 @@ class AppStrings {
 
   static const String pleaseLoginToMakeAiLandscapeDesign =
       "Please log in to use AI-powered modern design and landscape design features.";
+  static const String changeDiagnosis = 'Change Diagnosis';
+  static const String selectionRequired = 'Selection Required';
+  static const String pleaseSelectAnAnswerToContinue =
+      'Please select an answer to continue';
+  static const String plants = "Plants";
+  static const String scan = "Scan";
+  static const String reports = "Reports";
+  static const String profile = "Profile";
 }

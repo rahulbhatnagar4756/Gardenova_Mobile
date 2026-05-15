@@ -16,6 +16,7 @@ class ExpandableText extends StatefulWidget {
   final int trimLines;
 
   final Color? textColor;
+  final Color? showMoreTxtColor;
   final double? fontSize;
   final FontWeight? fontWeight;
   final String? fontFamily;
@@ -29,6 +30,7 @@ class ExpandableText extends StatefulWidget {
     required this.text,
     this.trimLines = 4,
     this.textColor,
+    this.showMoreTxtColor,
     this.fontSize,
     this.fontWeight,
     this.fontFamily,
@@ -85,7 +87,8 @@ class _ExpandableTextState extends State<ExpandableText>
                       text: isExpanded
                           ? (widget.collapseText ?? "Show Less")
                           : (widget.expandText ?? "Show More"),
-                      textColor: AppColors.greenColor,
+                      textColor:
+                          widget.showMoreTxtColor ?? AppColors.greenColor,
                       fontWeight: FontWeight.w600,
                       fontSize: fontSize13,
                       fontFamily: AppKeys.inter,
@@ -98,7 +101,7 @@ class _ExpandableTextState extends State<ExpandableText>
                       turns: isExpanded ? 0.5 : 0,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
-                        color: AppColors.greenColor,
+                        color: widget.showMoreTxtColor ?? AppColors.greenColor,
                         size: 18.sp,
                       ),
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/introduction/question/models/city_response_model.dart';
 import 'package:kasagardem/introduction/question/models/question_response_model.dart';
 import 'package:kasagardem/introduction/question/models/save_answer_request_model.dart';
@@ -13,6 +14,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 import '../../base/dialogs/base_dialog.dart';
+import '../../utils/constants/app_strings.dart';
 
 class QuestionViewModel extends GetxController {
   late QuestionRepository questionRepository;
@@ -32,9 +34,11 @@ class QuestionViewModel extends GetxController {
   TextEditingController cityController = TextEditingController();
   TextEditingController stateSearchController = TextEditingController();
   TextEditingController citySearchController = TextEditingController();
+  bool cameFromSetting = false;
 
   @override
   onInit() {
+    cameFromSetting = Get.arguments as bool? ?? false;
     questionRepository = QuestionRepository();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getQuestionList();
@@ -151,10 +155,21 @@ class QuestionViewModel extends GetxController {
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
-            Get.offAllNamed(
-              Routes.dashboard,
-              arguments: {plantResponse.data!.responseId ?? ""},
-            );
+            if (cameFromSetting) {
+              // Get.back();
+              // Get.back();
+              if (Get.isRegistered<DashboardController>()) {
+                Get.find<DashboardController>().getPlantsRecommendations(
+                  plantResponse.data!.responseId ?? "",
+                );
+              }
+              Get.until((route) => route.settings.name == Routes.settings);
+            } else {
+              Get.offAllNamed(
+                Routes.dashboard,
+                arguments: {plantResponse.data!.responseId ?? ""},
+              );
+            }
           },
         );
       }
@@ -167,8 +182,8 @@ class QuestionViewModel extends GetxController {
     if (currentQuestion.value <= questionList.length) {
       if (questionList[currentQuestion.value - 1].selectedAnswer == null) {
         BaseSnackBar.show(
-          title: AppLocalizations.of(Get.context!)?.error ?? '',
-          message: AppLocalizations.of(Get.context!)?.pleaseSelectAnswer ?? '',
+          title: AppStrings.selectionRequired.tr,
+          message: AppStrings.pleaseSelectAnAnswerToContinue.tr,
         );
         return;
       } else {
