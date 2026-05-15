@@ -17,7 +17,7 @@ class SoilAnalysis extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 150.h,
+      height: 190.h,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: const Color(0xFFE6F7EE),
@@ -58,7 +58,7 @@ class SoilAnalysis extends StatelessWidget {
                   ),
                 ],
               ).paddingOnly(right: 120.w),
-              SizedBox(height: 12.h),
+              SizedBox(height: 28.h),
               Column(
                 children: [
                   _buildItem(
@@ -66,19 +66,13 @@ class SoilAnalysis extends StatelessWidget {
                     '${chartData[0].y.toInt()}%',
                     chartData[0].color,
                   ),
-                  Divider(
-                    height: 4.h,
-                    color: AppColors.blackColor.withOpacity(0.15),
-                  ),
+                  _buildDivider(),
                   _buildItem(
                     chartData[1].x,
                     '${chartData[1].y.toInt()}%',
                     chartData[1].color,
                   ),
-                  Divider(
-                    height: 4.h,
-                    color: AppColors.blackColor.withOpacity(0.15),
-                  ),
+                  _buildDivider(),
 
                   /// Items
                   _buildItem(
@@ -86,26 +80,23 @@ class SoilAnalysis extends StatelessWidget {
                     '${chartData[2].y.toInt()}%',
                     chartData[2].color,
                   ),
-                  Divider(
-                    height: 4.h,
-                    color: AppColors.blackColor.withOpacity(0.15),
-                  ),
+                  _buildDivider(),
                   _buildItem(
                     chartData[3].x,
                     '${chartData[3].y.toInt()}%',
                     chartData[3].color,
                   ),
                 ],
-              ).paddingOnly(right: Get.width * .44),
+              ).paddingOnly(right: Get.width * .44, left: 10.w),
             ],
           ),
 
           Positioned(
             right: -25.w,
-            top: 13.h,
+            top: 30.h,
             child: Container(
-              width: 200,
-              height: 120,
+              width: 210,
+              height: 130,
               child: Stack(
                 children: [
                   SfCircularChart(
@@ -158,6 +149,10 @@ class SoilAnalysis extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildDivider() {
+    return Divider(height: 8.h, color: AppColors.blackColor.withOpacity(0.15));
   }
 
   // Reusable label widget
