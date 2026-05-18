@@ -75,7 +75,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             icon: Icons.history,
             title: AppStrings.changeDiagnosis,
             onTap: () {
-              Get.toNamed(Routes.introduction, arguments: true);
+              // Get.toNamed(Routes.introduction, arguments: true);
+              Get.toNamed(Routes.question, arguments: true);
             },
           ),
           // SizedBox(height: 10.h,),

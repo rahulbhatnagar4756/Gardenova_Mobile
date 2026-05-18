@@ -28,10 +28,17 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     accountType.value =
         SharedPrefsService.instance.getString(AppKeys.role) ?? "";
     debugPrint("accountType ${accountType.value}");
-    if (Get.arguments != null) {
-      isQuestionStatePassed.value =
-          Get.arguments['question_state_passed'] ?? false;
+    bool questionStatePassed = false;
+    if (Get.arguments != null && Get.arguments is Map<String, dynamic>) {
+      final args = Get.arguments as Map<String, dynamic>;
+
+      if (args.containsKey('question_state_passed')) {
+        questionStatePassed = args['question_state_passed'] ?? false;
+
+        debugPrint("questionStatePassed $questionStatePassed");
+      }
     }
+    isQuestionStatePassed.value = questionStatePassed;
 
     googleSignIn.initialize(
       serverClientId: dotenv.env['webClientId']!,
