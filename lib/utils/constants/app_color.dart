@@ -19,6 +19,12 @@ class AppColors {
   static const toToLiteGreenColor = Color(0xFFE6F7EE);
   static const chartBorderColor = Color(0xFF2D6647);
 
+
+  static const sandColor = Color(0xFF076E3B);
+  static const siltColor = Color(0xFF8BC65E);
+  static const organicColor = Color(0xFFDEE57A);
+  static const clayColor = Color(0xFF9CCFB1);
+
   static const antiqueWhite = Color(0xFFE4E0D4);
   static const darkBlue = Color(0xFF15387C);
   static const lightBlue = Color(0xA815387C);

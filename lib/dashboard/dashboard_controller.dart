@@ -34,11 +34,12 @@ class DashboardController extends GetxController {
   bool _isFetching = false;
   var refreshSoilAnalysis = false.obs;
   var selectedNavType = BottomNavType.home.obs;
+
   var chartData = [
-    ChartData('Organic', 1, AppColors.liteYellowColor),
-    ChartData('Sand', 1, AppColors.darkGreenColor),
-    ChartData('Silt', 1, AppColors.liteGreenColor),
-    ChartData('Clay', 1, AppColors.toLiteGreenColor),
+    ChartData('Organic', 1, AppColors.organicColor),
+    ChartData('Sand', 1, AppColors.sandColor),
+    ChartData('Salt', 1, AppColors.siltColor),
+    ChartData('Clay', 1, AppColors.clayColor),
   ].obs;
 
   @override
@@ -205,11 +206,17 @@ class DashboardController extends GetxController {
     required double lat,
     required double long,
   }) async {
+    // chartData.assignAll([
+    //   ChartData('Organic', 15, AppColors.liteYellowColor),
+    //   ChartData('Sand', 40, AppColors.darkGreenColor),
+    //   ChartData('Salt', 25, AppColors.liteGreenColor),
+    //   ChartData('Clay', 20, AppColors.toLiteGreenColor),
+    // ]);
     chartData.assignAll([
-      ChartData('Organic', 15, AppColors.liteYellowColor),
-      ChartData('Sand', 40, AppColors.darkGreenColor),
-      ChartData('Silt', 25, AppColors.liteGreenColor),
-      ChartData('Clay', 20, AppColors.toLiteGreenColor),
+      ChartData('Organic', 15, AppColors.organicColor),
+      ChartData('Sand', 40, AppColors.sandColor),
+      ChartData('Salt', 25, AppColors.siltColor),
+      ChartData('Clay', 20, AppColors.clayColor),
     ]);
     refreshSoilAnalysis.refresh();
     return;

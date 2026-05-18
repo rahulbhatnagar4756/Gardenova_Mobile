@@ -3,9 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
-
 import '../../base/widgets/base_text.dart';
-import '../../utils/constants/app_constants.dart';
 import '../model/bottom_navigation_local_model.dart';
 
 enum BottomNavType { home, plant, scan, report, profile }
@@ -42,10 +40,10 @@ List<BottomNavigationLocalModel> bottomNavigationList() {
 }
 
 class BottomNavigationWidget extends StatelessWidget {
-  bool needToShow;
-  BottomNavType? selectNavType;
-  Function(BottomNavType)? onAddPlantClick;
-  BottomNavigationWidget({
+  final bool needToShow;
+  final BottomNavType? selectNavType;
+  final Function(BottomNavType)? onAddPlantClick;
+  const BottomNavigationWidget({
     super.key,
     required this.needToShow,
     required this.selectNavType,
@@ -109,7 +107,9 @@ class BottomNavigationWidget extends StatelessWidget {
 
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.blackColor.withOpacity(0.15),
+                                  color: AppColors.blackColor.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   blurRadius: 14,
                                   spreadRadius: 2,
                                   offset: const Offset(0, 6),

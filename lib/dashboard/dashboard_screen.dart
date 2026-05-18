@@ -175,30 +175,25 @@ class DashboardScreen extends GetWidget<DashboardController> {
                         }
                         switch (p0) {
                           case BottomNavType.home:
-                            // TODO: Handle this case.
                             break;
                           case BottomNavType.scan:
                             openImagePickerBottomSheet(
                               source: ImagePickerSource.diagnosis,
                             );
-                            // TODO: Handle this case.
                             break;
                           case BottomNavType.plant:
                             Get.toNamed(Routes.myPlantsScreen)?.then((value) {
                               controller.selectedNavType.value =
                                   BottomNavType.home;
                             });
-                            // TODO: Handle this case.
                             break;
                           case BottomNavType.report:
-                            // TODO: Handle this case.
                             break;
                           case BottomNavType.profile:
                             Get.toNamed(Routes.settings)?.then((value) {
                               controller.selectedNavType.value =
                                   BottomNavType.home;
                             });
-                            // TODO: Handle this case.
                             break;
                         }
                       },

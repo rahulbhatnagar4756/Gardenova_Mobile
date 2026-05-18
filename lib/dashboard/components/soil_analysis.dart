@@ -94,7 +94,7 @@ class SoilAnalysis extends StatelessWidget {
           Positioned(
             right: -25.w,
             top: 30.h,
-            child: Container(
+            child: SizedBox(
               width: 210,
               height: 130,
               child: Stack(
@@ -110,7 +110,7 @@ class SoilAnalysis extends StatelessWidget {
                         pointColorMapper: (data, _) => data.color,
 
                         /// 🎯 shape
-                        innerRadius: '60%',
+                        innerRadius: '45%',
                         radius: '100%',
 
                         /// 🔥 THIS creates real spacing
@@ -138,8 +138,8 @@ class SoilAnalysis extends StatelessWidget {
                   Center(
                     child: Image.asset(
                       AppAssets.appLogo,
-                      width: 45.w,
-                      height: 45.w,
+                      width: 38.w,
+                      height: 38.w,
                     ),
                   ),
                 ],

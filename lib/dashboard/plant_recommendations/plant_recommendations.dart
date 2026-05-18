@@ -233,8 +233,8 @@ class PlantRecommendations extends StatelessWidget {
                                           text:
                                               item.whyRecommended?.isNotEmpty ==
                                                   true
-                                              ? item!.whyRecommended!.first
-                                              : (item?.plantType ?? ""),
+                                              ? item.whyRecommended!.first
+                                              : (item.plantType ?? ""),
                                           textColor: AppColors.greenColor,
                                           fontSize: 9.sp,
                                           fontWeight: FontWeight.w400,
