@@ -110,8 +110,19 @@ class Routes {
       ),
       GetPage(
         name: Routes.introduction,
-        page: () => IntroductionScreen(),
-        binding: BindingsBuilder.put(() => IntroductionScreenViewModel()),
+        // page: () => IntroductionScreen(),
+        // binding: BindingsBuilder.put(() => IntroductionScreenViewModel()),
+        page: () => LoginScreen(),
+        binding: BindingsBuilder.put(() => LoginViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.login,
+        page: () => LoginScreen(),
+        binding: BindingsBuilder.put(() => LoginViewModel()),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
@@ -130,15 +141,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-      GetPage(
-        name: Routes.login,
-        page: () => LoginScreen(),
-        binding: BindingsBuilder.put(() => LoginViewModel()),
-        transition: Utils.transition,
-        transitionDuration: const Duration(
-          milliseconds: Utils.transitionDuration,
-        ),
-      ),
+
       GetPage(
         name: Routes.signUp,
         page: () => RegisterScreen(),
@@ -308,7 +311,6 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-
       GetPage(
         name: Routes.allPlantsDetails,
         page: () => AllPlantsDetailsScreen(),
@@ -318,7 +320,6 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-
       GetPage(
         name: Routes.myPlantsScreen,
         page: () => MyPlantsScreen(),
@@ -328,7 +329,6 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-
       GetPage(
         name: Routes.myPlantsDetails,
         page: () => MyPlantDetailsScreen(),
@@ -387,6 +387,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+
       GetPage(
         name: Routes.createRequestScreen,
         page: () => CreateRequestScreen(),
@@ -395,6 +396,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+
       GetPage(
         name: Routes.createProfessionalLeadRequestScreen,
         page: () => CreateProfessionalLeadRequestScreen(),
