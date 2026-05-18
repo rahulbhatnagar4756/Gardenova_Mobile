@@ -154,7 +154,7 @@ class BaseTextField extends StatelessWidget {
 
             if (field.hasError)
               Padding(
-                padding: EdgeInsets.only(top: 6.h, left: 13.w),
+                padding: EdgeInsets.only(top: 6.h, left: 15.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

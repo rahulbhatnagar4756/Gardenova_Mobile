@@ -35,6 +35,9 @@ class MainContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl =
+        controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
+    print('image url $imageUrl');
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -43,6 +46,7 @@ class MainContentCard extends StatelessWidget {
             onTap: () {
               final imageUrl =
                   controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
+              print('image url $imageUrl');
 
               if (imageUrl.isNotEmpty) {
                 FullScreenImageView.open(

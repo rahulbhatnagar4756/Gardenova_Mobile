@@ -45,8 +45,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
           width: double.infinity,
           fit: BoxFit.cover,
           imageUrl:
-              controller.plantDetailData.value.data?.plant?.imageOriginalUrl ??
-              "",
+              controller.plantDetailData.value.data?.plant?.imageUrl ?? "",
           placeholder: (context, url) =>
               const BaseShimmer(height: spacerSize350, width: double.infinity),
           errorWidget: (context, url, error) =>
@@ -58,12 +57,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   final imageUrl =
-                      controller
-                          .plantDetailData
-                          .value
-                          .data
-                          ?.plant
-                          ?.imageOriginalUrl ??
+                      controller.plantDetailData.value.data?.plant?.imageUrl ??
                       "";
 
                   if (imageUrl.isNotEmpty) {

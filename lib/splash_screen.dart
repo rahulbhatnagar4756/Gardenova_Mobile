@@ -54,17 +54,19 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> refreshToken() async {
     var response = await authRepository.refreshToken();
     if (response != null) {
-      SharedPrefsService.instance.setString(
+      await SharedPrefsService.instance.setString(
         AppKeys.idToken,
         response[ApiKeys.data][ApiKeys.token],
       );
       print('user t13');
-      navigateToIntroductionScreen();
+    } else {
+      print('user t131');
     }
+    navigateToIntroductionScreen();
   }
 
   void navigateToIntroductionScreen() {
-    Get.back();
+    // Get.back();
     Future.delayed(Duration(seconds: 1)).then((value) {
       if (SharedPrefsService.instance.getString(AppKeys.role) !=
           AppKeys.professional) {

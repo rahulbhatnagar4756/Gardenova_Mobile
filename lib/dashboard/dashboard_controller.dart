@@ -22,6 +22,7 @@ enum ImagePickerSource { diagnosis, landscape }
 class DashboardController extends GetxController {
   RxList<PlantRecommendationsResponse> plantRecommendationList =
       <PlantRecommendationsResponse>[].obs;
+  var plantRecController = ScrollController();
   SharedPrefsService sharedPrefsService = SharedPrefsService();
   DashboardRepository dashboardRepository = DashboardRepository();
   RxBool isUserLoggedIn = false.obs;
@@ -156,8 +157,24 @@ class DashboardController extends GetxController {
     if (recommendationsResponse.data != null) {
       plantRecommendationList.value =
           recommendationsResponse.data!.plantRecommendations ?? [];
+      _scrollToFirstIndex();
     }
     isLoading.value = false;
+  }
+
+  void _scrollToFirstIndex() {
+    try {
+      if (plantRecController.hasClients &&
+          plantRecController.position.hasPixels) {
+        plantRecController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    } catch (e) {
+      debugPrint("Scroll Error: $e");
+    }
   }
 
   // Future getCurrentLocation() async {

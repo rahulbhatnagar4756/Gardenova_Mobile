@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> registerGoogleToken() async {
+    log('google register google token-> $googleAuthToken');
     var loginResponse = await authRepository.registerGoogleToken(
       socialLoginReq: {
         ApiKeys.googleAccessToken: googleAuthToken,

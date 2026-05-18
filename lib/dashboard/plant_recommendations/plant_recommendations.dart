@@ -56,6 +56,7 @@ class PlantRecommendations extends StatelessWidget {
                 ).paddingOnly(top: 30.h),
               )
             : ListView.separated(
+                controller: controller.plantRecController,
                 padding: EdgeInsets.only(
                   left: spacerSize20,
                   right: spacerSize20,
