@@ -108,6 +108,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+     
       GetPage(
         name: Routes.introduction,
         // page: () => IntroductionScreen(),
@@ -119,6 +120,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+      
       GetPage(
         name: Routes.login,
         page: () => LoginScreen(),
@@ -128,6 +130,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+      
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
@@ -151,6 +154,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.forgotPassword,
         page: () => ForgotPassword(),
@@ -160,6 +164,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.verifyOtp,
         page: () => VerifyOtp(),
@@ -168,6 +173,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.resetPassword,
         page: () => ResetPassword(),
@@ -176,6 +182,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.question,
         page: () => QuestionScreen(),
@@ -185,6 +192,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.reportSuccess,
         page: () => ReportSuccessScreen(),
@@ -193,6 +201,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.settings,
         page: () => SettingsScreen(),
@@ -202,6 +211,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.profile,
         page: () => ProfileScreen(),
@@ -210,6 +220,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.changePassword,
         page: () => ChangePassword(),
@@ -219,6 +230,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+    
       GetPage(
         name: Routes.recommendedProfessionals,
         page: () => RecommendedProfessionals(),
