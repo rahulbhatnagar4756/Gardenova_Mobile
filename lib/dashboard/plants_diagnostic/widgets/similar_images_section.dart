@@ -44,6 +44,8 @@ class SimilarImagesSection extends StatelessWidget {
                   fit: BoxFit.cover,
                   heroTag: "similar_image_$index",
                   borderRadius: BorderRadius.circular(18.r),
+                  allImages: images,
+                  initialIndex: index,
                 );
                 // return GestureDetector(
                 //   onTap: () {

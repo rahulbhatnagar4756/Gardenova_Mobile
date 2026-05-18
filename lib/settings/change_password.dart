@@ -35,6 +35,10 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                         child: Column(
                           children: [
                             TextFieldLayout(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: AppColors.greenColor,
+                              ),
                               editTextTitle: AppLocalizations.of(
                                 context,
                               )!.currentPassword,
@@ -44,7 +48,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                                 context,
                               )!.currentPassword,
                               isTextObscure: true,
-                                        
+
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return AppLocalizations.of(
@@ -74,6 +78,10 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                             ),
 
                             TextFieldLayout(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: AppColors.greenColor,
+                              ),
                               editTextTitle: AppLocalizations.of(
                                 context,
                               )!.newPassword,
@@ -111,6 +119,10 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               },
                             ),
                             TextFieldLayout(
+                              prefixIcon: Icon(
+                                Icons.lock_outline_rounded,
+                                color: AppColors.greenColor,
+                              ),
                               editTextTitle: AppLocalizations.of(
                                 context,
                               )!.confirmNewPassword,

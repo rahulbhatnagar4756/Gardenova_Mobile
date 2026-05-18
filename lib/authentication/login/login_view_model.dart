@@ -68,6 +68,15 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
       );
+      String responseId = '';
+      if (loginResponse.containsKey(ApiKeys.data) &&
+          loginResponse[ApiKeys.data].containsKey(ApiKeys.responseId)) {
+        responseId = loginResponse[ApiKeys.data][ApiKeys.responseId] ?? "";
+      }
+      SharedPrefsService.instance.setString(
+        AppKeys.submissionResponseId,
+        responseId,
+      );
       SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
 
       if (accountType.value == AppKeys.professional) {
@@ -132,7 +141,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     }
   }
 
-  void getProfileDetail() async {
+  void getProfileDetail({String responseId = ''}) async {
     var response = await authRepository.fetchProfile();
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
@@ -154,7 +163,16 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           profileResponse.data!.profileImage!,
         );
       }
-      Get.offAllNamed(Routes.introduction);
+      String responseIdd = profileResponse.data?.responseId ?? responseId;
+      if (responseIdd.trim().isEmpty) {
+        Get.offAllNamed(Routes.introduction);
+      } else {
+        SharedPrefsService.instance.setString(
+          AppKeys.submissionResponseId,
+          responseIdd,
+        );
+        Get.offAllNamed(Routes.dashboard);
+      }
     }
   }
 

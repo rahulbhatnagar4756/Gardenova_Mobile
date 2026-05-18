@@ -57,6 +57,7 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
+    String? responseId
   }) {
     _name = name;
     _email = email;
@@ -70,6 +71,7 @@ class Data {
     _socialLinks = socialLinks;
     _occupation = occupation;
     _company = company;
+    _responseId = responseId;
   }
 
   Data.fromJson(dynamic json) {
@@ -89,6 +91,7 @@ class Data {
         : null;
     _occupation = json[ApiKeys.occupation];
     _company = json[ApiKeys.company];
+    _responseId = json[ApiKeys.responseId];
   }
 
   String? _name;
@@ -103,6 +106,7 @@ class Data {
   SocialLinks? _socialLinks;
   dynamic _occupation;
   dynamic _company;
+  String? _responseId;
 
   Data copyWith({
     String? name,
@@ -117,6 +121,7 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
+    String? responseId
   }) => Data(
     name: name ?? _name,
     email: email ?? _email,
@@ -130,6 +135,7 @@ class Data {
     socialLinks: socialLinks ?? _socialLinks,
     occupation: occupation ?? _occupation,
     company: company ?? _company,
+    responseId: responseId ?? _responseId,
   );
 
   String? get name => _name;
@@ -156,6 +162,8 @@ class Data {
 
   dynamic get company => _company;
 
+  String? get responseId => _responseId;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map[ApiKeys.name] = _name;
@@ -174,6 +182,7 @@ class Data {
     }
     map[ApiKeys.occupation] = _occupation;
     map[ApiKeys.company] = _company;
+    map[ApiKeys.responseId] = _responseId;
     return map;
   }
 }

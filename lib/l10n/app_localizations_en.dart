@@ -60,7 +60,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterValidPhoneNo => 'Please enter a valid phone no.';
 
   @override
-  String get pleaseEnterValidEmailId => 'Please enter a valid emailId';
+  String get pleaseEnterValidEmailId => 'Please enter a valid email Id';
 
   @override
   String get iHaveAgreeTo => 'I have agree to';
@@ -75,7 +75,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
-  String get orRegisterWith => 'Or Register With';
+  String get orRegisterWith => 'or register with';
 
   @override
   String get register => 'Register';
@@ -93,7 +93,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyHaveAnAccount => 'Already have an account?';
 
   @override
-  String get logInNow => 'LogIn Now';
+  String get logInNow => 'Login Now';
 
   @override
   String get login => 'LogIn';
@@ -335,7 +335,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome';
 
   @override
-  String get loginOrRegisterToContinue => 'Login or Register to continue';
+  String get loginOrRegisterToContinue => 'Create your account to continue';
 
   @override
   String get passwordCannotBeEmpty => 'Password cannot be empty!';

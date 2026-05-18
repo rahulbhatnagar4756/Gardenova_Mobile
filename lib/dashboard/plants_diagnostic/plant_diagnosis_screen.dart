@@ -53,7 +53,11 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
             : SafeArea(
                 child: () {
                   if (controller.isLoading.value) {
-                    return const DiagnosisLoadingView();
+                    return DiagnosisLoadingView(
+                      imageFile: controller.imageFile?.value,
+                      isApiComplete: controller.isApiComplete.value,
+                      onComplete: controller.onLoadingAnimationComplete,
+                    );
                   }
 
                   /// API FAILED

@@ -17,7 +17,7 @@ class SoilAnalysis extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 190.h,
+      // height: 190.h,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: const Color(0xFFE6F7EE),

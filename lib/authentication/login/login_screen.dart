@@ -121,19 +121,25 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   Widget emailField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
       validator: (value) {
+        print('email validation t1');
         if (value == null || value.trim().isEmpty) {
+          print('email validation t2');
           return AppLocalizations.of(context)!.enterYourEmail;
         }
         if (value.contains(' ')) {
+          print('email validation t3');
           return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
         }
         if (!emailRegex.hasMatch(value.trim())) {
+          print('email validation t4');
           return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
         }
+        print('email validation t5');
 
         return null;
       },
@@ -143,6 +149,10 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.greenColor,
+        ),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
@@ -191,7 +201,10 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           FocusScope.of(context).requestFocus(FocusNode());
 
           if (controller.formKey.currentState!.validate()) {
+            print('if part');
             controller.login();
+          } else {
+            print('else part');
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,

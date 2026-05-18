@@ -75,6 +75,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
 
   nameField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.person_2_outlined, color: AppColors.greenColor),
       textEditingController: controller.nameController,
       hintText: AppLocalizations.of(context)!.enterYourName,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
@@ -84,6 +85,10 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.greenColor,
+        ),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
@@ -130,6 +135,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       validator: (value) {
         // if (value == null || value.isEmpty) {
         //   return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
@@ -171,6 +177,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   // need to change
   phoneNoField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
       keyboardType: TextInputType.phone,
       textEditingController: controller.phoneNoController,
@@ -231,7 +238,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                   TextSpan(
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        //  Get.toNamed(Routes.termsAndConditions);
+                        Get.toNamed(Routes.termsAndConditions);
                       },
                     text: "\t${AppLocalizations.of(context)!.termsOfUse}",
                     style: TextStyle(
@@ -251,6 +258,10 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                     ),
                   ),
                   TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Get.toNamed(Routes.privacyPolicy);
+                      },
                     text: "\t${AppLocalizations.of(context)!.privacyPolicy}",
                     style: TextStyle(
                       color: AppColors.greenColor,
@@ -289,7 +300,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.register,
-      ).marginOnly(bottom: 25.h),
+      ).marginOnly(bottom: 15.h),
     );
   }
 
@@ -305,7 +316,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h, top: 28.h);
+    ).marginOnly(bottom: 15.h, top: 1.h);
   }
 
   divider() {
@@ -336,7 +347,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
             text: '\t${AppLocalizations.of(context)!.logInNow}',
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Get.toNamed(Routes.login);
+                // Get.toNamed(Routes.login);
+                Get.back();
               },
             style: TextStyle(
               fontSize: 13.sp,

@@ -11,6 +11,7 @@ class ApiKeys {
   static const token = 'token';
   static const idToken = "idToken";
   static const email = 'email';
+  static const responseId = 'responseId';
   static const name = 'name';
   static const roleCode = 'roleCode';
   static const password = 'password';

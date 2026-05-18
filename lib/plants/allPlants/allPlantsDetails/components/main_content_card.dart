@@ -229,24 +229,24 @@ class MainContentCard extends StatelessWidget {
                       : Column(
                           children: [
                             Divider(color: AppColors.backgroundGrey),
-                            if (controller
-                                    .plantDetailData
-                                    .value
-                                    .data
-                                    ?.disease !=
-                                null) ...[
-                              SizedBox(height: 15.h),
-                              PlantDiseaseSection(
-                                disease: controller
-                                    .plantDetailData
-                                    .value
-                                    .data!
-                                    .disease,
-                                showImage: true,
-                              ),
-                              SizedBox(height: 15.h),
-                              Divider(color: AppColors.backgroundGrey),
-                            ],
+                            // if (controller
+                            //         .plantDetailData
+                            //         .value
+                            //         .data
+                            //         ?.disease !=
+                            //     null) ...[
+                            //   SizedBox(height: 15.h),
+                            //   PlantDiseaseSection(
+                            //     disease: controller
+                            //         .plantDetailData
+                            //         .value
+                            //         .data!
+                            //         .disease,
+                            //     showImage: true,
+                            //   ),
+                            //   SizedBox(height: 15.h),
+                            //   Divider(color: AppColors.backgroundGrey),
+                            // ],
                             Obx(
                               () => PlantToggleCard(
                                 icon: Assets.imagesWatering,

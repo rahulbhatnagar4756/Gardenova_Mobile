@@ -50,6 +50,10 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextFieldLayout(
+                                      prefixIcon: Icon(
+                                        Icons.person_outline_rounded,
+                                        color: AppColors.greenColor,
+                                      ),
                                       editTextTitle: AppLocalizations.of(
                                         context,
                                       )!.yourName,
@@ -61,6 +65,10 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                     ),
 
                                     TextFieldLayout(
+                                      prefixIcon: Icon(
+                                        Icons.email_outlined,
+                                        color: AppColors.greenColor,
+                                      ),
                                       editTextTitle: AppLocalizations.of(
                                         context,
                                       )!.yourEmailId,
@@ -187,6 +195,10 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                     ).paddingOnly(bottom: 3.h),
                                     BaseTextField(
                                       // labelText:AppLocalizations.of(context)!.yourName ,
+                                      prefixIcon: Icon(
+                                        Icons.person_outline_rounded,
+                                        color: AppColors.greenColor,
+                                      ),
                                       hintText: AppLocalizations.of(
                                         context,
                                       )!.name,
@@ -209,6 +221,10 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                       )!.yourEmailId,
                                     ).paddingOnly(bottom: 3.h),
                                     BaseTextField(
+                                      prefixIcon: Icon(
+                                        Icons.email_outlined,
+                                        color: AppColors.greenColor,
+                                      ),
                                       // labelText:AppLocalizations.of(context)!.yourName ,
                                       hintText: AppLocalizations.of(
                                         context,

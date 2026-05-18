@@ -23,8 +23,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
+      print('user t11');
       refreshToken();
     } else {
+      print('user t12');
       navigateToIntroductionScreen();
     }
     super.initState();
@@ -56,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
         AppKeys.idToken,
         response[ApiKeys.data][ApiKeys.token],
       );
+      print('user t13');
       navigateToIntroductionScreen();
     }
   }
@@ -66,9 +69,11 @@ class _SplashScreenState extends State<SplashScreen> {
       if (SharedPrefsService.instance.getString(AppKeys.role) !=
           AppKeys.professional) {
         // need change
-        // Get.offAllNamed(Routes.introduction);
-        Get.offAllNamed(Routes.dashboard);
+        Get.offAllNamed(Routes.introduction);
+        print('user t14');
+        // Get.offAllNamed(Routes.dashboard);
       } else {
+        print('user t15');
         Get.offAllNamed(Routes.professionalDashboard);
       }
     });

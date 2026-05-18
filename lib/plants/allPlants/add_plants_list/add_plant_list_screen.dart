@@ -342,7 +342,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
-                  SizedBox(height: spacerSize10),
+                  // SizedBox(height: 8.h),
                 ],
               ),
             ),

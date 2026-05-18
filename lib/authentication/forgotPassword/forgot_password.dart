@@ -40,10 +40,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
             ),
           ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: sendOtp(context),
-          )
+          Align(alignment: Alignment.bottomCenter, child: sendOtp(context)),
         ],
       ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
     );
@@ -51,6 +48,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
 
   emailField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       hintColor: AppColors.mediumGrey,
       keyboardType: TextInputType.emailAddress,

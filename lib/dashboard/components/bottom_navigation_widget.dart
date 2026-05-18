@@ -17,7 +17,7 @@ List<BottomNavigationLocalModel> bottomNavigationList() {
     ),
     BottomNavigationLocalModel(
       type: BottomNavType.plant,
-      label: AppStrings.plants,
+      label: AppStrings.myPlants,
       icon: AppAssets.plantIc,
     ),
     BottomNavigationLocalModel(

@@ -70,6 +70,10 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
   ) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.greenColor,
+        ),
         hintText: hintText,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: isPasswordObscure.value,
@@ -118,6 +122,10 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
   ) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.greenColor,
+        ),
         hintText: hintText,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: isPasswordObscure.value,

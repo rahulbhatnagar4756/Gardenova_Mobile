@@ -20,6 +20,11 @@ class PlantDiagnosisViewModel extends GetxController {
       PlantDiagnosisResponseModel().obs;
   RxBool isCurrentImagePlant = true.obs;
   RxBool isLoading = false.obs;
+
+  /// Flips to true the moment the API call finishes.
+  /// The loading view watches this and fast-forwards its animation to 100 %
+  /// before calling [onLoadingAnimationComplete] to dismiss itself.
+  RxBool isApiComplete = false.obs;
   RxString issue = "".obs;
   RxString automationFeature = "".obs;
   RxString howItHelps = "".obs;
@@ -67,7 +72,16 @@ class PlantDiagnosisViewModel extends GetxController {
     if (isCurrentImagePlant.value) {
       getKasagardemData();
     }
+    // Signal the loading view that the API is done.
+    // isLoading will be cleared by onLoadingAnimationComplete() once the
+    // progress bar reaches 100 % and the view is ready to dismiss.
+    isApiComplete.value = true;
+  }
+
+  /// Called by DiagnosisLoadingView after it has animated to 100 %.
+  void onLoadingAnimationComplete() {
     isLoading.value = false;
+    isApiComplete.value = false; // reset for potential retry
   }
 
   getKasagardemData() {

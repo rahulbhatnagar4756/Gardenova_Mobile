@@ -16,6 +16,7 @@ class TextFieldLayout extends StatefulWidget {
     this.isTextObscure = false,
     this.validator, // ✅ NEW
     this.hintText,
+    this.prefixIcon,
   });
 
   final String editTextTitle;
@@ -26,6 +27,7 @@ class TextFieldLayout extends StatefulWidget {
 
   /// ✅ Dynamic validator
   final String? Function(String?)? validator;
+  final Icon? prefixIcon;
 
   @override
   State<TextFieldLayout> createState() => _TextFieldLayoutState();
@@ -55,6 +57,7 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
         const SizedBox(height: spacerSize5),
 
         BaseTextField(
+          prefixIcon: widget.prefixIcon,
           isTextObscure: isObscure,
           textEditingController: widget.textEditingController,
           isTextFieldEnabled: widget.isTextFieldEnabled,

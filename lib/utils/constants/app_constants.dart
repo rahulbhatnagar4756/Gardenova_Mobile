@@ -142,6 +142,11 @@ class BaseSnackBar {
           /// ICON
           Container(
             margin: EdgeInsets.only(right: 11.w),
+            padding: EdgeInsets.all(5.w),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.greenColor.withValues(alpha: 0.5),
+            ),
             height: 40.w,
             width: 40.w,
             child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain),
