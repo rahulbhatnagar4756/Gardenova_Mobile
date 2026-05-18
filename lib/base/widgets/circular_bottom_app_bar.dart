@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
-import 'package:kasagardem/generated/assets.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
-
 import '../../settings/settings_view_model.dart';
 import '../../utils/shared_prefs_service.dart';
 import 'clickable_image.dart';
@@ -72,19 +70,14 @@ class CircularBottomAppBar extends StatelessWidget
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// Logo
-                  // Image.asset(
-                  //   AppAssets.appLogo,
-                  //   width: 45.w,
-                  //   height: 45.w,
-                  // ),
                   Obx(() {
                     final imageUrl = Get.isRegistered<SettingsViewModel>()
                         ? Get.find<SettingsViewModel>().profileImage.value
                         : "";
 
                     return Container(
-                      width: 45.w,
-                      height: 45.w,
+                      width: 40.w,
+                      height: 40.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.backgroundGrey),
@@ -128,13 +121,13 @@ class CircularBottomAppBar extends StatelessWidget
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BaseText(
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontFamily: AppKeys.poppins,
                           fontSize: fontSize14,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           text:
-                              '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
+                              '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!👋',
                         ),
 
                         SizedBox(height: 2),
@@ -166,7 +159,7 @@ class CircularBottomAppBar extends StatelessWidget
                             : BaseText(
                                 fontWeight: FontWeight.w400,
                                 fontFamily: AppKeys.inter,
-                                fontSize: fontSize12,
+                                fontSize: fontSize11,
                                 textColor: AppColors.liteGreyColor,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -175,18 +168,69 @@ class CircularBottomAppBar extends StatelessWidget
                       ],
                     ),
                   ),
-
-                  /// Menu Icon
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: onSettingPressed,
-                    icon: Image.asset(
-                      Assets.drawerIc,
-                      height: 45.w,
-                      width: 45.w,
+                  GestureDetector(
+                    onTap: () {
+                      // onNotificationPressed?.call();
+                      BaseSnackBar.show(
+                        title: 'Temporarily Unavailable',
+                        message:
+                            // 'The store is currently on hold. We’ll be back soon with updates.',
+                            'The notification section is currently on hold. We\'ll be back soon with updates.',
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.lightGrey.withValues(alpha: 0.25),
+                            blurRadius: 20,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        AppAssets.notificationIc,
+                        height: 32.w,
+                        width: 32.w,
+                      ),
                     ),
                   ),
+                  SizedBox(width: 10.w),
+                  GestureDetector(
+                    onTap: () {
+                      onSettingPressed?.call();
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.lightGrey.withValues(alpha: 0.25),
+                            blurRadius: 20,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        AppAssets.drawerMenuIc,
+                        height: 32.w,
+                        width: 32.w,
+                      ),
+                    ),
+                  ),
+
+                  /// Menu Icon
+                  // IconButton(
+                  //   padding: EdgeInsets.zero,
+                  //   constraints: const BoxConstraints(),
+                  //   onPressed: onSettingPressed,
+                  //   icon: Image.asset(
+                  //     Assets.drawerIc,
+                  //     height: 45.w,
+                  //     width: 45.w,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

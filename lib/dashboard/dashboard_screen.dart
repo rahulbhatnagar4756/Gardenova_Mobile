@@ -149,7 +149,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                 ).paddingSymmetric(horizontal: spacerSize20),
                               ),
                       ),
-                      SizedBox(height: 120.h),
+                      SizedBox(height: 110.h),
                     ],
                   ),
                 ),
@@ -162,8 +162,16 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       selectNavType: controller.selectedNavType.value,
                       needToShow: controller.isUserLoggedIn.value,
                       onAddPlantClick: (p0) {
-                        if (p0 != BottomNavType.scan) {
+                        if (p0 != BottomNavType.scan &&
+                            p0 != BottomNavType.report) {
                           controller.selectedNavType.value = p0;
+                        }
+                        if (p0 == BottomNavType.report) {
+                          BaseSnackBar.show(
+                            title: 'Temporarily Unavailable',
+                            message:
+                                'The Report section is currently on hold. We’ll be back soon with updates.',
+                          );
                         }
                         switch (p0) {
                           case BottomNavType.home:

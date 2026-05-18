@@ -9,6 +9,10 @@ class AppAssets {
   static const verifiedIc = 'assets/images/verified_ic.png';
   static const editPencilIc = 'assets/images/edit_pencil_ic.png';
 
+  // appbar icond
+  static const drawerMenuIc = 'assets/images/drawer_btn_ic.png';
+  static const notificationIc = 'assets/images/notification_ic.png';
+
   //
   static const aiAnalysisIc = 'assets/images/plant_analysis_ic.png';
   static const aiLandscapeDesignIc = 'assets/images/ai_landscape_ic.png';

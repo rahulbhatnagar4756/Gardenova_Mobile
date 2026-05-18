@@ -17,6 +17,10 @@ class MyPlantsListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int wateringReminderFrequency = item.wateringReminderFrequency ?? 0;
+    bool healthStatus = item.healthStatus?.isNotEmpty ?? false;
+    bool needToShowBottomWidget = wateringReminderFrequency > 0 || healthStatus;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -69,8 +73,8 @@ class MyPlantsListItem extends StatelessWidget {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 fontFamily: AppKeys.poppins,
-                                fontSize: fontSize13,
-                                fontWeight: FontWeight.w700,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             Icon(
@@ -89,10 +93,10 @@ class MyPlantsListItem extends StatelessWidget {
                                     "${AppLocalizations.of(context)!.noDataNa}: ${item.otherName}"
                               : item.genus ??
                                     AppLocalizations.of(context)!.noDataNa,
-                          maxLines: 1,
+                          maxLines: !needToShowBottomWidget ? 2 : 1,
                           overflow: TextOverflow.ellipsis,
                           fontFamily: AppKeys.inter,
-                          fontSize: fontSize11,
+                          fontSize: (10.1).sp,
                           fontWeight: FontWeight.w400,
                           textColor: AppColors.liteGreyColor,
                         ),
@@ -101,38 +105,38 @@ class MyPlantsListItem extends StatelessWidget {
 
                     /// 🔹 STATUS CHIPS
                     /// with new data don't have data this.
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        (item.healthStatus?.isNotEmpty ?? false)
-                            ? Flexible(
-                                child: _statusChip(
-                                  icon: Icons.info,
-                                  // text: "85% ${AppLocalizations.of(context)!.health}",
-                                  text:
-                                      item.healthStatus ??
-                                      AppLocalizations.of(context)!.noDataNa,
-                                  chipColor: AppColors.greenColor,
-                                ),
-                              )
-                            : const SizedBox(),
-                        SizedBox(
-                          width: (item.healthStatus?.isNotEmpty ?? false)
-                              ? spacerSize4
-                              : 0,
-                        ),
-                        (item.wateringReminderFrequency ?? 0) > 0
-                            ? Flexible(
-                                child: _statusChip(
-                                  icon: Icons.water_drop_outlined,
-                                  text:
-                                      "${AppLocalizations.of(context)!.inText} ${item.wateringReminderFrequency} ${AppLocalizations.of(context)!.day}s",
-                                  chipColor: AppColors.red,
-                                ),
-                              )
-                            : const SizedBox(),
-                      ],
-                    ),
+                    !needToShowBottomWidget
+                        ? const SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              healthStatus
+                                  ? Flexible(
+                                      child: _statusChip(
+                                        icon: Icons.info,
+                                        // text: "85% ${AppLocalizations.of(context)!.health}",
+                                        text:
+                                            item.healthStatus ??
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.noDataNa,
+                                        chipColor: AppColors.greenColor,
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                              SizedBox(width: healthStatus ? spacerSize4 : 0),
+                              wateringReminderFrequency > 0
+                                  ? Flexible(
+                                      child: _statusChip(
+                                        icon: Icons.water_drop_outlined,
+                                        text:
+                                            "${AppLocalizations.of(context)!.inText} ${item.wateringReminderFrequency} ${AppLocalizations.of(context)!.day}s",
+                                        chipColor: AppColors.red,
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
                   ],
                 ),
               ),

@@ -118,7 +118,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                         }, childCount: controller.allPlantList.length),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.9, // adjust based on card height
+                          childAspectRatio: 0.94, // adjust based on card height
                           crossAxisSpacing: spacerSize15,
                           mainAxisSpacing: spacerSize15,
                         ),
@@ -312,7 +312,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 topRight: Radius.circular(spacerSize15),
               ),
               child: CachedNetworkImage(
-                height: spacerSize120,
+                height: 118.h,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 imageUrl: plant.imageUrl ?? plant.imageOriginalUrl ?? "",
@@ -332,11 +332,12 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                     fontWeight: FontWeight.w600,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    fontSize: 12.sp,
                   ),
                   // SizedBox(height: spacerSize2),
                   BaseText(
                     text: description,
-                    fontSize: fontSize12,
+                    fontSize: (10.1).sp,
                     textColor: AppColors.liteGreyColor,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
