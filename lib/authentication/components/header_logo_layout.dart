@@ -34,7 +34,7 @@ class HeaderLogoLayout extends StatelessWidget {
           fontFamily: AppKeys.poppins,
           fontSize: 14.sp,
           text: subTitle ?? "",
-        ).marginOnly(bottom: 40.h),
+        ).marginOnly(bottom: 20.h),
       ],
     );
   }

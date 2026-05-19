@@ -134,7 +134,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                 // color: AppColors.blackColor.withValues(
                                 //   alpha: 0.6,
                                 // ),
-                                padding: EdgeInsets.symmetric(vertical: 20.h),
+                                padding: EdgeInsets.symmetric(vertical: 10.h),
                                 child: BaseButton(
                                   bottomPadding: false,
                                   buttonLabel: AppLocalizations.of(
@@ -149,7 +149,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                 ).paddingSymmetric(horizontal: spacerSize20),
                               ),
                       ),
-                      SizedBox(height: 25.h),
+                      SizedBox(height: 0.h),
                     ],
                   ),
                 ),

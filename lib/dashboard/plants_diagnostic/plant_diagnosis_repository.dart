@@ -15,6 +15,7 @@ class PlantDiagnosisRepository {
       body: plantDiagnosisRequest,
       showDefaultLoader: false,
       showRunTimeError: false,
+      rethrowExceptions: true,
     );
 
     return plantDiagnosisResponse;

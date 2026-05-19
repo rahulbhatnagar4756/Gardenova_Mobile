@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
       refreshToken();
     } else {
       print('user t12');
-      navigateToIntroductionScreen();
+      navigateToIntroductionScreen(isUserAlreadyLogedIn: false);
     }
     super.initState();
   }
@@ -62,16 +62,20 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       print('user t131');
     }
-    navigateToIntroductionScreen();
+    navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
   }
 
-  void navigateToIntroductionScreen() {
+  void navigateToIntroductionScreen({required bool isUserAlreadyLogedIn}) {
     // Get.back();
     Future.delayed(Duration(seconds: 1)).then((value) {
       if (SharedPrefsService.instance.getString(AppKeys.role) !=
           AppKeys.professional) {
         // need change
-        Get.offAllNamed(Routes.login);
+        if (isUserAlreadyLogedIn) {
+          Get.offAllNamed(Routes.dashboard);
+        } else {
+          Get.offAllNamed(Routes.login);
+        }
         print('user t14');
         // Get.offAllNamed(Routes.dashboard);
       } else {

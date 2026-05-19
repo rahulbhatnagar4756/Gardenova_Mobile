@@ -96,7 +96,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logInNow => 'Login Now';
 
   @override
-  String get login => 'LogIn';
+  String get login => 'Login';
 
   @override
   String get loginAccount => 'Login Account';

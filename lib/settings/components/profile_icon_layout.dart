@@ -19,11 +19,13 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
     this.isProfileEditable = false,
     required this.isEnableEditable,
     this.onClickEditPencil,
+    this.onClickPictureView,
     required this.title,
   });
 
   final String title;
   final bool? isProfileEditable;
+  final Function? onClickPictureView;
   final Function? onClickEditPencil;
   final bool? isEnableEditable;
 
@@ -82,186 +84,89 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
               onTap: isProfileEditable == true
                   ? openImagePickerBottomSheet
                   : null,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Stack(
-                    children: [
-                      // Padding(
-                      //   padding: EdgeInsets.only(bottom: 2.0),
-                      //   child: Obx(
-                      //     () => Container(
-                      //       decoration: BoxDecoration(
-                      //         color: AppColors.antiqueWhite,
-                      //         borderRadius: BorderRadiusGeometry.circular(100),
-                      //       ),
-                      //       width: 108.w,
-                      //       height: 108.w,
-                      //       child: CircleAvatar(
-                      //         backgroundColor: AppColors.antiqueWhite,
-                      //         radius: isProfileEditable!
-                      //             ? spacerSize60
-                      //             : spacerSize40,
-                      //         child: ClipOval(
-                      //           child:
-                      //               controller.imageFile.value.path.isNotEmpty
-                      //               ? Image.file(
-                      //                   controller.imageFile.value,
-                      //                   fit: BoxFit.fill,
-                      //                   width: 108.w,
-                      //                   height: 108.w,
-                      //                   errorBuilder: (c, s, o) {
-                      //                     return Center(
-                      //                       child: BaseText(
-                      //                         text: controller.name.value
-                      //                             .substring(0, 1),
-                      //                         textColor: AppColors.charcoalGrey,
-                      //                         fontFamily: AppKeys.poppins,
-                      //                         fontWeight: FontWeight.w700,
-                      //                         fontSize: fontSize40,
-                      //                         textAlign: TextAlign.center,
-                      //                       ),
-                      //                     );
-                      //                   },
-                      //                 )
-                      //               : (controller
-                      //                         .profileImage
-                      //                         .value
-                      //                         .isNotEmpty ||
-                      //                     (controller
-                      //                             .professionalProfileData
-                      //                             .value
-                      //                             ?.data
-                      //                             ?.imageUrl
-                      //                             ?.isNotEmpty ??
-                      //                         false))
-                      //               ? CachedNetworkImage(
-                      //                   fit: BoxFit.fill,
-                      //                   useOldImageOnUrlChange: true,
-                      //                   imageUrl:
-                      //                       controller.screenType.value ==
-                      //                           AppKeys.professional
-                      //                       ? controller
-                      //                             .professionalProfileData
-                      //                             .value!
-                      //                             .data!
-                      //                             .imageUrl!
-                      //                       : controller.profileImage.value,
-                      //                   width: 108.w,
-                      //                   height: 108.w,
-                      //                   placeholder: (context, url) =>
-                      //                       BaseShimmer(
-                      //                         backgroundColor:
-                      //                             AppColors.antiqueWhite,
-                      //                         height:
-                      //                             (isProfileEditable!
-                      //                                 ? spacerSize60
-                      //                                 : spacerSize40) *
-                      //                             2,
-                      //                         width:
-                      //                             (isProfileEditable!
-                      //                                 ? spacerSize60
-                      //                                 : spacerSize40) *
-                      //                             2,
-                      //                       ),
-                      //                   errorWidget: (context, url, error) {
-                      //                     return Center(
-                      //                       child: BaseText(
-                      //                         text: controller.name.value
-                      //                             .substring(0, 1),
-                      //                         textColor: AppColors.charcoalGrey,
-                      //                         fontFamily: AppKeys.poppins,
-                      //                         fontWeight: FontWeight.w700,
-                      //                         fontSize: fontSize40,
-                      //                         textAlign: TextAlign.center,
-                      //                       ),
-                      //                     );
-                      //                   },
-                      //                 )
-                      //               : Center(
-                      //                   child: BaseText(
-                      //                     text: controller.name.value.isEmpty
-                      //                         ? ""
-                      //                         : controller.name.value
-                      //                               .substring(0, 1)
-                      //                               .toUpperCase(),
-                      //                     textColor: AppColors.whiteColor,
-                      //                     fontFamily: AppKeys.poppins,
-                      //                     fontWeight: FontWeight.w700,
-                      //                     fontSize: fontSize40,
-                      //                     textAlign: TextAlign.center,
-                      //                   ),
-                      //                 ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 2.0),
-                        child: Obx(
-                          () => Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            padding: EdgeInsets.all(3.w),
-                            width: 108.w,
-                            height: 108.w,
-                            child: CircleAvatar(
-                              backgroundColor: AppColors.antiqueWhite,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: _buildProfileImage(controller),
+              behavior: isProfileEditable == true
+                  ? HitTestBehavior.opaque
+                  : HitTestBehavior.translucent,
+              child: IgnorePointer(
+                ignoring: isProfileEditable == true,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 2.0),
+                          child: Obx(
+                            () => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                onClickPictureView?.call();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                padding: EdgeInsets.all(3.w),
+                                width: 108.w,
+                                height: 108.w,
+                                child: CircleAvatar(
+                                  backgroundColor: AppColors.antiqueWhite,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: _buildProfileImage(controller),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
 
-                      (isEnableEditable == true)
-                          ? Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: IgnorePointer(
-                                ignoring: isProfileEditable ?? false,
-                                child: CommonClickWidget(
-                                  onTap: () => onClickEditPencil?.call(),
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                      right: 10.w,
-                                      left: 10.w,
-                                      top: 10.w,
-                                    ),
-                                    child: Image.asset(
-                                      AppAssets.editPencilIc,
-                                      width: 20.w,
-                                      height: 20.w,
+                        (isEnableEditable == true)
+                            ? Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: IgnorePointer(
+                                  ignoring: isProfileEditable ?? false,
+                                  child: CommonClickWidget(
+                                    // test: true,
+                                    onTap: () => onClickEditPencil?.call(),
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        right: 10.w,
+                                        left: 15.w,
+                                        top: 20.w,
+                                      ),
+                                      child: Image.asset(
+                                        AppAssets.editPencilIc,
+                                        width: 20.w,
+                                        height: 20.w,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : const SizedBox(),
-                    ],
-                  ),
-                  // if (isProfileEditable!)
-                  //   Positioned(
-                  //     right: Get.width * .38,
-                  //     top: Get.height * .110,
-                  //     child: Container(
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(spacerSize50),
-                  //         color: AppColors.offWhite,
-                  //       ),
-                  //       child: Image.asset(
-                  //         AppAssets.edit,
-                  //         scale: 3,
-                  //       ).paddingAll(spacerSize6),
-                  //     ),
-                  //   ),
-                ],
-              ).marginOnly(bottom: spacerSize10, top: spacerSize10),
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                    // if (isProfileEditable!)
+                    //   Positioned(
+                    //     right: Get.width * .38,
+                    //     top: Get.height * .110,
+                    //     child: Container(
+                    //       decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(spacerSize50),
+                    //         color: AppColors.offWhite,
+                    //       ),
+                    //       child: Image.asset(
+                    //         AppAssets.edit,
+                    //         scale: 3,
+                    //       ).paddingAll(spacerSize6),
+                    //     ),
+                    //   ),
+                  ],
+                ).marginOnly(bottom: spacerSize10, top: spacerSize10),
+              ),
             ),
             nameAndEmailFields(),
           ],

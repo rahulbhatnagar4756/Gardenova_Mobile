@@ -19,6 +19,14 @@ dependencies {
     // https://firebase.google.com/docs/android/setup#available-libraries
 }
 android {
+    signingConfigs {
+        create("release") {
+            keyAlias = "gardenova"
+            storeFile = file("D:\\live_projects\\Gardenova_Mobile\\android\\app\\gardenova.jks")
+            storePassword = "12345678"
+            keyPassword = "12345678"
+        }
+    }
     namespace = "com.gardenova.digisoft"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
@@ -56,14 +64,17 @@ android {
       }*/
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug");
-            isMinifyEnabled = true
-            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release");
+            isMinifyEnabled = false
+            isShrinkResources = false
 
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt")
+//            )
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt")
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
-
 
         }
     }

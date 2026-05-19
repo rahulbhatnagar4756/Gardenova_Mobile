@@ -9,8 +9,6 @@ import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
-import 'package:kasagardem/utils/constants/app_strings.dart';
-
 import '../../utils/validation_healper.dart';
 
 class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
@@ -75,10 +73,10 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
               ).hasMatch(controller.emailController.text)) {
             controller.sendOtp();
           } else {
-            BaseSnackBar.show(
-              title: AppStrings.exception,
-              message: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
-            );
+            // BaseSnackBar.show(
+            //   title: AppStrings.exception,
+            //   message: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+            // );
           }
         },
       ).marginOnly(top: spacerSize25),

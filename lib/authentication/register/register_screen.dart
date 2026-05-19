@@ -81,7 +81,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourName,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
       validator: ValidationHelper.validateName,
-    ).marginOnly(top: spacerSize10, bottom: spacerSize10);
+    ).marginOnly(top: 0, bottom: spacerSize10);
   }
 
   Widget passwordField(BuildContext context) {
@@ -239,7 +239,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.register,
-      ).marginOnly(bottom: 15.h),
+      ).marginOnly(bottom: 0),
     );
   }
 
@@ -255,7 +255,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h, top: 1.h);
+    ).marginOnly(bottom: 22.h, top: 0);
   }
 
   Widget divider() {

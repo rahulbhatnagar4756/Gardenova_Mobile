@@ -25,12 +25,12 @@ class ForgotPasswordViewModel extends GetxController {
   final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
   AuthRepository authRepository = AuthRepository();
   Timer? timer;
-  RxInt start = 300.obs;
+  RxInt start = 60.obs;
   RxBool canResend = false.obs;
 
   void startTimer() {
     canResend.value = false;
-    start.value = 300;
+    start.value = 60;
     timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (start.value == 1) {
         canResend.value = true;

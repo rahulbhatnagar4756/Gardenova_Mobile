@@ -14,7 +14,8 @@ class AppStrings {
       "Are You Sure You Want Language";
   static const String areYouSureWantToLogout = "Are you sure want to logout?";
 
-  static const String exception = "Exception";
+  // static const String exception = "Exception";
+  static const String exception = "Request failed";
   static const String networkError = "Network Error";
   static const String somethingWentWrong = "Something Went Wrong";
   static const String retry = "Retry";

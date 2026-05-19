@@ -58,6 +58,7 @@ class ApiRepository {
     bool showDefaultLoader = true,
     bool directUrl = false,
     bool showRunTimeError = true,
+    bool rethrowExceptions = false,
   }) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult[0] == ConnectivityResult.none) {
@@ -170,6 +171,9 @@ class ApiRepository {
         log('Api response->  ${e} ');
         log('---------------------------------catch');
       }
+      if (rethrowExceptions) {
+        rethrow;
+      }
       if (showRunTimeError) {
         String message = AppStrings.somethingWentWrong;
         if (e is FetchDataException) {
@@ -201,6 +205,7 @@ class ApiRepository {
     bool showDefaultLoader = true,
     bool directUrl = false,
     bool showRunTimeError = true,
+    bool rethrowExceptions = false,
   }) async => request(
     ApiKeys.get,
     endPoint,
@@ -208,6 +213,7 @@ class ApiRepository {
     showDefaultLoader: showDefaultLoader,
     directUrl: directUrl,
     showRunTimeError: showRunTimeError,
+    rethrowExceptions: rethrowExceptions,
   );
 
   Future<dynamic> post(
@@ -217,6 +223,7 @@ class ApiRepository {
     bool showDefaultLoader = true,
     bool directUrl = false,
     bool showRunTimeError = true,
+    bool rethrowExceptions = false,
   }) async => request(
     ApiKeys.post,
     endPoint,
@@ -225,6 +232,7 @@ class ApiRepository {
     showDefaultLoader: showDefaultLoader,
     directUrl: directUrl,
     showRunTimeError: showRunTimeError,
+    rethrowExceptions: rethrowExceptions,
   );
 
   Future<dynamic> patch(

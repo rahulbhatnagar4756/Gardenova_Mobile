@@ -33,7 +33,9 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
         return Scaffold(
           backgroundColor: AppColors.appColor,
           body: DiagnosisErrorView(
-            message: response.message ?? "Unable to analyze plant",
+            message: controller.errorMessage.value.isNotEmpty
+                ? controller.errorMessage.value
+                : (response.message ?? "Unable to analyze plant"),
             onRetry: () {
               controller.diagnosePlant();
             },
@@ -43,9 +45,13 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
 
       /// NOT A PLANT
       if (controller.isCurrentImagePlant.value == false) {
-        return const Scaffold(
+        return Scaffold(
           backgroundColor: AppColors.appColor,
-          body: NoPlantDetectedView(),
+          body: NoPlantDetectedView(
+            onRescan: () {
+              controller.rescanImage();
+            },
+          ),
         );
       }
 

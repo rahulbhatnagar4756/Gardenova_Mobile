@@ -14,6 +14,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/widgets/common_click_widget.dart';
+import '../base/widgets/full_screen_image_preview.dart';
 import '../utils/constants/app_assets.dart';
 import '../utils/constants/app_strings.dart';
 import '../utils/utils.dart';
@@ -35,8 +36,22 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               children: [
                 ProfileIconLayout(
                   isEnableEditable: true,
-                  title: AppLocalizations.of(context)!.settings,
+                  title: AppStrings.profile,
+                  // title: AppLocalizations.of(context)!.settings,
                   isProfileEditable: false,
+                  onClickPictureView: () {
+                    // Get.toNamed(Routes.profile);
+                    String profileImage = controller.profileImage.value;
+                    if (profileImage.trim().isEmpty) {
+                      profileImage = AppAssets.appLogo;
+                    }
+                    print('we will open the image here $profileImage');
+                    FullScreenImageView.open(
+                      imageUrl: profileImage,
+                      heroTag: "profile_image_appbar",
+                    );
+                    // need to wokr here
+                  },
                   onClickEditPencil: () {
                     Get.toNamed(Routes.profile);
                   },

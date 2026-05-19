@@ -128,8 +128,8 @@ class BaseSnackBar {
       backgroundColor: AppColors.darkGreen,
       snackPosition: SnackPosition.TOP,
       borderRadius: 14,
-      padding: EdgeInsets.only(left: 12.w, bottom: 10.h, top: 10.h),
-      margin: EdgeInsets.symmetric(horizontal: 12.w),
+      padding: EdgeInsets.only(left: 12.w, bottom: 10.h, top: 4.h),
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
 
       titleText: const SizedBox.shrink(),
 
@@ -165,16 +165,6 @@ class BaseSnackBar {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-
-                // Text(
-                //   title.trim(),
-                //   style: TextStyle(
-                //     color: AppColors.offWhite,
-                //     fontWeight: FontWeight.w600,
-                //     fontSize: 14.sp,
-                //   ),
-                // ),
-                // SizedBox(height: 2.h),
                 BaseText(
                   text: message.trim(),
                   fontWeight: FontWeight.w400,
@@ -183,10 +173,6 @@ class BaseSnackBar {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                // Text(
-                //   message.trim(),
-                //   style: TextStyle(color: AppColors.offWhite, fontSize: 12.sp),
-                // ),
               ],
             ),
           ),

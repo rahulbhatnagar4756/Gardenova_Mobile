@@ -96,10 +96,10 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                     : "";
 
                                 return Container(
-                                  width: 45.w,
-                                  height: 45.w,
+                                  width: 42.w,
+                                  height: 42.w,
                                   decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+                                    borderRadius: BorderRadius.circular(100),
                                     border: Border.all(
                                       color: AppColors.backgroundGrey,
                                     ),
@@ -119,23 +119,6 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                       ),
                                     ),
                                   ),
-                                  // child: ClipOval(
-                                  //   child: imageUrl.isNotEmpty
-                                  //       ? Image.network(
-                                  //           imageUrl,
-                                  //           fit: BoxFit.cover,
-                                  //           errorBuilder: (_, __, ___) {
-                                  //             return Image.asset(
-                                  //               AppAssets.appLogo,
-                                  //               fit: BoxFit.cover,
-                                  //             );
-                                  //           },
-                                  //         )
-                                  //       : Image.asset(
-                                  //           AppAssets.appLogo,
-                                  //           fit: BoxFit.cover,
-                                  //         ),
-                                  // ),
                                 );
                               }),
                               Expanded(

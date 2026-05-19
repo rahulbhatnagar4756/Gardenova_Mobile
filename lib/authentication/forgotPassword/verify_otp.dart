@@ -12,7 +12,6 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
-
 class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
   const VerifyOtp({super.key});
 
@@ -61,11 +60,11 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.verifyOtp,
-      ).marginOnly( top: spacerSize25),
+      ).marginOnly(top: spacerSize25),
     );
   }
 
-   didNotReceiveAnyCode(BuildContext context) {
+  didNotReceiveAnyCode(BuildContext context) {
     return Obx(
       () => RichText(
         text: TextSpan(

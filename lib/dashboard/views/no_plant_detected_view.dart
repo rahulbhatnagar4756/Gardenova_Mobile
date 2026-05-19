@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -12,7 +13,12 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class NoPlantDetectedView extends StatelessWidget {
-  const NoPlantDetectedView({super.key});
+  final VoidCallback onRescan;
+
+  const NoPlantDetectedView({
+    super.key,
+    required this.onRescan,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +51,14 @@ class NoPlantDetectedView extends StatelessWidget {
                   text: AppStrings.pleaseUpload,
                   textAlign: TextAlign.center,
                   textColor: AppColors.liteGreyColor,
+                ),
+
+                SizedBox(height: 30.h),
+
+                BaseButton(
+                  onPressed: onRescan,
+                  buttonLabel: AppStrings.tryAgain,
+                  backgroundColor: AppColors.greenColor,
                 ),
               ],
             ),

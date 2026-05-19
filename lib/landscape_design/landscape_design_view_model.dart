@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/network_services/app_exceptions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'landscape_design_repository.dart';
 import 'model/landscape_design_model.dart';
@@ -91,14 +92,27 @@ class LandscapeDesignViewModel extends GetxController {
           lastGeneratedStyle = selectedStyle.value;
         }
         if (landscapeResponse.value.success != true) {
-          errorMessage.value =
-              landscapeResponse.value.message ?? "Generation failed";
+          errorMessage.value = _cleanErrorMessage(
+            landscapeResponse.value.message ?? "Generation failed",
+          );
         }
       } else {
         errorMessage.value = "Unable to generate landscape design";
       }
     } catch (e) {
-      errorMessage.value = "An error occurred: $e";
+      if (e is BadRequestException) {
+        errorMessage.value = _cleanErrorMessage(e.message);
+      } else if (e is FetchDataException) {
+        errorMessage.value = _cleanErrorMessage(e.message);
+      } else if (e is UnauthorisedException) {
+        errorMessage.value = _cleanErrorMessage(e.message);
+      } else if (e is NotFoundException) {
+        errorMessage.value = _cleanErrorMessage(e.message);
+      } else if (e is ConflictException) {
+        errorMessage.value = _cleanErrorMessage(e.message);
+      } else {
+        errorMessage.value = _cleanErrorMessage("An error occurred: $e");
+      }
     } finally {
       if (isLoading.value) {
         if (errorMessage.value.isNotEmpty) {
@@ -227,5 +241,39 @@ class LandscapeDesignViewModel extends GetxController {
     } finally {
       isDownloading.value = false;
     }
+  }
+
+  String _cleanErrorMessage(String errorMsg) {
+    if (errorMsg.contains('{') && errorMsg.contains('}')) {
+      try {
+        final startIndex = errorMsg.indexOf('{');
+        final endIndex = errorMsg.lastIndexOf('}');
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+          final jsonPart = errorMsg.substring(startIndex, endIndex + 1);
+          final decoded = jsonDecode(jsonPart);
+          if (decoded is Map) {
+            if (decoded.containsKey('message')) {
+              return decoded['message'].toString();
+            } else if (decoded.containsKey('error')) {
+              return decoded['error'].toString();
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
+    final messageMatch = RegExp(
+      r'"message"\s*:\s*"([^"]+)"',
+    ).firstMatch(errorMsg);
+    if (messageMatch != null && messageMatch.groupCount >= 1) {
+      return messageMatch.group(1)!;
+    }
+
+    final errorMatch = RegExp(r'"error"\s*:\s*"([^"]+)"').firstMatch(errorMsg);
+    if (errorMatch != null && errorMatch.groupCount >= 1) {
+      return errorMatch.group(1)!;
+    }
+
+    return errorMsg;
   }
 }
