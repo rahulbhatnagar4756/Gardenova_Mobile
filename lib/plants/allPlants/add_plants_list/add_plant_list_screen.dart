@@ -284,10 +284,14 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
   /// 🔹 CARD
   Widget plantCard(Plants plant, int index) {
     String title =
-        plant.commonName ?? AppLocalizations.of(Get.context!)!.noDataNa;
-    String description = plant.scientificName ?? '';
+        (plant.commonName ??
+        (plant.scientificName ?? AppLocalizations.of(Get.context!)!.noDataNa));
+    String description = plant.otherName ?? '';
     if (description.isEmpty) {
-      description = plant.family ?? AppLocalizations.of(Get.context!)!.noDataNa;
+      description =
+          plant.family ??
+          plant.type ??
+          AppLocalizations.of(Get.context!)!.noDataNa;
     }
     title = title.trim();
     description = description.trim();

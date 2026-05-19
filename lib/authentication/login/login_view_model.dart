@@ -174,7 +174,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       }
       String responseIdd = profileResponse.data?.responseId ?? responseId;
       if (responseIdd.trim().isEmpty) {
-        Get.offAllNamed(Routes.introduction);
+        Get.offAllNamed(Routes.question);
       } else {
         SharedPrefsService.instance.setString(
           AppKeys.submissionResponseId,

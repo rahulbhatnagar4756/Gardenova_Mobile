@@ -55,15 +55,15 @@ class BottomNavigationWidget extends StatelessWidget {
     if (!needToShow) {
       return SizedBox();
     }
-    return SafeArea(
-      bottom: true,
+    return IntrinsicHeight(
       child: Container(
         width: double.infinity,
-        height: 69.h,
-        margin: EdgeInsets.only(bottom: 16.w, left: 16.w, right: 16.w),
+        margin: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(vertical: 8.h),
+
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(18.r),
+          borderRadius: BorderRadius.circular(0),
           border: Border.all(
             color: Colors.black.withValues(alpha: 0.1),
             width: 1.w,
@@ -77,188 +77,229 @@ class BottomNavigationWidget extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: bottomNavigationList().asMap().entries.map((entry) {
-            BottomNavigationLocalModel item = entry.value;
-            Color? selectedColor = item.type == selectNavType
-                ? AppColors.greenColor
-                : null;
 
-            return Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  onAddPlantClick?.call(item.type);
-                },
+        child: SafeArea(
+          bottom: true,
+          child: Row(
+            children: bottomNavigationList().asMap().entries.map((entry) {
+              BottomNavigationLocalModel item = entry.value;
 
-                child: Center(
-                  child: item.isCenterIcon
-                      ? AnimatedScale(
-                          duration: const Duration(milliseconds: 250),
+              Color? selectedColor = item.type == selectNavType
+                  ? AppColors.greenColor
+                  : null;
 
-                          scale: item.type == selectNavType ? 1.08 : 1,
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    onAddPlantClick?.call(item.type);
+                  },
 
-                          child: Container(
-                            height: 58.w,
-                            width: 58.w,
+                  child: Center(
+                    child: item.isCenterIcon
+                        ? AnimatedScale(
+                            duration: const Duration(milliseconds: 250),
+                            scale: item.type == selectNavType ? 1.08 : 1,
 
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
+                            child: Container(
+                              height: 58.w,
+                              width: 58.w,
 
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.blackColor.withValues(
-                                    alpha: 0.15,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.blackColor.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                    blurRadius: 14,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 6),
                                   ),
-                                  blurRadius: 14,
-                                  spreadRadius: 2,
-                                  offset: const Offset(0, 6),
+                                ],
+                              ),
+
+                              child: Image.asset(item.icon, fit: BoxFit.cover),
+                            ),
+                          )
+                        : AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AnimatedScale(
+                                  duration: const Duration(milliseconds: 250),
+                                  scale: item.type == selectNavType ? 1.12 : 1,
+
+                                  child: Image.asset(
+                                    item.icon,
+                                    height: 24.w,
+                                    width: 24.w,
+                                    color: selectedColor,
+                                  ),
+                                ),
+
+                                SizedBox(height: 4.h),
+
+                                AnimatedDefaultTextStyle(
+                                  duration: const Duration(milliseconds: 250),
+
+                                  style: TextStyle(
+                                    fontSize: item.type == selectNavType
+                                        ? 11.sp
+                                        : 10.sp,
+
+                                    fontWeight: item.type == selectNavType
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+
+                                    color:
+                                        selectedColor ??
+                                        AppColors.liteGreyColor,
+                                  ),
+
+                                  child: BaseText(
+                                    text: item.label,
+                                    textColor: selectedColor,
+                                  ),
                                 ),
                               ],
                             ),
-
-                            child: Image.asset(item.icon, fit: BoxFit.cover),
                           ),
-                        )
-                      : AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          curve: Curves.easeInOut,
-
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-
-                            children: [
-                              /// ICON ANIMATION
-                              AnimatedScale(
-                                duration: const Duration(milliseconds: 250),
-                                scale: item.type == selectNavType ? 1.12 : 1,
-
-                                child: Image.asset(
-                                  item.icon,
-                                  height: 24.w,
-                                  width: 24.w,
-                                  color: selectedColor,
-                                ),
-                              ),
-
-                              SizedBox(height: 4.h),
-
-                              /// TEXT ANIMATION
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 250),
-
-                                style: TextStyle(
-                                  fontSize: item.type == selectNavType
-                                      ? 11.sp
-                                      : 10.sp,
-
-                                  fontWeight: item.type == selectNavType
-                                      ? FontWeight.w600
-                                      : FontWeight.w400,
-
-                                  color:
-                                      selectedColor ?? AppColors.liteGreyColor,
-                                ),
-
-                                child: BaseText(
-                                  text: item.label,
-                                  textColor: selectedColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  ),
                 ),
-                // child: Center(
-                //   child: item.isCenterIcon
-                //       ? Container(
-                //           height: 58.w,
-                //           width: 58.w,
-
-                //           decoration: BoxDecoration(
-                //             shape: BoxShape.circle,
-
-                //             boxShadow: [
-                //               BoxShadow(
-                //                 color: AppColors.blackColor.withOpacity(0.15),
-                //                 blurRadius: 14,
-                //                 spreadRadius: 2,
-                //                 offset: const Offset(0, 6),
-                //               ),
-                //             ],
-                //           ),
-                //           child: Image.asset(
-                //             fit: BoxFit.cover,
-                //             item.icon,
-                //             height: 60.w,
-                //             width: 60.w,
-                //           ),
-                //         )
-                //       : Column(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           crossAxisAlignment: CrossAxisAlignment.center,
-                //           mainAxisSize: MainAxisSize.min,
-                //           children: [
-                //             Image.asset(
-                //               item.icon,
-                //               height: 24.w,
-                //               width: 24.w,
-                //               color: selectedColor,
-                //             ),
-                //             SizedBox(height: 3.h),
-                // BaseText(
-                //   text: item.label,
-                //   fontSize: 10.sp,
-                //   fontWeight: FontWeight.w400,
-                //   textColor: selectedColor,
-                // ),
-                //           ],
-                //         ),
-                // ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         ),
-        // child: Center(
-        //   child: ListView.separated(
-        //     padding: EdgeInsets.zero,
-        //     scrollDirection: Axis.horizontal,
-        //     shrinkWrap: true,
-        //     separatorBuilder: (context, index) => SizedBox(width: 10.w),
-        //     itemBuilder: (context, index) {
-        //       BottomNavigationLocalModel item = bottomNavigationList()[index];
-        //       Color selectedColor = item.isSelected
-        //           ? AppColors.whiteColor
-        //           : AppColors.liteGreyColor;
-        //       return item.isCenterIcon
-        //           ? Image.asset(item.icon, height: 60.w, width: 60.w)
-        //           : Column(
-        //               mainAxisAlignment: MainAxisAlignment.center,
-        //               crossAxisAlignment: CrossAxisAlignment.center,
-
-        //               children: [
-        //                 Image.asset(
-        //                   item.icon,
-        //                   height: 24.w,
-        //                   width: 24.w,
-        //                   color: selectedColor,
-        //                 ),
-        //                 SizedBox(height: 4.h),
-        //                 BaseText(
-        //                   text: bottomNavigationList()[index].label,
-        //                   fontSize: 12.sp,
-        //                   fontWeight: FontWeight.w400,
-        //                   textColor: selectedColor,
-        //                 ),
-        //               ],
-        //             );
-        //     },
-        //     itemCount: bottomNavigationList().length,
-        //   ),
-        // ),
       ),
     );
+    // return Container(
+    //   width: double.infinity,
+    //   height: 69.h,
+    //   // margin: EdgeInsets.only(bottom: 16.w, left: 16.w, right: 16.w),
+    //   margin: EdgeInsets.only(bottom: 0, left: 0, right: 0),
+    //   decoration: BoxDecoration(
+    //     color: AppColors.whiteColor,
+    //     borderRadius: BorderRadius.circular(18.r),
+    //     border: Border.all(
+    //       color: Colors.black.withValues(alpha: 0.1),
+    //       width: 1.w,
+    //     ),
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color: Colors.black.withValues(alpha: 0.1),
+    //         blurRadius: 10,
+    //         spreadRadius: 1,
+    //         offset: const Offset(0, 2),
+    //       ),
+    //     ],
+    //   ),
+    //   child: SafeArea(
+    //     bottom: true,
+    //     child: Row(
+    //       children: bottomNavigationList().asMap().entries.map((entry) {
+    //         BottomNavigationLocalModel item = entry.value;
+    //         Color? selectedColor = item.type == selectNavType
+    //             ? AppColors.greenColor
+    //             : null;
+
+    //         return Expanded(
+    //           child: GestureDetector(
+    //             behavior: HitTestBehavior.opaque,
+    //             onTap: () {
+    //               onAddPlantClick?.call(item.type);
+    //             },
+
+    //             child: Center(
+    //               child: item.isCenterIcon
+    //                   ? AnimatedScale(
+    //                       duration: const Duration(milliseconds: 250),
+
+    //                       scale: item.type == selectNavType ? 1.08 : 1,
+
+    //                       child: Container(
+    //                         height: 58.w,
+    //                         width: 58.w,
+
+    //                         decoration: BoxDecoration(
+    //                           shape: BoxShape.circle,
+
+    //                           boxShadow: [
+    //                             BoxShadow(
+    //                               color: AppColors.blackColor.withValues(
+    //                                 alpha: 0.15,
+    //                               ),
+    //                               blurRadius: 14,
+    //                               spreadRadius: 2,
+    //                               offset: const Offset(0, 6),
+    //                             ),
+    //                           ],
+    //                         ),
+
+    //                         child: Image.asset(item.icon, fit: BoxFit.cover),
+    //                       ),
+    //                     )
+    //                   : AnimatedContainer(
+    //                       duration: const Duration(milliseconds: 250),
+    //                       curve: Curves.easeInOut,
+
+    //                       child: Column(
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         crossAxisAlignment: CrossAxisAlignment.center,
+    //                         mainAxisSize: MainAxisSize.min,
+
+    //                         children: [
+    //                           /// ICON ANIMATION
+    //                           AnimatedScale(
+    //                             duration: const Duration(milliseconds: 250),
+    //                             scale: item.type == selectNavType ? 1.12 : 1,
+
+    //                             child: Image.asset(
+    //                               item.icon,
+    //                               height: 24.w,
+    //                               width: 24.w,
+    //                               color: selectedColor,
+    //                             ),
+    //                           ),
+
+    //                           SizedBox(height: 4.h),
+
+    //                           /// TEXT ANIMATION
+    //                           AnimatedDefaultTextStyle(
+    //                             duration: const Duration(milliseconds: 250),
+
+    //                             style: TextStyle(
+    //                               fontSize: item.type == selectNavType
+    //                                   ? 11.sp
+    //                                   : 10.sp,
+
+    //                               fontWeight: item.type == selectNavType
+    //                                   ? FontWeight.w600
+    //                                   : FontWeight.w400,
+
+    //                               color:
+    //                                   selectedColor ?? AppColors.liteGreyColor,
+    //                             ),
+
+    //                             child: BaseText(
+    //                               text: item.label,
+    //                               textColor: selectedColor,
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     ),
+    //             ),
+    //           ),
+    //         );
+    //       }).toList(),
+    //     ),
+    //   ),
+
+    // );
   }
 }

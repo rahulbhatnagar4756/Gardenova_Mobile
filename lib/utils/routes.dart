@@ -44,7 +44,8 @@ import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/settings/terms_and_conditions.dart';
 import 'package:kasagardem/splash_screen.dart';
 import 'package:kasagardem/utils/utils.dart';
-
+import '../introduction/introduction_screen.dart';
+import '../introduction/introduction_screen_view_model.dart';
 import '../plants/allPlants/allPlantsDetails/all_plants_details_screen.dart';
 import '../plants/allPlants/add_plants_list/add_plants_controller.dart';
 import '../plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
@@ -98,7 +99,7 @@ class Routes {
   static const landscapeDesign = '/landscape_design';
   static const cameraCapture = '/camera_capture';
 
-  static  getPages() {
+  static getPages() {
     return [
       GetPage(
         name: Routes.splash,
@@ -108,19 +109,19 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-     
+
       GetPage(
         name: Routes.introduction,
-        // page: () => IntroductionScreen(),
-        // binding: BindingsBuilder.put(() => IntroductionScreenViewModel()),
-        page: () => LoginScreen(),
-        binding: BindingsBuilder.put(() => LoginViewModel()),
+        page: () => IntroductionScreen(),
+        binding: BindingsBuilder.put(() => IntroductionScreenViewModel()),
+        // page: () => LoginScreen(),
+        // binding: BindingsBuilder.put(() => LoginViewModel()),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
         ),
       ),
-      
+
       GetPage(
         name: Routes.login,
         page: () => LoginScreen(),
@@ -130,7 +131,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-      
+
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
@@ -154,7 +155,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.forgotPassword,
         page: () => ForgotPassword(),
@@ -164,7 +165,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.verifyOtp,
         page: () => VerifyOtp(),
@@ -173,7 +174,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.resetPassword,
         page: () => ResetPassword(),
@@ -182,7 +183,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.question,
         page: () => QuestionScreen(),
@@ -192,7 +193,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.reportSuccess,
         page: () => ReportSuccessScreen(),
@@ -201,7 +202,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.settings,
         page: () => SettingsScreen(),
@@ -211,7 +212,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.profile,
         page: () => ProfileScreen(),
@@ -220,7 +221,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.changePassword,
         page: () => ChangePassword(),
@@ -230,7 +231,7 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
-    
+
       GetPage(
         name: Routes.recommendedProfessionals,
         page: () => RecommendedProfessionals(),

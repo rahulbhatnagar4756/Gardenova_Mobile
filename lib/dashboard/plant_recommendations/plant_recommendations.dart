@@ -25,7 +25,11 @@ class PlantRecommendations extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => BaseBorderedContainer(
-        height: 175.h,
+        height:
+            (controller.plantRecommendationList.isEmpty &&
+                !controller.isLoading.value)
+            ? 145.h
+            : 175.h,
         // padding: EdgeInsets.all(spacerSize5),
         backgroundColor: AppColors.appColor,
         borderColor: AppColors.appColor,

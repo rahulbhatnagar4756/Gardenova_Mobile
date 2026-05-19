@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (SharedPrefsService.instance.getString(AppKeys.role) !=
           AppKeys.professional) {
         // need change
-        Get.offAllNamed(Routes.introduction);
+        Get.offAllNamed(Routes.login);
         print('user t14');
         // Get.offAllNamed(Routes.dashboard);
       } else {

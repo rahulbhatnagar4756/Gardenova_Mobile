@@ -15,8 +15,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
-
-import '../../utils/app_config.dart';
+import '../../utils/validation_healper.dart';
 import '../components/social_login_layout.dart';
 
 class LoginScreen extends GetWidget<LoginViewModel> {
@@ -125,24 +124,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
-      validator: (value) {
-        print('email validation t1');
-        if (value == null || value.trim().isEmpty) {
-          print('email validation t2');
-          return AppLocalizations.of(context)!.enterYourEmail;
-        }
-        if (value.contains(' ')) {
-          print('email validation t3');
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-        if (!emailRegex.hasMatch(value.trim())) {
-          print('email validation t4');
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-        print('email validation t5');
-
-        return null;
-      },
+      validator: ValidationHelper.validateEmail,
     ).marginOnly(bottom: 10.h);
   }
 

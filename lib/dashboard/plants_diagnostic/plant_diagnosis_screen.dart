@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import '../components/full_drawer.dart';
@@ -18,10 +16,38 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
     return Obx(() {
       final response = controller.plantDiagnosisResponse.value;
       final data = response.data;
-      final bool isSuccess =
-          !controller.isLoading.value &&
-          data != null &&
-          controller.isCurrentImagePlant.value == true;
+
+      if (controller.isLoading.value) {
+        return Scaffold(
+          backgroundColor: AppColors.appColor,
+          body: DiagnosisLoadingView(
+            imageFile: controller.imageFile?.value,
+            isApiComplete: controller.isApiComplete.value,
+            onComplete: controller.onLoadingAnimationComplete,
+          ),
+        );
+      }
+
+      /// API FAILED
+      if (data == null) {
+        return Scaffold(
+          backgroundColor: AppColors.appColor,
+          body: DiagnosisErrorView(
+            message: response.message ?? "Unable to analyze plant",
+            onRetry: () {
+              controller.diagnosePlant();
+            },
+          ),
+        );
+      }
+
+      /// NOT A PLANT
+      if (controller.isCurrentImagePlant.value == false) {
+        return const Scaffold(
+          backgroundColor: AppColors.appColor,
+          body: NoPlantDetectedView(),
+        );
+      }
 
       return Scaffold(
         backgroundColor: AppColors.appColor,
@@ -32,52 +58,7 @@ class PlantDiagnosisScreen extends GetWidget<PlantDiagnosisViewModel> {
             },
           ),
         ),
-        appBar: isSuccess
-            ? null
-            : PreferredSize(
-                preferredSize: Size.fromHeight(110.h + 30.h),
-                child: Builder(
-                  builder: (context) {
-                    return CircularBottomAppBar(
-                      isBackButtonVisible: true,
-                      showMenuIcon: true,
-                      onSettingPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  },
-                ),
-              ),
-        body: isSuccess
-            ? DiagnosisSuccessView(controller: controller)
-            : SafeArea(
-                child: () {
-                  if (controller.isLoading.value) {
-                    return DiagnosisLoadingView(
-                      imageFile: controller.imageFile?.value,
-                      isApiComplete: controller.isApiComplete.value,
-                      onComplete: controller.onLoadingAnimationComplete,
-                    );
-                  }
-
-                  /// API FAILED
-                  if (data == null) {
-                    return DiagnosisErrorView(
-                      message: response.message ?? "Unable to analyze plant",
-                      onRetry: () {
-                        controller.diagnosePlant();
-                      },
-                    );
-                  }
-
-                  /// NOT A PLANT
-                  if (controller.isCurrentImagePlant.value == false) {
-                    return const NoPlantDetectedView();
-                  }
-
-                  return const SizedBox();
-                }(),
-              ),
+        body: DiagnosisSuccessView(controller: controller),
       );
     });
   }

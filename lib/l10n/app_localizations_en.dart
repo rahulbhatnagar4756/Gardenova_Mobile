@@ -128,7 +128,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter your Email below to reset\nyour password.';
 
   @override
-  String get sendOtp => 'Send Otp';
+  String get sendOtp => 'Send OTP';
 
   @override
   String get enterYourOtp => 'Enter Your OTP';

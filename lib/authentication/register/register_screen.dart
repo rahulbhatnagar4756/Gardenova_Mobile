@@ -15,6 +15,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/utils/validation_healper.dart';
 import '../../utils/constants/app_strings.dart';
 import '../components/social_login_layout.dart';
 
@@ -73,16 +74,17 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  nameField(BuildContext context) {
+  Widget nameField(BuildContext context) {
     return BaseTextField(
       prefixIcon: Icon(Icons.person_2_outlined, color: AppColors.greenColor),
       textEditingController: controller.nameController,
       hintText: AppLocalizations.of(context)!.enterYourName,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
+      validator: ValidationHelper.validateName,
     ).marginOnly(top: spacerSize10, bottom: spacerSize10);
   }
 
-  passwordField(BuildContext context) {
+  Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
         prefixIcon: Icon(
@@ -104,78 +106,23 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
               ? Icon(Icons.visibility_outlined)
               : Icon(Icons.visibility_off_outlined),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return AppLocalizations.of(context)!.passwordFieldCannotBeEmpty;
-          }
-
-          // Minimum 8 characters
-          if (value.length < 8) {
-            return 'Password must be at least 8 characters';
-          }
-
-          // At least one uppercase letter
-          if (!RegExp(r'[A-Z]').hasMatch(value)) {
-            return 'Password must contain at least one capital letter';
-          }
-
-          // At least one special character
-          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-            return 'Password must contain at least one special character';
-          }
-
-          return null;
-        },
+        validator: ValidationHelper.validatePassword,
       ),
     );
   }
 
-  emailField(BuildContext context) {
+  Widget emailField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
       prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
-      validator: (value) {
-        // if (value == null || value.isEmpty) {
-        //   return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        // }
-        // if (!GetUtils.isEmail(value)) {
-        //   return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        // }
-        // return null;
-        final email = value?.trim() ?? '';
-
-        if (email.isEmpty) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-
-        // No spaces allowed
-        if (email.contains(' ')) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-
-        // Strong email regex
-        final emailRegex = RegExp(
-          r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov|co|io|info|biz)$",
-        );
-
-        if (!emailRegex.hasMatch(email)) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-
-        // Prevent consecutive dots
-        if (email.contains('..')) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-
-        return null;
-      },
+      validator: ValidationHelper.validateEmail,
     ).marginOnly(bottom: spacerSize10);
   }
 
   // need to change
-  phoneNoField(BuildContext context) {
+  Widget phoneNoField(BuildContext context) {
     return BaseTextField(
       prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
@@ -183,19 +130,11 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       textEditingController: controller.phoneNoController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)!.pleaseEnterValidPhoneNo;
-        }
-        if (value.length < 7) {
-          return "Phone number is too short";
-        }
-        return null;
-      },
+      validator: ValidationHelper.validatePhone,
     ).marginOnly(bottom: spacerSize10);
   }
 
-  termOfUseAndPrivacyPolicy(BuildContext context) {
+  Widget termOfUseAndPrivacyPolicy(BuildContext context) {
     return GestureDetector(
       onTap: controller.onCheckTermsAndCondition,
       child: Row(
@@ -279,7 +218,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  register(BuildContext context) {
+  Widget register(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
@@ -304,7 +243,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  orRegisterWith(BuildContext context) {
+  Widget orRegisterWith(BuildContext context) {
     return Row(
       spacing: spacerSize6,
       children: [
@@ -319,7 +258,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     ).marginOnly(bottom: 15.h, top: 1.h);
   }
 
-  divider() {
+  Widget divider() {
     return Expanded(
       child: Divider(
         thickness: spacerSize1,
@@ -329,7 +268,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  alreadyHaveAnAccount(BuildContext context) {
+  Widget alreadyHaveAnAccount(BuildContext context) {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(

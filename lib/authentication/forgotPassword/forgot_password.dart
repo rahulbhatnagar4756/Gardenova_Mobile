@@ -11,6 +11,8 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
+import '../../utils/validation_healper.dart';
+
 class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
   const ForgotPassword({super.key});
 
@@ -54,6 +56,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+      validator: ValidationHelper.validateEmail,
     );
   }
 

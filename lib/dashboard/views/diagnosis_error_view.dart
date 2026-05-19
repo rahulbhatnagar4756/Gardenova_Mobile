@@ -1,7 +1,7 @@
-/// =========================================================
-/// FILE: plants_diagnostic/views/diagnosis_error_view.dart
-/// CREATE NEW FILE
-/// =========================================================
+// =========================================================
+// FILE: plants_diagnostic/views/diagnosis_error_view.dart
+// CREATE NEW FILE
+// =========================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,41 +24,62 @@ class DiagnosisErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline_rounded, color: Colors.red, size: 70.sp),
+    return Stack(
+      children: [
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(24.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline_rounded, color: Colors.red, size: 70.sp),
 
-            SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-            BaseText(
-              text: AppStrings.somethingWentWrong,
-              fontSize: fontSize22,
-              fontWeight: FontWeight.w700,
-              fontFamily: AppKeys.poppins,
+                BaseText(
+                  text: AppStrings.somethingWentWrong,
+                  fontSize: fontSize22,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: AppKeys.poppins,
+                ),
+
+                SizedBox(height: 10.h),
+
+                BaseText(
+                  text: message,
+                  textAlign: TextAlign.center,
+                  textColor: AppColors.liteGreyColor,
+                ),
+
+                SizedBox(height: 30.h),
+
+                BaseButton(
+                  onPressed: onRetry,
+                  buttonLabel: AppStrings.tryAgain,
+                  backgroundColor: AppColors.greenColor,
+                ),
+              ],
             ),
-
-            SizedBox(height: 10.h),
-
-            BaseText(
-              text: message,
-              textAlign: TextAlign.center,
-              textColor: AppColors.liteGreyColor,
-            ),
-
-            SizedBox(height: 30.h),
-
-            BaseButton(
-              onPressed: onRetry,
-              buttonLabel: AppStrings.tryAgain,
-              backgroundColor: AppColors.greenColor,
-            ),
-          ],
+          ),
         ),
-      ),
+
+        // ── BACK BUTTON ──────────────────────────────────────────────────
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: spacerSize10,
+              top: spacerSize16,
+            ),
+            child: CircleAvatar(
+              backgroundColor: Colors.black38,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

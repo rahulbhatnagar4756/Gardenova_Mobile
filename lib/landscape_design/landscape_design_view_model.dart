@@ -16,6 +16,7 @@ class LandscapeDesignViewModel extends GetxController {
   Rx<LandscapeDesignResponseModel> landscapeResponse =
       LandscapeDesignResponseModel().obs;
   RxBool isLoading = false.obs;
+  RxBool isApiComplete = false.obs;
   RxBool isRegenerating = false.obs;
   RxBool isDownloading = false.obs;
   RxString errorMessage = "".obs;
@@ -99,9 +100,26 @@ class LandscapeDesignViewModel extends GetxController {
     } catch (e) {
       errorMessage.value = "An error occurred: $e";
     } finally {
-      isLoading.value = false;
-      isRegenerating.value = false;
+      if (isLoading.value) {
+        if (errorMessage.value.isNotEmpty) {
+          isLoading.value = false;
+        } else {
+          isApiComplete.value = true;
+        }
+      } else if (isRegenerating.value) {
+        if (errorMessage.value.isNotEmpty) {
+          isRegenerating.value = false;
+        } else {
+          isApiComplete.value = true;
+        }
+      }
     }
+  }
+
+  void onLoadingAnimationComplete() {
+    isLoading.value = false;
+    isRegenerating.value = false;
+    isApiComplete.value = false;
   }
 
   void updateStyle(String style) {

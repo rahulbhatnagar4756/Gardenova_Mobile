@@ -87,10 +87,12 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: spacerSize16.w),
                       decoration: BoxDecoration(
-                        color: AppColors.whiteColor.withOpacity(0.1),
+                        color: AppColors.whiteColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: AppColors.liteGreenColor.withOpacity(0.3),
+                          color: AppColors.liteGreenColor.withValues(
+                            alpha: 0.3,
+                          ),
                         ),
                       ),
                       child: Obx(
@@ -159,7 +161,11 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.refresh, color: Colors.white, size: 20.sp),
+                            Icon(
+                              Icons.refresh,
+                              color: Colors.white,
+                              size: 20.sp,
+                            ),
                             const SizedBox(width: 8),
                             const BaseText(
                               text: "Regenerate Design",
@@ -310,50 +316,6 @@ class LandscapeDesignSuccessView extends StatelessWidget {
               // ),
             ],
           ),
-        ),
-
-        /// 🔹 REGENERATING OVERLAY (20% Transparent)
-        Obx(
-          () => controller.isRegenerating.value
-              ? Container(
-                  color: Colors.black.withOpacity(0.2),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(spacerSize20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              const CircularProgressIndicator(
-                                color: AppColors.greenColor,
-                                strokeWidth: 3,
-                              ),
-                              const SizedBox(height: 16),
-                              const BaseText(
-                                text: "AI Processing...",
-                                fontWeight: FontWeight.bold,
-                                textColor: AppColors.greenColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
         ),
 
         /// 🔹 DOWNLOAD LOADING OVERLAY

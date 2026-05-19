@@ -10,6 +10,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 
 import '../../base/widgets/base_form.dart';
+import 'package:kasagardem/utils/validation_healper.dart';
 
 class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
   const ResetPassword({super.key});
@@ -62,7 +63,7 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
     );
   }
 
-  passwordField(
+  Widget passwordField(
     String hintText,
     RxBool isPasswordObscure,
     TextEditingController textEditingController,
@@ -88,33 +89,12 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
               ? Icon(Icons.visibility_outlined)
               : Icon(Icons.visibility_off_outlined),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return AppLocalizations.of(context)!.passwordFieldCannotBeEmpty;
-          }
-
-          // Minimum 8 characters
-          if (value.length < 8) {
-            return 'Password must be at least 8 characters';
-          }
-
-          // At least one uppercase letter
-          if (!RegExp(r'[A-Z]').hasMatch(value)) {
-            return 'Password must contain at least one capital letter';
-          }
-
-          // At least one special character
-          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-            return 'Password must contain at least one special character';
-          }
-
-          return null;
-        },
+        validator: ValidationHelper.validatePassword,
       ),
     );
   }
 
-  confirmPasswordField(
+  Widget confirmPasswordField(
     String hintText,
     RxBool isPasswordObscure,
     TextEditingController textEditingController,
@@ -140,22 +120,15 @@ class ResetPassword extends GetWidget<ForgotPasswordViewModel> {
               ? Icon(Icons.visibility_outlined)
               : Icon(Icons.visibility_off_outlined),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return AppLocalizations.of(context)!.passwordFieldCannotBeEmpty;
-          }
-
-          if (value != controller.newPasswordController.text) {
-            return AppLocalizations.of(context)!.passwordsDoNotMatch;
-          }
-
-          return null;
-        },
+        validator: (value) => ValidationHelper.validateConfirmPassword(
+          password: controller.newPasswordController.text,
+          confirmPassword: value,
+        ),
       ),
     );
   }
 
-  resetPassword(BuildContext context) {
+  Widget resetPassword(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(

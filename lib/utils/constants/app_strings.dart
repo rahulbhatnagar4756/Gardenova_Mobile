@@ -146,3 +146,26 @@ class AppStrings {
   static const String reports = "Reports";
   static const String profile = "Profile";
 }
+
+class ErrorStrings {
+  static const invalidName = 'Please enter a valid Name.';
+  static const invalidEmail = 'Please enter a valid Email.';
+  static const invalidPhoneNo = 'Please enter a valid Phone Number.';
+  static const phoneNoMustBeAtleast7Digits =
+      'Phone number must contain 7 to 14 digits.';
+
+  static const pwdFieldNotEmpty = 'Password field cannot be Empty.';
+  static const invalidPassword = 'Please enter a valid Password.';
+
+  static const pwdMustBeAtLeadEightCharecter =
+      'Password must be at least 8 Characters.';
+  static const pwdMustContainAtLeastOneCapitalLetter =
+      'Password must contain at least one Capital Letter.';
+  static const pwdMustContainAtLeastOneSmallLetter =
+      'Password must contain at least one Small Letter.';
+  static const pwdMustContainAtLeastOneNumber =
+      'Password must contain at least one Number.';
+  static const pwdMustContainAtLeastOneSpecialCharacter =
+      'Password must contain at least one Special Character.';
+  static const confirmPasswordsNotMatch = 'Confirm Password do not Match.';
+}

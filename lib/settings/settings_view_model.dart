@@ -245,7 +245,7 @@ class SettingsViewModel extends GetxController {
       SharedPrefsService.instance.clear();
       // Get.offAllNamed(Routes.chooseAccountType);
       SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
-      Get.offAllNamed(Routes.introduction);
+      Get.offAllNamed(Routes.login);
     }
   }
 }

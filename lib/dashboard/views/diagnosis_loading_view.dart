@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
 
 // ---------------------------------------------------------------------------
 // Progressive analysis stages shown while the API call is in flight.
@@ -109,7 +110,9 @@ class _DiagnosisLoadingViewState extends State<DiagnosisLoadingView>
   void didUpdateWidget(DiagnosisLoadingView oldWidget) {
     super.didUpdateWidget(oldWidget);
     // React the first time the parent flips isApiComplete to true.
-    if (!oldWidget.isApiComplete && widget.isApiComplete && !_isFastForwarding) {
+    if (!oldWidget.isApiComplete &&
+        widget.isApiComplete &&
+        !_isFastForwarding) {
       _beginFastForward();
     }
   }
@@ -256,67 +259,91 @@ class _DiagnosisLoadingViewState extends State<DiagnosisLoadingView>
   Widget build(BuildContext context) {
     final stage = _stages[_currentStageIndex];
     final screenHeight = MediaQuery.of(context).size.height;
-    final imageHeight = screenHeight * 0.45;
+    final imageHeight = screenHeight * 0.54;
 
     return Container(
       color: AppColors.appColor,
-      child: Column(
+      child: Stack(
         children: [
-          // ── IMAGE WITH SCAN OVERLAY ──────────────────────────────────────
-          _ImageScanSection(
-            imageFile: widget.imageFile,
-            imageHeight: imageHeight,
-            scanlineAnimation: _scanlineAnimation,
-            accentColor: stage.accentColor,
+          Column(
+            children: [
+              // ── IMAGE WITH SCAN OVERLAY ──────────────────────────────────────
+              _ImageScanSection(
+                imageFile: widget.imageFile,
+                imageHeight: imageHeight,
+                scanlineAnimation: _scanlineAnimation,
+                accentColor: stage.accentColor,
+              ),
+
+              // ── STAGE INFO CARD ──────────────────────────────────────────────
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 16.h,
+                  ),
+                  child: Column(
+                    children: [
+                      // Stage dots
+                      _StageDots(
+                        total: _stages.length,
+                        current: _currentStageIndex,
+                        accentColor: stage.accentColor,
+                      ),
+                      SizedBox(height: 20.h),
+
+                      // Animated icon + label
+                      FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: _StageIconBadge(
+                          icon: stage.icon,
+                          accentColor: stage.accentColor,
+                          pulseAnimation: _pulseAnimation,
+                          particleAnimation: _particleAnimation,
+                        ),
+                      ),
+                      SizedBox(height: 18.h),
+
+                      // Stage message
+                      FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: _StageLabel(
+                          message: stage.message,
+                          accentColor: stage.accentColor,
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+
+                      // Progress bar
+                      _ProgressBar(
+                        progressAnimation: _progressAnimation,
+                        accentColor: stage.accentColor,
+                      ),
+                      SizedBox(height: 8.h),
+                      _ProgressText(
+                        stageIndex: _currentStageIndex,
+                        total: _stages.length,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
 
-          // ── STAGE INFO CARD ──────────────────────────────────────────────
-          Expanded(
+          // ── BACK BUTTON ──────────────────────────────────────────────────
+          SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-              child: Column(
-                children: [
-                  // Stage dots
-                  _StageDots(
-                    total: _stages.length,
-                    current: _currentStageIndex,
-                    accentColor: stage.accentColor,
-                  ),
-                  SizedBox(height: 20.h),
-
-                  // Animated icon + label
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: _StageIconBadge(
-                      icon: stage.icon,
-                      accentColor: stage.accentColor,
-                      pulseAnimation: _pulseAnimation,
-                      particleAnimation: _particleAnimation,
-                    ),
-                  ),
-                  SizedBox(height: 18.h),
-
-                  // Stage message
-                  FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: _StageLabel(
-                      message: stage.message,
-                      accentColor: stage.accentColor,
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  // Progress bar
-                  _ProgressBar(
-                    progressAnimation: _progressAnimation,
-                    accentColor: stage.accentColor,
-                  ),
-                  SizedBox(height: 8.h),
-                  _ProgressText(
-                    stageIndex: _currentStageIndex,
-                    total: _stages.length,
-                  ),
-                ],
+              padding: const EdgeInsets.only(
+                left: spacerSize10,
+                top: spacerSize16,
+              ),
+              child: CircleAvatar(
+                backgroundColor: Colors.black38,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
             ),
           ),
@@ -419,7 +446,7 @@ class _ImageScanSection extends StatelessWidget {
 
           // "Analyzing" badge top-right
           Positioned(
-            top: 14.h,
+            top: 30.h,
             right: 14.w,
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),

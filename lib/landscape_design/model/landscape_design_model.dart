@@ -44,12 +44,42 @@ class LandscapeData {
   String? originalUrl;
   String? gardenUrl;
   String? description;
+  DetectedSpace? detectedSpace;
 
-  LandscapeData({this.originalUrl, this.gardenUrl, this.description});
+  LandscapeData({
+    this.originalUrl,
+    this.gardenUrl,
+    this.description,
+    this.detectedSpace,
+  });
 
   LandscapeData.fromJson(Map<String, dynamic> json) {
     originalUrl = json['originalUrl'];
     gardenUrl = json['gardenUrl'];
     description = json['description'];
+    detectedSpace = json['detectedSpace'] != null
+        ? DetectedSpace.fromJson(json['detectedSpace'])
+        : null;
+  }
+}
+
+class DetectedSpace {
+  String? spaceType;
+  String? category;
+  String? confidence;
+  String? reasoning;
+
+  DetectedSpace({
+    this.spaceType,
+    this.category,
+    this.confidence,
+    this.reasoning,
+  });
+
+  DetectedSpace.fromJson(Map<String, dynamic> json) {
+    spaceType = json['spaceType'];
+    category = json['category'];
+    confidence = json['confidence'];
+    reasoning = json['reasoning'];
   }
 }

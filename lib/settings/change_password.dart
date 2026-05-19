@@ -7,6 +7,7 @@ import 'package:kasagardem/settings/components/profile_icon_layout.dart';
 import 'package:kasagardem/settings/components/text_field_layout.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/validation_healper.dart';
 
 class ChangePassword extends GetWidget<SettingsViewModel> {
   const ChangePassword({super.key});
@@ -49,32 +50,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               )!.currentPassword,
                               isTextObscure: true,
 
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.passwordFieldCannotBeEmpty;
-                                }
-
-                                // Minimum 8 characters
-                                if (value.length < 8) {
-                                  return 'Password must be at least 8 characters';
-                                }
-
-                                // At least one uppercase letter
-                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                  return 'Password must contain at least one capital letter';
-                                }
-
-                                // At least one special character
-                                if (!RegExp(
-                                  r'[!@#$%^&*(),.?":{}|<>]',
-                                ).hasMatch(value)) {
-                                  return 'Password must contain at least one special character';
-                                }
-
-                                return null;
-                              },
+                              validator: ValidationHelper.validatePassword,
                             ),
 
                             TextFieldLayout(
@@ -91,32 +67,7 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               textEditingController:
                                   controller.newPasswordController,
                               isTextObscure: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.passwordFieldCannotBeEmpty;
-                                }
-
-                                // Minimum 8 characters
-                                if (value.length < 8) {
-                                  return 'Password must be at least 8 characters';
-                                }
-
-                                // At least one uppercase letter
-                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                  return 'Password must contain at least one capital letter';
-                                }
-
-                                // At least one special character
-                                if (!RegExp(
-                                  r'[!@#$%^&*(),.?":{}|<>]',
-                                ).hasMatch(value)) {
-                                  return 'Password must contain at least one special character';
-                                }
-
-                                return null;
-                              },
+                              validator: ValidationHelper.validatePassword,
                             ),
                             TextFieldLayout(
                               prefixIcon: Icon(
@@ -132,22 +83,10 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               textEditingController:
                                   controller.confirmPasswordController,
                               isTextObscure: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.passwordFieldCannotBeEmpty;
-                                }
-
-                                if (value !=
-                                    controller.newPasswordController.text) {
-                                  return AppLocalizations.of(
-                                    context,
-                                  )!.passwordsDoNotMatch;
-                                }
-
-                                return null;
-                              },
+                              validator: (value) => ValidationHelper.validateConfirmPassword(
+                                password: controller.newPasswordController.text,
+                                confirmPassword: value,
+                              ),
                             ),
                           ],
                         ),

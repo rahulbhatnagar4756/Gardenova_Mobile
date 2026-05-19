@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 import '../../../../base/widgets/base_shimmer.dart';
 import '../../../../base/widgets/base_text.dart';
@@ -20,7 +21,18 @@ class MyPlantsListItem extends StatelessWidget {
     int wateringReminderFrequency = item.wateringReminderFrequency ?? 0;
     bool healthStatus = item.healthStatus?.isNotEmpty ?? false;
     bool needToShowBottomWidget = wateringReminderFrequency > 0 || healthStatus;
-
+    String title =
+        (item.commonName ??
+        (item.scientificName ?? AppLocalizations.of(Get.context!)!.noDataNa));
+    String description = item.otherName ?? '';
+    if (description.isEmpty) {
+      description =
+          item.family ??
+          item.genus ??
+          AppLocalizations.of(Get.context!)!.noDataNa;
+    }
+    title = title.trim();
+    description = description.trim();
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -67,9 +79,7 @@ class MyPlantsListItem extends StatelessWidget {
                           children: [
                             Expanded(
                               child: BaseText(
-                                text:
-                                    item.commonName ??
-                                    AppLocalizations.of(context)!.noDataNa,
+                                text: title,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 fontFamily: AppKeys.poppins,
@@ -88,11 +98,7 @@ class MyPlantsListItem extends StatelessWidget {
                         SizedBox(height: spacerSize2),
 
                         BaseText(
-                          text: (item.otherName?.isNotEmpty ?? false)
-                              ? item.otherName ??
-                                    "${AppLocalizations.of(context)!.noDataNa}: ${item.otherName}"
-                              : item.genus ??
-                                    AppLocalizations.of(context)!.noDataNa,
+                          text: description,
                           maxLines: !needToShowBottomWidget ? 2 : 1,
                           overflow: TextOverflow.ellipsis,
                           fontFamily: AppKeys.inter,

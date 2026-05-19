@@ -21,6 +21,13 @@ class LandscapeDesignRepository {
               "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
           "description":
               "A luxurious modern tropical garden featuring green grass, palm trees, decorative pathways, ambient lighting, wooden seating, colorful flower beds, and a peaceful outdoor atmosphere.",
+          "detectedSpace": {
+            "spaceType": "balcony",
+            "category": "outdoor",
+            "confidence": "high",
+            "reasoning":
+                "The image shows a raised outdoor area with a railing, potted plants, and a view of the surrounding buildings, which is characteristic of a balcony.",
+          },
         },
       };
       return response;

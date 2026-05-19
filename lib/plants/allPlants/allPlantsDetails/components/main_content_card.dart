@@ -737,7 +737,7 @@ class MainContentCard extends StatelessWidget {
                       .isNotEmpty)
                 BaseText(
                   text:
-                      "Also known as: ${controller.plantDetailData.value.data?.plant?.otherName}",
+                      "Also known as: ${controller.plantDetailData.value.data?.plant?.otherName ?? AppLocalizations.of(Get.context!)!.noDataNa}",
                   fontFamily: AppKeys.inter,
                   fontSize: fontSize12,
                   fontWeight: FontWeight.w400,

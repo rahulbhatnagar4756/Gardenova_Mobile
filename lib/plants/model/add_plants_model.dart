@@ -114,6 +114,7 @@ class Plants {
   String? _imageUrl;
   String? _imageOriginalUrl;
   String? _family;
+  String? _otherName;
   String? _type;
   String? _cycle;
   String? _watering;
@@ -129,6 +130,7 @@ class Plants {
     String? imageUrl,
     String? imageOriginalUrl,
     String? family,
+    String? otherName,
     String? type,
     String? cycle,
     String? watering,
@@ -153,6 +155,9 @@ class Plants {
       this._imageUrl = imageUrl;
     }
 
+    if (otherName != null) {
+      this._otherName = otherName;
+    }
     if (family != null) {
       this._family = family;
     }
@@ -195,6 +200,9 @@ class Plants {
 
   String? get family => _family;
   set family(String? family) => _family = family;
+
+  String? get otherName => _otherName;
+  set otherName(String? otherName) => _otherName = otherName;
   String? get type => _type;
   set type(String? type) => _type = type;
   String? get cycle => _cycle;
@@ -217,6 +225,7 @@ class Plants {
     _imageOriginalUrl = json['image_original_url'];
     _imageUrl = json['image_url'];
     _family = json['family'];
+    _otherName = json['other_name'];
     _type = json['type'];
     _cycle = json['cycle'];
     _watering = json['watering'];
@@ -236,6 +245,8 @@ class Plants {
     data['image_url'] = this._imageUrl;
 
     data['family'] = this._family;
+    data['other_name'] = this._otherName;
+
     data['type'] = this._type;
     data['cycle'] = this._cycle;
     data['watering'] = this._watering;

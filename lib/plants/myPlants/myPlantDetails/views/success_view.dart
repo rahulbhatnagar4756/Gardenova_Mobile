@@ -126,6 +126,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                             ],
                           ),
                         ),
+
                         CommonClickWidget(
                           onTap: () {
                             Get.toNamed(
@@ -155,6 +156,29 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    if (controller
+                                .plantDetailData
+                                .value
+                                .data
+                                ?.plant
+                                ?.otherName !=
+                            null &&
+                        controller
+                            .plantDetailData
+                            .value
+                            .data!
+                            .plant!
+                            .otherName!
+                            .isNotEmpty)
+                      BaseText(
+                        text:
+                            "Also known as: ${controller.plantDetailData.value.data?.plant?.otherName ?? AppLocalizations.of(Get.context!)!.noDataNa}",
+                        fontFamily: AppKeys.inter,
+                        fontSize: fontSize12,
+                        fontWeight: FontWeight.w400,
+                        textColor: AppColors.liteGreyColor,
+                      ),
                     SizedBox(height: spacerSize16),
                     // BaseText(
                     //   text:

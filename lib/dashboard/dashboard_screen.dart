@@ -131,9 +131,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                             ? SizedBox()
                             : Container(
                                 width: double.infinity,
-                                color: AppColors.blackColor.withValues(
-                                  alpha: 0.6,
-                                ),
+                                // color: AppColors.blackColor.withValues(
+                                //   alpha: 0.6,
+                                // ),
                                 padding: EdgeInsets.symmetric(vertical: 20.h),
                                 child: BaseButton(
                                   bottomPadding: false,
@@ -149,60 +149,99 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                 ).paddingSymmetric(horizontal: spacerSize20),
                               ),
                       ),
-                      SizedBox(height: 110.h),
+                      SizedBox(height: 25.h),
                     ],
                   ),
                 ),
-                Positioned(
-                  bottom: 8.h,
-                  left: 0,
-                  right: 0,
-                  child: Obx(() {
-                    return BottomNavigationWidget(
-                      selectNavType: controller.selectedNavType.value,
-                      needToShow: controller.isUserLoggedIn.value,
-                      onAddPlantClick: (p0) {
-                        if (p0 != BottomNavType.scan &&
-                            p0 != BottomNavType.report) {
-                          controller.selectedNavType.value = p0;
-                        }
-                        if (p0 == BottomNavType.report) {
-                          BaseSnackBar.show(
-                            title: 'Temporarily Unavailable',
-                            message:
-                                'The Report section is currently on hold. We’ll be back soon with updates.',
-                          );
-                        }
-                        switch (p0) {
-                          case BottomNavType.home:
-                            break;
-                          case BottomNavType.scan:
-                            openImagePickerBottomSheet(
-                              source: ImagePickerSource.diagnosis,
-                            );
-                            break;
-                          case BottomNavType.plant:
-                            Get.toNamed(Routes.myPlantsScreen)?.then((value) {
-                              controller.selectedNavType.value =
-                                  BottomNavType.home;
-                            });
-                            break;
-                          case BottomNavType.report:
-                            break;
-                          case BottomNavType.profile:
-                            Get.toNamed(Routes.settings)?.then((value) {
-                              controller.selectedNavType.value =
-                                  BottomNavType.home;
-                            });
-                            break;
-                        }
-                      },
-                    );
-                  }),
-                ),
+                // Positioned(
+                //   bottom: 0,
+                //   left: 0,
+                //   right: 0,
+                //   child: Obx(() {
+                //     return BottomNavigationWidget(
+                //       selectNavType: controller.selectedNavType.value,
+                //       needToShow: controller.isUserLoggedIn.value,
+                //       onAddPlantClick: (p0) {
+                //         if (p0 != BottomNavType.scan &&
+                //             p0 != BottomNavType.report) {
+                //           controller.selectedNavType.value = p0;
+                //         }
+                //         if (p0 == BottomNavType.report) {
+                //           BaseSnackBar.show(
+                //             title: 'Temporarily Unavailable',
+                //             message:
+                //                 'The Report section is currently on hold. We’ll be back soon with updates.',
+                //           );
+                //         }
+                //         switch (p0) {
+                //           case BottomNavType.home:
+                //             break;
+                //           case BottomNavType.scan:
+                //             openImagePickerBottomSheet(
+                //               source: ImagePickerSource.diagnosis,
+                //             );
+                //             break;
+                //           case BottomNavType.plant:
+                //             Get.toNamed(Routes.myPlantsScreen)?.then((value) {
+                //               controller.selectedNavType.value =
+                //                   BottomNavType.home;
+                //             });
+                //             break;
+                //           case BottomNavType.report:
+                //             break;
+                //           case BottomNavType.profile:
+                //             Get.toNamed(Routes.settings)?.then((value) {
+                //               controller.selectedNavType.value =
+                //                   BottomNavType.home;
+                //             });
+                //             break;
+                //         }
+                //       },
+                //     );
+                //   }),
+                // ),
               ],
             ),
           ),
+          bottomNavigationBar: Obx(() {
+            return BottomNavigationWidget(
+              selectNavType: controller.selectedNavType.value,
+              needToShow: controller.isUserLoggedIn.value,
+              onAddPlantClick: (p0) {
+                if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
+                  controller.selectedNavType.value = p0;
+                }
+                if (p0 == BottomNavType.report) {
+                  BaseSnackBar.show(
+                    title: 'Temporarily Unavailable',
+                    message:
+                        'The Report section is currently on hold. We’ll be back soon with updates.',
+                  );
+                }
+                switch (p0) {
+                  case BottomNavType.home:
+                    break;
+                  case BottomNavType.scan:
+                    openImagePickerBottomSheet(
+                      source: ImagePickerSource.diagnosis,
+                    );
+                    break;
+                  case BottomNavType.plant:
+                    Get.toNamed(Routes.myPlantsScreen)?.then((value) {
+                      controller.selectedNavType.value = BottomNavType.home;
+                    });
+                    break;
+                  case BottomNavType.report:
+                    break;
+                  case BottomNavType.profile:
+                    Get.toNamed(Routes.settings)?.then((value) {
+                      controller.selectedNavType.value = BottomNavType.home;
+                    });
+                    break;
+                }
+              },
+            );
+          }),
         ),
       ),
     );

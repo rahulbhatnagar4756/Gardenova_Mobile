@@ -1,7 +1,7 @@
-/// =========================================================
-/// FILE: plants_diagnostic/views/no_plant_detected_view.dart
-/// CREATE NEW FILE
-/// =========================================================
+// =========================================================
+// FILE: plants_diagnostic/views/no_plant_detected_view.dart
+// CREATE NEW FILE
+// =========================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,37 +16,58 @@ class NoPlantDetectedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(30.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.local_florist_outlined,
-              size: 90.sp,
-              color: AppColors.greenColor,
+    return Stack(
+      children: [
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(30.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.local_florist_outlined,
+                  size: 90.sp,
+                  color: AppColors.greenColor,
+                ),
+
+                SizedBox(height: 20.h),
+
+                BaseText(
+                  text: AppStrings.noPlantDetected,
+                  fontSize: fontSize24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppKeys.poppins,
+                ),
+
+                SizedBox(height: 12.h),
+
+                BaseText(
+                  text: AppStrings.pleaseUpload,
+                  textAlign: TextAlign.center,
+                  textColor: AppColors.liteGreyColor,
+                ),
+              ],
             ),
-
-            SizedBox(height: 20.h),
-
-            BaseText(
-              text: AppStrings.noPlantDetected,
-              fontSize: fontSize24,
-              fontWeight: FontWeight.bold,
-              fontFamily: AppKeys.poppins,
-            ),
-
-            SizedBox(height: 12.h),
-
-            BaseText(
-              text: AppStrings.pleaseUpload,
-              textAlign: TextAlign.center,
-              textColor: AppColors.liteGreyColor,
-            ),
-          ],
+          ),
         ),
-      ),
+
+        // ── BACK BUTTON ──────────────────────────────────────────────────
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: spacerSize10,
+              top: spacerSize16,
+            ),
+            child: CircleAvatar(
+              backgroundColor: Colors.black38,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
