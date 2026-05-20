@@ -79,7 +79,7 @@ class UpdateProfileModel {
     map['occupation'] = occupation;
     map['company'] = company;
     map[ApiKeys.name] = name;
-    map[ApiKeys.email] = email;
+    // map[ApiKeys.email] = email;
     map['contactNumber'] = phoneNo;
     return map;
   }

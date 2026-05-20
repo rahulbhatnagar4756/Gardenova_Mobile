@@ -28,11 +28,12 @@ class VerifyEmailOtpScreen extends GetView<SettingsViewModel> {
 
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      appBar: const BaseAppBar(
-        isBackButtonVisible: true,
-      ),
+      appBar: const BaseAppBar(isBackButtonVisible: true),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: spacerSize20, vertical: spacerSize10),
+        padding: EdgeInsets.symmetric(
+          horizontal: spacerSize20,
+          vertical: spacerSize10,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -48,15 +49,6 @@ class VerifyEmailOtpScreen extends GetView<SettingsViewModel> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: spacerSize10),
-            Obx(() => Text(
-              "Please enter the 4-digit code sent to\n${controller.emailController.text}",
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.liteGreyColor,
-                fontFamily: AppKeys.inter,
-              ),
-              textAlign: TextAlign.center,
-            )),
             SizedBox(height: spacerSize40),
             Directionality(
               textDirection: TextDirection.ltr,

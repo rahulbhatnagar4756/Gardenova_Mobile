@@ -16,10 +16,10 @@ class SettingsRepository {
       'api/v1/professional/ProfessionalsProfile';
   final String _deleteAccountUrl = 'api/v1/userProfile/soft-delete';
 
-  fetchProfile() async {
+  fetchProfile({bool showloader=false}) async {
     var profileResponse = await ApiRepository.instance.get(
       profileEndPoint,
-      showDefaultLoader: false,
+      showDefaultLoader: showloader,
     );
     return profileResponse;
   }

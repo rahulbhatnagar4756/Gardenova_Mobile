@@ -126,8 +126,8 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  void getProfileDetail() async {
-    var response = await profileRepository.fetchProfile();
+  void getProfileDetail({bool showloader = false}) async {
+    var response = await profileRepository.fetchProfile(showloader: showloader);
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
         response,
@@ -240,7 +240,9 @@ class SettingsViewModel extends GetxController {
     UpdateProfileModel? updateProfileResponse = UpdateProfileModel()
       ..profileImage = base64String != null
           ? "data:image/png;base64,$base64String"
-          : null
+          : profileImage.value.isNotEmpty
+          ? profileImage.value
+          : ''
       ..dateOfBirth = ""
       ..gender = ""
       ..bio = ""
@@ -250,7 +252,7 @@ class SettingsViewModel extends GetxController {
       ..email = emailController.text
       ..phoneNo = phoneNoController.text;
 
-    debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
+    log("updateProfileResponse ${updateProfileResponse.toJson()}");
 
     var response = await profileRepository.updateProfile(
       updateProfileReq: updateProfileResponse,
@@ -419,13 +421,16 @@ class SettingsViewModel extends GetxController {
         if (response.statusCode == 200 || body['success'] == true) {
           final String? newToken = body['data'];
           if (newToken != null && newToken.isNotEmpty) {
-            await SharedPrefsService.instance.setString(AppKeys.idToken, newToken);
+            await SharedPrefsService.instance.setString(
+              AppKeys.idToken,
+              newToken,
+            );
           }
           isEmailVerified.value = true;
           showVerifyButton.value = false;
           originalEmail.value = emailController.text.trim();
           otpController.clear();
-          
+
           Get.back();
           BaseSnackBar.show(
             title: "Success",

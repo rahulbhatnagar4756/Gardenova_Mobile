@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
+import 'package:kasagardem/base/open_image_pciker_bottom_sheet.dart';
 import 'package:kasagardem/base/widgets/base_date_format.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -48,7 +49,16 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                     );
                   },
                   onClickEditPencil: () {
-                    Get.toNamed(Routes.profile);
+                    // Get.toNamed(Routes.profile);
+                    OpenImagePickerBottomSheet(
+                      onPickImage: (isCamera) {
+                        controller.pickImage(
+                          isCamera: isCamera,
+                          directApiCall: true,
+                        );
+                      },
+                      onThenCall: () {},
+                    ).show();
                   },
                 ),
                 SizedBox(height: 16.h),
@@ -116,7 +126,10 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               icon: Icons.person_outline_rounded,
               title: AppLocalizations.of(context)!.editProfile,
               subtitle: "Update name, email and phone",
-              onTap: () => Get.toNamed(Routes.profile),
+              onTap: () {
+                controller.getProfileDetail(showloader: true);
+                Get.toNamed(Routes.profile);
+              },
             ),
             Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(
