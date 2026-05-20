@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
@@ -10,8 +11,11 @@ import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 
+import '../../base/open_image_pciker_bottom_sheet.dart';
 import '../../base/widgets/base_text_field.dart';
 import '../../utils/constants/app_keys.dart';
+import '../../utils/constants/app_strings.dart';
+import '../../utils/validation_healper.dart';
 
 class ProfileScreen extends GetWidget<SettingsViewModel> {
   const ProfileScreen({super.key});
@@ -34,12 +38,25 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   onClickEditPencil: () {
                     print('inside the on Click Edit pencil');
                   },
+                  onClickPictureView: () {
+                    OpenImagePickerBottomSheet(
+                      onPickImage: (isCamera) {
+                        controller.pickImage(
+                          isCamera: isCamera,
+                          directApiCall: false,
+                        );
+                      },
+                      onThenCall: () {},
+                    ).show();
+                  },
                   title: AppLocalizations.of(context)!.editProfile,
                 ),
                 SizedBox(height: 34.h),
                 Expanded(
                   child: Obx(() {
-                    return controller.screenType.value == AppKeys.professional
+                    return controller.screenType.value ==
+                                AppKeys.professional &&
+                            false
                         ? BottomSheetLayout(
                             childLayout: Obx(
                               () => SingleChildScrollView(
@@ -78,7 +95,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                           ),
                                       isTextFieldEnabled: false,
                                     ),
-
+                                    phoneNoField(context),
                                     // if (controller.screenType.value == AppKeys.professional)
                                     //   TextFieldLayout(
                                     //     editTextTitle: AppLocalizations.of(
@@ -171,73 +188,84 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                             },
                           )
                         : BottomSheetLayout(
-                            childLayout: Obx(
-                              () => SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // TextFieldLayout(
-                                    //   editTextTitle: AppLocalizations.of(context)!.yourName,
-                                    //   textEditingController: TextEditingController(
-                                    //     text: controller.name.value,
-                                    //   ),
-                                    //   hintText: AppLocalizations.of(context)!.enterYourName,
-                                    //   isTextFieldEnabled: false,
-                                    // ),
-                                    BaseText(
-                                      textAlign: TextAlign.start,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: AppKeys.poppins,
-                                      fontSize: 13.sp,
-                                      text: AppLocalizations.of(
-                                        context,
-                                      )!.yourName,
-                                    ).paddingOnly(bottom: 3.h),
-                                    BaseTextField(
-                                      // labelText:AppLocalizations.of(context)!.yourName ,
-                                      prefixIcon: Icon(
-                                        Icons.person_outline_rounded,
-                                        color: AppColors.greenColor,
-                                      ),
-                                      hintText: AppLocalizations.of(
-                                        context,
-                                      )!.name,
-                                      keyboardType: TextInputType.name,
-                                      textEditingController:
-                                          TextEditingController(
-                                            text: controller.name.value,
-                                          ),
-                                      isTextFieldEnabled: false,
+                            childLayout: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  BaseText(
+                                    textAlign: TextAlign.start,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: AppKeys.poppins,
+                                    fontSize: 13.sp,
+                                    text: AppLocalizations.of(
+                                      context,
+                                    )!.yourName,
+                                  ).paddingOnly(bottom: 3.h),
+                                  BaseTextField(
+                                    prefixIcon: Icon(
+                                      Icons.person_outline_rounded,
+                                      color: AppColors.greenColor,
                                     ),
-                                    SizedBox(height: 15.h),
+                                    hintText: AppLocalizations.of(
+                                      context,
+                                    )!.name,
+                                    keyboardType: TextInputType.name,
+                                    textEditingController:
+                                        controller.nameController,
+                                  ),
+                                  SizedBox(height: 15.h),
 
-                                    BaseText(
-                                      textAlign: TextAlign.start,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: AppKeys.poppins,
-                                      fontSize: 13.sp,
-                                      text: AppLocalizations.of(
-                                        context,
-                                      )!.yourEmailId,
-                                    ).paddingOnly(bottom: 3.h),
-                                    BaseTextField(
-                                      prefixIcon: Icon(
-                                        Icons.email_outlined,
-                                        color: AppColors.greenColor,
-                                      ),
-                                      // labelText:AppLocalizations.of(context)!.yourName ,
-                                      hintText: AppLocalizations.of(
-                                        context,
-                                      )!.yourEmailId,
-                                      keyboardType: TextInputType.emailAddress,
-                                      textEditingController:
-                                          TextEditingController(
-                                            text: controller.email.value,
-                                          ),
-                                      isTextFieldEnabled: false,
+                                  BaseText(
+                                    textAlign: TextAlign.start,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: AppKeys.poppins,
+                                    fontSize: 13.sp,
+                                    text: AppLocalizations.of(
+                                      context,
+                                    )!.yourEmailId,
+                                  ).paddingOnly(bottom: 3.h),
+                                  BaseTextField(
+                                    prefixIcon: Icon(
+                                      Icons.email_outlined,
+                                      color: AppColors.greenColor,
                                     ),
-                                  ],
-                                ),
+                                    // labelText:AppLocalizations.of(context)!.yourName ,
+                                    hintText: AppLocalizations.of(
+                                      context,
+                                    )!.yourEmailId,
+                                    keyboardType: TextInputType.emailAddress,
+                                    textEditingController:
+                                        controller.emailController,
+                                    isTextFieldEnabled: true,
+                                    suffixIcon: Obx(() {
+                                      if (controller.showVerifyButton.value) {
+                                        return TextButton(
+                                          onPressed: () {
+                                            controller.sendEmailVerification();
+                                          },
+                                          child: Text(
+                                            'Verify',
+                                            style: TextStyle(
+                                              color: AppColors.greenColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      return const SizedBox();
+                                    }),
+                                  ),
+                                  SizedBox(height: 15.h),
+                                  BaseText(
+                                    textAlign: TextAlign.start,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: AppKeys.poppins,
+                                    fontSize: 13.sp,
+                                    text: AppStrings.yourPhoneNo,
+                                  ).paddingOnly(bottom: 3.h),
+                                  phoneNoField(context),
+                                ],
                               ),
                             ),
                             buttonLabel: AppLocalizations.of(
@@ -259,6 +287,27 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget phoneNoField(BuildContext context) {
+    // return BaseTextField(
+    //   prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+    //   hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+    //   keyboardType: TextInputType.phone,
+    //   // textEditingController: controller.phoneNoController,
+    //   errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+    //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+    //   validator: ValidationHelper.validatePhone,
+    // ).marginOnly(bottom: spacerSize10);
+    return BaseTextField(
+      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+      // labelText:AppLocalizations.of(context)!.yourName ,
+      hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+      keyboardType: TextInputType.phone,
+      textEditingController: controller.phoneNoController,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: ValidationHelper.validatePhone,
     );
   }
 }

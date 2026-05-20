@@ -62,8 +62,7 @@ import 'app_localizations_pt.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('pt'),
+    Locale('pt')
   ];
 
   /// No description provided for @careTitle.
@@ -191,13 +188,13 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterValidPhoneNo.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid phone no.'**
+  /// **'Please enter a valid phone no.'**
   String get pleaseEnterValidPhoneNo;
 
   /// No description provided for @pleaseEnterValidEmailId.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid emailId'**
+  /// **'Please enter a valid email Id'**
   String get pleaseEnterValidEmailId;
 
   /// No description provided for @iHaveAgreeTo.
@@ -221,13 +218,13 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicy.
   ///
   /// In en, this message translates to:
-  /// **'privacy policy'**
+  /// **'Privacy Policy'**
   String get privacyPolicy;
 
   /// No description provided for @orRegisterWith.
   ///
   /// In en, this message translates to:
-  /// **'Or Register With'**
+  /// **'or register with'**
   String get orRegisterWith;
 
   /// No description provided for @register.
@@ -263,13 +260,13 @@ abstract class AppLocalizations {
   /// No description provided for @logInNow.
   ///
   /// In en, this message translates to:
-  /// **'LogIn Now'**
+  /// **'Login Now'**
   String get logInNow;
 
   /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'LogIn'**
+  /// **'Login'**
   String get login;
 
   /// No description provided for @loginAccount.
@@ -329,7 +326,7 @@ abstract class AppLocalizations {
   /// No description provided for @sendOtp.
   ///
   /// In en, this message translates to:
-  /// **'Send Otp'**
+  /// **'Send OTP'**
   String get sendOtp;
 
   /// No description provided for @enterYourOtp.
@@ -347,7 +344,7 @@ abstract class AppLocalizations {
   /// No description provided for @verifyOtp.
   ///
   /// In en, this message translates to:
-  /// **'Verify Otp'**
+  /// **'Verify OTP'**
   String get verifyOtp;
 
   /// No description provided for @didNotReceiveAnyCode.
@@ -725,7 +722,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginOrRegisterToContinue.
   ///
   /// In en, this message translates to:
-  /// **'Login or Register to continue'**
+  /// **'Create your account to continue'**
   String get loginOrRegisterToContinue;
 
   /// No description provided for @passwordCannotBeEmpty.
@@ -737,7 +734,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterValidName.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid name'**
+  /// **'Please enter a valid name'**
   String get pleaseEnterValidName;
 
   /// No description provided for @changePassword.
@@ -763,6 +760,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refer A Friend'**
   String get referAFriend;
+
+  /// No description provided for @aboutApp.
+  ///
+  /// In en, this message translates to:
+  /// **'About App'**
+  String get aboutApp;
 
   /// No description provided for @logout.
   ///
@@ -1367,7 +1370,7 @@ abstract class AppLocalizations {
   /// No description provided for @siteKasagardem.
   ///
   /// In en, this message translates to:
-  /// **'Site kasagardem'**
+  /// **'Site Gardenova'**
   String get siteKasagardem;
 
   /// No description provided for @myProfile.
@@ -2231,7 +2234,7 @@ abstract class AppLocalizations {
   /// No description provided for @plantAnalysis.
   ///
   /// In en, this message translates to:
-  /// **'Plant Analysis'**
+  /// **'AI Plant Diagnosis'**
   String get plantAnalysis;
 
   /// No description provided for @scanYourPlantForHealthAndDetails.
@@ -2247,8 +2250,7 @@ abstract class AppLocalizations {
   String get noDataNa;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2257,26 +2259,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'pt':
-      return AppLocalizationsPt();
+    case 'en': return AppLocalizationsEn();
+    case 'pt': return AppLocalizationsPt();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

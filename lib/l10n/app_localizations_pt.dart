@@ -342,6 +342,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get referAFriend => 'Indique um Amigo';
 
   @override
+  String get aboutApp => 'Sobre o Aplicativo';
+
+  @override
   String get logout => 'Sair';
 
   @override

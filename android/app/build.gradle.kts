@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,25 +9,21 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
 }
-dependencies {
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics-ndk")
-    implementation("com.facebook.android:facebook-login:latest.release")
-    implementation("com.facebook.android:facebook-android-sdk:latest.release")
 
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
+
 android {
     signingConfigs {
         create("release") {
-            keyAlias = "gardenova"
-            storeFile = file("D:\\live_projects\\Gardenova_Mobile\\android\\app\\gardenova.jks")
-            storePassword = "12345678"
-            keyPassword = "12345678"
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
         }
     }
     namespace = "com.gardenova.digisoft"
@@ -49,37 +48,38 @@ android {
         targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
-  /*  flavorDimensions.add("default")
-      productFlavors.create("prod") {
-          dimension = "default"
-          resValue("string", "app_name", "Gardenova")
-      }
-      productFlavors.create("dev") {
-          dimension = "default"
-          applicationIdSuffix = ""
-          resValue("string", "app_name", "Gardenova Dev")
-          versionNameSuffix = ".dev"
-      }*/
     buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release");
-            isMinifyEnabled = false
-            isShrinkResources = false
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
 
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt")
-//            )
+        release {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+
+dependencies {
+
+    implementation("androidx.multidex:multidex:2.0.1")
+    implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.facebook.android:facebook-login:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+
 }

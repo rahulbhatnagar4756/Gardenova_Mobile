@@ -16,6 +16,10 @@ class Assets {
       'assets/html/privacy_policy_pt.html';
   static const String htmlPrivacyPolicyEn =
       'assets/html/privacy_policy_en.html';
+  static const String htmlAboutEn =
+      'assets/html/about_en.html';
+  static const String htmlAboutPt =
+      'assets/html/about_pt.html';
   static const String imagesAdd = 'assets/images/add.png';
   static const String imagesCar = 'assets/images/car.png';
   static const String imagesCart = 'assets/images/cart.png';

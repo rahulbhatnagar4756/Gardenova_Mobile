@@ -146,6 +146,7 @@ class AppStrings {
   static const String scan = "Scan";
   static const String reports = "Reports";
   static const String profile = "Profile";
+  static const String yourPhoneNo = "Your Phone no.";
 }
 
 class ErrorStrings {

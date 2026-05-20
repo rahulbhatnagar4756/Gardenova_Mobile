@@ -18,6 +18,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
+import '../base/open_image_pciker_bottom_sheet.dart';
 import '../base/widgets/base_text.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
@@ -269,37 +270,52 @@ class DashboardScreen extends GetWidget<DashboardController> {
       return;
     }
 
-    Get.bottomSheet(
-      Container(
-        height: Get.height * .2,
-        color: AppColors.offWhite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ListTile(
-              leading: Icon(Icons.camera_alt, color: AppColors.greenColor),
-              title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
-              onTap: () async {
-                Get.back();
-                await Future.delayed(Duration(milliseconds: 200));
-                controller.pickImage(isCamera: true, source: source);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.photo_library, color: AppColors.greenColor),
-              title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
-              onTap: () async {
-                Get.back();
-                await Future.delayed(Duration(milliseconds: 200));
-                controller.pickImage(isCamera: false, source: source);
-              },
-            ),
-          ],
-        ),
-      ),
-    ).then((value) {
-      controller.selectedNavType.value = BottomNavType.home;
-      controller.selectedNavType.refresh();
-    });
+    OpenImagePickerBottomSheet(
+      onPickImage: (isCamera) async {
+        // controller.pickImage(
+        //   isCamera: isCamera,
+        //   directApiCall: true,
+        // );
+        await Future.delayed(Duration(milliseconds: 200));
+        controller.pickImage(isCamera: isCamera, source: source);
+      },
+      onThenCall: () {
+        controller.selectedNavType.value = BottomNavType.home;
+        controller.selectedNavType.refresh();
+      },
+    ).show();
+
+    // Get.bottomSheet(
+    //   Container(
+    //     height: Get.height * .2,
+    //     color: AppColors.offWhite,
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //       children: [
+    //         ListTile(
+    //           leading: Icon(Icons.camera_alt, color: AppColors.greenColor),
+    //           title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
+    //           onTap: () async {
+    //             Get.back();
+    //             await Future.delayed(Duration(milliseconds: 200));
+    //             controller.pickImage(isCamera: true, source: source);
+    //           },
+    //         ),
+    //         ListTile(
+    //           leading: Icon(Icons.photo_library, color: AppColors.greenColor),
+    //           title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
+    //           onTap: () async {
+    //             Get.back();
+    //             await Future.delayed(Duration(milliseconds: 200));
+    //             controller.pickImage(isCamera: false, source: source);
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // ).then((value) {
+    //   controller.selectedNavType.value = BottomNavType.home;
+    //   controller.selectedNavType.refresh();
+    // });
   }
 }

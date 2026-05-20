@@ -38,7 +38,9 @@ import 'package:kasagardem/recommended_professionals/recommended_professionals.d
 import 'package:kasagardem/recommended_professionals/recommended_professionals_view_model.dart';
 import 'package:kasagardem/settings/change_password.dart';
 import 'package:kasagardem/settings/privacy_policy.dart';
+import 'package:kasagardem/settings/about_app.dart';
 import 'package:kasagardem/settings/profile/profile_screen.dart';
+import 'package:kasagardem/settings/profile/verify_email_otp_screen.dart';
 import 'package:kasagardem/settings/settings_screen.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/settings/terms_and_conditions.dart';
@@ -66,6 +68,7 @@ class Routes {
   static const signUp = '/sign_up';
   static const forgotPassword = '/forgot_password';
   static const verifyOtp = '/verify_otp';
+  static const verifyEmailOtp = '/verify_email_otp';
   static const resetPassword = '/reset_password';
   static const question = '/question';
   static const reportSuccess = '/report_success';
@@ -75,6 +78,7 @@ class Routes {
   static const termsAndConditions = '/term_and_conditions';
   static const recommendedProfessionals = '/recommended_professionals';
   static const privacyPolicy = '/privacy_policy';
+  static const aboutApp = '/about_app';
   static const requestQuoteSuccess = '/request_quote_success';
   static const professionalDashboardSuccessQuote =
       '/professional_dashboard_success_quote';
@@ -221,6 +225,14 @@ class Routes {
           milliseconds: Utils.transitionDuration,
         ),
       ),
+      GetPage(
+        name: Routes.verifyEmailOtp,
+        page: () => const VerifyEmailOtpScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
 
       GetPage(
         name: Routes.changePassword,
@@ -262,6 +274,15 @@ class Routes {
         name: Routes.privacyPolicy,
         page: () =>
             PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_en.html'),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.aboutApp,
+        page: () =>
+            AboutAppScreen(filePath: 'assets/html/about_en.html'),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,

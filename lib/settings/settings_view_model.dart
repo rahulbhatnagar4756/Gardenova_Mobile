@@ -11,12 +11,15 @@ import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/settings/settings_repository.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/network_services/api_repository.dart';
 
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
+import '../utils/device_info_helper.dart';
 
 class SettingsViewModel extends GetxController {
   TextEditingController oldPasswordController = TextEditingController();
@@ -25,18 +28,38 @@ class SettingsViewModel extends GetxController {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController regionController = TextEditingController();
   TextEditingController specialtyController = TextEditingController();
+  TextEditingController phoneNoController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
   final changePasswordFormKey = GlobalKey<FormState>();
   Rx<File> imageFile = File('').obs;
   RxString email = ''.obs;
   RxString name = ''.obs;
+  RxString originalEmail = ''.obs;
+  RxBool isEmailVerified = true.obs;
+  RxBool showVerifyButton = false.obs;
+
   RxString profileImage = ''.obs;
   RxString screenType = ''.obs;
   RxBool isShareInProgress = false.obs;
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
+  RxString appVersion = '1.0.0'.obs;
 
   @override
   onInit() {
+    fetchAppVersion();
+    emailController.addListener(() {
+      final mail = emailController.text.trim();
+      if (mail.isNotEmpty && mail != originalEmail.value) {
+        isEmailVerified.value = false;
+        showVerifyButton.value = true;
+      } else {
+        isEmailVerified.value = true;
+        showVerifyButton.value = false;
+      }
+    });
     if (Get.arguments != null && Get.arguments is String) {
       screenType.value = Get.arguments as String;
     }
@@ -53,15 +76,25 @@ class SettingsViewModel extends GetxController {
     super.onInit();
   }
 
+  void fetchAppVersion() async {
+    appVersion.value = await DeviceInfoHelper.getAppVersion();
+  }
+
   @override
   void dispose() {
     super.dispose();
     oldPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    otpController.dispose();
   }
 
-  Future<void> pickImage({required bool isCamera}) async {
+  Future<void> pickImage({
+    required bool isCamera,
+    required bool directApiCall,
+  }) async {
     print('pickImage gallery t0 source:  $isCamera');
     // Permission check
     if (isCamera) {
@@ -84,7 +117,10 @@ class SettingsViewModel extends GetxController {
       if (pickedFile != null) {
         imageFile.value = File(pickedFile.path);
       }
-      Get.back();
+      // Get.back();
+      if (directApiCall) {
+        updateProfilePictureOnly();
+      }
     } catch (e) {
       debugPrint("Error:::$e");
     }
@@ -97,8 +133,14 @@ class SettingsViewModel extends GetxController {
         response,
       );
       if (profileResponse.data != null) {
-        name.value = profileResponse.data!.name!;
-        email.value = profileResponse.data!.email!;
+        name.value = profileResponse.data?.name ?? '';
+        email.value = profileResponse.data?.email ?? '';
+        nameController.text = profileResponse.data?.name ?? '';
+        emailController.text = profileResponse.data?.email ?? '';
+        originalEmail.value = profileResponse.data?.email ?? '';
+        isEmailVerified.value = true;
+        showVerifyButton.value = false;
+        phoneNoController.text = profileResponse.data?.contactNumber ?? "";
         if (profileResponse.data?.profileImage != null) {
           profileImage.value = profileResponse.data!.profileImage!;
         }
@@ -119,6 +161,11 @@ class SettingsViewModel extends GetxController {
       if (profileResponse.data != null) {
         name.value = profileResponse.data!.name ?? '';
         email.value = profileResponse.data!.email ?? "";
+        nameController.text = profileResponse.data!.name ?? '';
+        emailController.text = profileResponse.data!.email ?? "";
+        originalEmail.value = profileResponse.data!.email ?? "";
+        isEmailVerified.value = true;
+        showVerifyButton.value = false;
         descriptionController.text = profileResponse.data!.description ?? "";
         regionController.text = profileResponse.data!.region ?? "";
         specialtyController.text = profileResponse.data!.category ?? "";
@@ -140,7 +187,48 @@ class SettingsViewModel extends GetxController {
     screenType.refresh();
   }
 
+  updateProfilePictureOnly() async {
+    String? base64String;
+
+    // ✅ Check if image exists
+    if (imageFile.value.path.isNotEmpty) {
+      List<int> imageBytes = await imageFile.value.readAsBytes();
+      base64String = base64Encode(imageBytes);
+    }
+
+    UpdateProfilePictureModel? updateProfileResponse =
+        UpdateProfilePictureModel()
+          ..profileImage = base64String != null
+              ? "data:image/png;base64,$base64String"
+              : null;
+
+    debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
+
+    var response = await profileRepository.updateProfilePicture(
+      updateProfileReq: updateProfileResponse,
+    );
+
+    if (response != null) {
+      // if (base64String != null) {
+      //   profileImage.value = updateProfileResponse.profileImage ?? "";
+      //   profileImage.refresh();
+      // }
+      getProfileDetail();
+      // Get.back();
+    } else {
+      // profileImage.value = '';
+      imageFile.value = File('');
+    }
+  }
+
   updateProfile() async {
+    if (!isEmailVerified.value) {
+      BaseSnackBar.show(
+        title: "Verification Required",
+        message: "Please verify your new email address before saving changes.",
+      );
+      return;
+    }
     String? base64String;
 
     // ✅ Check if image exists
@@ -157,7 +245,10 @@ class SettingsViewModel extends GetxController {
       ..gender = ""
       ..bio = ""
       ..occupation = ""
-      ..company = "";
+      ..company = ""
+      ..name = nameController.text
+      ..email = emailController.text
+      ..phoneNo = phoneNoController.text;
 
     debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
 
@@ -179,14 +270,21 @@ class SettingsViewModel extends GetxController {
   }
 
   updateProfessionalProfile() async {
+    if (!isEmailVerified.value) {
+      BaseSnackBar.show(
+        title: "Verification Required",
+        message: "Please verify your new email address before saving changes.",
+      );
+      return;
+    }
     Map<String, dynamic> map = {};
 
-    if (name.value.isNotEmpty) {
-      map["name"] = name.value;
+    if (nameController.text.isNotEmpty) {
+      map["name"] = nameController.text;
     }
 
-    if (email.value.isNotEmpty) {
-      map["email"] = email.value;
+    if (emailController.text.isNotEmpty) {
+      map["email"] = emailController.text;
     }
 
     if (descriptionController.text.isNotEmpty) {
@@ -246,6 +344,112 @@ class SettingsViewModel extends GetxController {
       // Get.offAllNamed(Routes.chooseAccountType);
       SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
       Get.offAllNamed(Routes.login);
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    final String mail = emailController.text.trim();
+    if (mail.isEmpty || !GetUtils.isEmail(mail)) {
+      BaseSnackBar.show(
+        title: "Error",
+        message: "Please enter a valid email address.",
+      );
+      return;
+    }
+
+    ApiRepository.instance.showLoader();
+    try {
+      final response = await profileRepository.sentEmailVerification(mail);
+      ApiRepository.instance.hideLoader();
+
+      if (response != null) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (response.statusCode == 200) {
+          isEmailVerified.value = true;
+          showVerifyButton.value = false;
+          originalEmail.value = mail;
+          BaseSnackBar.show(
+            title: "Success",
+            message: body['message'] ?? "Email is already verified.",
+          );
+        } else if (response.statusCode == 201) {
+          BaseSnackBar.show(
+            title: "Verification Sent",
+            message: body['message'] ?? "Verification OTP sent to your email.",
+          );
+          Get.toNamed(Routes.verifyEmailOtp);
+        } else {
+          BaseSnackBar.show(
+            title: "Error",
+            message: body['message'] ?? "Failed to send verification email.",
+          );
+        }
+      } else {
+        BaseSnackBar.show(
+          title: "Error",
+          message: "Could not connect to verification service.",
+        );
+      }
+    } catch (e) {
+      ApiRepository.instance.hideLoader();
+      debugPrint("sendEmailVerification exception: $e");
+      BaseSnackBar.show(
+        title: "Error",
+        message: "An error occurred during verification process.",
+      );
+    }
+  }
+
+  Future<void> verifyEmailOtp(String otp) async {
+    if (otp.length < 4) {
+      BaseSnackBar.show(
+        title: "Error",
+        message: "Please enter a valid 4-digit OTP.",
+      );
+      return;
+    }
+
+    ApiRepository.instance.showLoader();
+    try {
+      final response = await profileRepository.verifyEmail(otp);
+      ApiRepository.instance.hideLoader();
+
+      if (response != null) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (response.statusCode == 200 || body['success'] == true) {
+          final String? newToken = body['data'];
+          if (newToken != null && newToken.isNotEmpty) {
+            await SharedPrefsService.instance.setString(AppKeys.idToken, newToken);
+          }
+          isEmailVerified.value = true;
+          showVerifyButton.value = false;
+          originalEmail.value = emailController.text.trim();
+          otpController.clear();
+          
+          Get.back();
+          BaseSnackBar.show(
+            title: "Success",
+            message: body['message'] ?? "Email verified successfully.",
+          );
+        } else {
+          BaseSnackBar.show(
+            title: "Error",
+            message: body['message'] ?? "Invalid OTP code. Please try again.",
+          );
+        }
+      } else {
+        BaseSnackBar.show(
+          title: "Error",
+          message: "Failed to verify OTP. Please try again.",
+        );
+      }
+    } catch (e) {
+      ApiRepository.instance.hideLoader();
+      debugPrint("verifyEmailOtp exception: $e");
+      BaseSnackBar.show(
+        title: "Error",
+        message: "An error occurred while verifying the code.",
+      );
     }
   }
 }

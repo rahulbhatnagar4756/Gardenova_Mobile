@@ -1,6 +1,12 @@
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 class SettingsRepository {
   final String profileEndPoint = 'api/v1/userProfile';
@@ -19,6 +25,14 @@ class SettingsRepository {
   }
 
   updateProfile({UpdateProfileModel? updateProfileReq}) async {
+    var updateProfileResponse = await ApiRepository.instance.put(
+      profileEndPoint,
+      body: updateProfileReq,
+    );
+    return updateProfileResponse;
+  }
+
+  updateProfilePicture({UpdateProfilePictureModel? updateProfileReq}) async {
     var updateProfileResponse = await ApiRepository.instance.put(
       profileEndPoint,
       body: updateProfileReq,
@@ -57,5 +71,59 @@ class SettingsRepository {
       {},
     );
     return deleteAccountResponse;
+  }
+
+  Future<http.Response?> sentEmailVerification(String email) async {
+    final token = SharedPrefsService.instance.getToken();
+    final String acceptLanguage =
+        Get.locale?.languageCode ??
+        SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
+        'en';
+    final uri = Uri.parse(ApiRepository.baseUrl + 'api/v1/userProfile/sentemailvarification');
+    
+    try {
+      final response = await http.patch(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json',
+          'Accept-Language': acceptLanguage,
+          'accept-language': acceptLanguage,
+          if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({"email": email}),
+      );
+      return response;
+    } catch (e) {
+      debugPrint("Error sending email verification: $e");
+      return null;
+    }
+  }
+
+  Future<http.Response?> verifyEmail(String otp) async {
+    final token = SharedPrefsService.instance.getToken();
+    final String acceptLanguage =
+        Get.locale?.languageCode ??
+        SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
+        'en';
+    final uri = Uri.parse(ApiRepository.baseUrl + 'api/v1/userProfile/verifyemail');
+    
+    try {
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json',
+          'Accept-Language': acceptLanguage,
+          'accept-language': acceptLanguage,
+          if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({"otp": otp}),
+      );
+      return response;
+    } catch (e) {
+      debugPrint("Error verifying email: $e");
+      return null;
+    }
   }
 }

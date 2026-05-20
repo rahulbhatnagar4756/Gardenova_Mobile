@@ -26,10 +26,9 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.greenColor,
-
       body: SafeArea(
         child: Container(
-          color: AppColors.whiteColor,
+          color: AppColors.offWhite,
           height: double.infinity,
           child: SingleChildScrollView(
             child: Column(
@@ -37,199 +36,179 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                 ProfileIconLayout(
                   isEnableEditable: true,
                   title: AppStrings.profile,
-                  // title: AppLocalizations.of(context)!.settings,
                   isProfileEditable: false,
                   onClickPictureView: () {
-                    // Get.toNamed(Routes.profile);
                     String profileImage = controller.profileImage.value;
                     if (profileImage.trim().isEmpty) {
                       profileImage = AppAssets.appLogo;
                     }
-                    print('we will open the image here $profileImage');
                     FullScreenImageView.open(
                       imageUrl: profileImage,
                       heroTag: "profile_image_appbar",
                     );
-                    // need to wokr here
                   },
                   onClickEditPencil: () {
                     Get.toNamed(Routes.profile);
                   },
                 ),
-                SizedBox(height: 34.h),
+                SizedBox(height: 16.h),
                 settingItemsLayout(context),
               ],
             ),
           ),
         ),
       ),
-      // bottomSheet: BottomSheetLayout(
-      //   buttonLabel: AppLocalizations.of(context)!.logout.toUpperCase(),
-      //   childLayout: settingItemsLayout(context),
-      //   onButtonTap: logout,
-      // ),
     );
   }
 
-  Widget settingItemsLayout(BuildContext context) {
-    if (SharedPrefsService.instance.getString(AppKeys.role) !=
-        AppKeys.professional) {
-      return Column(
-        children: [
-          SettingsItemLayout(
-            icon: Icons.lock_outline_rounded,
-            title: AppLocalizations.of(context)!.changePassword,
-            onTap: () {
-              controller.confirmPasswordController.clear();
-              controller.newPasswordController.clear();
-              Get.toNamed(Routes.changePassword);
-            },
+  Widget buildCategoryCard(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          SizedBox(height: 10.h),
-          SettingsItemLayout(
-            icon: Icons.history,
-            title: AppStrings.changeDiagnosis,
-            onTap: () {
-              // Get.toNamed(Routes.introduction, arguments: true);
-              Get.toNamed(Routes.question, arguments: true);
-            },
-          ),
-          // SizedBox(height: 10.h,),
-
-          // SettingsItemLayout(
-          //   icon: Icons.translate,
-          //   title: getTitle(),
-          //   onTap: () => _changeLanguage(),
-          // ),
-          SizedBox(height: 10.h),
-          SettingsItemLayout(
-            icon: Icons.sticky_note_2_outlined,
-            title: AppLocalizations.of(context)!.termsAndCondition,
-            onTap: () => Get.toNamed(Routes.termsAndConditions),
-          ),
-          SizedBox(height: 10.h),
-          SettingsItemLayout(
-            icon: Icons.privacy_tip_outlined,
-            title: AppLocalizations.of(context)!.privacyPolicy,
-            onTap: () => Get.toNamed(Routes.privacyPolicy),
-          ),
-          SizedBox(height: 10.h),
-          SettingsItemLayout(
-            icon: Icons.power_settings_new_rounded,
-            title: AppLocalizations.of(context)!.logout,
-            onTap: () => logout(),
-          ),
-
-          /*     SettingsItemLayout(
-            icon: Icons.delete_forever,
-            title: AppLocalizations.of(context)!.deleteAccount,
-            onTap: () {
-              deleteAccountDialog();
-            },
-          ),*/
-
-          /*   SettingsItemLayout(
-          icon: Icons.share_outlined,
-          title: AppLocalizations.of(context)!.referAFriend,
-          onTap: () {
-            // if (controller.isShareInProgress.value) return;
-            //  controller.isShareInProgress.value = true;
-            try {
-              Get.toNamed(Routes.plantDetail);
-                           ShareParams share = ShareParams(uri: Uri.tryParse("www.google.com"));
-              SharePlus.instance
-                  .share(share)
-                  .whenComplete(() => controller.isShareInProgress.value = false);
-            } catch (e) {
-              controller.isShareInProgress.value = false;
-            }
-          },
-        ),*/
         ],
-      ).paddingSymmetric(horizontal: 20.w);
-    } else {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            subscriptionPlanCard(),
+      ),
+      child: Column(children: children),
+    );
+  }
 
+  Widget buildSectionHeader(String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
+        child: BaseText(
+          text: title,
+          fontWeight: FontWeight.w600,
+          fontSize: 11.sp,
+          textColor: AppColors.liteGreyColor.withValues(alpha: 0.8),
+        ),
+      ),
+    ).marginOnly(top: 18.h);
+  }
+
+  Widget settingItemsLayout(BuildContext context) {
+    final bool isProfessional =
+        SharedPrefsService.instance.getString(AppKeys.role) ==
+        AppKeys.professional;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Column(
+        children: [
+          if (isProfessional) ...[
+            subscriptionPlanCard(),
+            SizedBox(height: 10.h),
+          ],
+
+          // ACCOUNT SECTION
+          buildSectionHeader(
+            AppLocalizations.of(context)!.myProfile.toUpperCase(),
+          ),
+          buildCategoryCard([
+            SettingsItemLayout(
+              icon: Icons.person_outline_rounded,
+              title: AppLocalizations.of(context)!.editProfile,
+              subtitle: "Update name, email and phone",
+              onTap: () => Get.toNamed(Routes.profile),
+            ),
+            Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(
               icon: Icons.lock_outline_rounded,
               title: AppLocalizations.of(context)!.changePassword,
+              subtitle: "Update your security password",
               onTap: () {
                 controller.confirmPasswordController.clear();
                 controller.newPasswordController.clear();
                 Get.toNamed(Routes.changePassword);
               },
             ),
-
+            Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(
-              icon: Icons.design_services_outlined,
+              icon: Icons.history,
               title: AppStrings.changeDiagnosis,
-              onTap: () {
-                controller.confirmPasswordController.clear();
-                controller.newPasswordController.clear();
-                Get.toNamed(Routes.changePassword);
-              },
+              subtitle: "Retake your evaluation answers",
+              onTap: () => Get.toNamed(Routes.question, arguments: true),
             ),
-            // SizedBox(height: 10.h,),
-            // SettingsItemLayout(
-            //   icon: Icons.translate,
-            //   title: getTitle(),
-            //   onTap: () => _changeLanguage(),
-            // ),
-            SizedBox(height: 10.h),
+          ]),
+
+          // LEGAL SECTION
+          buildSectionHeader(
+            AppLocalizations.of(context)!.options.toUpperCase(),
+          ),
+          buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.sticky_note_2_outlined,
               title: AppLocalizations.of(context)!.termsAndCondition,
+              subtitle: "Read terms of use details",
               onTap: () => Get.toNamed(Routes.termsAndConditions),
             ),
-            SizedBox(height: 10.h),
+            Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(
               icon: Icons.privacy_tip_outlined,
               title: AppLocalizations.of(context)!.privacyPolicy,
+              subtitle: "Check how we protect your data",
               onTap: () => Get.toNamed(Routes.privacyPolicy),
             ),
-            SizedBox(height: 10.h),
+          ]),
+
+          // ACTIONS SECTION
+          buildSectionHeader(
+            AppLocalizations.of(context)!.logout.toUpperCase(),
+          ),
+          buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.power_settings_new_rounded,
               title: AppLocalizations.of(context)!.logout,
+              subtitle: "Sign out of your active session",
               onTap: () => logout(),
+              iconColor: AppColors.red,
+              iconBgColor: AppColors.red.withValues(alpha: 0.1),
+              titleColor: AppColors.red,
+              trailingIconColor: AppColors.red.withValues(alpha: 0.5),
             ),
+          ]),
 
-            /*     SettingsItemLayout(
-              icon: Icons.delete_forever,
-              title: AppLocalizations.of(context)!.deleteAccount,
-              onTap: () {
-                deleteAccountDialog();
-
-
-              },
+          // VERSION FOOTER
+          Obx(
+            () => Container(
+              margin: EdgeInsets.only(top: 32.h, bottom: 24.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(AppAssets.appLogo, width: 20.w, height: 20.w),
+                      SizedBox(width: 8.w),
+                      BaseText(
+                        text: "Gardenova",
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14.sp,
+                        textColor: AppColors.blackColor.withValues(alpha: 0.7),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  BaseText(
+                    text: "Version ${controller.appVersion.value}",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 11.sp,
+                    textColor: AppColors.liteGreyColor.withValues(alpha: 0.7),
+                  ),
+                ],
+              ),
             ),
-*/
-            SizedBox(height: spacerSize60),
-
-            /*   SettingsItemLayout(
-            icon: Icons.share_outlined,
-            title: AppLocalizations.of(context)!.referAFriend,
-            onTap: () {
-              // if (controller.isShareInProgress.value) return;
-              //  controller.isShareInProgress.value = true;
-              try {
-                Get.toNamed(Routes.plantDetail);
-                             ShareParams share = ShareParams(uri: Uri.tryParse("www.google.com"));
-                SharePlus.instance
-                    .share(share)
-                    .whenComplete(() => controller.isShareInProgress.value = false);
-              } catch (e) {
-                controller.isShareInProgress.value = false;
-              }
-            },
-          ),*/
-          ],
-        ).paddingSymmetric(horizontal: 20.w),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
 
   Widget subscriptionPlanCard() {
@@ -247,12 +226,10 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// 🔹 TOP ROW (Status + Plan)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// STATUS
                           Row(
                             children: [
                               CircleAvatar(
@@ -294,8 +271,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                               ),
                             ],
                           ),
-
-                          /// PLAN BADGE
                           Column(
                             children: [
                               Container(
@@ -329,8 +304,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                                 ),
                               ),
                               SizedBox(height: spacerSize8),
-
-                              /// 🔹 RENEW / UPGRADE
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: CommonClickWidget(
@@ -382,15 +355,12 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                           ),
                         ],
                       ),
-
                       SizedBox(height: spacerSize8),
                       Divider(
                         color: AppColors.whiteColor.withValues(alpha: 0.6),
                         thickness: 0.8,
                       ),
                       SizedBox(height: spacerSize8),
-
-                      /// 🔹 INNER CARD
                       Container(
                         padding: EdgeInsets.all(spacerSize14),
                         decoration: BoxDecoration(
@@ -400,7 +370,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// SUBSCRIPTION LABEL
                             Row(
                               children: [
                                 Icon(
@@ -420,14 +389,10 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                                 ),
                               ],
                             ),
-
                             SizedBox(height: spacerSize6),
-
-                            /// DAYS LEFT + EXPIRY
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                /// DAYS LEFT
                                 RichText(
                                   text: TextSpan(
                                     children: [
@@ -454,8 +419,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                                     ],
                                   ),
                                 ),
-
-                                /// EXPIRY DATE
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -509,38 +472,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  // void _changeLanguage() {
-  //   BaseDialog.showAlertDialog(
-  //     context: Get.context!,
-  //     buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
-  //     title: AppLocalizations.of(Get.context!)!.changeLanguage,
-  //     description: AppLocalizations.of(
-  //       Get.context!,
-  //     )!.areYouSureYouWantToChangeTheLanguage,
-  //     onButtonPressed: () {
-  //       Get.updateLocale(Get.locale == enUS ? ptBR : enUS);
-  //       Get.reloadAll();
-  //       SharedPrefsService.instance.setString(
-  //         AppKeys.selectedLang,
-  //         Get.locale!.languageCode.toString(),
-  //       );
-
-  //       if (SharedPrefsService.instance.getString(AppKeys.role) ==
-  //           AppKeys.professional) {
-  //         Get.back(result: true);
-  //         Get.back(result: true);
-  //       } else {
-  //         Get.back(result: true);
-  //         if (Get.arguments == 'question') {
-  //           Get.offAllNamed(Routes.introduction);
-  //         } else {
-  //           Get.back(result: true);
-  //         }
-  //       }
-  //     },
-  //   );
-  // }
-
   String getTitle() {
     return Get.locale == enUS
         ? AppLocalizations.of(Get.context!)!.changeToPortugese
@@ -556,7 +487,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       onButtonPressed: () {
         SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
         SharedPrefsService.instance.clear();
-        // Get.offAllNamed(Routes.chooseAccountType);
         SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
         Get.offAllNamed(Routes.login);
       },

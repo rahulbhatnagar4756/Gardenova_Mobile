@@ -15,6 +15,8 @@ import '../../utils/constants/app_constants.dart';
 import '../../utils/constants/app_keys.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../dashboard_repository.dart';
+import '../../base/dialogs/base_dialog.dart';
+import '../../utils/routes.dart';
 
 class FullScreenDrawer extends StatefulWidget {
   final bool isProfessional;
@@ -197,7 +199,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                           ).marginOnly(top: spacerSize20, bottom: spacerSize15),
                         ),
 
-                        widget.isProfessional
+                        widget.isProfessional && false
                             ? Expanded(
                                 child: ListView(
                                   children: [
@@ -266,6 +268,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                         );
                                       },
                                     ),
+
                                     /* drawerItem(
                                       title: AppLocalizations.of(Get.context!)!.courses,
                                       onTap: () {
@@ -283,18 +286,35 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                     drawerItem(
                                       title: AppLocalizations.of(
                                         Get.context!,
+                                      )!.myPlants,
+                                      onTap: () {
+                                        widget.onTap(6);
+                                      },
+                                    ),
+                                    drawerItem(
+                                      title: AppLocalizations.of(
+                                        Get.context!,
                                       )!.myProfile,
                                       onTap: () {
                                         widget.onTap(5);
                                       },
                                     ),
                                     drawerItem(
+                                      title: AppLocalizations.of(
+                                        Get.context!,
+                                      )!.aboutApp,
+                                      onTap: () {
+                                        Get.back();
+                                        Get.toNamed(Routes.aboutApp);
+                                      },
+                                    ),
+                                    drawerItem(
                                       showDivider: false,
                                       title: AppLocalizations.of(
                                         Get.context!,
-                                      )!.myPlants,
+                                      )!.logout,
                                       onTap: () {
-                                        widget.onTap(6);
+                                        logout();
                                       },
                                     ),
                                   ],
@@ -416,5 +436,20 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
     } catch (e) {
       debugPrint("Launch URL Error: $e");
     }
+  }
+
+  void logout() {
+    BaseDialog.showAlertDialog(
+      context: Get.context!,
+      buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
+      title: AppLocalizations.of(Get.context!)!.logout,
+      description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToLogout,
+      onButtonPressed: () {
+        SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
+        SharedPrefsService.instance.clear();
+        SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
+        Get.offAllNamed(Routes.login);
+      },
+    );
   }
 }
