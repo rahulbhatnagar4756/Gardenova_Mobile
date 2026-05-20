@@ -147,6 +147,9 @@ class AppStrings {
   static const String reports = "Reports";
   static const String profile = "Profile";
   static const String yourPhoneNo = "Your Phone no.";
+
+  static const String legal = "Legal";
+  static const String accountAction = "Account Setting";
 }
 
 class ErrorStrings {

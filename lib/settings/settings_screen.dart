@@ -88,16 +88,25 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
     );
   }
 
-  Widget buildSectionHeader(String title) {
+  Widget buildSectionHeader(String title, {IconData? icon}) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-        child: BaseText(
-          text: title,
-          fontWeight: FontWeight.w600,
-          fontSize: 11.sp,
-          textColor: AppColors.liteGreyColor.withValues(alpha: 0.8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 16.sp, color: AppColors.greenColor),
+              SizedBox(width: 6.w),
+            ],
+            BaseText(
+              text: title,
+              fontWeight: FontWeight.w600,
+              fontSize: 12.sp,
+              textColor: AppColors.liteGreyColor.withValues(alpha: 0.8),
+            ),
+          ],
         ),
       ),
     ).marginOnly(top: 18.h);
@@ -119,7 +128,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
 
           // ACCOUNT SECTION
           buildSectionHeader(
-            AppLocalizations.of(context)!.myProfile.toUpperCase(),
+            AppStrings.myProfile,
+            icon: Icons.person_outline_rounded,
           ),
           buildCategoryCard([
             SettingsItemLayout(
@@ -152,9 +162,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ]),
 
           // LEGAL SECTION
-          buildSectionHeader(
-            AppLocalizations.of(context)!.options.toUpperCase(),
-          ),
+          buildSectionHeader(AppStrings.legal, icon: Icons.gavel_rounded),
           buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.sticky_note_2_outlined,
@@ -172,9 +180,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ]),
 
           // ACTIONS SECTION
-          buildSectionHeader(
-            AppLocalizations.of(context)!.logout.toUpperCase(),
-          ),
+          buildSectionHeader(AppStrings.accountAction, icon: Icons.settings),
           buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.power_settings_new_rounded,

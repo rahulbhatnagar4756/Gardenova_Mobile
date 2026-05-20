@@ -33,11 +33,12 @@ class SettingsViewModel extends GetxController {
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
   final changePasswordFormKey = GlobalKey<FormState>();
+  final profileFormKey = GlobalKey<FormState>();
   Rx<File> imageFile = File('').obs;
   RxString email = ''.obs;
   RxString name = ''.obs;
-  RxString originalEmail = ''.obs;
   RxBool isEmailVerified = true.obs;
+  RxString originalEmail = ''.obs;
   RxBool showVerifyButton = false.obs;
 
   RxString profileImage = ''.obs;
@@ -146,6 +147,8 @@ class SettingsViewModel extends GetxController {
         }
       }
     }
+    name.refresh();
+    email.refresh();
     print('refreshing ui please');
     profileImage.refresh();
     screenType.refresh();
