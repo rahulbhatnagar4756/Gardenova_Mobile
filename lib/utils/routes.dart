@@ -40,7 +40,7 @@ import 'package:kasagardem/settings/change_password.dart';
 import 'package:kasagardem/settings/privacy_policy.dart';
 import 'package:kasagardem/settings/about_app.dart';
 import 'package:kasagardem/settings/profile/profile_screen.dart';
-import 'package:kasagardem/settings/profile/verify_email_otp_screen.dart';
+import 'package:kasagardem/settings/profile/verified_email_otp_view/verify_email_otp_screen.dart';
 import 'package:kasagardem/settings/settings_screen.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/settings/terms_and_conditions.dart';
@@ -59,6 +59,7 @@ import '../professional/professionalDashBoard/components/professional_dashbord_s
 import '../professional/upgradePlans/upgrade_plan_controller.dart';
 import '../professional/upgradePlans/upgrade_plan_screen.dart';
 import '../recommended_professionals/components/create_request_screen.dart';
+import '../settings/profile/verified_email_otp_view/verified_email_otp_view_model.dart';
 
 class Routes {
   static const splash = '/';
@@ -228,6 +229,7 @@ class Routes {
       GetPage(
         name: Routes.verifyEmailOtp,
         page: () => const VerifyEmailOtpScreen(),
+        binding: BindingsBuilder.put(() => VerifiedEmailOtpViewModel()),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
@@ -281,8 +283,7 @@ class Routes {
       ),
       GetPage(
         name: Routes.aboutApp,
-        page: () =>
-            AboutAppScreen(filePath: 'assets/html/about_en.html'),
+        page: () => AboutAppScreen(filePath: 'assets/html/about_en.html'),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,

@@ -13,8 +13,11 @@ class AuthRepository {
   final String _verifyCode = 'api/v1/auth/verifyToken';
   final String _resetPassword = 'api/v1/auth/resetPassword';
   final String _profileDetail = 'api/v1/userProfile';
-  final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
+  final String _professionalProfileDetail =
+      'api/v1/professional/ProfessionalsProfile';
   final String _refreshTokenUrl = 'api/v1/auth/refresh';
+  final String _sentEmailVerificationUrl =
+      'api/v1/userProfile/sentemailvarification';
 
   registerUser({RegisterRequestModel? registerReq}) async {
     var registerResponse = await ApiRepository.instance.post(
@@ -112,5 +115,13 @@ class AuthRepository {
       _refreshTokenUrl,
     );
     return refreshTokenResponse;
+  }
+
+  sentEmailVerification(String email) async {
+    var response = await ApiRepository.instance.patch(
+      _sentEmailVerificationUrl,
+      {"email": email},
+    );
+    return response;
   }
 }

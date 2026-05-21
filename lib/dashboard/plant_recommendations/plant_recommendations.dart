@@ -185,74 +185,86 @@ class PlantRecommendations extends StatelessWidget {
                           ),
 
                           /// 🔹 Text Section
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Card(
-                              margin: EdgeInsets.zero,
-                              elevation: 0,
-                              shadowColor: Colors.black.withValues(alpha: 0.5),
-                              color: AppColors.whiteColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(13.r),
-                                side: BorderSide(
-                                  color: Colors.black.withValues(alpha: 0.06),
-                                ),
-                              ),
-                              child: Container(
-                                height: 52.h,
-                                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Spacer(),
-                                    BaseText(
-                                      text:
-                                          item?.commonName ??
-                                          item?.speciesName ??
-                                          "",
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: AppKeys.poppins,
-                                      fontSize: 12.sp,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                          controller.isLoading.value
+                              ? SizedBox()
+                              : Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Card(
+                                    margin: EdgeInsets.zero,
+                                    elevation: 0,
+                                    shadowColor: Colors.black.withValues(
+                                      alpha: 0.5,
                                     ),
-                                    SizedBox(height: 1.h),
-                                    if ((item?.whyRecommended != null &&
-                                            item!.whyRecommended!.isNotEmpty) ||
-                                        (item?.plantType != null &&
-                                            item!.plantType!.isNotEmpty))
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8.w,
-                                          vertical: 4.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.greenColor
-                                              .withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            20.r,
-                                          ),
-                                        ),
-                                        child: BaseText(
-                                          text:
-                                              item.whyRecommended?.isNotEmpty ==
-                                                  true
-                                              ? item.whyRecommended!.first
-                                              : (item.plantType ?? ""),
-                                          textColor: AppColors.greenColor,
-                                          fontSize: 9.sp,
-                                          fontWeight: FontWeight.w400,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                    color: AppColors.whiteColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(13.r),
+                                      side: BorderSide(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.06,
                                         ),
                                       ),
-                                    SizedBox(height: 8.h),
-                                  ],
+                                    ),
+                                    child: Container(
+                                      height: 52.h,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10.w,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Spacer(),
+                                          BaseText(
+                                            text:
+                                                item?.commonName ??
+                                                item?.speciesName ??
+                                                "",
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: AppKeys.poppins,
+                                            fontSize: 12.sp,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 1.h),
+                                          if ((item?.whyRecommended != null &&
+                                                  item!
+                                                      .whyRecommended!
+                                                      .isNotEmpty) ||
+                                              (item?.plantType != null &&
+                                                  item!.plantType!.isNotEmpty))
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 8.w,
+                                                vertical: 4.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.greenColor
+                                                    .withValues(alpha: 0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(20.r),
+                                              ),
+                                              child: BaseText(
+                                                text:
+                                                    item
+                                                            .whyRecommended
+                                                            ?.isNotEmpty ==
+                                                        true
+                                                    ? item.whyRecommended!.first
+                                                    : (item.plantType ?? ""),
+                                                textColor: AppColors.greenColor,
+                                                fontSize: 9.sp,
+                                                fontWeight: FontWeight.w400,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          SizedBox(height: 8.h),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),

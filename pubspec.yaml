@@ -51,6 +51,7 @@ dependencies:
   firebase_storage: ^13.4.1
   firebase_crashlytics: ^5.2.2
   firebase_analytics: ^12.4.1
+  geocoding: ^4.0.0
   
 
   flutter_localizations:
@@ -60,6 +61,7 @@ dependencies:
 dependency_overrides:
   shared_preferences_foundation: 2.1.4
   geolocator: ^14.0.2
+  
   package_info_plus: ^10.1.0
   win32: ^6.2.0
   flutter_secure_storage_windows: ^4.2.1

@@ -48,6 +48,8 @@ class Data {
     String? name,
     String? email,
     String? contactNumber,
+    bool? isEmailVerified,
+    bool? isSsoUser,
     dynamic profileImage,
     dynamic imageUrl,
     dynamic dateOfBirth,
@@ -57,11 +59,13 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
-    String? responseId
+    String? responseId,
   }) {
     _name = name;
     _email = email;
     _contactNumber = contactNumber;
+    _isEmailVerified = isEmailVerified;
+    _isSsoUser = isSsoUser;
     _profileImage = profileImage;
     _imageUrl = imageUrl;
     _dateOfBirth = dateOfBirth;
@@ -78,6 +82,8 @@ class Data {
     _name = json[ApiKeys.name];
     _email = json[ApiKeys.email];
     _contactNumber = json[ApiKeys.contactNumber];
+    _isEmailVerified = json["is_email_verified"] ?? false;
+    _isSsoUser = json["is_sso_user"] ?? false;
     _profileImage = json[ApiKeys.profileImage];
     _imageUrl = json["imageUrl"];
     _dateOfBirth = json[ApiKeys.dateOfBirth];
@@ -97,6 +103,8 @@ class Data {
   String? _name;
   String? _email;
   String? _contactNumber;
+  bool? _isEmailVerified;
+  bool? _isSsoUser;
   dynamic _profileImage;
   dynamic _imageUrl;
   dynamic _dateOfBirth;
@@ -112,6 +120,8 @@ class Data {
     String? name,
     String? email,
     String? contactNumber,
+    bool? isEmailVerified,
+    bool? isSsoUser,
     dynamic profileImage,
     dynamic imageUrl,
     dynamic dateOfBirth,
@@ -121,11 +131,13 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
-    String? responseId
+    String? responseId,
   }) => Data(
     name: name ?? _name,
     email: email ?? _email,
     contactNumber: contactNumber ?? _contactNumber,
+    isEmailVerified: isEmailVerified ?? _isEmailVerified,
+    isSsoUser: isSsoUser ?? _isSsoUser,
     profileImage: profileImage ?? _profileImage,
     imageUrl: imageUrl ?? _imageUrl,
     dateOfBirth: dateOfBirth ?? _dateOfBirth,
@@ -143,6 +155,10 @@ class Data {
   String? get email => _email;
 
   String? get contactNumber => _contactNumber;
+
+  bool? get isEmailVerified => _isEmailVerified;
+
+  bool? get isSsoUser => _isSsoUser;
 
   dynamic get profileImage => _profileImage;
 
@@ -169,6 +185,10 @@ class Data {
     map[ApiKeys.name] = _name;
     map[ApiKeys.email] = _email;
     map[ApiKeys.contactNumber] = _contactNumber;
+
+    map['is_email_verified'] = _isEmailVerified;
+    map['is_sso_user'] = _isSsoUser;
+
     map[ApiKeys.profileImage] = _profileImage;
     map["imageUrl"] = _imageUrl;
     map[ApiKeys.dateOfBirth] = _dateOfBirth;

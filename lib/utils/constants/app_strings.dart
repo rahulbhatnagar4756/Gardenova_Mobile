@@ -150,6 +150,11 @@ class AppStrings {
 
   static const String legal = "Legal";
   static const String accountAction = "Account Setting";
+
+  // verify email address screen strings
+  static const String verifyEmailAddress = "Verify Email Address";
+  static const String verifyEmailSubTxt =
+      "We have sent a verification code to EMAIL_ADDRESS";
 }
 
 class ErrorStrings {

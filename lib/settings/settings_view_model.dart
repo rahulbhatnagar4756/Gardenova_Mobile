@@ -10,6 +10,7 @@ import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
+import 'package:kasagardem/settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import 'package:kasagardem/settings/settings_repository.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
@@ -31,7 +32,6 @@ class SettingsViewModel extends GetxController {
   TextEditingController phoneNoController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController otpController = TextEditingController();
   final changePasswordFormKey = GlobalKey<FormState>();
   final profileFormKey = GlobalKey<FormState>();
   Rx<File> imageFile = File('').obs;
@@ -44,9 +44,12 @@ class SettingsViewModel extends GetxController {
   RxString profileImage = ''.obs;
   RxString screenType = ''.obs;
   RxBool isShareInProgress = false.obs;
+  String apiImage = '';
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
   RxString appVersion = '1.0.0'.obs;
+
+  late final FocusNode focusNode;
 
   @override
   onInit() {
@@ -61,6 +64,7 @@ class SettingsViewModel extends GetxController {
         showVerifyButton.value = false;
       }
     });
+    focusNode = FocusNode();
     if (Get.arguments != null && Get.arguments is String) {
       screenType.value = Get.arguments as String;
     }
@@ -89,7 +93,7 @@ class SettingsViewModel extends GetxController {
     confirmPasswordController.dispose();
     nameController.dispose();
     emailController.dispose();
-    otpController.dispose();
+    focusNode.dispose();
   }
 
   Future<void> pickImage({
@@ -143,13 +147,13 @@ class SettingsViewModel extends GetxController {
         showVerifyButton.value = false;
         phoneNoController.text = profileResponse.data?.contactNumber ?? "";
         if (profileResponse.data?.profileImage != null) {
-          profileImage.value = profileResponse.data!.profileImage!;
+          profileImage.value = profileResponse.data?.profileImage ?? '';
+          apiImage = profileResponse.data?.profileImage ?? '';
         }
       }
     }
     name.refresh();
     email.refresh();
-    print('refreshing ui please');
     profileImage.refresh();
     screenType.refresh();
   }
@@ -183,7 +187,8 @@ class SettingsViewModel extends GetxController {
         );
 
         if (profileResponse.data?.imageUrl != null) {
-          profileImage.value = profileResponse.data!.imageUrl!;
+          profileImage.value = profileResponse.data?.imageUrl ?? '';
+          apiImage = profileResponse.data!.imageUrl ?? '';
         }
       }
     }
@@ -221,6 +226,10 @@ class SettingsViewModel extends GetxController {
     } else {
       // profileImage.value = '';
       imageFile.value = File('');
+      if (apiImage.isNotEmpty) {
+        profileImage.value = apiImage;
+        profileImage.refresh();
+      }
     }
   }
 
@@ -271,6 +280,10 @@ class SettingsViewModel extends GetxController {
     } else {
       profileImage.value = '';
       imageFile.value = File('');
+      if (apiImage.isNotEmpty) {
+        profileImage.value = apiImage;
+        profileImage.refresh();
+      }
     }
   }
 
@@ -382,7 +395,22 @@ class SettingsViewModel extends GetxController {
             title: "Verification Sent",
             message: body['message'] ?? "Verification OTP sent to your email.",
           );
-          Get.toNamed(Routes.verifyEmailOtp);
+          var parsingModel = VerifiedEmailLocalParsingModel(
+            email: emailController.text.trim(),
+            fromLoginFlow: false,
+            userType: 'user',
+          );
+          Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((
+            value,
+          ) {
+            if (value is VerifiedEmailLocalParsingModel) {
+              if (value.requestSussessFull) {
+                isEmailVerified.value = true;
+                showVerifyButton.value = false;
+                originalEmail.value = mail;
+              }
+            }
+          });
         } else {
           BaseSnackBar.show(
             title: "Error",
@@ -401,62 +429,6 @@ class SettingsViewModel extends GetxController {
       BaseSnackBar.show(
         title: "Error",
         message: "An error occurred during verification process.",
-      );
-    }
-  }
-
-  Future<void> verifyEmailOtp(String otp) async {
-    if (otp.length < 4) {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Please enter a valid 4-digit OTP.",
-      );
-      return;
-    }
-
-    ApiRepository.instance.showLoader();
-    try {
-      final response = await profileRepository.verifyEmail(otp);
-      ApiRepository.instance.hideLoader();
-
-      if (response != null) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (response.statusCode == 200 || body['success'] == true) {
-          final String? newToken = body['data'];
-          if (newToken != null && newToken.isNotEmpty) {
-            await SharedPrefsService.instance.setString(
-              AppKeys.idToken,
-              newToken,
-            );
-          }
-          isEmailVerified.value = true;
-          showVerifyButton.value = false;
-          originalEmail.value = emailController.text.trim();
-          otpController.clear();
-
-          Get.back();
-          BaseSnackBar.show(
-            title: "Success",
-            message: body['message'] ?? "Email verified successfully.",
-          );
-        } else {
-          BaseSnackBar.show(
-            title: "Error",
-            message: body['message'] ?? "Invalid OTP code. Please try again.",
-          );
-        }
-      } else {
-        BaseSnackBar.show(
-          title: "Error",
-          message: "Failed to verify OTP. Please try again.",
-        );
-      }
-    } catch (e) {
-      ApiRepository.instance.hideLoader();
-      debugPrint("verifyEmailOtp exception: $e");
-      BaseSnackBar.show(
-        title: "Error",
-        message: "An error occurred while verifying the code.",
       );
     }
   }

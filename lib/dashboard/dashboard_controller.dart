@@ -14,7 +14,7 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
-import '../utils/location_service.dart';
+import '../utils/location_helper/location_service.dart';
 import '../utils/permission_manager.dart';
 
 enum ImagePickerSource { diagnosis, landscape }

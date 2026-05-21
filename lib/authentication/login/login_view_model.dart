@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,9 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../base/widgets/base_calculate_remaining_days.dart';
+import '../../settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
+import '../../utils/constants/app_constants.dart';
+import '../../utils/network_services/api_repository.dart';
 
 class LoginViewModel extends GetxController with SocialSignInMixin {
   TextEditingController emailController = TextEditingController();
@@ -173,15 +177,59 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         );
       }
       String responseIdd = profileResponse.data?.responseId ?? responseId;
-      if (responseIdd.trim().isEmpty) {
-        Get.offAllNamed(Routes.question);
+      bool isUserEmailVerifed = profileResponse.data?.isEmailVerified ?? false;
+      print('isUserEmail verified $isUserEmailVerifed');
+      if (!isUserEmailVerifed) {
+        sendEmailVerification(responseIdd: responseIdd);
       } else {
-        SharedPrefsService.instance.setString(
-          AppKeys.submissionResponseId,
-          responseIdd,
-        );
-        Get.offAllNamed(Routes.dashboard);
+        _navigateToDashboardFlow(responseIdd: responseIdd);
       }
+    }
+  }
+
+  void _navigateToDashboardFlow({required String responseIdd}) {
+    if (responseIdd.trim().isEmpty) {
+      Get.offAllNamed(Routes.question);
+    } else {
+      SharedPrefsService.instance.setString(
+        AppKeys.submissionResponseId,
+        responseIdd,
+      );
+      Get.offAllNamed(Routes.dashboard);
+    }
+  }
+
+  Future<void> sendEmailVerification({required String responseIdd}) async {
+    final String mail = emailController.text.trim();
+    if (mail.isEmpty || !GetUtils.isEmail(mail)) {
+      BaseSnackBar.show(
+        title: "Error",
+        message: "Please enter a valid email address.",
+      );
+      return;
+    }
+
+    final response = await authRepository.sentEmailVerification(mail);
+    if (response != null) {
+      var parsingModel = VerifiedEmailLocalParsingModel(
+        email: emailController.text.trim(),
+        fromLoginFlow: true,
+        userType: 'user',
+      );
+      Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((
+        value,
+      ) {
+        if (value is VerifiedEmailLocalParsingModel) {
+          if (value.requestSussessFull) {
+            _navigateToDashboardFlow(responseIdd: responseIdd);
+          }
+        }
+      });
+    } else {
+      BaseSnackBar.show(
+        title: "Error",
+        message: "Could not connect to verification service.",
+      );
     }
   }
 

@@ -35,7 +35,11 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
                     context,
                   )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
                 ),
-                OtpLayout(forgotPasswordViewModel: controller),
+                OtpLayout(
+                  widgetKey: controller.resetPasswordFormKey,
+                  focusNode: controller.focusNode,
+                  pinController: controller.pinController,
+                ),
                 verifyOtp(context),
                 didNotReceiveAnyCode(context),
               ],

@@ -21,8 +21,10 @@ class ForgotPasswordViewModel extends GetxController {
 
   late final FocusNode focusNode;
   late final GlobalKey<FormState> sendOtpFormKey;
+
   late final GlobalKey<FormState> verifyOtpFormKey;
   final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
+  
   AuthRepository authRepository = AuthRepository();
   Timer? timer;
   RxInt start = 60.obs;

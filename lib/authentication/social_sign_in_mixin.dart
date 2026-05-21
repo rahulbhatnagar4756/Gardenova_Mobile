@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:developer' show log;
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' show Random;
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,8 +30,8 @@ mixin SocialSignInMixin {
       final credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
-      debugPrint(
-        "signInWithGoogle googleAuth.idToken:::::::${googleAuth.idToken}",
+      log(
+        "signInWithGoogle googleAuth.idToken::::::: ->${googleAuth.idToken}",
       );
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);

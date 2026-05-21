@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
-import '../base/dialogs/base_dialog.dart';
-import '../l10n/app_localizations.dart';
-import 'constants/app_constants.dart';
+import '../../base/dialogs/base_dialog.dart';
+import '../../l10n/app_localizations.dart';
+import '../../professional/myLead/model/my_lead_model.dart';
+import '../constants/app_constants.dart';
 
 class LocationService {
   /// Public method
@@ -147,5 +149,47 @@ class LocationService {
         await Geolocator.openAppSettings();
       },
     );
+  }
+
+  Future<LocationModel?> getCurrentLocationDetails() async {
+    try {
+      final position = await _determinePosition();
+
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isEmpty) {
+        throw Exception("Unable to fetch address details");
+      }
+
+      final place = placemarks.first;
+
+      return LocationModel(
+        latitude: position.latitude.toString(),
+        longitude: position.longitude.toString(),
+        country: place.country ?? "",
+        state: place.administrativeArea ?? "",
+        city: place.locality ?? "",
+        address: [
+          place.street,
+          place.subLocality,
+          place.locality,
+          place.administrativeArea,
+          place.country,
+        ].where((e) => e != null && e.isNotEmpty).join(", "),
+        postalCode: place.postalCode ?? "",
+      );
+    } catch (e) {
+      debugPrint("Location Details Error: $e");
+
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: e.toString(),
+      );
+
+      return null;
+    }
   }
 }
