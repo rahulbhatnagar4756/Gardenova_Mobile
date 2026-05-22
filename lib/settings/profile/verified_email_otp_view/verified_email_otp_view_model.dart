@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/professional_profile_model.dart';
@@ -25,7 +26,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
   @override
   onInit() {
     focusNode = FocusNode();
-    parsingArgument =
+    parsingArgument.value =
         Get.arguments ??
         VerifiedEmailLocalParsingModel(
           email: '',
@@ -34,7 +35,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
         );
 
     final bool isSuccess = parsingArgument.value?.requestSussessFull ?? false;
-    startTimer(isSuccess ? 60 : 300);
+    startTimer(isSuccess ? 60 : 60);
     super.onInit();
   }
 
@@ -74,14 +75,17 @@ class VerifiedEmailOtpViewModel extends GetxController {
       ApiRepository.instance.hideLoader();
 
       if (response != null) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (response.statusCode == 200) {
+        final Map<String, dynamic> body = response is Map
+            ? Map<String, dynamic>.from(response)
+            : jsonDecode(response.toString());
+
+        if (body['statusCode'] == 200) {
           BaseSnackBar.show(
             title: "Success",
             message: body['message'] ?? "Email is already verified.",
           );
           startTimer(60);
-        } else if (response.statusCode == 201) {
+        } else if (body['statusCode'] == 201 || body['success'] == true) {
           BaseSnackBar.show(
             title: "Verification Sent",
             message: body['message'] ?? "Verification OTP sent to your email.",
@@ -122,10 +126,11 @@ class VerifiedEmailOtpViewModel extends GetxController {
     try {
       final response = await profileRepository.verifyEmail(otp);
       ApiRepository.instance.hideLoader();
-
       if (response != null) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (response.statusCode == 200 || body['success'] == true) {
+        final Map<String, dynamic> body = response is Map
+            ? Map<String, dynamic>.from(response)
+            : jsonDecode(response.toString());
+        if (body['statusCode'] == 200 || body['success'] == true) {
           final String? newToken = body['data'];
           if (newToken != null && newToken.isNotEmpty) {
             await SharedPrefsService.instance.setString(
@@ -133,12 +138,8 @@ class VerifiedEmailOtpViewModel extends GetxController {
               newToken,
             );
           }
-          // isEmailVerified.value = true;
-          // showVerifyButton.value = false;
-          // originalEmail.value = emailController.text.trim();
-          // otpController.clear();
           parsingArgument.value?.requestSussessFull = true;
-          Get.back(result: parsingArgument);
+          Get.back(result: parsingArgument.value);
           BaseSnackBar.show(
             title: "Success",
             message: body['message'] ?? "Email verified successfully.",

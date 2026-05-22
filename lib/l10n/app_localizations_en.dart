@@ -135,10 +135,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verifyOtp => 'Verify OTP';
 
   @override
-  String get didNotReceiveAnyCode => 'Didn’t Receive Any Code?';
+  String get didNotReceiveAnyCode => 'Didn’t receive any OTP?';
 
   @override
-  String get resendCode => 'Resend Code';
+  String get resendCode => 'Resend';
 
   @override
   String get createPassword => 'Create New Password';
@@ -528,7 +528,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchPlantsByNameAndDescription => 'Search Plants by name, description..';
 
   @override
-  String get noPlantsFound => 'No Plants Found !!!';
+  String get noPlantsFound => 'No Plants Available';
 
   @override
   String get seeAll => 'SeeAll';

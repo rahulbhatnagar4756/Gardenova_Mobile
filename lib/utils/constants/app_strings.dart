@@ -155,6 +155,13 @@ class AppStrings {
   static const String verifyEmailAddress = "Verify Email Address";
   static const String verifyEmailSubTxt =
       "We have sent a verification code to EMAIL_ADDRESS";
+  static const setPwd = 'Set Password';
+  static const changePwdMsg = "Update your security password";
+  static const setPwdMsg = "Set your security password";
+  static const setPwdBtnMsg = "Set Password";
+  // static const tapAddPlantsToAddNewPlant = "Tap ‘Add Plants’ to add your first plant";
+  static const tapAddPlantsToAddNewPlant =
+      "Tap “Add Plants” to add your first plant";
 }
 
 class ErrorStrings {

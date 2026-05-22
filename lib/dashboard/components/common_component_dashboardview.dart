@@ -36,8 +36,8 @@ class CommonComponentDashboardView extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(
           left: 16.w,
-          top: 15.h,
-          bottom: 15.h,
+          top: 10.h,
+          bottom: 10.h,
           right: 4.w,
         ),
 

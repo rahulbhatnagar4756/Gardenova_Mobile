@@ -124,44 +124,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                         ),
                       ),
                     ),
-              // : SliverPadding(
-              //     padding: EdgeInsets.symmetric(horizontal: spacerSize20),
-              //     sliver: SliverList(
-              //       delegate: SliverChildBuilderDelegate(
-              //         (context, rowIndex) {
-              //           int firstIndex = rowIndex * 2;
-              //           int secondIndex = firstIndex + 1;
-
-              //           Plants firstPlant =
-              //               controller.allPlantList[firstIndex];
-
-              //           Plants? secondPlant =
-              //               secondIndex < controller.allPlantList.length
-              //               ? controller.allPlantList[secondIndex]
-              //               : null;
-
-              //           return Padding(
-              //             padding: EdgeInsets.only(bottom: spacerSize15),
-              //             child: Row(
-              //               children: [
-              //                 Expanded(
-              //                   child: plantCard(firstPlant, firstIndex),
-              //                 ),
-              //                 SizedBox(width: spacerSize15),
-              //                 Expanded(
-              //                   child: secondPlant != null
-              //                       ? plantCard(secondPlant, secondIndex)
-              //                       : SizedBox(),
-              //                 ),
-              //               ],
-              //             ),
-              //           );
-              //         },
-              //         childCount: (controller.allPlantList.length / 2)
-              //             .ceil(),
-              //       ),
-              //     ),
-              //   ),
+         
 
               /// 🔹 BOTTOM LOAD MORE LOADER
               SliverToBoxAdapter(

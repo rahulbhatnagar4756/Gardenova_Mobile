@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_form.dart';
-import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:pinput/pinput.dart';
@@ -12,10 +12,12 @@ class OtpLayout extends StatelessWidget {
     required this.widgetKey,
     required this.pinController,
     required this.focusNode,
+    required this.lengthOtp,
   });
   final GlobalKey<FormState> widgetKey;
   final TextEditingController pinController;
   final FocusNode focusNode;
+  final int lengthOtp;
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +41,35 @@ class OtpLayout extends StatelessWidget {
             child: Pinput(
               controller: pinController,
               focusNode: focusNode,
-              length: 6,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                // LengthLimitingTextInputFormatter(lengthOtp),
+              ],
+              length: lengthOtp,
               defaultPinTheme: defaultPinTheme,
               separatorBuilder: (index) => const SizedBox(width: spacerSize8),
               validator: (value) {
-                return value != null && value.isNotEmpty
-                    ? null
-                    : AppLocalizations.of(context)!.incorrectCodePleaseTryAgain;
+                final otp = value?.trim() ?? '';
+
+                if (otp.isEmpty) {
+                  return "Please enter OTP";
+                }
+
+                if (otp.length != lengthOtp) {
+                  return "Please enter a valid OTP";
+                }
+
+                if (!RegExp(r'^[0-9]+$').hasMatch(otp)) {
+                  return "OTP must contain only numbers";
+                }
+
+                return null;
               },
+              // validator: (value) {
+              //   return value != null && value.isNotEmpty
+              //       ? null
+              //       : AppLocalizations.of(context)!.incorrectCodePleaseTryAgain;
+              // },
               hapticFeedbackType: HapticFeedbackType.lightImpact,
               onCompleted: (pin) {},
               onChanged: (value) {},

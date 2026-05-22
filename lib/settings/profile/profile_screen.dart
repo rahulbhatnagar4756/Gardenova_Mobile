@@ -247,6 +247,30 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                                       validator: ValidationHelper.validateEmail,
                                       suffixIcon: Obx(() {
                                         if (controller.showVerifyButton.value) {
+                                          if (controller.countdownTimer.value >
+                                              0) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 16.w,
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "0${controller.countdownTimer.value ~/ 60}:${(controller.countdownTimer.value % 60).toString().padLeft(2, '0')}",
+                                                    style: TextStyle(
+                                                      color:
+                                                          AppColors.burntGold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14.sp,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
                                           return TextButton(
                                             onPressed: () {
                                               controller

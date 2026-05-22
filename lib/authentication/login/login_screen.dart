@@ -101,7 +101,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: dontHaveAnAccount(context),
-                              ).marginOnly(top: 130.h),
+                              ).marginOnly(top: 35.h),
                             ),
                           ],
                         ),
@@ -190,7 +190,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,
-      ).marginOnly(bottom: 25.h, top: spacerSize25),
+      ).marginOnly(bottom: 10.h, top: spacerSize25),
     );
   }
 
@@ -208,7 +208,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h);
+    ).marginOnly(bottom: 16.h);
   }
 
   divider() {

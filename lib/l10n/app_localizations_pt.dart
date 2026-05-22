@@ -138,7 +138,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get didNotReceiveAnyCode => 'Não recebeu nenhum código?';
 
   @override
-  String get resendCode => 'Reenviar Código';
+  String get resendCode => 'Reenviar';
 
   @override
   String get createPassword => 'Criar Nova Senha';

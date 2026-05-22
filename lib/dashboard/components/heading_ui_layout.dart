@@ -19,7 +19,7 @@ class HeadingUiLayout extends StatelessWidget {
     super.key,
     this.child,
     this.sectionTitle,
-    this.spacing = spacerSize10,
+    this.spacing = spacerSize6,
     this.isFilterShow = false,
     this.onTabFilter,
     this.titleLeftPadding = 0,
@@ -38,7 +38,7 @@ class HeadingUiLayout extends StatelessWidget {
           children: [
             BaseText(
               fontFamily: AppKeys.poppins,
-              fontSize: fontSize17,
+              fontSize: fontSize16,
               fontWeight: FontWeight.w500,
               text: sectionTitle ?? "",
             ).marginOnly(left: titleLeftPadding ?? 0),

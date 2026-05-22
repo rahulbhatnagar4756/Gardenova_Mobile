@@ -24,7 +24,7 @@ class ForgotPasswordViewModel extends GetxController {
 
   late final GlobalKey<FormState> verifyOtpFormKey;
   final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
-  
+
   AuthRepository authRepository = AuthRepository();
   Timer? timer;
   RxInt start = 60.obs;

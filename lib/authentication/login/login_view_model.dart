@@ -52,7 +52,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           : dotenv.env['androidClientId']!,
     );
     if (kDebugMode) {
-      emailController.text = 'bishav@yopmail.com';
+      emailController.text = 'ashirwad1@yopmail.com';
       passwordController.text = 'Test@123';
     }
   }
@@ -170,6 +170,11 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         AppKeys.email,
         profileResponse.data?.email ?? "",
       );
+      bool isSocialLoginUser = profileResponse.data?.isSsoUser ?? false;
+      SharedPrefsService.instance.setBool(
+        AppKeys.emailLogedInUser,
+        !isSocialLoginUser,
+      );
       if (profileResponse.data?.profileImage != null) {
         SharedPrefsService.instance.setString(
           AppKeys.profileImage,
@@ -179,7 +184,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       String responseIdd = profileResponse.data?.responseId ?? responseId;
       bool isUserEmailVerifed = profileResponse.data?.isEmailVerified ?? false;
       print('isUserEmail verified $isUserEmailVerifed');
-      if (!isUserEmailVerifed) {
+      if (!isUserEmailVerifed && false) {
         sendEmailVerification(responseIdd: responseIdd);
       } else {
         _navigateToDashboardFlow(responseIdd: responseIdd);

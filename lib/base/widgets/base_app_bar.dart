@@ -209,7 +209,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Container(
                   padding: EdgeInsets.only(
                     left: 48.w,
-                    bottom: (isAppIconVisible == true) ? 16.h : 30.h,
+                    bottom: (isAppIconVisible == true) ? 20.h : 38.h,
                   ),
                   // color: Colors.red,
                   child: BaseText(
@@ -257,6 +257,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(
     ((kToolbarHeight * (toolbarHeightScale ?? 1.5) + (topMargin ?? 0))) +
-        (isAppIconVisible == true ? 20.h : -20.h),
+        (isAppIconVisible == true ? 35.h : -20.h),
+    // (isAppIconVisible == true ? 20.h : -20.h),
   );
 }

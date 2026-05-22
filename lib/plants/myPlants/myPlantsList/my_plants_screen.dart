@@ -16,6 +16,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../../utils/constants/app_strings.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/utils.dart';
 import 'components/my_plants_list_item.dart';
@@ -233,10 +234,10 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
       child: InkWell(
         onTap: () {
           Utils.hideKeyboard();
-          Get.toNamed(Routes.allPlantsScreen)!.then((_) {
-            Utils.hideKeyboard();
-            controller.callGetMyPlantListApi();
-          });
+          // Get.toNamed(Routes.allPlantsScreen)!.then((_) {
+          //   Utils.hideKeyboard();
+          //   controller.callGetMyPlantListApi();
+          // });
         },
         child: RichText(
           textAlign: TextAlign.center,
@@ -247,20 +248,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
               color: AppColors.blackColor,
               fontFamily: AppKeys.poppins,
             ),
-            children: [
-              TextSpan(text: "${AppLocalizations.of(context)!.tap} "),
-              WidgetSpan(
-                child: Image.asset(
-                  color: AppColors.blackColor,
-                  Assets.imagesAdd,
-                  height: spacerSize12,
-                  width: spacerSize12,
-                ).paddingOnly(bottom: 3.h),
-              ),
-              TextSpan(
-                text: " ${AppLocalizations.of(context)!.toAddYourFirstPlant}",
-              ),
-            ],
+            children: [TextSpan(text: AppStrings.tapAddPlantsToAddNewPlant)],
           ),
         ),
       ),

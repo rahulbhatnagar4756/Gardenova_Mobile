@@ -72,11 +72,11 @@ class UpdateProfileModel {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['profileImage'] = profileImage;
-    map['dateOfBirth'] = dateOfBirth;
-    map['gender'] = gender;
-    map['bio'] = bio;
+    // map['dateOfBirth'] = dateOfBirth;
+    // map['gender'] = gender;
+    // map['bio'] = bio;
 
-    map['occupation'] = occupation;
+    // map['occupation'] = occupation;
     map['company'] = company;
     map[ApiKeys.name] = name;
     // map[ApiKeys.email] = email;

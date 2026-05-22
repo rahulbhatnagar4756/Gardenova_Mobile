@@ -58,7 +58,7 @@ class SoilAnalysis extends StatelessWidget {
                   ),
                 ],
               ).paddingOnly(right: 120.w),
-              SizedBox(height: 28.h),
+              SizedBox(height: 5.h),
               Column(
                 children: [
                   _buildItem(
@@ -93,7 +93,7 @@ class SoilAnalysis extends StatelessWidget {
 
           Positioned(
             right: -25.w,
-            top: 30.h,
+            top: 10.h,
             child: SizedBox(
               width: 210,
               height: 130,

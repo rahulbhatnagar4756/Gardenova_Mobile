@@ -347,6 +347,8 @@ class AllPlantsDetailsController extends GetxController {
     log('---------------------------------response');
 
     if (response != null) {
+      plantDetailData.value.data?.alreadyAdded = true;
+      plantDetailData.refresh();
       PlantAddSuccessDialog.show(
         Get.context!,
         title: plantDetailData.value.data!.plant!.commonName ?? "",

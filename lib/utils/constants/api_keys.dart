@@ -14,6 +14,7 @@ class ApiKeys {
   static const responseId = 'responseId';
   static const name = 'name';
   static const roleCode = 'roleCode';
+  static const newPassword = 'new_password';
   static const password = 'password';
   static const oldPassword = 'old_password';
   static const phoneNumber = 'phoneNumber';

@@ -29,7 +29,7 @@ class PlantRecommendations extends StatelessWidget {
             (controller.plantRecommendationList.isEmpty &&
                 !controller.isLoading.value)
             ? 145.h
-            : 175.h,
+            : 170.h,
         // padding: EdgeInsets.all(spacerSize5),
         backgroundColor: AppColors.appColor,
         borderColor: AppColors.appColor,
@@ -160,23 +160,23 @@ class PlantRecommendations extends StatelessWidget {
                                             ),
 
                                             /// 🔹 Heart Icon
-                                            Positioned(
-                                              top: 8.h,
-                                              right: 8.w,
-                                              child: Container(
-                                                padding: EdgeInsets.all(5.w),
-                                                decoration: const BoxDecoration(
-                                                  color: AppColors.whiteColor,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Icon(
-                                                  Icons.favorite_border,
-                                                  size: 16.w,
-                                                  color:
-                                                      AppColors.liteGreyColor,
-                                                ),
-                                              ),
-                                            ),
+                                            // Positioned(
+                                            //   top: 8.h,
+                                            //   right: 8.w,
+                                            //   child: Container(
+                                            //     padding: EdgeInsets.all(5.w),
+                                            //     decoration: const BoxDecoration(
+                                            //       color: AppColors.whiteColor,
+                                            //       shape: BoxShape.circle,
+                                            //     ),
+                                            //     child: Icon(
+                                            //       Icons.favorite_border,
+                                            //       size: 16.w,
+                                            //       color:
+                                            //           AppColors.liteGreyColor,
+                                            //     ),
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       ),

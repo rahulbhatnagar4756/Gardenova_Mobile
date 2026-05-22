@@ -265,6 +265,9 @@ class ApiRepository {
       case 200:
       case 201:
         final responseJson = jsonDecode(response.body);
+        if (responseJson is Map) {
+          responseJson['statusCode'] = response.statusCode;
+        }
         return responseJson;
       case 400:
         throw BadRequestException(message ?? response.body.toString());

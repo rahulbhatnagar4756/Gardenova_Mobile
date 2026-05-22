@@ -9,6 +9,8 @@ import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/validation_healper.dart';
 
+import '../utils/constants/app_strings.dart';
+
 class ChangePassword extends GetWidget<SettingsViewModel> {
   const ChangePassword({super.key});
 
@@ -24,34 +26,37 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
             color: AppColors.whiteColor,
             child: Column(
               children: [
-                ProfileIconLayout(
+                Obx(() => ProfileIconLayout(
                   isEnableEditable: false,
-                  title: AppLocalizations.of(context)!.changePassword,
-                ),
+                  title: controller.isEmailLogedInUser.value
+                      ? AppLocalizations.of(context)!.changePassword
+                      : AppStrings.setPwd,
+                )),
                 Expanded(
-                  child: BottomSheetLayout(
+                  child: Obx(() => BottomSheetLayout(
                     childLayout: BaseForm(
                       formKey: controller.changePasswordFormKey,
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            TextFieldLayout(
-                              prefixIcon: Icon(
-                                Icons.lock_outline_rounded,
-                                color: AppColors.greenColor,
-                              ),
-                              editTextTitle: AppLocalizations.of(
-                                context,
-                              )!.currentPassword,
-                              textEditingController:
-                                  controller.oldPasswordController,
-                              hintText: AppLocalizations.of(
-                                context,
-                              )!.currentPassword,
-                              isTextObscure: true,
+                            if (controller.isEmailLogedInUser.value)
+                              TextFieldLayout(
+                                prefixIcon: Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: AppColors.greenColor,
+                                ),
+                                editTextTitle: AppLocalizations.of(
+                                  context,
+                                )!.currentPassword,
+                                textEditingController:
+                                    controller.oldPasswordController,
+                                hintText: AppLocalizations.of(
+                                  context,
+                                )!.currentPassword,
+                                isTextObscure: true,
 
-                              validator: ValidationHelper.validatePassword,
-                            ),
+                                validator: ValidationHelper.validatePassword,
+                              ),
 
                             TextFieldLayout(
                               prefixIcon: Icon(
@@ -83,23 +88,32 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
                               textEditingController:
                                   controller.confirmPasswordController,
                               isTextObscure: true,
-                              validator: (value) => ValidationHelper.validateConfirmPassword(
-                                password: controller.newPasswordController.text,
-                                confirmPassword: value,
-                              ),
+                              validator: (value) =>
+                                  ValidationHelper.validateConfirmPassword(
+                                    password:
+                                        controller.newPasswordController.text,
+                                    confirmPassword: value,
+                                  ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    buttonLabel: AppLocalizations.of(context)!.saveChanges,
+                    buttonLabel: controller.isEmailLogedInUser.value
+                        ? AppLocalizations.of(context)!.saveChanges
+                        : AppStrings.setPwdBtnMsg,
                     onButtonTap: () {
                       if (controller.changePasswordFormKey.currentState!
                           .validate()) {
-                        controller.updatePassword();
+                            if(controller.isEmailLogedInUser.value){
+                              controller.updatePassword();
+                            }else{
+                              controller.setPassword();
+                            }
+                        
                       }
                     },
-                  ),
+                  )),
                 ),
               ],
             ),

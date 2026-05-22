@@ -23,30 +23,28 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
         // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                HeaderLogoLayout(
-                  title: AppLocalizations.of(context)!.enterYourOtp,
-                  subTitle: AppLocalizations.of(
-                    context,
-                  )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
-                ),
-                OtpLayout(
-                  widgetKey: controller.resetPasswordFormKey,
-                  focusNode: controller.focusNode,
-                  pinController: controller.pinController,
-                ),
-                verifyOtp(context),
-                didNotReceiveAnyCode(context),
-              ],
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Column(
+          children: [
+            HeaderLogoLayout(
+              title: AppLocalizations.of(context)!.enterYourOtp,
+              subTitle: AppLocalizations.of(
+                context,
+              )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
             ),
-          ),
-        ],
-      ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+            OtpLayout(
+              lengthOtp: 6,
+              widgetKey: controller.verifyOtpFormKey,
+              focusNode: controller.focusNode,
+              pinController: controller.pinController,
+            ),
+            verifyOtp(context),
+            didNotReceiveAnyCode(context),
+          ],
+        ).marginSymmetric(horizontal: spacerSize20, vertical: 0),
+      ),
     );
   }
 
@@ -57,9 +55,12 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
         bottomPadding: true,
         backgroundColor: AppColors.burntGold,
         onPressed: () {
-          if (controller.verifyOtpFormKey.currentState!.validate()) {
+          if (controller.verifyOtpFormKey.currentState?.validate() ?? false) {
+            print('isndie the valid state');
             controller.focusNode.unfocus();
             controller.verifyOtp();
+          } else {
+            print('isndie the invalid state');
           }
         },
         fontSize: fontSize18,

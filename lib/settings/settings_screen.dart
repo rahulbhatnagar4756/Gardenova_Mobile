@@ -142,15 +142,21 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               },
             ),
             Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
-            SettingsItemLayout(
-              icon: Icons.lock_outline_rounded,
-              title: AppLocalizations.of(context)!.changePassword,
-              subtitle: "Update your security password",
-              onTap: () {
-                controller.confirmPasswordController.clear();
-                controller.newPasswordController.clear();
-                Get.toNamed(Routes.changePassword);
-              },
+            Obx(
+              () => SettingsItemLayout(
+                icon: Icons.lock_outline_rounded,
+                title: controller.isEmailLogedInUser.value
+                    ? AppLocalizations.of(context)!.changePassword
+                    : AppStrings.setPwd,
+                subtitle: controller.isEmailLogedInUser.value
+                    ? AppStrings.changePwdMsg
+                    : AppStrings.setPwdMsg,
+                onTap: () {
+                  controller.confirmPasswordController.clear();
+                  controller.newPasswordController.clear();
+                  Get.toNamed(Routes.changePassword);
+                },
+              ),
             ),
             Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(

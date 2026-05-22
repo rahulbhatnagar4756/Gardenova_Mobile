@@ -28,11 +28,17 @@ class VerifyEmailOtpScreen extends GetView<VerifiedEmailOtpViewModel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            HeaderLogoLayout(
-              title: AppStrings.verifyEmailAddress,
-              subTitle: AppStrings.verifyEmailSubTxt,
+            Obx(
+              () => HeaderLogoLayout(
+                title: AppStrings.verifyEmailAddress,
+                subTitle: AppStrings.verifyEmailSubTxt.replaceAll(
+                  'EMAIL_ADDRESS',
+                  controller.parsingArgument.value?.email ?? '',
+                ),
+              ),
             ),
             OtpLayout(
+              lengthOtp: 4,
               widgetKey: controller.verifyEmailFormKey,
               focusNode: controller.focusNode,
               pinController: controller.pinController,
@@ -70,30 +76,32 @@ class VerifyEmailOtpScreen extends GetView<VerifiedEmailOtpViewModel> {
                     fontFamily: AppKeys.inter,
                   ),
                 ),
-                Obx(() => controller.countdownTimer.value > 0
-                    ? Text(
-                        "0${controller.countdownTimer.value ~/ 60}:${(controller.countdownTimer.value % 60).toString().padLeft(2, '0')}",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: AppColors.burntGold,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: AppKeys.inter,
-                        ),
-                      )
-                    : TextButton(
-                        onPressed: () {
-                          controller.reSendVerificationTime();
-                        },
-                        child: Text(
-                          "Resend",
+                Obx(
+                  () => controller.countdownTimer.value > 0
+                      ? Text(
+                          "0${controller.countdownTimer.value ~/ 60}:${(controller.countdownTimer.value % 60).toString().padLeft(2, '0')}",
                           style: TextStyle(
                             fontSize: 13.sp,
-                            color: AppColors.greenColor,
+                            color: AppColors.burntGold,
                             fontWeight: FontWeight.bold,
                             fontFamily: AppKeys.inter,
                           ),
+                        )
+                      : TextButton(
+                          onPressed: () {
+                            controller.reSendVerificationTime();
+                          },
+                          child: Text(
+                            "Resend",
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              color: AppColors.greenColor,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppKeys.inter,
+                            ),
+                          ),
                         ),
-                      )),
+                ),
               ],
             ),
           ],

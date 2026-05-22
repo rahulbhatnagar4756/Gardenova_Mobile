@@ -10,6 +10,7 @@ class AppKeys {
   static const uid = 'uid';
   static const email = 'email';
   static const profileImage = 'profileImage';
+  static const emailLogedInUser = 'emailLogedInUser';
   static const password = 'password';
   static const name = 'name';
   static const createdAt = 'created_at';

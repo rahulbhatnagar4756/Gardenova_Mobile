@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -14,9 +15,11 @@ import 'package:kasagardem/settings/profile/verified_email_otp_view/verified_ema
 import 'package:kasagardem/settings/settings_repository.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
+import 'package:kasagardem/utils/utils.dart';
 
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
+import '../utils/constants/app_strings.dart';
 import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
@@ -48,11 +51,16 @@ class SettingsViewModel extends GetxController {
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
   RxString appVersion = '1.0.0'.obs;
+  RxInt countdownTimer = 0.obs;
+  Timer? _timer;
 
   late final FocusNode focusNode;
+  var isEmailLogedInUser = true.obs;
 
   @override
   onInit() {
+    isEmailLogedInUser.value =
+        SharedPrefsService.instance.getBool(AppKeys.emailLogedInUser) ?? true;
     fetchAppVersion();
     emailController.addListener(() {
       final mail = emailController.text.trim();
@@ -81,12 +89,25 @@ class SettingsViewModel extends GetxController {
     super.onInit();
   }
 
+  void startTimer() {
+    countdownTimer.value = 60;
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (countdownTimer.value > 0) {
+        countdownTimer.value--;
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
   void fetchAppVersion() async {
     appVersion.value = await DeviceInfoHelper.getAppVersion();
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     super.dispose();
     oldPasswordController.dispose();
     newPasswordController.dispose();
@@ -354,6 +375,36 @@ class SettingsViewModel extends GetxController {
     }
   }
 
+  setPassword() async {
+    log("response::${newPasswordController.text}");
+    var response = await profileRepository.setPassword(
+      newPasswordController.text,
+    );
+    log("response::$response");
+    if (response != null &&
+        response is Map &&
+        (response['success'] == true ||
+            response['statusCode'] == 200 ||
+            response['statusCode'] == 201)) {
+      isEmailLogedInUser.value = true;
+      isEmailLogedInUser.refresh();
+      await SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, true);
+      oldPasswordController.clear();
+      BaseDialog.showFullScreenDialog(
+        Get.context!,
+        buttonLabel: AppLocalizations.of(Get.context!)!.close.toUpperCase(),
+        dialogTitle: AppStrings.setPwd,
+        dialogDescription: AppLocalizations.of(
+          Get.context!,
+        )!.passwordChangedSuccessfully,
+        onButtonPressed: () {
+          Get.back();
+          Get.back();
+        },
+      );
+    }
+  }
+
   callDeleteAccountApi() async {
     var response = await profileRepository.deleteAccount();
     if (response != null) {
@@ -379,10 +430,12 @@ class SettingsViewModel extends GetxController {
     try {
       final response = await profileRepository.sentEmailVerification(mail);
       ApiRepository.instance.hideLoader();
-
       if (response != null) {
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        if (response.statusCode == 200) {
+        final Map<String, dynamic> body = response is Map
+            ? Map<String, dynamic>.from(response)
+            : jsonDecode(response.toString());
+
+        if (body['statusCode'] == 201) {
           isEmailVerified.value = true;
           showVerifyButton.value = false;
           originalEmail.value = mail;
@@ -390,11 +443,12 @@ class SettingsViewModel extends GetxController {
             title: "Success",
             message: body['message'] ?? "Email is already verified.",
           );
-        } else if (response.statusCode == 201) {
+        } else if (body['statusCode'] == 200 || body['success'] == true) {
           BaseSnackBar.show(
             title: "Verification Sent",
             message: body['message'] ?? "Verification OTP sent to your email.",
           );
+          startTimer();
           var parsingModel = VerifiedEmailLocalParsingModel(
             email: emailController.text.trim(),
             fromLoginFlow: false,
@@ -403,11 +457,13 @@ class SettingsViewModel extends GetxController {
           Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((
             value,
           ) {
+            Utils.hideKeyboard();
             if (value is VerifiedEmailLocalParsingModel) {
               if (value.requestSussessFull) {
                 isEmailVerified.value = true;
                 showVerifyButton.value = false;
                 originalEmail.value = mail;
+                showVerifyButton.refresh();
               }
             }
           });
@@ -431,5 +487,11 @@ class SettingsViewModel extends GetxController {
         message: "An error occurred during verification process.",
       );
     }
+  }
+
+  onScreenClick() {
+    print("isEmailVerified : ${isEmailVerified.value}");
+    print("showVerifyButton : ${showVerifyButton.value}");
+    print("originalEmail : ${originalEmail.value}");
   }
 }
