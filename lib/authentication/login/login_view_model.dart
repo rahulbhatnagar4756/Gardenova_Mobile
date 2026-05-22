@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -15,7 +14,6 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../base/widgets/base_calculate_remaining_days.dart';
 import '../../settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import '../../utils/constants/app_constants.dart';
-import '../../utils/network_services/api_repository.dart';
 
 class LoginViewModel extends GetxController with SocialSignInMixin {
   TextEditingController emailController = TextEditingController();
@@ -281,5 +279,4 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     }
   }
 
-  onTapClick() {}
 }

@@ -56,9 +56,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   child: Form(
                     key: controller.profileFormKey,
                     child: Obx(() {
-                      return controller.screenType.value ==
-                                  AppKeys.professional &&
-                              false
+                      return controller.screenType.value == AppKeys.professional
                           ? BottomSheetLayout(
                               childLayout: Obx(
                                 () => SingleChildScrollView(

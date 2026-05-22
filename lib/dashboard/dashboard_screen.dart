@@ -19,7 +19,6 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
-import '../base/widgets/base_text.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
 

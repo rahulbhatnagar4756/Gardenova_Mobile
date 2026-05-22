@@ -11,7 +11,6 @@ import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_text.dart';
 import '../../../base/widgets/circular_bottom_app_bar.dart';
 import '../../../dashboard/components/full_drawer.dart';
-import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
