@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../base/widgets/base_text.dart';
 import '../../base/widgets/circular_bottom_app_bar.dart';
 import '../../base/widgets/clickable_image.dart';
@@ -52,224 +51,222 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  color: AppColors.appColor,
-                  child: SafeArea(
-                    child: Column(
-                      spacing: spacerSize20,
-                      children: [
-                        Container(
-                          height: spacerSize80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(spacerSize35),
-                              bottomRight: Radius.circular(spacerSize35),
-                            ),
-                            color: AppColors.appColor,
-                            // border: Border.all(color: AppColors.backgroundGrey),
-                            // border: Border(
-                            //   left: BorderSide(color: AppColors.backgroundGrey),
-                            //   right: BorderSide(color: AppColors.backgroundGrey),
-                            //   bottom: BorderSide(color: AppColors.backgroundGrey),
-                            //   // top is intentionally removed
-                            // ),
+    return Stack(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                color: AppColors.appColor,
+                child: SafeArea(
+                  child: Column(
+                    spacing: spacerSize20,
+                    children: [
+                      Container(
+                        height: spacerSize80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(spacerSize35),
+                            bottomRight: Radius.circular(spacerSize35),
                           ),
-
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            spacing: spacerSize5,
-                            children: [
-                              SizedBox(width: spacerSize15),
-                              // Center(child: Image.asset(AppAssets.appLogo)),
-                              Obx(() {
-                                final imageUrl =
-                                    Get.isRegistered<SettingsViewModel>()
-                                    ? Get.find<SettingsViewModel>()
-                                          .profileImage
-                                          .value
-                                    : "";
-
-                                return Container(
-                                  width: 42.w,
-                                  height: 42.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    border: Border.all(
-                                      color: AppColors.backgroundGrey,
-                                    ),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: ClickableImage(
-                                      borderRadius: BorderRadius.circular(100),
-                                      imageUrl: imageUrl,
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      heroTag: "profile_image_appbar_drawer",
-                                      errorWidget: Image.asset(
-                                        AppAssets.appLogo,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                              Expanded(
-                                flex: 5,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    BaseText(
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: AppKeys.poppins,
-                                      fontSize: fontSize14,
-                                      // textColor: AppColors.offWhite,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      text:
-                                          '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
-                                    ),
-                                    SharedPrefsService.instance.getString(
-                                              AppKeys.role,
-                                            ) ==
-                                            AppKeys.professional
-                                        ? Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: spacerSize10,
-                                              vertical: spacerSize2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.toLiteGreenColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                    spacerSize20,
-                                                  ),
-                                            ),
-                                            child: BaseText(
-                                              text:
-                                                  "${SharedPrefsService.instance.getString(AppKeys.remainingDays)}\t${AppLocalizations.of(Get.context!)!.days}\t${AppLocalizations.of(Get.context!)!.left}",
-                                              fontSize: fontSize10,
-                                              fontFamily: AppKeys.inter,
-                                              fontWeight: FontWeight.w400,
-                                              textColor: AppColors.whiteColor,
-                                            ),
-                                          )
-                                        : BaseText(
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: AppKeys.inter,
-                                            fontSize: fontSize12,
-                                            textColor: AppColors.liteGreyColor,
-                                            text: getGreeting(),
-                                          ),
-                                  ],
-                                ).marginOnly(left: spacerSize10),
-                              ),
-                              // Expanded(
-                              //   flex: 4,
-                              //   child: Align(
-                              //     alignment: Alignment.centerRight,
-                              //     child: IconButton(
-                              //       style: IconButton.styleFrom(
-                              //         padding: EdgeInsets.zero,
-                              //         minimumSize: Size.zero,
-                              //       ),
-                              //       onPressed: () {
-                              //         Get.back();
-                              //       },
-                              //       icon: Image.asset(
-                              //         color: AppColors.greenColor,
-                              //         Assets.imagesClose,
-                              //         height: spacerSize20,
-                              //         width: spacerSize20,
-                              //       ).marginOnly(right: spacerSize30),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ).marginOnly(top: spacerSize20, bottom: spacerSize15),
+                          color: AppColors.appColor,
+                          // border: Border.all(color: AppColors.backgroundGrey),
+                          // border: Border(
+                          //   left: BorderSide(color: AppColors.backgroundGrey),
+                          //   right: BorderSide(color: AppColors.backgroundGrey),
+                          //   bottom: BorderSide(color: AppColors.backgroundGrey),
+                          //   // top is intentionally removed
+                          // ),
                         ),
 
-                        widget.isProfessional && false
-                            ? Expanded(
-                                child: ListView(
-                                  children: [
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        context,
-                                      )!.myLeads,
-                                      onTap: () {
-                                        widget.onTap(0);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      title:
-                                          "${AppLocalizations.of(context)!.find}\t${AppLocalizations.of(context)!.professionals}",
-                                      onTap: () {
-                                        widget.onTap(1);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        context,
-                                      )!.wholesaleSuppliers,
-                                      onTap: () {
-                                        widget.onTap(2);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      showDivider: false,
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.myProfile,
-                                      onTap: () {
-                                        widget.onTap(3);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Expanded(
-                                child: ListView(
-                                  children: [
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.home,
-                                      onTap: () {
-                                        widget.onTap(0);
-                                      },
-                                    ),
-                                    // drawerItem(
-                                    //   title: AppLocalizations.of(Get.context!)!.professionals,
-                                    //   onTap: () {
-                                    //     widget.onTap(1);
-                                    //   },
-                                    // ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.store,
-                                      onTap: () {
-                                        // launchExternalUrl("https://loja.kasagardem.com.br/");
-                                        BaseSnackBar.show(
-                                          title: 'Temporarily Unavailable',
-                                          message:
-                                              'The store is currently on hold. We’ll be back soon with updates.',
-                                        );
-                                      },
-                                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          spacing: spacerSize5,
+                          children: [
+                            SizedBox(width: spacerSize15),
+                            // Center(child: Image.asset(AppAssets.appLogo)),
+                            Obx(() {
+                              final imageUrl =
+                                  Get.isRegistered<SettingsViewModel>()
+                                  ? Get.find<SettingsViewModel>()
+                                        .profileImage
+                                        .value
+                                  : "";
 
-                                    /* drawerItem(
+                              return Container(
+                                width: 42.w,
+                                height: 42.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(
+                                    color: AppColors.backgroundGrey,
+                                  ),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: ClickableImage(
+                                    borderRadius: BorderRadius.circular(100),
+                                    imageUrl: imageUrl,
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    heroTag: "profile_image_appbar_drawer",
+                                    errorWidget: Image.asset(
+                                      AppAssets.appLogo,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                            Expanded(
+                              flex: 5,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  BaseText(
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: AppKeys.poppins,
+                                    fontSize: fontSize14,
+                                    // textColor: AppColors.offWhite,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    text:
+                                        '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
+                                  ),
+                                  SharedPrefsService.instance.getString(
+                                            AppKeys.role,
+                                          ) ==
+                                          AppKeys.professional
+                                      ? Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: spacerSize10,
+                                            vertical: spacerSize2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.toLiteGreenColor,
+                                            borderRadius: BorderRadius.circular(
+                                              spacerSize20,
+                                            ),
+                                          ),
+                                          child: BaseText(
+                                            text:
+                                                "${SharedPrefsService.instance.getString(AppKeys.remainingDays)}\t${AppLocalizations.of(Get.context!)!.days}\t${AppLocalizations.of(Get.context!)!.left}",
+                                            fontSize: fontSize10,
+                                            fontFamily: AppKeys.inter,
+                                            fontWeight: FontWeight.w400,
+                                            textColor: AppColors.whiteColor,
+                                          ),
+                                        )
+                                      : BaseText(
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: AppKeys.inter,
+                                          fontSize: fontSize12,
+                                          textColor: AppColors.liteGreyColor,
+                                          text: getGreeting(),
+                                        ),
+                                ],
+                              ).marginOnly(left: spacerSize10),
+                            ),
+                            // Expanded(
+                            //   flex: 4,
+                            //   child: Align(
+                            //     alignment: Alignment.centerRight,
+                            //     child: IconButton(
+                            //       style: IconButton.styleFrom(
+                            //         padding: EdgeInsets.zero,
+                            //         minimumSize: Size.zero,
+                            //       ),
+                            //       onPressed: () {
+                            //         Get.back();
+                            //       },
+                            //       icon: Image.asset(
+                            //         color: AppColors.greenColor,
+                            //         Assets.imagesClose,
+                            //         height: spacerSize20,
+                            //         width: spacerSize20,
+                            //       ).marginOnly(right: spacerSize30),
+                            //     ),
+                            //   ),
+                            // ),
+                          ],
+                        ).marginOnly(top: spacerSize20, bottom: spacerSize15),
+                      ),
+
+                      widget.isProfessional
+                          ? Expanded(
+                              child: ListView(
+                                children: [
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      context,
+                                    )!.myLeads,
+                                    onTap: () {
+                                      widget.onTap(0);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    title:
+                                        "${AppLocalizations.of(context)!.find}\t${AppLocalizations.of(context)!.professionals}",
+                                    onTap: () {
+                                      widget.onTap(1);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      context,
+                                    )!.wholesaleSuppliers,
+                                    onTap: () {
+                                      widget.onTap(2);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    showDivider: false,
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.myProfile,
+                                    onTap: () {
+                                      widget.onTap(3);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Expanded(
+                              child: ListView(
+                                children: [
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.home,
+                                    onTap: () {
+                                      widget.onTap(0);
+                                    },
+                                  ),
+                                  // drawerItem(
+                                  //   title: AppLocalizations.of(Get.context!)!.professionals,
+                                  //   onTap: () {
+                                  //     widget.onTap(1);
+                                  //   },
+                                  // ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.store,
+                                    onTap: () {
+                                      // launchExternalUrl("https://loja.kasagardem.com.br/");
+                                      BaseSnackBar.show(
+                                        title: 'Temporarily Unavailable',
+                                        message:
+                                            'The store is currently on hold. We’ll be back soon with updates.',
+                                      );
+                                    },
+                                  ),
+
+                                  /* drawerItem(
                                       title: AppLocalizations.of(Get.context!)!.courses,
                                       onTap: () {
                                         launchExternalUrl(courseLink);
@@ -283,79 +280,78 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                         launchExternalUrl(websiteLink);
                                       },
                                     ),*/
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.myPlants,
-                                      onTap: () {
-                                        widget.onTap(6);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.myProfile,
-                                      onTap: () {
-                                        widget.onTap(5);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.aboutApp,
-                                      onTap: () {
-                                        Get.back();
-                                        Get.toNamed(Routes.aboutApp);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      showDivider: false,
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.logout,
-                                      onTap: () {
-                                        logout();
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.myPlants,
+                                    onTap: () {
+                                      widget.onTap(6);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.myProfile,
+                                    onTap: () {
+                                      widget.onTap(5);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.aboutApp,
+                                    onTap: () {
+                                      Get.back();
+                                      Get.toNamed(Routes.aboutApp);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    showDivider: false,
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.logout,
+                                    onTap: () {
+                                      logout();
+                                    },
+                                  ),
+                                ],
                               ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // SafeArea(
-              //   child: Visibility(
-              //     child: Image.asset(
-              //       Assets.backBtnDraweClose,
-              //       height: 42.w,
-              //       width:42.w,
-              //     ),
-              //   ),
-              // )
-              SizedBox(width: 32.w),
-            ],
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 15.h, right: 15.w),
-                  child: Image.asset(
-                    Assets.backBtnDraweClose,
-                    height: 42.w,
-                    width: 42.w,
+                            ),
+                    ],
                   ),
                 ),
               ),
             ),
+            // SafeArea(
+            //   child: Visibility(
+            //     child: Image.asset(
+            //       Assets.backBtnDraweClose,
+            //       height: 42.w,
+            //       width:42.w,
+            //     ),
+            //   ),
+            // )
+            SizedBox(width: 32.w),
+          ],
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: () => Get.back(),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(top: 15.h, right: 15.w),
+                child: Image.asset(
+                  Assets.backBtnDraweClose,
+                  height: 42.w,
+                  width: 42.w,
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

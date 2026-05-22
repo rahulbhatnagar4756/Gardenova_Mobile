@@ -3,12 +3,6 @@ import 'dart:developer';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
-import 'package:kasagardem/utils/shared_prefs_service.dart';
-import 'package:kasagardem/utils/constants/app_keys.dart';
-import 'package:http/http.dart' as http;
-import 'package:get/get.dart';
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 class SettingsRepository {
   final String profileEndPoint = 'api/v1/userProfile';
