@@ -65,7 +65,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> login() async {
-    print('userType accountType.value ${accountType.value}');
+    log('userType accountType.value ${accountType.value}');
     var loginResponse = await authRepository.loginUser(
       loginReq: {
         ApiKeys.email: emailController.text.toString().trim(),
@@ -182,12 +182,12 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       }
       String responseIdd = profileResponse.data?.responseId ?? responseId;
       bool isUserEmailVerifed = profileResponse.data?.isEmailVerified ?? false;
-      print('isUserEmail verified $isUserEmailVerifed');
-      if (!isUserEmailVerifed && false) {
-        sendEmailVerification(responseIdd: responseIdd);
-      } else {
-        _navigateToDashboardFlow(responseIdd: responseIdd);
-      }
+      log('isUserEmail verified $isUserEmailVerifed');
+      // if (!isUserEmailVerifed && false) {
+      //   sendEmailVerification(responseIdd: responseIdd);
+      // } else {
+      _navigateToDashboardFlow(responseIdd: responseIdd);
+      // }
     }
   }
 

@@ -71,10 +71,6 @@ class RecommendedProfessionals
                       )
                     : const SizedBox.shrink(),
               ),
-              // BaseBackButton().marginOnly(
-              //   top: spacerSize6,
-              //   bottom: spacerSize6,
-              // ),
             ],
           ),
         ),

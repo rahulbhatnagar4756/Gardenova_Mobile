@@ -239,8 +239,7 @@ class ProfessionalItem extends StatelessWidget {
                                 AppColors.linearGreenGradientForBtn,
                             textColor: AppColors.greenColor,
                             fontSize: fontSize15,
-                            buttonLabel:
-                                '${AppLocalizations.of(context)!.selected}',
+                            buttonLabel: AppLocalizations.of(context)!.selected,
                             onPressed: () {
                               // Get.offAllNamed(Routes.login);
                             },

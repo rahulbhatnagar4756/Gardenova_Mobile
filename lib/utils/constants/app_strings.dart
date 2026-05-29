@@ -24,8 +24,6 @@ class AppStrings {
   static const String login = "Login";
   static const String register = "register";
 
-  /// new work
-
   static const String home = "Home";
   static const String professionals = "Professionals";
   static const String store = "Store";
@@ -152,7 +150,6 @@ class AppStrings {
   static const String legal = "Legal";
   static const String accountAction = "Account Setting";
 
-  // verify email address screen strings
   static const String verifyEmailAddress = "Verify Email Address";
   static const String verifyEmailSubTxt =
       "We have sent a verification code to EMAIL_ADDRESS";
@@ -160,7 +157,6 @@ class AppStrings {
   static const changePwdMsg = "Update your security password";
   static const setPwdMsg = "Set your security password";
   static const setPwdBtnMsg = "Set Password";
-  // static const tapAddPlantsToAddNewPlant = "Tap ‘Add Plants’ to add your first plant";
   static const tapAddPlantsToAddNewPlant =
       "Tap “Add Plants” to add your first plant";
 }

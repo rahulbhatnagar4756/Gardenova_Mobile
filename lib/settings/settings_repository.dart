@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
@@ -85,36 +83,7 @@ class SettingsRepository {
     var response = await ApiRepository.instance.patch(sendEmailVerification, {
       "email": email,
     });
-    log('sentEmailVerification ${response}');
-    log('sentEmailVerification ${response}');
     return response;
-
-    // final token = SharedPrefsService.instance.getToken();
-    // final String acceptLanguage =
-    //     Get.locale?.languageCode ??
-    //     SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
-    //     'en';
-    // final uri = Uri.parse(
-    //   ApiRepository.baseUrl + 'api/v1/userProfile/sentemailvarification',
-    // );
-
-    // try {
-    //   final response = await http.patch(
-    //     uri,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'accept': 'application/json',
-    //       'Accept-Language': acceptLanguage,
-    //       'accept-language': acceptLanguage,
-    //       if (token.isNotEmpty) 'Authorization': 'Bearer $token',
-    //     },
-    //     body: jsonEncode({"email": email}),
-    //   );
-    //   return response;
-    // } catch (e) {
-    //   debugPrint("Error sending email verification: $e");
-    //   return null;
-    // }
   }
 
   Future<dynamic> verifyEmail(String otp) async {
@@ -123,32 +92,5 @@ class SettingsRepository {
       body: {"otp": otp},
     );
     return response;
-
-    // final token = SharedPrefsService.instance.getToken();
-    // final String acceptLanguage =
-    //     Get.locale?.languageCode ??
-    //     SharedPrefsService.instance.getString(AppKeys.selectedLang) ??
-    //     'en';
-    // final uri = Uri.parse(
-    //   ApiRepository.baseUrl + 'api/v1/userProfile/verifyemail',
-    // );
-
-    // try {
-    //   final response = await http.post(
-    //     uri,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'accept': 'application/json',
-    //       'Accept-Language': acceptLanguage,
-    //       'accept-language': acceptLanguage,
-    //       if (token.isNotEmpty) 'Authorization': 'Bearer $token',
-    //     },
-    //     body: jsonEncode({"otp": otp}),
-    //   );
-    //   return response;
-    // } catch (e) {
-    //   debugPrint("Error verifying email: $e");
-    //   return null;
-    // }
   }
 }

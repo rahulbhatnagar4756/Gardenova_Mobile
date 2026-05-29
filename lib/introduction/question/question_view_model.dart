@@ -47,7 +47,7 @@ class QuestionViewModel extends GetxController {
     super.onInit();
   }
 
-  getQuestionList() async {
+  void getQuestionList() async {
     var response = await questionRepository.fetchQuestions();
     if (response != null) {
       QuestionResponseModel questionResponse = QuestionResponseModel.fromJson(
@@ -62,7 +62,7 @@ class QuestionViewModel extends GetxController {
     }
   }
 
-  getStateList() async {
+  void getStateList() async {
     var response = await questionRepository.fetchStates();
     if (response != null) {
       stateList.clear();
@@ -95,13 +95,13 @@ class QuestionViewModel extends GetxController {
     }
   }
 
-  getCityList({required String? stateCode}) async {
+  void getCityList({required String? stateCode}) async {
     selectedCity.value = Cities();
     filteredCityList.clear();
     var response = await questionRepository.fetchCities(stateCode: stateCode);
     if (response != null) {
       CityResponseModel cityResponse = CityResponseModel.fromJson(response);
-      print('cityResponse ${cityResponse.data?.cities?.length}');
+
       if (cityResponse.data != null) {
         cityList.value = cityResponse.data!.cities!;
         filteredCityList.assignAll(cityList);
@@ -127,7 +127,7 @@ class QuestionViewModel extends GetxController {
     }
   }
 
-  saveAnswer({required SaveAnswerRequestModel? saveAnswer}) async {
+  void saveAnswer({required SaveAnswerRequestModel? saveAnswer}) async {
     var response = await questionRepository.saveAnswers(
       saveAnswerRequest: saveAnswer,
     );
@@ -177,7 +177,7 @@ class QuestionViewModel extends GetxController {
     }
   }
 
-  onContinuePressed() {
+  void onContinuePressed() {
     // currentQuestion goes from 1..questionList.length for questions,
     // and questionList.length + 1 for the state/city tab.
     if (currentQuestion.value <= questionList.length) {
@@ -221,7 +221,7 @@ class QuestionViewModel extends GetxController {
     }
   }
 
-  backPressed() {
+  void backPressed() {
     if (currentQuestion.value <= 1) {
       Get.back();
     } else {

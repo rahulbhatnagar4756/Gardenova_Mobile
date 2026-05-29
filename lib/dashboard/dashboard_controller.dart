@@ -144,10 +144,6 @@ class DashboardController extends GetxController {
     );
   }
 
-  void onScreenClick() {
-    // getPlantsRecommendations(responseId);
-  }
-
   void getPlantsRecommendations(String responseId) async {
     String recommendationId =
         sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
@@ -194,11 +190,9 @@ class DashboardController extends GetxController {
   //   return position;
   // }
   Future<void> getCurrentLocation() async {
-    print('getCurrentLocation t1');
     if (_isFetching) return;
 
     _isFetching = true;
-    print('getCurrentLocation t2');
     try {
       position = await _locationService.getCurrentLocation();
       lat = position?.latitude ?? defaultLatitude;
@@ -209,19 +203,13 @@ class DashboardController extends GetxController {
       await getSoilAnalysis(lat: lat, long: long);
       // sharedPrefsService.setString("lat", lat.toString());
       // sharedPrefsService.setString("long", long.toString());
-      print('getCurrentLocation t3');
       if ((Get.isDialogOpen ?? false) == true) {
-        print('getCurrentLocation t4');
         Get.back();
       }
-      print('getCurrentLocation t5');
-
       debugPrint("LAT: $lat, LNG: $long");
     } catch (e) {
-      print('getCurrentLocation t6');
       debugPrint("Final Error: $e");
     } finally {
-      print('getCurrentLocation t7');
       _isFetching = false;
     }
   }
@@ -308,23 +296,16 @@ class DashboardController extends GetxController {
     String? selectedStyle,
   }) async {
     try {
-      print('pickImage t0 source: $source AND $isCamera');
       // Permission check
       if (isCamera) {
         bool hasPermission = await PermissionManager.handleCameraPermission();
-        print('pickImage t0.5 hasPermission: $hasPermission');
         if (!hasPermission) {
           return;
         }
-        print('pickImage t0.5 source: $source');
       }
-
-      print('pickImage t1 source: $source');
 
       // Fetch location first if not available (only for diagnosis)
       if (source == ImagePickerSource.diagnosis && position == null) {
-        print('pickImage t2');
-
         await getCurrentLocation();
 
         // Stop if still null
@@ -336,8 +317,6 @@ class DashboardController extends GetxController {
           return;
         }
       }
-
-      print('pickImage t3');
 
       if (isCamera && source == ImagePickerSource.diagnosis) {
         final result = await Get.toNamed(Routes.cameraCapture);
@@ -359,8 +338,6 @@ class DashboardController extends GetxController {
         preferredCameraDevice: CameraDevice.front,
       );
 
-      print('pickImage t4');
-
       if (pickedFile != null && pickedFile.path.isNotEmpty) {
         if (Get.isBottomSheetOpen ?? false) {
           Get.back();
@@ -373,7 +350,6 @@ class DashboardController extends GetxController {
         }
       }
     } catch (e) {
-      print('pickImage t5');
       debugPrint("Error::: $e");
     }
   }

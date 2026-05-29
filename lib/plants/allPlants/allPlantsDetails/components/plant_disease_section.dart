@@ -59,10 +59,10 @@ class PlantDiseaseSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFFFF5F5), // Very light red/pink background
             borderRadius: BorderRadius.circular(spacerSize18),
-            border: Border.all(color: AppColors.red.withOpacity(0.15)),
+            border: Border.all(color: AppColors.red.withValues(alpha: 0.15)),
             boxShadow: [
               BoxShadow(
-                color: AppColors.red.withOpacity(0.04),
+                color: AppColors.red.withValues(alpha: 0.04),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -125,8 +125,8 @@ class PlantDiseaseSection extends StatelessWidget {
             padding: EdgeInsets.all(spacerSize8),
             decoration: BoxDecoration(
               color: isSuccess
-                  ? AppColors.greenColor.withOpacity(0.12)
-                  : AppColors.red.withOpacity(0.12),
+                  ? AppColors.greenColor.withValues(alpha: 0.12)
+                  : AppColors.red.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: Icon(

@@ -106,7 +106,7 @@ double deviceWidth = MediaQuery.of(Get.context!).size.width;
 double deviceHeight = MediaQuery.of(Get.context!).size.height;
 
 class BaseSnackBar {
-  static show({String title = '', String message = ''}) {
+  static void show({String title = '', String message = ''}) {
     if (title.trim().isEmpty && message.trim().isEmpty) {
       return;
     }
@@ -197,7 +197,7 @@ class BaseSnackBar {
 
       boxShadows: [
         BoxShadow(
-          color: AppColors.greenColor.withOpacity(0.3),
+          color: AppColors.greenColor.withValues(alpha: 0.3),
           blurRadius: 10,
           offset: Offset(0, 4),
         ),

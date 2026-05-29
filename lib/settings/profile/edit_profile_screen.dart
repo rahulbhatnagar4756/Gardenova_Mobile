@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +38,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                   isEnableEditable: true,
                   isProfileEditable: true,
                   onClickEditPencil: () {
-                    print('inside the on Click Edit pencil');
+                    log('inside the on Click Edit pencil');
                   },
                   onClickPictureView: () {
                     OpenImagePickerBottomSheet(

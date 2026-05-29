@@ -260,7 +260,7 @@ class LeadCardItem extends StatelessWidget {
     );
   }
 
-  updateStatus(String leadId) {
+  void updateStatus(String leadId) {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,

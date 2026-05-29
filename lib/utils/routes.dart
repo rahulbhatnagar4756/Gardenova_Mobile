@@ -18,8 +18,6 @@ import 'package:kasagardem/dashboard/plant_recommendations/plants_catalog/plants
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_screen.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_view_model.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/camera_capture_screen.dart';
-// import 'package:kasagardem/introduction/introduction_screen.dart';
-// import 'package:kasagardem/introduction/introduction_screen_view_model.dart';
 import 'package:kasagardem/introduction/question/components/report_success_screen.dart';
 import 'package:kasagardem/introduction/question/question_screen.dart';
 import 'package:kasagardem/introduction/question/question_view_model.dart';
@@ -106,7 +104,7 @@ class Routes {
   static const landscapeDesign = '/landscape_design';
   static const cameraCapture = '/camera_capture';
 
-  static getPages() {
+  static List<GetPage> getPages() {
     return [
       GetPage(
         name: Routes.splash,
@@ -142,7 +140,6 @@ class Routes {
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
-        // binding: BindingsBuilder.put(() => DashboardController()) ,
         binding: BindingsBuilder(() {
           Get.put(DashboardController());
           Get.put(SettingsViewModel());

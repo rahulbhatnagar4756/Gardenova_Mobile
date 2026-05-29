@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,10 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
-      print('user t11');
+      log('user t11');
       refreshToken();
     } else {
-      print('user t12');
+      log('user t12');
       navigateToIntroductionScreen(isUserAlreadyLogedIn: false);
     }
     super.initState();
@@ -58,9 +60,9 @@ class _SplashScreenState extends State<SplashScreen> {
         AppKeys.idToken,
         response[ApiKeys.data][ApiKeys.token],
       );
-      print('user t13');
+      log('user t13');
     } else {
-      print('user t131');
+      log('user t131');
     }
     navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
   }
@@ -76,10 +78,10 @@ class _SplashScreenState extends State<SplashScreen> {
         } else {
           Get.offAllNamed(Routes.login);
         }
-        print('user t14');
+        log('user t14');
         // Get.offAllNamed(Routes.dashboard);
       } else {
-        print('user t15');
+        log('user t15');
         Get.offAllNamed(Routes.professionalDashboard);
       }
     });

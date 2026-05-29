@@ -123,7 +123,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     ).marginOnly(bottom: 10.h);
   }
 
-  passwordField(BuildContext context) {
+  Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
         prefixIcon: Icon(
@@ -149,7 +149,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     );
   }
 
-  forgotPassword(BuildContext context) {
+  Widget forgotPassword(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routes.forgotPassword);
@@ -168,7 +168,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     );
   }
 
-  login(BuildContext context) {
+  Widget login(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
@@ -178,10 +178,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           FocusScope.of(context).requestFocus(FocusNode());
 
           if (controller.formKey.currentState!.validate()) {
-            print('if part');
             controller.login();
-          } else {
-            print('else part');
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,
@@ -189,7 +186,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     );
   }
 
-  orLoginWith(BuildContext context) {
+  Widget orLoginWith(BuildContext context) {
     return Row(
       spacing: spacerSize6,
       children: [
@@ -206,7 +203,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     ).marginOnly(bottom: 16.h);
   }
 
-  divider() {
+  Widget divider() {
     return Expanded(
       child: Divider(
         thickness: spacerSize1,
@@ -216,7 +213,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     );
   }
 
-  dontHaveAnAccount(BuildContext context) {
+  Widget dontHaveAnAccount(BuildContext context) {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(

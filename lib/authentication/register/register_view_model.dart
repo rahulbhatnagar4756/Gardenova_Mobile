@@ -31,8 +31,6 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       ..roleCode = userRoleCode
       ..phoneNumber = phoneNoController.text;
 
-      
-
     var registerResponse = await authRepository.registerUser(
       registerReq: requestModel,
     );
@@ -52,7 +50,7 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     scrollController.dispose();
   }
 
-  registerSuccessDialog() {
+  void registerSuccessDialog() {
     return BaseDialog.showFullScreenDialog(
       Get.context!,
       dialogTitle: AppLocalizations.of(Get.context!)!.success,
@@ -70,7 +68,7 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     );
   }
 
-  onCheckTermsAndCondition() {
+  void onCheckTermsAndCondition() {
     isUserAgreedToTerms.value = !isUserAgreedToTerms.value;
   }
 }

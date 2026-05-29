@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +8,6 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../base/widgets/base_app_bar.dart';
 import '../generated/assets.dart';
 import '../utils/constants/app_keys.dart';

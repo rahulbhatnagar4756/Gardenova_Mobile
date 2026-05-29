@@ -8,7 +8,6 @@ import 'package:kasagardem/settings/components/text_field_layout.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/validation_healper.dart';
-
 import '../utils/constants/app_strings.dart';
 
 class ChangePassword extends GetWidget<SettingsViewModel> {

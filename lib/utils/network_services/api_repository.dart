@@ -150,7 +150,7 @@ class ApiRepository {
       // }
       if (directUrl || responseData[ApiKeys.success] == true) {
         log('---------------------------------response');
-        log('Api response->  ${responseData} ');
+        log('Api response->  $responseData');
         log('---------------------------------response');
         return responseData;
       } else {
@@ -168,7 +168,7 @@ class ApiRepository {
       if (kDebugMode) {
         print("API Request Error: $e");
         log('---------------------------------catch');
-        log('Api response->  ${e} ');
+        log('Api response->  $e');
         log('---------------------------------catch');
       }
       if (rethrowExceptions) {

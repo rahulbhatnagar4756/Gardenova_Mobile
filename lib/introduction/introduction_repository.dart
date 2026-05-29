@@ -3,7 +3,9 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 
 class IntroductionRepository {
-  fetchIntroductionList(AppLocalizations appLocalisation) {
+  List<IntroductionModel> fetchIntroductionList(
+    AppLocalizations appLocalisation,
+  ) {
     return [
       IntroductionModel(
         title: appLocalisation.smartAnalysis,

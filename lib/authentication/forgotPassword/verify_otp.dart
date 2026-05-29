@@ -123,11 +123,8 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
         onPressed: () {
           Utils.hideKeyboard();
           if (controller.verifyOtpFormKey.currentState?.validate() ?? false) {
-            print('isndie the valid state');
             controller.focusNode.unfocus();
             controller.verifyOtp();
-          } else {
-            print('isndie the invalid state');
           }
         },
         fontSize: fontSize18,

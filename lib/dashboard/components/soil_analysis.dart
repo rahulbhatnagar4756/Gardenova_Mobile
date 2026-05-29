@@ -152,7 +152,10 @@ class SoilAnalysis extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return Divider(height: 8.h, color: AppColors.blackColor.withOpacity(0.15));
+    return Divider(
+      height: 8.h,
+      color: AppColors.blackColor.withValues(alpha: 0.15),
+    );
   }
 
   // Reusable label widget
@@ -188,7 +191,7 @@ class SoilAnalysis extends StatelessWidget {
           Container(
             height: 14.h,
             width: 1,
-            color: AppColors.blackColor.withOpacity(0.15),
+            color: AppColors.blackColor.withValues(alpha: 0.15),
           ),
 
           /// Value

@@ -30,7 +30,7 @@ class AutomationSuggestions extends StatelessWidget {
     );
   }
 
-  suggestionItem({String? itemTitle, String? assetPath}) {
+  Widget suggestionItem({String? itemTitle, String? assetPath}) {
     return Expanded(
       child: BaseBorderedContainer(
         height: spacerSize125,

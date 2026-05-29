@@ -31,7 +31,8 @@ class ProfessionalDashboardController extends GetxController {
       <ProfessionalCompany>[].obs;
   RxList<ProfessionalCompany> selectedWholesaleList =
       <ProfessionalCompany>[].obs;
-  final ProfessionalDashboardRepository professionalDashboardRepository = ProfessionalDashboardRepository();
+  final ProfessionalDashboardRepository professionalDashboardRepository =
+      ProfessionalDashboardRepository();
 
   final Map<String, Map<String, String>> categories = {
     "landscaping_gardening": {
@@ -238,7 +239,13 @@ class ProfessionalDashboardController extends GetxController {
         'Location permissions are permanently denied, we cannot request permissions.',
       );
     }
-    return await Geolocator.getCurrentPosition();
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.low,
+      // distanceFilter: 100,
+    );
+    return await Geolocator.getCurrentPosition(
+      locationSettings: locationSettings,
+    );
   }
 
   void loadMoreProfessional() {
@@ -259,24 +266,19 @@ class ProfessionalDashboardController extends GetxController {
   Future getAllProfessionalList() async {
     final response = await professionalDashboardRepository
         .fetchProfessionalDashboardList(
-        latitude: lat,
-        longitude:long,
-        pageNumber: pageNumber.toString(),
-        pageSize: pageSize.toString(),
-        category: selectedService.value
-
-    );
+          latitude: lat,
+          longitude: long,
+          pageNumber: pageNumber.toString(),
+          pageSize: pageSize.toString(),
+          category: selectedService.value,
+        );
     if (response != null) {
       final apiResponse = ApiResponse.fromJson(response);
       final professionalResponse = apiResponse.data;
       professionalsList.addAll(professionalResponse?.data ?? []);
-      isLoadMoreVisible.value =true;
-
+      isLoadMoreVisible.value = true;
     }
   }
-
-
-
 
   Future<void> callGetWholesaleSupplierListApi() async {
     try {
@@ -303,9 +305,9 @@ class ProfessionalDashboardController extends GetxController {
         "professionalIds": selectedProfessionalsList
             .map((ProfessionalCompany professional) => professional.userId)
             .toList(),
-        "description":descriptionController.text,
-        "size":sizeController.text,
-        "category":serviceController.text,
+        "description": descriptionController.text,
+        "size": sizeController.text,
+        "category": serviceController.text,
       },
     );
     if (response != null) {

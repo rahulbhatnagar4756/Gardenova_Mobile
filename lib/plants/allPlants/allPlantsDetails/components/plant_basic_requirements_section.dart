@@ -44,7 +44,7 @@ class PlantBasicRequirementsSection extends StatelessWidget {
           "Care Level",
           careLevel,
           AppColors.greenColor,
-          AppColors.greenColor.withOpacity(0.1),
+          AppColors.greenColor.withValues(alpha: 0.1),
         ),
       );
     }
@@ -55,7 +55,7 @@ class PlantBasicRequirementsSection extends StatelessWidget {
           "Water",
           watering,
           Colors.blue,
-          Colors.blue.withOpacity(0.1),
+          Colors.blue.withValues(alpha: 0.1),
         ),
       );
     }
@@ -66,7 +66,7 @@ class PlantBasicRequirementsSection extends StatelessWidget {
           "Light",
           sunlight,
           Colors.orange,
-          Colors.orange.withOpacity(0.1),
+          Colors.orange.withValues(alpha: 0.1),
         ),
       );
     }
@@ -80,8 +80,8 @@ class PlantBasicRequirementsSection extends StatelessWidget {
           toxicity,
           toxicity == "Non-Toxic" ? Colors.green : Colors.redAccent,
           toxicity == "Non-Toxic"
-              ? Colors.green.withOpacity(0.1)
-              : Colors.redAccent.withOpacity(0.1),
+              ? Colors.green.withValues(alpha: 0.1)
+              : Colors.redAccent.withValues(alpha: 0.1),
         ),
       );
     }

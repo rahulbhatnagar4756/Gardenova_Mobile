@@ -141,94 +141,6 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                 ),
               ],
             ).marginOnly(bottom: spacerSize10, top: spacerSize10),
-            // GestureDetector(
-            //   onTap: isProfileEditable == true
-            //       ? openImagePickerBottomSheet
-            //       : null,
-            //   behavior: isProfileEditable == true
-            //       ? HitTestBehavior.opaque
-            //       : HitTestBehavior.translucent,
-            //   child: IgnorePointer(
-            //     ignoring: isProfileEditable == true,
-            //     child: Stack(
-            //       alignment: Alignment.center,
-            //       children: [
-            //         Stack(
-            //           children: [
-            //             Padding(
-            //               padding: EdgeInsets.only(bottom: 2.0),
-            //               child: Obx(
-            //                 () => GestureDetector(
-            //                   behavior: HitTestBehavior.opaque,
-            //                   onTap: () {
-            //                     onClickPictureView?.call();
-            //                   },
-            //                   child: Container(
-            //                     decoration: BoxDecoration(
-            //                       color: AppColors.whiteColor,
-            //                       borderRadius: BorderRadius.circular(100),
-            //                     ),
-            //                     padding: EdgeInsets.all(3.w),
-            //                     width: 108.w,
-            //                     height: 108.w,
-            //                     child: CircleAvatar(
-            //                       backgroundColor: AppColors.antiqueWhite,
-            //                       child: ClipRRect(
-            //                         borderRadius: BorderRadius.circular(100),
-            //                         child: _buildProfileImage(controller),
-            //                       ),
-            //                     ),
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-
-            //             (isEnableEditable == true)
-            //                 ? Positioned(
-            //                     bottom: 0,
-            //                     right: 0,
-            //                     child: IgnorePointer(
-            //                       ignoring: isProfileEditable ?? false,
-            //                       child: CommonClickWidget(
-            //                         // test: true,
-            //                         onTap: () => onClickEditPencil?.call(),
-            //                         child: Container(
-            //                           padding: EdgeInsets.only(
-            //                             right: 10.w,
-            //                             left: 15.w,
-            //                             top: 20.w,
-            //                           ),
-            //                           child: Image.asset(
-            //                             AppAssets.editPencilIc,
-            //                             width: 20.w,
-            //                             height: 20.w,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                     ),
-            //                   )
-            //                 : const SizedBox(),
-            //           ],
-            //         ),
-            //         // if (isProfileEditable!)
-            //         //   Positioned(
-            //         //     right: Get.width * .38,
-            //         //     top: Get.height * .110,
-            //         //     child: Container(
-            //         //       decoration: BoxDecoration(
-            //         //         borderRadius: BorderRadius.circular(spacerSize50),
-            //         //         color: AppColors.offWhite,
-            //         //       ),
-            //         //       child: Image.asset(
-            //         //         AppAssets.edit,
-            //         //         scale: 3,
-            //         //       ).paddingAll(spacerSize6),
-            //         //     ),
-            //         //   ),
-            //       ],
-            //     ).marginOnly(bottom: spacerSize10, top: spacerSize10),
-            //   ),
-            // ),
             nameAndEmailFields(),
           ],
         ),
@@ -281,7 +193,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
     );
   }
 
-  nameAndEmailFields() {
+  Widget nameAndEmailFields() {
     return !(isProfileEditable!)
         ? Obx(
             () => Column(
@@ -326,5 +238,4 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
           )
         : SizedBox.shrink();
   }
-
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +15,6 @@ import 'package:kasagardem/settings/settings_repository.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
 import 'package:kasagardem/utils/utils.dart';
-
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/constants/app_strings.dart';
@@ -129,15 +127,12 @@ class SettingsViewModel extends GetxController {
     required bool isCamera,
     required bool directApiCall,
   }) async {
-    print('pickImage gallery t0 source:  $isCamera');
     // Permission check
     if (isCamera) {
       bool hasPermission = await PermissionManager.handleCameraPermission();
-      print('pickImage gallery t0.5 hasPermission: $hasPermission');
       if (!hasPermission) {
         return;
       }
-      print('pickImage gallery t0.5 source: $hasPermission');
     }
 
     try {
@@ -190,7 +185,6 @@ class SettingsViewModel extends GetxController {
   void getProfessionalProfileDetail() async {
     var response = await profileRepository.fetchProfessionalProfile();
     if (response != null) {
-      debugPrint("response $response");
       ProfessionalProfileModel profileResponse =
           ProfessionalProfileModel.fromJson(response);
       professionalProfileData.value = profileResponse;
@@ -224,10 +218,9 @@ class SettingsViewModel extends GetxController {
     screenType.refresh();
   }
 
-  updateProfilePictureOnly() async {
+  void updateProfilePictureOnly() async {
     String? base64String;
 
-    // ✅ Check if image exists
     if (imageFile.value.path.isNotEmpty) {
       List<int> imageBytes = await imageFile.value.readAsBytes();
       base64String = base64Encode(imageBytes);
@@ -238,8 +231,6 @@ class SettingsViewModel extends GetxController {
           ..profileImage = base64String != null
               ? "data:image/png;base64,$base64String"
               : null;
-
-    debugPrint("updateProfileResponse ${updateProfileResponse.toJson()}");
 
     var response = await profileRepository.updateProfilePicture(
       updateProfileReq: updateProfileResponse,
@@ -262,7 +253,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  updateProfile() async {
+  void updateProfile() async {
     if (!isEmailVerified.value) {
       BaseSnackBar.show(
         title: "Verification Required",
@@ -272,7 +263,6 @@ class SettingsViewModel extends GetxController {
     }
     String? base64String;
 
-    // ✅ Check if image exists
     if (imageFile.value.path.isNotEmpty) {
       List<int> imageBytes = await imageFile.value.readAsBytes();
       base64String = base64Encode(imageBytes);
@@ -316,7 +306,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  updateProfessionalProfile() async {
+  void updateProfessionalProfile() async {
     if (!isEmailVerified.value) {
       BaseSnackBar.show(
         title: "Verification Required",
@@ -361,7 +351,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  updatePassword() async {
+  void updatePassword() async {
     var response = await profileRepository.changePassword(
       oldPasswordController.text,
       newPasswordController.text,
@@ -383,7 +373,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  setPassword() async {
+  void setPassword() async {
     log("response::${newPasswordController.text}");
     var response = await profileRepository.setPassword(
       newPasswordController.text,
@@ -413,7 +403,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  callDeleteAccountApi() async {
+  void callDeleteAccountApi() async {
     var response = await profileRepository.deleteAccount();
     if (response != null) {
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
@@ -497,9 +487,5 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  onScreenClick() {
-    print("isEmailVerified : ${isEmailVerified.value}");
-    print("showVerifyButton : ${showVerifyButton.value}");
-    print("originalEmail : ${originalEmail.value}");
-  }
+
 }

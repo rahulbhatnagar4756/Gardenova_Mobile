@@ -30,17 +30,14 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
         return _noDataView();
       }
 
-      return GestureDetector(
-        onTap: () => controller.testing(),
-        child: Scaffold(
-          backgroundColor: AppColors.appColor,
-          body: Stack(
-            children: [
-              Positioned(top: 0, left: 0, right: 0, child: imageCard()),
-              MainContentCard(controller: controller),
-              backButton(),
-            ],
-          ),
+      return Scaffold(
+        backgroundColor: AppColors.appColor,
+        body: Stack(
+          children: [
+            Positioned(top: 0, left: 0, right: 0, child: imageCard()),
+            MainContentCard(controller: controller),
+            backButton(),
+          ],
         ),
       );
     });
@@ -125,7 +122,9 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                       Container(
                         padding: const EdgeInsets.all(spacerSize16),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundGrey.withOpacity(0.3),
+                          color: AppColors.backgroundGrey.withValues(
+                            alpha: 0.3,
+                          ),
                           borderRadius: BorderRadius.circular(spacerSize18),
                           border: Border.all(color: AppColors.backgroundGrey),
                         ),

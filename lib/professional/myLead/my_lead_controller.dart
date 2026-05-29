@@ -109,14 +109,14 @@ class MyLeadController extends GetxController {
     }
   }
 
-  callGetMyLeadListApi({String searchName = ''}) {
+  void callGetMyLeadListApi({String searchName = ''}) {
     isLoading.value = true;
     getMyLeadList(
       searchName: searchName,
     ).then((value) => isLoading.value = false);
   }
 
-  callUpdateLeadStatusApi(String leadId) {
+  void callUpdateLeadStatusApi(String leadId) {
     isLoading.value = true;
     myLeadRepository.updateLeadStatus(leadId).then((value) {
       if (value != null) {
@@ -136,5 +136,4 @@ class MyLeadController extends GetxController {
       closedLeads.value = response['data']['closedLeads'] ?? 0;
     }
   }
-
 }

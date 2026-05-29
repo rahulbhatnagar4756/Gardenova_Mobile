@@ -20,7 +20,7 @@ class PlantsCatalogViewModel extends GetxController {
     getPlantsListing();
   }
 
-  getPlantsListing({String searchName = ''}) {
+  void getPlantsListing({String searchName = ''}) {
     plantsList.clear();
     isLoading.value = true;
     fetchPlantsListing(
@@ -45,7 +45,7 @@ class PlantsCatalogViewModel extends GetxController {
     }
   }
 
-  loadMorePlants() {
+  void loadMorePlants() {
     isLoadMoreRunning.value = true;
     if (isSearching.value == false) {
       pageNumber.value++;

@@ -33,191 +33,193 @@ class DashboardScreen extends GetWidget<DashboardController> {
           SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     });
     return Obx(
-      () => GestureDetector(
-        onTap: () => controller.onScreenClick(),
-        child: Scaffold(
-          backgroundColor: AppColors.appColor,
-          drawer: SizedBox(
-            // width: MediaQuery.of(context).size.width * 0.9,
-            child: FullScreenDrawer(
-              onTap: (index) {
-                controller.navigateToNext(index);
-              },
-            ),
+      () => Scaffold(
+        backgroundColor: AppColors.appColor,
+        drawer: SizedBox(
+          // width: MediaQuery.of(context).size.width * 0.9,
+          child: FullScreenDrawer(
+            onTap: (index) {
+              controller.navigateToNext(index);
+            },
           ),
-          appBar: controller.isUserLoggedIn.value
-              ? PreferredSize(
-                  preferredSize: Size.fromHeight(spacerSize80),
-                  child: Builder(
-                    builder: (context) {
-                      return CircularBottomAppBar(
-                        showMenuIcon: true,
-                        onSettingPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                      );
-                    },
-                  ),
-                )
-              : BaseAppBar(
-                  isBackButtonVisible: true,
-                  title: AppLocalizations.of(context)!.report,
-                  isAppIconVisible: false,
-                  onBackPressed: () {
-                    Get.offAllNamed(
-                      Routes.login,
-                      arguments: {"question_state_passed": true},
+        ),
+        appBar: controller.isUserLoggedIn.value
+            ? PreferredSize(
+                preferredSize: Size.fromHeight(spacerSize80),
+                child: Builder(
+                  builder: (context) {
+                    return CircularBottomAppBar(
+                      showMenuIcon: true,
+                      onSettingPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
                     );
                   },
                 ),
-
-          body: SizedBox(
-            // color: Colors.red,
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 3.h),
-                      Obx(() {
-                        controller.refreshSoilAnalysis.value;
-                        return HeadingUiLayout(
-                          sectionTitle: AppLocalizations.of(context)!.overview,
-                          child: SoilAnalysis(chartData: controller.chartData),
-                        ).marginOnly(left: spacerSize20, right: spacerSize20);
-                      }),
-                      // const SizedBox(height: spacerSize15),
-                      // HeadingUiLayout(
-                      //   sectionTitle: AppLocalizations.of(
-                      //     context,
-                      //   )!.automationSuggestions,
-                      //   child: AutomationSuggestions(),
-                      // ),|
-                      const SizedBox(height: spacerSize12),
-                      AiPlantDiagnosisCard(
-                        onTap: () {
-                          openImagePickerBottomSheet(
-                            source: ImagePickerSource.diagnosis,
-                          );
-                        },
-                      ).marginOnly(left: spacerSize20, right: spacerSize20),
-                      const SizedBox(height: spacerSize12),
-                      LandscapeDesignCard(
-                        onTap: () {
-                          if (controller.isUserLoggedIn.value == false) {
-                            BaseDialog.showAlertDialog(
-                              context: Get.context!,
-                              onButtonPressed: () {
-                                Get.back();
-                                Get.offAllNamed(
-                                  Routes.login,
-                                  arguments: {"question_state_passed": true},
-                                );
-                              },
-                              title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
-                              description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
-                              buttonLabel: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
-                            );
-                            return;
-                          }
-                          LandscapeStyleBottomSheet.show().then((style) {
-                            if (style != null) {
-                              openImagePickerBottomSheet(
-                                source: ImagePickerSource.landscape,
-                                selectedStyle: style,
-                              );
-                            }
-                          });
-                        },
-                      ).marginOnly(left: spacerSize20, right: spacerSize20),
-                      const SizedBox(height: spacerSize12),
-                      HeadingUiLayout(
-                        titleLeftPadding: spacerSize20,
-                        sectionTitle: AppLocalizations.of(
-                          context,
-                        )!.plantRecommendations,
-                        child: Column(
-                          children: [
-                            PlantRecommendations(controller: controller),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: spacerSize5),
-                      Obx(
-                        () => controller.isUserLoggedIn.value == false
-                            ? SizedBox()
-                            : Container(
-                                width: double.infinity,
-                                // color: AppColors.blackColor.withValues(
-                                //   alpha: 0.6,
-                                // ),
-                                padding: EdgeInsets.symmetric(vertical: 10.h),
-                                child: BaseButton(
-                                  bottomPadding: false,
-                                  buttonLabel: AppLocalizations.of(
-                                    context,
-                                  )!.addPlant,
-                                  buttonWidth: Get.width,
-                                  fontSize: fontSize15,
-                                  onPressed: () {
-                                    Get.toNamed(Routes.allPlantsScreen);
-                                    return;
-                                  },
-                                ).paddingSymmetric(horizontal: spacerSize20),
-                              ),
-                      ),
-                      SizedBox(height: 0.h),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          bottomNavigationBar: Obx(() {
-            return BottomNavigationWidget(
-              selectNavType: controller.selectedNavType.value,
-              needToShow: controller.isUserLoggedIn.value,
-              onAddPlantClick: (p0) {
-                if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
-                  controller.selectedNavType.value = p0;
-                }
-                if (p0 == BottomNavType.report) {
-                  BaseSnackBar.show(
-                    title: 'Temporarily Unavailable',
-                    message:
-                        'The Report section is currently on hold. We’ll be back soon with updates.',
+              )
+            : BaseAppBar(
+                isBackButtonVisible: true,
+                title: AppLocalizations.of(context)!.report,
+                isAppIconVisible: false,
+                onBackPressed: () {
+                  Get.offAllNamed(
+                    Routes.login,
+                    arguments: {"question_state_passed": true},
                   );
-                }
-                switch (p0) {
-                  case BottomNavType.home:
-                    break;
-                  case BottomNavType.scan:
-                    openImagePickerBottomSheet(
-                      source: ImagePickerSource.diagnosis,
-                    );
-                    break;
-                  case BottomNavType.plant:
-                    Get.toNamed(Routes.myPlantsScreen)?.then((value) {
-                      controller.selectedNavType.value = BottomNavType.home;
-                    });
-                    break;
-                  case BottomNavType.report:
-                    break;
-                  case BottomNavType.profile:
-                    Get.toNamed(Routes.settings)?.then((value) {
-                      controller.selectedNavType.value = BottomNavType.home;
-                    });
-                    break;
-                }
-              },
-            );
-          }),
+                },
+              ),
+
+        body: SizedBox(
+          // color: Colors.red,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 3.h),
+                    Obx(() {
+                      controller.refreshSoilAnalysis.value;
+                      return HeadingUiLayout(
+                        sectionTitle: AppLocalizations.of(context)!.overview,
+                        child: SoilAnalysis(chartData: controller.chartData),
+                      ).marginOnly(left: spacerSize20, right: spacerSize20);
+                    }),
+                    // const SizedBox(height: spacerSize15),
+                    // HeadingUiLayout(
+                    //   sectionTitle: AppLocalizations.of(
+                    //     context,
+                    //   )!.automationSuggestions,
+                    //   child: AutomationSuggestions(),
+                    // ),|
+                    const SizedBox(height: spacerSize12),
+                    AiPlantDiagnosisCard(
+                      onTap: () {
+                        openImagePickerBottomSheet(
+                          source: ImagePickerSource.diagnosis,
+                        );
+                      },
+                    ).marginOnly(left: spacerSize20, right: spacerSize20),
+                    const SizedBox(height: spacerSize12),
+                    LandscapeDesignCard(
+                      onTap: () {
+                        if (controller.isUserLoggedIn.value == false) {
+                          BaseDialog.showAlertDialog(
+                            context: Get.context!,
+                            onButtonPressed: () {
+                              Get.back();
+                              Get.offAllNamed(
+                                Routes.login,
+                                arguments: {"question_state_passed": true},
+                              );
+                            },
+                            title: AppLocalizations.of(
+                              Get.context!,
+                            )!.login.toUpperCase(),
+                            description:
+                                AppStrings.pleaseLoginToMakeAiLandscapeDesign,
+                            buttonLabel: AppLocalizations.of(
+                              Get.context!,
+                            )!.login.toUpperCase(),
+                          );
+                          return;
+                        }
+                        LandscapeStyleBottomSheet.show().then((style) {
+                          if (style != null) {
+                            openImagePickerBottomSheet(
+                              source: ImagePickerSource.landscape,
+                              selectedStyle: style,
+                            );
+                          }
+                        });
+                      },
+                    ).marginOnly(left: spacerSize20, right: spacerSize20),
+                    const SizedBox(height: spacerSize12),
+                    HeadingUiLayout(
+                      titleLeftPadding: spacerSize20,
+                      sectionTitle: AppLocalizations.of(
+                        context,
+                      )!.plantRecommendations,
+                      child: Column(
+                        children: [
+                          PlantRecommendations(controller: controller),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: spacerSize5),
+                    Obx(
+                      () => controller.isUserLoggedIn.value == false
+                          ? SizedBox()
+                          : Container(
+                              width: double.infinity,
+                              // color: AppColors.blackColor.withValues(
+                              //   alpha: 0.6,
+                              // ),
+                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              child: BaseButton(
+                                bottomPadding: false,
+                                buttonLabel: AppLocalizations.of(
+                                  context,
+                                )!.addPlant,
+                                buttonWidth: Get.width,
+                                fontSize: fontSize15,
+                                onPressed: () {
+                                  Get.toNamed(Routes.allPlantsScreen);
+                                  return;
+                                },
+                              ).paddingSymmetric(horizontal: spacerSize20),
+                            ),
+                    ),
+                    SizedBox(height: 0.h),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+        bottomNavigationBar: Obx(() {
+          return BottomNavigationWidget(
+            selectNavType: controller.selectedNavType.value,
+            needToShow: controller.isUserLoggedIn.value,
+            onAddPlantClick: (p0) {
+              if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
+                controller.selectedNavType.value = p0;
+              }
+              if (p0 == BottomNavType.report) {
+                BaseSnackBar.show(
+                  title: 'Temporarily Unavailable',
+                  message:
+                      'The Report section is currently on hold. We’ll be back soon with updates.',
+                );
+              }
+              switch (p0) {
+                case BottomNavType.home:
+                  break;
+                case BottomNavType.scan:
+                  openImagePickerBottomSheet(
+                    source: ImagePickerSource.diagnosis,
+                  );
+                  break;
+                case BottomNavType.plant:
+                  Get.toNamed(Routes.myPlantsScreen)?.then((value) {
+                    controller.selectedNavType.value = BottomNavType.home;
+                  });
+                  break;
+                case BottomNavType.report:
+                  break;
+                case BottomNavType.profile:
+                  Get.toNamed(Routes.settings)?.then((value) {
+                    controller.selectedNavType.value = BottomNavType.home;
+                  });
+                  break;
+              }
+            },
+          );
+        }),
       ),
     );
   }

@@ -155,7 +155,6 @@ class AllPlantsDetailsController extends GetxController {
         }
       }
     }
-    print('validate api add screenType.value ${screenType.value}');
     if (screenType.value == "add") {
       callAddPlantApi();
     } else {
@@ -342,9 +341,6 @@ class AllPlantsDetailsController extends GetxController {
     debugPrint("Filtered map :::::: $map");
 
     final response = await plantsRepository.addPlant(addPlantReq: map);
-    log('---------------------------------response');
-    log('Api response->  ${response} ');
-    log('---------------------------------response');
 
     if (response != null) {
       plantDetailData.value.data?.alreadyAdded = true;
@@ -357,14 +353,11 @@ class AllPlantsDetailsController extends GetxController {
         // description: plantDetailData.value.data!.plant!.description ?? "",
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
         onButtonPressed: () async {
-          print('on click onButton');
           if (Get.isRegistered<MyPlantsController>()) {
-            print('on click onButton registered');
             Get.back();
             Get.back();
             Get.back();
           } else {
-            print('on click onButton registered else');
             Get.back();
             await Future.delayed(Duration(milliseconds: 100));
             Get.offNamed(Routes.myPlantsScreen);
@@ -404,6 +397,4 @@ class AllPlantsDetailsController extends GetxController {
       }
     }
   }
-
-  testing() {}
 }

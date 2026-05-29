@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/recommended_professionals/recommended_professionals_repository.dart';
-
 import '../base/dialogs/base_dialog.dart';
 import '../l10n/app_localizations.dart';
 import '../professional/professionalDashBoard/model/professional_dashboard_model.dart';
@@ -138,7 +137,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     }
   }
 
-  onTapToSelect(int index) {
+  void onTapToSelect(int index) {
     professionalsList[index].isSelected = !professionalsList[index].isSelected;
     professionalsList.refresh();
     selectedProfessional(index);
@@ -202,7 +201,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     isLoading.value = false;
   }*/
 
-  checkLogin() {
+  void checkLogin() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
       //  createLead();
       createLeadForProfessional();
@@ -211,7 +210,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     }
   }
 
-  showLoginDialog() {
+  void showLoginDialog() {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       onButtonPressed: () {

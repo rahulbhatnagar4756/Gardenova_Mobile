@@ -110,7 +110,7 @@ class MyPlantsController extends GetxController {
     }
   }
 
-  loadMorePlants() {
+  void loadMorePlants() {
     isLoadMoreRunning.value = true;
     if (isSearching.value == false) {
       pageNumber.value++;
@@ -118,7 +118,7 @@ class MyPlantsController extends GetxController {
     getMyPlantList().then((value) => isLoadMoreRunning.value = false);
   }
 
-  callGetMyPlantListApi({String searchName = ''}) {
+  void callGetMyPlantListApi({String searchName = ''}) {
     myPlantList.clear();
     isLoading.value = true;
     getMyPlantList(

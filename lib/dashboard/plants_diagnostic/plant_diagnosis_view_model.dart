@@ -56,7 +56,7 @@ class PlantDiagnosisViewModel extends GetxController {
     diagnosePlant();
   }
 
-  diagnosePlant() async {
+  void diagnosePlant() async {
     isLoading.value = true;
     errorMessage.value = "";
     try {
@@ -177,7 +177,7 @@ class PlantDiagnosisViewModel extends GetxController {
     );
   }
 
-  getKasagardemData() {
+  void getKasagardemData() {
     for (var plantData
         in plantDiagnosisResponse.value.data!.kasagardemSolutions ?? []) {
       issueList.add(plantData.issue!);
@@ -199,32 +199,32 @@ class PlantDiagnosisViewModel extends GetxController {
     getHowToSetup();*/
   }
 
-  getDataFromList({RxString? data, List<String>? dataList}) {
+  void getDataFromList({RxString? data, List<String>? dataList}) {
     for (var listData in dataList ?? []) {
       data!.value = "${data.value}$listData\n";
     }
   }
 
-  getAutomationFeature() {
+  void getAutomationFeature() {
     for (var automationFeatureData in automationFeatureList) {
       automationFeature.value =
           "${automationFeature.value}$automationFeatureData\n";
     }
   }
 
-  getHowItHelps() {
+  void getHowItHelps() {
     for (var howItHelpsData in howItHelpsList) {
       howItHelps.value = "${howItHelps.value}$howItHelpsData\n";
     }
   }
 
-  getBenefits() {
+  void getBenefits() {
     for (var benefitsData in benefitsList) {
       benefits.value = "${benefits.value}$benefitsData\n";
     }
   }
 
-  getHowToSetup() {
+  void getHowToSetup() {
     for (var setupData in howToSetupList) {
       setup.value = "${setup.value}$setupData\n";
     }
@@ -283,7 +283,7 @@ class PlantDiagnosisViewModel extends GetxController {
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
         break;
-        
+
       case 7:
         Get.back();
         Get.toNamed(Routes.settings);

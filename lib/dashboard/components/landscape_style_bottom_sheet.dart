@@ -35,7 +35,12 @@ class LandscapeStyleBottomSheet extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(maxHeight: Get.height * 0.75),
-      padding: EdgeInsets.fromLTRB(spacerSize20, spacerSize20, spacerSize20, spacerSize30),
+      padding: EdgeInsets.fromLTRB(
+        spacerSize20,
+        spacerSize20,
+        spacerSize20,
+        spacerSize30,
+      ),
       decoration: const BoxDecoration(
         color: AppColors.appColor,
         border: Border(
@@ -102,14 +107,18 @@ class LandscapeStyleBottomSheet extends StatelessWidget {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.toToLiteGreenColor.withOpacity(0.4),
+                      color: AppColors.toToLiteGreenColor.withValues(
+                        alpha: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(spacerSize12),
                       border: Border.all(
-                        color: AppColors.greenColor.withOpacity(0.3),
+                        color: AppColors.greenColor.withValues(alpha: 0.3),
                       ),
                     ),
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: spacerSize8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: spacerSize8,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

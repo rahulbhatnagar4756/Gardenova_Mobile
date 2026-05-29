@@ -62,7 +62,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
       body: RefreshIndicator(
         onRefresh: () async {
           controller.pageNumber.value = 1;
-          await controller.callGetMyPlantListApi();
+          controller.callGetMyPlantListApi();
         },
 
         /// 🚀 IMPORTANT: Obx wraps CustomScrollView to handle slivers correctly
@@ -280,7 +280,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
   Widget _shimmerListItem() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundGrey.withOpacity(0.3),
+        color: AppColors.backgroundGrey.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(spacerSize16),
         border: Border.all(color: AppColors.backgroundGrey),
       ),
@@ -329,10 +329,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
         Get.back(); // close dialog
         controller.deletePlant(id).then((success) {
           if (success) {
-            BaseSnackBar.show(
-              title: appName,
-              message: successMessage,
-            );
+            BaseSnackBar.show(title: appName, message: successMessage);
           }
         });
       },

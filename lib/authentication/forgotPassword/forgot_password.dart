@@ -46,7 +46,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
     );
   }
 
-  emailField(BuildContext context) {
+ Widget emailField(BuildContext context) {
     return BaseTextField(
       prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourEmail,
@@ -58,8 +58,8 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
     );
   }
 
-  sendOtp(BuildContext context) {
-    return Container(
+  Widget sendOtp(BuildContext context) {
+    return SizedBox(
       // padding: EdgeInsets.only(bottom: 15.h),
       width: double.infinity,
       child: BaseButton(

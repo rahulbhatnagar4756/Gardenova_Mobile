@@ -55,10 +55,15 @@ class LocationService {
     }
 
     try {
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.low,
+        // distanceFilter: 100,
+      );
       // Better for emulator & slow GPS devices
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
-        timeLimit: const Duration(seconds: 20),
+        // desiredAccuracy: LocationAccuracy.low,
+        // timeLimit: const Duration(seconds: 20),
+        locationSettings: locationSettings,
       );
     } catch (e) {
       debugPrint("Primary location failed: $e");

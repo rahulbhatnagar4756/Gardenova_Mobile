@@ -106,7 +106,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
     );
   }
 
-  titleAndDescriptionLayout({String? title, String? description}) {
+  Widget titleAndDescriptionLayout({String? title, String? description}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: spacerSize10,

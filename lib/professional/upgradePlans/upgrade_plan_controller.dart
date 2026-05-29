@@ -77,7 +77,7 @@ class UpgradePlanController extends GetxController {
     }
   }
 
-  callGetAllPlanListApi() async {
+  void callGetAllPlanListApi() async {
     isLoading.value = true;
     var response = await upgradePlanRepository.getPlanList();
 

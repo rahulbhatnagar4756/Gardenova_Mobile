@@ -42,7 +42,7 @@ class ReportSuccessScreen extends StatelessWidget {
     );
   }
 
-  continueAndBackLayout(BuildContext context) {
+  Widget continueAndBackLayout(BuildContext context) {
     return Positioned(
       bottom: spacerSize0,
       left: spacerSize0,

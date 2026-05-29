@@ -124,7 +124,6 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                         ),
                       ),
                     ),
-         
 
               /// 🔹 BOTTOM LOAD MORE LOADER
               SliverToBoxAdapter(
@@ -344,7 +343,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
   Widget _shimmerCard() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundGrey.withOpacity(0.3),
+        color: AppColors.backgroundGrey.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(spacerSize16),
         border: Border.all(color: AppColors.backgroundGrey),
       ),
