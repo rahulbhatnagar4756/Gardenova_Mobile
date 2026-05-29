@@ -87,9 +87,9 @@ class MyPlantsController extends GetxController {
 
       case 5:
         Get.back();
-        Get.toNamed(Routes.settings)!.then((value) {
+        Get.toNamed(Routes.profile)!.then((value) {
           if (value == true) {
-            callGetMyPlantListApi();
+            // callGetMyPlantListApi();
           }
         });
         break;
@@ -97,6 +97,11 @@ class MyPlantsController extends GetxController {
       case 6:
         Get.back();
         callGetMyPlantListApi();
+        break;
+
+      case 7:
+        Get.back();
+        Get.toNamed(Routes.settings);
         break;
 
       default:
@@ -156,5 +161,23 @@ class MyPlantsController extends GetxController {
           ? true
           : false;
     }
+  }
+
+  Future<bool> deletePlant(int userPlantId) async {
+    isLoading.value = true;
+    try {
+      var response = await plantsRepository.deletePlant(
+        userPlantId: userPlantId,
+      );
+      if (response != null) {
+        callGetMyPlantListApi();
+        return true;
+      }
+    } catch (e) {
+      debugPrint("MyPlantsController deletePlant error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+    return false;
   }
 }

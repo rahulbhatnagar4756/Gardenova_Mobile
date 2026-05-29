@@ -25,27 +25,27 @@ const List<_AnalysisStage> _stages = [
   _AnalysisStage(
     message: 'Uploading garden view...',
     icon: Icons.cloud_upload_rounded,
-    accentColor: Color(0xFF52B788),
+    accentColor: AppColors.liteGreenColor,
   ),
   _AnalysisStage(
     message: 'Detecting space layout...',
     icon: Icons.grid_view_rounded,
-    accentColor: Color(0xFF2D6A4F),
+    accentColor: AppColors.darkGreenColor,
   ),
   _AnalysisStage(
     message: 'Analyzing style requirements...',
     icon: Icons.architecture_rounded,
-    accentColor: Color(0xFF01AF55),
+    accentColor: AppColors.greenColor,
   ),
   _AnalysisStage(
     message: 'Generating 3D garden features...',
     icon: Icons.nature_people_rounded,
-    accentColor: Color(0xFF95D5B2),
+    accentColor: AppColors.toLiteGreenColor,
   ),
   _AnalysisStage(
     message: 'Rendering landscape plan...',
     icon: Icons.auto_awesome_rounded,
-    accentColor: Color(0xFF52B788),
+    accentColor: AppColors.liteGreenColor,
   ),
 ];
 

@@ -44,7 +44,7 @@ class HealthScoreCard extends StatelessWidget {
             valueColor: AlwaysStoppedAnimation(
               (healthStatus?.isHealthy ?? false) == true
                   ? AppColors.greenColor
-                  : Colors.orange,
+                  : AppColors.orangeColor,
             ),
           ),
 

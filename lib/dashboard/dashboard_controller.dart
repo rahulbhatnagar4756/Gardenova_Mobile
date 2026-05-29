@@ -104,6 +104,10 @@ class DashboardController extends GetxController {
 
       case 5:
         Get.back();
+        Get.toNamed(Routes.profile);
+        break;
+      case 7:
+        Get.back();
         Get.toNamed(Routes.settings);
         break;
 
@@ -130,10 +134,13 @@ class DashboardController extends GetxController {
     );
   }
 
-  void goToLandscapeDesign(XFile? pickedFile) {
+  void goToLandscapeDesign(XFile? pickedFile, String? selectedStyle) {
     Get.toNamed(
       Routes.landscapeDesign,
-      arguments: {ApiKeys.imagePath: pickedFile!.path},
+      arguments: {
+        ApiKeys.imagePath: pickedFile!.path,
+        "selected_style": selectedStyle,
+      },
     );
   }
 
@@ -298,6 +305,7 @@ class DashboardController extends GetxController {
   Future<void> pickImage({
     required bool isCamera,
     ImagePickerSource source = ImagePickerSource.diagnosis,
+    String? selectedStyle,
   }) async {
     try {
       print('pickImage t0 source: $source AND $isCamera');
@@ -361,7 +369,7 @@ class DashboardController extends GetxController {
         if (source == ImagePickerSource.diagnosis) {
           goToPlantDiagnosis(pickedFile);
         } else {
-          goToLandscapeDesign(pickedFile);
+          goToLandscapeDesign(pickedFile, selectedStyle);
         }
       }
     } catch (e) {

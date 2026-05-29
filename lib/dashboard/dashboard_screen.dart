@@ -21,6 +21,7 @@ import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
+import 'components/landscape_style_bottom_sheet.dart';
 
 class DashboardScreen extends GetWidget<DashboardController> {
   const DashboardScreen({super.key});
@@ -107,9 +108,30 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       const SizedBox(height: spacerSize12),
                       LandscapeDesignCard(
                         onTap: () {
-                          openImagePickerBottomSheet(
-                            source: ImagePickerSource.landscape,
-                          );
+                          if (controller.isUserLoggedIn.value == false) {
+                            BaseDialog.showAlertDialog(
+                              context: Get.context!,
+                              onButtonPressed: () {
+                                Get.back();
+                                Get.offAllNamed(
+                                  Routes.login,
+                                  arguments: {"question_state_passed": true},
+                                );
+                              },
+                              title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+                              description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
+                              buttonLabel: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+                            );
+                            return;
+                          }
+                          LandscapeStyleBottomSheet.show().then((style) {
+                            if (style != null) {
+                              openImagePickerBottomSheet(
+                                source: ImagePickerSource.landscape,
+                                selectedStyle: style,
+                              );
+                            }
+                          });
                         },
                       ).marginOnly(left: spacerSize20, right: spacerSize20),
                       const SizedBox(height: spacerSize12),
@@ -202,6 +224,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
 
   void openImagePickerBottomSheet({
     ImagePickerSource source = ImagePickerSource.diagnosis,
+    String? selectedStyle,
   }) {
     if (controller.isUserLoggedIn.value == false) {
       BaseDialog.showAlertDialog(
@@ -229,20 +252,17 @@ class DashboardScreen extends GetWidget<DashboardController> {
         //   directApiCall: true,
         // );
         await Future.delayed(Duration(milliseconds: 200));
-        controller.pickImage(isCamera: isCamera, source: source);
+        controller.pickImage(
+          isCamera: isCamera,
+          source: source,
+          selectedStyle: selectedStyle,
+        );
       },
       onThenCall: () {
         controller.selectedNavType.value = BottomNavType.home;
         controller.selectedNavType.refresh();
       },
     ).show();
-
-    // Get.bottomSheet(
-    //   Container(
-    //     height: Get.height * .2,
-    //     color: AppColors.offWhite,
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     //       children: [
     //         ListTile(
     //           leading: Icon(Icons.camera_alt, color: AppColors.greenColor),

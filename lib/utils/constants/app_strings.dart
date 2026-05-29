@@ -138,7 +138,8 @@ class AppStrings {
 
   static const String pleaseLoginToMakeAiLandscapeDesign =
       "Please log in to use AI-powered modern design and landscape design features.";
-  static const String changeDiagnosis = 'Change Diagnosis';
+  static const String changeDiagnosis = 'Preferences';
+  // static const String changeDiagnosis = 'Change Diagnosis';
   static const String selectionRequired = 'Selection Required';
   static const String pleaseSelectAnAnswerToContinue =
       'Please select an answer to continue';

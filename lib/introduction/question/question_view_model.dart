@@ -165,6 +165,7 @@ class QuestionViewModel extends GetxController {
               }
               Get.until((route) => route.settings.name == Routes.settings);
             } else {
+              SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
               Get.offAllNamed(
                 Routes.dashboard,
                 arguments: {plantResponse.data!.responseId ?? ""},

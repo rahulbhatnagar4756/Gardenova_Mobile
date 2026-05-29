@@ -21,6 +21,20 @@ class VerifiedEmailOtpViewModel extends GetxController {
   var parsingArgument = Rxn<VerifiedEmailLocalParsingModel>();
   RxInt countdownTimer = 0.obs;
   Timer? _timer;
+  Timer? expiryTimer;
+  RxInt expiryStart = 180.obs;
+
+  void startExpiryTimer() {
+    expiryTimer?.cancel();
+    expiryStart.value = 180;
+    expiryTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (expiryStart.value > 0) {
+        expiryStart.value--;
+      } else {
+        expiryTimer?.cancel();
+      }
+    });
+  }
 
   @override
   onInit() {
@@ -35,6 +49,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
 
     final bool isSuccess = parsingArgument.value?.requestSussessFull ?? false;
     startTimer(isSuccess ? 60 : 60);
+    startExpiryTimer();
     super.onInit();
   }
 
@@ -53,6 +68,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
   @override
   void dispose() {
     _timer?.cancel();
+    expiryTimer?.cancel();
     super.dispose();
 
     focusNode.dispose();
@@ -84,12 +100,14 @@ class VerifiedEmailOtpViewModel extends GetxController {
             message: body['message'] ?? "Email is already verified.",
           );
           startTimer(60);
+          startExpiryTimer();
         } else if (body['statusCode'] == 201 || body['success'] == true) {
           BaseSnackBar.show(
             title: "Verification Sent",
             message: body['message'] ?? "Verification OTP sent to your email.",
           );
           startTimer(60);
+          startExpiryTimer();
         } else {
           BaseSnackBar.show(
             title: "Error",

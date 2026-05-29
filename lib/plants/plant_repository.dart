@@ -7,6 +7,7 @@ class PlantsRepository {
   final String editPlantUrl = 'api/v1/allPlants/updatePlant/';
   final String myPlantUrl = 'api/v1/allPlants/user/myplants';
   final String getMyPlantDetailUrl = 'api/v1/allplants/user/plants/';
+  final String deletePlantUrl = 'api/v1/allplants/deletePlant/';
 
   fetchAllPlants({
     String? pageNumber,
@@ -73,5 +74,12 @@ class PlantsRepository {
       showDefaultLoader: showDefaultLoader,
     );
     return plantsResponse;
+  }
+
+  deletePlant({required int userPlantId}) async {
+    var deleteResponse = await ApiRepository.instance.delete(
+      "$deletePlantUrl$userPlantId",
+    );
+    return deleteResponse;
   }
 }

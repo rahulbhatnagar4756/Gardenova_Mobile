@@ -32,12 +32,12 @@ class DiagnosisSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isHealthy
             ? AppColors.greenColor.withValues(alpha: .08)
-            : Colors.orange.withValues(alpha: .08),
+            : AppColors.orangeColor.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isHealthy
               ? AppColors.greenColor.withValues(alpha: .25)
-              : Colors.orange.withValues(alpha: .25),
+              : AppColors.orangeColor.withValues(alpha: .25),
         ),
       ),
       child: Column(
@@ -49,7 +49,7 @@ class DiagnosisSummaryCard extends StatelessWidget {
                 isHealthy
                     ? Icons.check_circle_rounded
                     : Icons.warning_amber_rounded,
-                color: isHealthy ? AppColors.greenColor : Colors.orange,
+                color: isHealthy ? AppColors.greenColor : AppColors.orangeColor,
                 size: 26.sp,
               ),
 

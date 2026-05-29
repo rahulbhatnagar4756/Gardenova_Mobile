@@ -32,7 +32,11 @@ class DiagnosisErrorView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline_rounded, color: Colors.red, size: 70.sp),
+                Icon(
+                  Icons.error_outline_rounded,
+                  color: AppColors.red,
+                  size: 70.sp,
+                ),
 
                 SizedBox(height: 20.h),
 

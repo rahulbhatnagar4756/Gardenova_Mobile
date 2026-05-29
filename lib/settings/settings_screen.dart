@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
-import 'package:kasagardem/base/open_image_pciker_bottom_sheet.dart';
 import 'package:kasagardem/base/widgets/base_date_format.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -35,8 +34,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             child: Column(
               children: [
                 ProfileIconLayout(
-                  isEnableEditable: true,
-                  title: AppStrings.profile,
+                  isEnableEditable: false,
+                  title: AppLocalizations.of(context)!.settings,
                   isProfileEditable: false,
                   onClickPictureView: () {
                     String profileImage = controller.profileImage.value;
@@ -47,18 +46,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                       imageUrl: profileImage,
                       heroTag: "profile_image_appbar",
                     );
-                  },
-                  onClickEditPencil: () {
-                    // Get.toNamed(Routes.profile);
-                    OpenImagePickerBottomSheet(
-                      onPickImage: (isCamera) {
-                        controller.pickImage(
-                          isCamera: isCamera,
-                          directApiCall: true,
-                        );
-                      },
-                      onThenCall: () {},
-                    ).show();
                   },
                 ),
                 SizedBox(height: 16.h),
@@ -126,45 +113,20 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             SizedBox(height: 10.h),
           ],
 
-          // ACCOUNT SECTION
-          buildSectionHeader(
-            AppStrings.myProfile,
-            icon: Icons.person_outline_rounded,
-          ),
+          // GENERAL / PROFILE SECTION
+          buildSectionHeader("General", icon: Icons.settings_outlined),
           buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.person_outline_rounded,
-              title: AppLocalizations.of(context)!.editProfile,
-              subtitle: "Update name, email and phone",
+              title: AppLocalizations.of(context)!.myProfile,
+              subtitle: "View profile details and settings",
               onTap: () {
                 controller.getProfileDetail(showloader: true);
                 Get.toNamed(Routes.profile);
               },
             ),
             Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
-            Obx(
-              () => SettingsItemLayout(
-                icon: Icons.lock_outline_rounded,
-                title: controller.isEmailLogedInUser.value
-                    ? AppLocalizations.of(context)!.changePassword
-                    : AppStrings.setPwd,
-                subtitle: controller.isEmailLogedInUser.value
-                    ? AppStrings.changePwdMsg
-                    : AppStrings.setPwdMsg,
-                onTap: () {
-                  controller.confirmPasswordController.clear();
-                  controller.newPasswordController.clear();
-                  Get.toNamed(Routes.changePassword);
-                },
-              ),
-            ),
-            Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
-            SettingsItemLayout(
-              icon: Icons.history,
-              title: AppStrings.changeDiagnosis,
-              subtitle: "Retake your evaluation answers",
-              onTap: () => Get.toNamed(Routes.question, arguments: true),
-            ),
+            buildNotificationItem(context),
           ]),
 
           // LEGAL SECTION
@@ -186,8 +148,22 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ]),
 
           // ACTIONS SECTION
-          buildSectionHeader(AppStrings.accountAction, icon: Icons.settings),
+          buildSectionHeader(
+            AppStrings.accountAction,
+            icon: Icons.shield_outlined,
+          ),
           buildCategoryCard([
+            SettingsItemLayout(
+              icon: Icons.delete_outline_rounded,
+              title: AppLocalizations.of(context)!.deleteAccount,
+              subtitle: "Permanently delete your account",
+              onTap: () => deleteAccountDialog(),
+              iconColor: AppColors.red,
+              iconBgColor: AppColors.red.withValues(alpha: 0.1),
+              titleColor: AppColors.red,
+              trailingIconColor: AppColors.red.withValues(alpha: 0.5),
+            ),
+            Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
             SettingsItemLayout(
               icon: Icons.power_settings_new_rounded,
               title: AppLocalizations.of(context)!.logout,
@@ -232,6 +208,67 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildNotificationItem(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Container(
+              width: 42.w,
+              height: 42.w,
+              decoration: BoxDecoration(
+                color: AppColors.greenColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.notifications_none_rounded,
+                  color: AppColors.greenColor,
+                  size: 20.w,
+                ),
+              ),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BaseText(
+                    text: "Notifications",
+                    fontWeight: FontWeight.w600,
+                    fontSize: fontSize14.sp,
+                    textColor: AppColors.blackColor,
+                  ),
+                  SizedBox(height: 4.h),
+                  BaseText(
+                    text: "Enable or disable app alerts",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 11.sp,
+                    textColor: AppColors.liteGreyColor,
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Obx(
+              () => Switch(
+                value: controller.notificationsEnabled.value,
+                onChanged: (val) {
+                  controller.toggleNotifications(val);
+                },
+                activeTrackColor: AppColors.greenColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

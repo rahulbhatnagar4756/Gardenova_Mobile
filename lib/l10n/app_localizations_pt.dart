@@ -1084,4 +1084,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get noDataNa => 'N/A';
+
+  @override
+  String get deletePlant => 'Excluir Planta';
+
+  @override
+  String get areYouSureYouWantToDeletePlant => 'Tem certeza de que deseja excluir esta planta? Esta ação não pode ser desfeita.';
+
+  @override
+  String get plantDeletedSuccessfully => 'Planta excluída com sucesso';
 }

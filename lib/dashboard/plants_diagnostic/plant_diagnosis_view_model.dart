@@ -126,7 +126,10 @@ class PlantDiagnosisViewModel extends GetxController {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ListTile(
-              leading: const Icon(Icons.camera_alt, color: AppColors.greenColor),
+              leading: const Icon(
+                Icons.camera_alt,
+                color: AppColors.greenColor,
+              ),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
                 Get.back();
@@ -146,7 +149,10 @@ class PlantDiagnosisViewModel extends GetxController {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.greenColor),
+              leading: const Icon(
+                Icons.photo_library,
+                color: AppColors.greenColor,
+              ),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
               onTap: () async {
                 Get.back();
@@ -270,12 +276,17 @@ class PlantDiagnosisViewModel extends GetxController {
 
       case 5:
         Get.back();
-        Get.toNamed(Routes.settings);
+        Get.toNamed(Routes.profile);
         break;
 
       case 6:
         Get.back();
         Get.toNamed(Routes.myPlantsScreen);
+        break;
+        
+      case 7:
+        Get.back();
+        Get.toNamed(Routes.settings);
         break;
 
       default:

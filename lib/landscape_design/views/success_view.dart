@@ -146,18 +146,15 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                     const SizedBox(height: spacerSize16),
 
                     /// 🔹 REGENERATE BUTTON
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.greenColor,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
+                    GestureDetector(
+                      onTap: () => controller.generateLandscapeDesign(),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          gradient: AppColors.linearGradientForBtn,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        onPressed: () => controller.generateLandscapeDesign(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

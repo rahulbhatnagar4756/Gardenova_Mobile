@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
+import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
@@ -127,32 +128,55 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                           ),
                         ),
 
-                        CommonClickWidget(
-                          onTap: () {
-                            Get.toNamed(
-                              Routes.allPlantsDetails,
-                              arguments: {
-                                "plant_id": controller.plantId.value,
-                                "screen_type": "edit",
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: spacerSize8,
+                          children: [
+                            CommonClickWidget(
+                              onTap: () {
+                                Get.toNamed(
+                                  Routes.allPlantsDetails,
+                                  arguments: {
+                                    "plant_id": controller.plantId.value,
+                                    "screen_type": "edit",
+                                  },
+                                )!.then((value) {
+                                  if (value == true) {
+                                    controller.callGetMyPlantDetailsApi();
+                                  }
+                                });
                               },
-                            )!.then((value) {
-                              if (value == true) {
-                                controller.callGetMyPlantDetailsApi();
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(spacerSize14),
-                            decoration: BoxDecoration(
-                              color: AppColors.greenColor,
-                              borderRadius: BorderRadius.circular(spacerSize12),
+                              child: Container(
+                                padding: const EdgeInsets.all(spacerSize14),
+                                decoration: BoxDecoration(
+                                  color: AppColors.greenColor,
+                                  borderRadius: BorderRadius.circular(spacerSize12),
+                                ),
+                                child: Image.asset(
+                                  Assets.imagesNotification,
+                                  height: spacerSize20,
+                                  width: spacerSize20,
+                                ),
+                              ),
                             ),
-                            child: Image.asset(
-                              Assets.imagesNotification,
-                              height: spacerSize20,
-                              width: spacerSize20,
+                            CommonClickWidget(
+                              onTap: () {
+                                _showDeleteDialog(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(spacerSize14),
+                                decoration: BoxDecoration(
+                                  color: AppColors.red,
+                                  borderRadius: BorderRadius.circular(spacerSize12),
+                                ),
+                                child: const Icon(
+                                  Icons.delete_outline_rounded,
+                                  size: spacerSize20,
+                                  color: AppColors.whiteColor,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -726,4 +750,27 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
   // Widget _editPlantButton(BuildContext context) {
   //   return const SizedBox();
   // }
+
+  void _showDeleteDialog(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    BaseDialog.showAlertDialog(
+      context: context,
+      title: localizations.deletePlant,
+      description: localizations.areYouSureYouWantToDeletePlant,
+      buttonLabel: localizations.confirm,
+      onButtonPressed: () {
+        final successMessage = localizations.plantDeletedSuccessfully;
+        Get.back(); // close dialog
+        controller.callDeletePlantApi().then((success) {
+          if (success) {
+            Get.back(); // navigate back to my plants list screen
+            BaseSnackBar.show(
+              title: appName,
+              message: successMessage,
+            );
+          }
+        });
+      },
+    );
+  }
 }

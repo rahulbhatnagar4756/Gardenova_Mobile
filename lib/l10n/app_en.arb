@@ -359,5 +359,8 @@
   "find": "Find",
   "plantAnalysis": "AI Plant Diagnosis",
   "scanYourPlantForHealthAndDetails": "Scan your plant to identify and check its health",
-  "noDataNa": "N/A"
+  "noDataNa": "N/A",
+  "deletePlant": "Delete Plant",
+  "areYouSureYouWantToDeletePlant": "Are you sure you want to delete this plant? This action cannot be undone.",
+  "plantDeletedSuccessfully": "Plant deleted successfully"
 }

@@ -40,9 +40,14 @@ class LandscapeDesignViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (Get.arguments != null && Get.arguments['image_path'] != null) {
-      imageFile!.value = File(Get.arguments['image_path']);
-      generateLandscapeDesign();
+    if (Get.arguments != null) {
+      if (Get.arguments['selected_style'] != null) {
+        selectedStyle.value = Get.arguments['selected_style'].toString();
+      }
+      if (Get.arguments['image_path'] != null) {
+        imageFile!.value = File(Get.arguments['image_path']);
+        generateLandscapeDesign();
+      }
     }
   }
 

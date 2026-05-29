@@ -26,14 +26,14 @@ class ToxicityWarningCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
-        color: Colors.red.withValues(alpha: .06),
+        color: AppColors.red.withValues(alpha: .06),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.red.withValues(alpha: .15)),
+        border: Border.all(color: AppColors.red.withValues(alpha: .15)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.warning_amber_rounded, color: Colors.red, size: 24.sp),
+          Icon(Icons.warning_amber_rounded, color: AppColors.red, size: 24.sp),
 
           SizedBox(width: 12.w),
 

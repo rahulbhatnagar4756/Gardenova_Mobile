@@ -286,11 +286,11 @@ class DiagnosisSuccessView extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
             decoration: BoxDecoration(
-              color: AppColors.greenColor,
+              gradient: AppColors.linearGradientForBtn,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.greenColor.withOpacity(0.25),
+                  color: AppColors.greenColor.withValues(alpha: 0.25),
                   blurRadius: 12,
                   offset: const Offset(0, 5),
                 ),

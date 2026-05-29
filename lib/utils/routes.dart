@@ -40,6 +40,7 @@ import 'package:kasagardem/settings/change_password.dart';
 import 'package:kasagardem/settings/privacy_policy.dart';
 import 'package:kasagardem/settings/about_app.dart';
 import 'package:kasagardem/settings/profile/profile_screen.dart';
+import 'package:kasagardem/settings/profile/edit_profile_screen.dart';
 import 'package:kasagardem/settings/profile/verified_email_otp_view/verify_email_otp_screen.dart';
 import 'package:kasagardem/settings/settings_screen.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
@@ -75,6 +76,7 @@ class Routes {
   static const reportSuccess = '/report_success';
   static const settings = '/settings';
   static const profile = '/profile';
+  static const editProfile = '/edit_profile';
   static const changePassword = '/change_password';
   static const termsAndConditions = '/term_and_conditions';
   static const recommendedProfessionals = '/recommended_professionals';
@@ -220,7 +222,15 @@ class Routes {
 
       GetPage(
         name: Routes.profile,
-        page: () => ProfileScreen(),
+        page: () => const ProfileScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.editProfile,
+        page: () => const EditProfileScreen(),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,

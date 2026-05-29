@@ -47,6 +47,7 @@ class SettingsViewModel extends GetxController {
   RxString profileImage = ''.obs;
   RxString screenType = ''.obs;
   RxBool isShareInProgress = false.obs;
+  RxBool notificationsEnabled = true.obs;
   String apiImage = '';
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
@@ -61,6 +62,8 @@ class SettingsViewModel extends GetxController {
   onInit() {
     isEmailLogedInUser.value =
         SharedPrefsService.instance.getBool(AppKeys.emailLogedInUser) ?? true;
+    notificationsEnabled.value =
+        SharedPrefsService.instance.getBool('notifications_enabled') ?? true;
     fetchAppVersion();
     emailController.addListener(() {
       final mail = emailController.text.trim();
@@ -99,6 +102,11 @@ class SettingsViewModel extends GetxController {
         _timer?.cancel();
       }
     });
+  }
+
+  void toggleNotifications(bool value) async {
+    notificationsEnabled.value = value;
+    await SharedPrefsService.instance.setBool('notifications_enabled', value);
   }
 
   void fetchAppVersion() async {

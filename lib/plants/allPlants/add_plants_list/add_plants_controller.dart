@@ -69,6 +69,7 @@ class AllPlantsController extends GetxController {
 
   void navigateToNext(int index) {
     debugPrint("index navigateToNext AllPlantsController:::$index");
+    // return;
     switch (index) {
       case 0:
         if (Get.isRegistered<DashboardController>()) {
@@ -105,9 +106,8 @@ class AllPlantsController extends GetxController {
 
       case 5:
         Get.back();
-        Get.toNamed(Routes.settings);
+        Get.toNamed(Routes.profile);
         break;
-
       case 6:
         // Get.back();
         // Get.back();
@@ -122,6 +122,15 @@ class AllPlantsController extends GetxController {
           Get.offNamed(Routes.myPlantsScreen);
           // Get.back();
         }
+        break;
+
+      case 7:
+        Get.back();
+        // if (Get.isRegistered<DashboardController>()) {
+        //   Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+        // }
+        // Get.until((route) => route.settings.name == Routes.settings);
+        Get.toNamed(Routes.settings);
         break;
 
       default:

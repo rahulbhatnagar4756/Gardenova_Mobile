@@ -357,5 +357,8 @@
   "specialty": "Specialty",
   "ago": "ago",
   "find": "Find",
-  "noDataNa": "N/A"
+  "noDataNa": "N/A",
+  "deletePlant": "Excluir Planta",
+  "areYouSureYouWantToDeletePlant": "Tem certeza de que deseja excluir esta planta? Esta ação não pode ser desfeita.",
+  "plantDeletedSuccessfully": "Planta excluída com sucesso"
 }

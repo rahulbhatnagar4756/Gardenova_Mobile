@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
 import '../../plant_repository.dart';
+import '../myPlantsList/my_plants_controller.dart';
 
 class MyPlantDetailsController extends GetxController {
   RxString plantId = "".obs;
@@ -38,5 +39,30 @@ class MyPlantDetailsController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<bool> callDeletePlantApi() async {
+    final userPlantId = plantDetailData.value.data?.userPlantId;
+    if (userPlantId == null || userPlantId == 0) {
+      return false;
+    }
+    isLoading.value = true;
+    errorMessage.value = "";
+    try {
+      var response = await plantsRepository.deletePlant(
+        userPlantId: userPlantId,
+      );
+      if (response != null) {
+        if (Get.isRegistered<MyPlantsController>()) {
+          Get.find<MyPlantsController>().callGetMyPlantListApi();
+        }
+        return true;
+      }
+    } catch (e) {
+      debugPrint("MyPlantDetailsController callDeletePlantApi error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+    return false;
   }
 }

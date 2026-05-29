@@ -49,6 +49,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           ? dotenv.env['iosClientId']!
           : dotenv.env['androidClientId']!,
     );
+    // need change
     if (kDebugMode) {
       emailController.text = 'ashirwad1@yopmail.com';
       passwordController.text = 'Test@123';
@@ -73,7 +74,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       },
     );
     if (loginResponse != null) {
-      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
@@ -106,7 +107,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       },
     );
     if (loginResponse != null) {
-      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
@@ -123,7 +124,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       },
     );
     if (loginResponse != null) {
-      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
@@ -143,7 +144,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       },
     );
     if (loginResponse != null) {
-      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
@@ -198,6 +199,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         AppKeys.submissionResponseId,
         responseIdd,
       );
+      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       Get.offAllNamed(Routes.dashboard);
     }
   }
@@ -278,5 +280,4 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       );*/
     }
   }
-
 }

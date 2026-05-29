@@ -299,6 +299,14 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                   drawerItem(
                                     title: AppLocalizations.of(
                                       Get.context!,
+                                    )!.settings,
+                                    onTap: () {
+                                      widget.onTap(7);
+                                    },
+                                  ),
+                                  drawerItem(
+                                    title: AppLocalizations.of(
+                                      Get.context!,
                                     )!.aboutApp,
                                     onTap: () {
                                       Get.back();

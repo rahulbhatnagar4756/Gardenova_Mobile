@@ -23,7 +23,7 @@ class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
         backgroundColor: AppColors.appColor,
         appBar: CircularBottomAppBar(
           onSettingPressed: () {
-            Get.toNamed(Routes.settings);
+            Get.toNamed(Routes.profile);
           },
         ),
         body: Column(

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 
+import '../../../base/dialogs/base_dialog.dart';
 import '../../../base/widgets/base_shimmer.dart';
 
 import '../../../base/widgets/base_app_bar.dart';
@@ -114,6 +115,9 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                           )?.then((value) {
                             Utils.hideKeyboard();
                           });
+                        },
+                        onDelete: () {
+                          showDeleteConfirmationDialog(context, item.plantId);
                         },
                       );
                     }, childCount: controller.myPlantList.length),
@@ -309,6 +313,29 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
           ),
         ],
       ),
+    );
+  }
+
+  void showDeleteConfirmationDialog(BuildContext context, int? id) {
+    if (id == null) return;
+    final localizations = AppLocalizations.of(context)!;
+    BaseDialog.showAlertDialog(
+      context: context,
+      title: localizations.deletePlant,
+      description: localizations.areYouSureYouWantToDeletePlant,
+      buttonLabel: localizations.confirm,
+      onButtonPressed: () {
+        final successMessage = localizations.plantDeletedSuccessfully;
+        Get.back(); // close dialog
+        controller.deletePlant(id).then((success) {
+          if (success) {
+            BaseSnackBar.show(
+              title: appName,
+              message: successMessage,
+            );
+          }
+        });
+      },
     );
   }
 }

@@ -1084,4 +1084,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDataNa => 'N/A';
+
+  @override
+  String get deletePlant => 'Delete Plant';
+
+  @override
+  String get areYouSureYouWantToDeletePlant => 'Are you sure you want to delete this plant? This action cannot be undone.';
+
+  @override
+  String get plantDeletedSuccessfully => 'Plant deleted successfully';
 }

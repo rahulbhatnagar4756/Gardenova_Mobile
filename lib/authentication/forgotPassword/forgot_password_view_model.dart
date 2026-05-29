@@ -30,6 +30,21 @@ class ForgotPasswordViewModel extends GetxController {
   RxInt start = 60.obs;
   RxBool canResend = false.obs;
 
+  Timer? expiryTimer;
+  RxInt expiryStart = 300.obs;
+
+  void startExpiryTimer() {
+    expiryTimer?.cancel();
+    expiryStart.value = 300;
+    expiryTimer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (expiryStart.value == 0) {
+        timer.cancel();
+      } else {
+        expiryStart.value--;
+      }
+    });
+  }
+
   void startTimer() {
     canResend.value = false;
     start.value = 60;
@@ -71,6 +86,7 @@ class ForgotPasswordViewModel extends GetxController {
         Get.toNamed(Routes.verifyOtp);
       }
       startTimer();
+      startExpiryTimer();
     }
   }
 
@@ -117,6 +133,8 @@ class ForgotPasswordViewModel extends GetxController {
 
   @override
   void dispose() {
+    timer?.cancel();
+    expiryTimer?.cancel();
     pinController.dispose();
     emailController.dispose();
     newPasswordController.dispose();

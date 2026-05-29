@@ -25,27 +25,27 @@ const List<_AnalysisStage> _stages = [
   _AnalysisStage(
     message: 'Regenerating new design...',
     icon: Icons.architecture_rounded,
-    accentColor: Color(0xFF52B788),
+    accentColor: AppColors.liteGreenColor,
   ),
   _AnalysisStage(
     message: 'Applying new styling options...',
     icon: Icons.brush_rounded,
-    accentColor: Color(0xFF2D6A4F),
+    accentColor: AppColors.darkGreenColor,
   ),
   _AnalysisStage(
     message: 'Refining landscape layout...',
     icon: Icons.grid_view_rounded,
-    accentColor: Color(0xFF01AF55),
+    accentColor: AppColors.greenColor,
   ),
   _AnalysisStage(
     message: 'Replacing plants and ornaments...',
     icon: Icons.local_florist_rounded,
-    accentColor: Color(0xFF95D5B2),
+    accentColor: AppColors.toLiteGreenColor,
   ),
   _AnalysisStage(
     message: 'Polishing regenerated view...',
     icon: Icons.auto_awesome_rounded,
-    accentColor: Color(0xFF52B788),
+    accentColor: AppColors.liteGreenColor,
   ),
 ];
 

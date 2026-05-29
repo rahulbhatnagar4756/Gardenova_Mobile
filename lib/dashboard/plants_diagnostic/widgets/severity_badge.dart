@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
 
 class SeverityBadge extends StatelessWidget {
   final String severity;
@@ -20,15 +21,15 @@ class SeverityBadge extends StatelessWidget {
 
     switch (value) {
       case "high":
-        color = Colors.red;
+        color = AppColors.red;
         break;
 
       case "medium":
-        color = Colors.orange;
+        color = AppColors.orangeColor;
         break;
 
       default:
-        color = Colors.green;
+        color = AppColors.greenColor;
     }
 
     return Container(

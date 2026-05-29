@@ -79,7 +79,7 @@ class CircularBottomAppBar extends StatelessWidget
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        Get.toNamed(Routes.settings);
+                        Get.toNamed(Routes.profile);
                       },
                       child: AbsorbPointer(
                         absorbing: true,
