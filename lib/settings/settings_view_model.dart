@@ -234,14 +234,14 @@ class SettingsViewModel extends GetxController {
     //   updatedAt: profileResponse.data!.endDate,
     // );
     // Trial Subscription
-    final trialSubscription = SubscriptionStatusUiModel(
-      name: "Trial",
-      status: "Active",
-      isActive: true,
-      isTrialActive: true,
-      createdAt: "2026-06-01",
-      updatedAt: "2026-06-15",
-    );
+    // final trialSubscription = SubscriptionStatusUiModel(
+    //   name: "Trial",
+    //   status: "Active",
+    //   isActive: true,
+    //   isTrialActive: true,
+    //   createdAt: "2026-06-01",
+    //   updatedAt: "2026-06-15",
+    // );
 
     // Active Subscription
     // final activeSubscription = SubscriptionStatusUiModel(
@@ -273,7 +273,7 @@ class SettingsViewModel extends GetxController {
     //   updatedAt: "2027-06-01",
     // );
     // need change
-    currentSubscriptionStatusModel.value = trialSubscription;
+    // currentSubscriptionStatusModel.value = trialSubscription;
     // currentSubscriptionStatusModel.value = activeSubscription;
     // currentSubscriptionStatusModel.value = cancelledSubscription;
     // currentSubscriptionStatusModel.value = renewedSubscription;
