@@ -50,15 +50,17 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       children: [
                         QuestionProgressIndicator(
                           currentQuestion: controller.currentQuestion.value,
-                          totalQuestions: controller.questionList.length + 1,
+                          totalQuestions: controller.multipleChoiceQuestions.length +
+                              (controller.showExtraPreference ? 1 : 0),
                         ).marginOnly(top: 25.h),
 
                         questionLayout(),
 
-                        if (controller.questionList.isNotEmpty)
-                          // State/city tab is shown when currentQuestion exceeds the question list
-                          controller.currentQuestion.value >
-                                  controller.questionList.length
+                        if (controller.multipleChoiceQuestions.isNotEmpty)
+                          // State/city tab is shown when currentQuestion exceeds the multipleChoiceQuestions list
+                          controller.showExtraPreference &&
+                                  controller.currentQuestion.value >
+                                      controller.multipleChoiceQuestions.length
                               ? answer5Layout(context)
                               : Wrap(
                                   direction: Axis.horizontal,
@@ -67,7 +69,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                   runSpacing: spacerSize10,
                                   children: List.generate(
                                     controller
-                                        .questionList[controller
+                                        .multipleChoiceQuestions[controller
                                                 .currentQuestion
                                                 .value -
                                             1]
@@ -76,7 +78,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                     (index) {
                                       return answersLayout(
                                         question:
-                                            controller.questionList[controller
+                                            controller.multipleChoiceQuestions[controller
                                                     .currentQuestion
                                                     .value -
                                                 1],
@@ -221,14 +223,15 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
   Widget questionLayout() {
     // On the state/city tab, show a fixed heading instead of a question text
     final isStateCityTab =
-        controller.questionList.isNotEmpty &&
-        controller.currentQuestion.value > controller.questionList.length;
+        controller.multipleChoiceQuestions.isNotEmpty &&
+        controller.showExtraPreference &&
+        controller.currentQuestion.value > controller.multipleChoiceQuestions.length;
     return BaseText(
       text: isStateCityTab
           ? ""
-          : controller.questionList.isNotEmpty
+          : controller.multipleChoiceQuestions.isNotEmpty
           ? controller
-                .questionList[controller.currentQuestion.value - 1]
+                .multipleChoiceQuestions[controller.currentQuestion.value - 1]
                 .questionText!
                 .toTitleCase()
           : "",

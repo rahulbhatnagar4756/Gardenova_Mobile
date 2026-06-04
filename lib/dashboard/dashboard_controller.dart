@@ -16,6 +16,7 @@ import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_helper/location_service.dart';
 import '../utils/permission_manager.dart';
+import '../utils/utils.dart';
 
 enum ImagePickerSource { diagnosis, landscape }
 
@@ -104,10 +105,12 @@ class DashboardController extends GetxController {
 
       case 5:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.profile);
         break;
       case 7:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.settings);
         break;
 

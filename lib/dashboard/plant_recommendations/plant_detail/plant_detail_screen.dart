@@ -12,6 +12,8 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../../utils/utils.dart';
+
 class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
   const PlantDetailScreen({super.key});
 
@@ -45,6 +47,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
           CircularBottomAppBar(
             backgroundColor: AppColors.darkGreen,
             onSettingPressed: () {
+              Utils.callSettingBasicApi();
               Get.toNamed(Routes.settings);
             },
           ),

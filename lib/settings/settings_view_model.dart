@@ -9,6 +9,7 @@ import 'package:kasagardem/authentication/login/professional_profile_model.dart'
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import 'package:kasagardem/settings/settings_repository.dart';
@@ -55,6 +56,7 @@ class SettingsViewModel extends GetxController {
 
   late final FocusNode focusNode;
   var isEmailLogedInUser = true.obs;
+  var currentSubscriptionStatusModel = Rxn<SubscriptionStatusUiModel>();
 
   @override
   onInit() {
@@ -80,14 +82,18 @@ class SettingsViewModel extends GetxController {
     if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {
-      bool isUserLoggedIn =
-          SharedPrefsService().getBool(AppKeys.isLoggedIn) ?? false;
-      if (isUserLoggedIn) {
-        getProfileDetail();
-      }
+      initFunctions();
     }
 
     super.onInit();
+  }
+
+  Future<void> initFunctions() async {
+    bool isUserLoggedIn =
+        SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+    if (isUserLoggedIn) {
+      await Future.wait([getSubcriptionDetail(), getProfileDetail()]);
+    }
   }
 
   void startTimer() {
@@ -155,7 +161,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  void getProfileDetail({bool showloader = false}) async {
+  Future<void> getProfileDetail({bool showloader = false}) async {
     var response = await profileRepository.fetchProfile(showloader: showloader);
     if (response != null) {
       ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
@@ -216,6 +222,85 @@ class SettingsViewModel extends GetxController {
       }
     }
     screenType.refresh();
+  }
+
+  Future<void> getSubcriptionDetail() async {
+    // var realDetialModel = SubscriptionStatusUiModel(
+    //   name: profileResponse.data!.subscriptionPlan,
+    //   status: profileResponse.data!.accountStatus,
+    //   isActive: profileResponse.data!.accountStatus?.toLowerCase() == "active",
+    //   isTrialActive: profileResponse.data!.subscriptionPlan?.toLowerCase() == "trial",
+    //   createdAt: profileResponse.data!.startDate,
+    //   updatedAt: profileResponse.data!.endDate,
+    // );
+    // Trial Subscription
+    final trialSubscription = SubscriptionStatusUiModel(
+      name: "Trial",
+      status: "Active",
+      isActive: true,
+      isTrialActive: true,
+      createdAt: "2026-06-01",
+      updatedAt: "2026-06-15",
+    );
+
+    // Active Subscription
+    final activeSubscription = SubscriptionStatusUiModel(
+      name: "Premium",
+      status: "Active",
+      isActive: true,
+      isTrialActive: false,
+      createdAt: "2026-05-01",
+      updatedAt: "2026-07-01",
+    );
+
+    // Cancelled Subscription
+    final cancelledSubscription = SubscriptionStatusUiModel(
+      name: "Premium",
+      status: "Cancelled",
+      isActive: false,
+      isTrialActive: false,
+      createdAt: "2026-04-01",
+      updatedAt: "2026-05-15",
+    );
+
+    // Renewed Subscription
+    final renewedSubscription = SubscriptionStatusUiModel(
+      name: "Premium",
+      status: "Renewed",
+      isActive: true,
+      isTrialActive: false,
+      createdAt: "2026-06-01",
+      updatedAt: "2027-06-01",
+    );
+    // currentSubscriptionStatusModel.value = trialSubscription;
+    // currentSubscriptionStatusModel.value = activeSubscription;
+    // currentSubscriptionStatusModel.value = cancelledSubscription;
+    // currentSubscriptionStatusModel.value = renewedSubscription;
+    // currentSubscriptionStatusModel.value = realDetialModel;
+
+    if (currentSubscriptionStatusModel.value != null) {
+      final model = currentSubscriptionStatusModel.value!;
+      if (model.updatedAt != null) {
+        try {
+          final expirationDate = DateTime.parse(model.updatedAt!).toLocal();
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          final exp = DateTime(
+            expirationDate.year,
+            expirationDate.month,
+            expirationDate.day,
+          );
+          final remaining = exp.difference(today).inDays;
+          SharedPrefsService.instance.setString(
+            AppKeys.remainingDays,
+            remaining.clamp(0, 365).toString(),
+          );
+        } catch (_) {
+          SharedPrefsService.instance.setString(AppKeys.remainingDays, "0");
+        }
+      }
+    }
+    currentSubscriptionStatusModel.refresh();
   }
 
   void updateProfilePictureOnly() async {
@@ -486,6 +571,4 @@ class SettingsViewModel extends GetxController {
       );
     }
   }
-
-
 }

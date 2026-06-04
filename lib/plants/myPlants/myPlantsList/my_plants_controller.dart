@@ -6,6 +6,7 @@ import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
+import '../../../utils/utils.dart';
 import '../../plant_repository.dart';
 
 class MyPlantsController extends GetxController {
@@ -101,6 +102,7 @@ class MyPlantsController extends GetxController {
 
       case 7:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.settings);
         break;
 

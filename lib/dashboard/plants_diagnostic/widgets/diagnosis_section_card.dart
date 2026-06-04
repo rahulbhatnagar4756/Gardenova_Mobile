@@ -25,7 +25,7 @@ class DiagnosisSectionCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24.r),
         border: Border.all(
-          color: AppColors.liteGreenColor.withValues(alpha: .3),
+          color: AppColors.greenColor.withValues(alpha: .25),
         ),
       ),
       child: child,

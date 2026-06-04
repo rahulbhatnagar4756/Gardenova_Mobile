@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
-import 'package:kasagardem/base/widgets/base_date_format.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
@@ -13,8 +12,8 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-import '../base/widgets/common_click_widget.dart';
 import '../base/widgets/full_screen_image_preview.dart';
+import '../base/widgets/subscription_status_view_widget.dart';
 import '../utils/constants/app_assets.dart';
 import '../utils/constants/app_strings.dart';
 import '../utils/utils.dart';
@@ -108,10 +107,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         children: [
-          if (isProfessional) ...[
-            subscriptionPlanCard(),
-            SizedBox(height: 10.h),
-          ],
+          // need change
+          // subscriptionPlanCard(),
 
           // GENERAL / PROFILE SECTION
           buildSectionHeader("General", icon: Icons.settings_outlined),
@@ -122,6 +119,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               subtitle: "View profile details and settings",
               onTap: () {
                 controller.getProfileDetail(showloader: true);
+                Utils.callSettingBasicApi();
                 Get.toNamed(Routes.profile);
               },
             ),
@@ -275,260 +273,12 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
 
   Widget subscriptionPlanCard() {
     return Obx(
-      () => controller.professionalProfileData.value != null
-          ? Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(spacerSize16),
-                  margin: EdgeInsets.only(bottom: spacerSize18),
-                  decoration: BoxDecoration(
-                    color: AppColors.greenColor,
-                    borderRadius: BorderRadius.circular(spacerSize20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 4,
-                                backgroundColor: AppColors.whiteColor,
-                              ),
-                              SizedBox(width: spacerSize6),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BaseText(
-                                    text: AppLocalizations.of(
-                                      Get.context!,
-                                    )!.status.toUpperCase(),
-                                    fontFamily: AppKeys.inter,
-                                    textColor: AppColors.offWhite70,
-                                    fontSize: fontSize10,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  Row(
-                                    children: [
-                                      BaseText(
-                                        text: Utils.capitalize(
-                                          controller
-                                                  .professionalProfileData
-                                                  .value!
-                                                  .data!
-                                                  .accountStatus ??
-                                              "",
-                                        ),
-                                        fontFamily: AppKeys.inter,
-                                        textColor: AppColors.whiteColor,
-                                        fontSize: fontSize16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: spacerSize8,
-                                  vertical: spacerSize6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(
-                                    spacerSize20,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      AppAssets.crownIc,
-                                      width: 11.w,
-                                      height: 11.w,
-                                    ),
-                                    SizedBox(width: spacerSize6),
-                                    BaseText(
-                                      text:
-                                          '${(controller.professionalProfileData.value!.data!.subscriptionPlan!)} Plan',
-                                      fontSize: fontSize12,
-                                      fontFamily: AppKeys.inter,
-                                      fontWeight: FontWeight.w600,
-                                      textColor: AppColors.greenColor,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: spacerSize8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: CommonClickWidget(
-                                  onTap: () {
-                                    Get.toNamed(
-                                      Routes.upgradePlan,
-                                      arguments: {
-                                        AppKeys.screenType: AppKeys.dashboard,
-                                      },
-                                    )!.then((val) {
-                                      if (val == true) {
-                                        controller
-                                            .getProfessionalProfileDetail();
-                                      }
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.sync,
-                                        size: 11.w,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                      SizedBox(width: spacerSize4),
-                                      BaseText(
-                                        text:
-                                            controller
-                                                    .professionalProfileData
-                                                    .value!
-                                                    .data!
-                                                    .subscriptionPlan ==
-                                                "trial"
-                                            ? AppLocalizations.of(
-                                                Get.context!,
-                                              )!.upgradeNow
-                                            : AppLocalizations.of(
-                                                Get.context!,
-                                              )!.renewPlan,
-                                        fontFamily: AppKeys.inter,
-                                        fontSize: fontSize10,
-                                        fontWeight: FontWeight.w600,
-                                        textColor: AppColors.whiteColor,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: spacerSize8),
-                      Divider(
-                        color: AppColors.whiteColor.withValues(alpha: 0.6),
-                        thickness: 0.8,
-                      ),
-                      SizedBox(height: spacerSize8),
-                      Container(
-                        padding: EdgeInsets.all(spacerSize14),
-                        decoration: BoxDecoration(
-                          color: AppColors.whiteColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(spacerSize16),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.access_time,
-                                  size: 14,
-                                  color: AppColors.whiteColor,
-                                ),
-                                SizedBox(width: spacerSize6),
-                                BaseText(
-                                  text: AppLocalizations.of(
-                                    Get.context!,
-                                  )!.subscriptionRemaining.toUpperCase(),
-                                  fontFamily: AppKeys.inter,
-                                  textColor: AppColors.whiteColor,
-                                  fontSize: fontSize10,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: spacerSize6),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: SharedPrefsService.instance
-                                            .getString(AppKeys.remainingDays),
-                                        style: TextStyle(
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.whiteColor,
-                                          fontFamily: AppKeys.inter,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            " ${AppLocalizations.of(Get.context!)!.days} ${AppLocalizations.of(Get.context!)!.left}",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: AppColors.offWhite70,
-                                          fontFamily: AppKeys.inter,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    BaseText(
-                                      text: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.expDate,
-                                      fontFamily: AppKeys.inter,
-                                      textColor: AppColors.whiteColor,
-                                      fontSize: fontSize10,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    SizedBox(height: spacerSize2),
-                                    BaseText(
-                                      text: BaseDateTimeFormat.format(
-                                        dateTime:
-                                            controller
-                                                .professionalProfileData
-                                                .value!
-                                                .data!
-                                                .endDate ??
-                                            "",
-                                        format: "MMM dd, yyyy",
-                                      ),
-                                      fontFamily: AppKeys.inter,
-                                      textColor: AppColors.offWhite70,
-                                      fontSize: fontSize12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 4,
-                  margin: EdgeInsets.only(top: 0.3, left: 10.w, right: 10.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(spacerSize24),
-                    gradient: AppColors.linearGradientForBtn,
-                  ),
-                ),
-              ],
+      () => controller.currentSubscriptionStatusModel.value != null
+          ? SubscriptionStatusViewWidget(
+              controller.currentSubscriptionStatusModel.value!,
+              onUpgradeRefresh: () {
+                // controller.getProfessionalProfileDetail();
+              },
             )
           : Container(),
     );

@@ -58,7 +58,7 @@ class LandscapeDesignViewModel extends GetxController {
         "Notice",
         "This style is already applied",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.liteGreenColor,
+        backgroundColor: AppColors.greenColor,
         colorText: AppColors.whiteColor,
       );
       return;

@@ -25,12 +25,12 @@ const List<_AnalysisStage> _stages = [
   _AnalysisStage(
     message: 'Uploading image...',
     icon: Icons.cloud_upload_rounded,
-    accentColor: AppColors.liteGreenColor,
+    accentColor: AppColors.greenColor,
   ),
   _AnalysisStage(
     message: 'Analyzing plant...',
     icon: Icons.biotech_rounded,
-    accentColor: AppColors.darkGreenColor,
+    accentColor: AppColors.greenColor,
   ),
   _AnalysisStage(
     message: 'Identifying plant species...',
@@ -40,12 +40,12 @@ const List<_AnalysisStage> _stages = [
   _AnalysisStage(
     message: 'Generating care recommendations...',
     icon: Icons.spa_rounded,
-    accentColor: AppColors.toLiteGreenColor,
+    accentColor: AppColors.greenColor,
   ),
   _AnalysisStage(
     message: 'Preparing results...',
     icon: Icons.auto_awesome_rounded,
-    accentColor: AppColors.liteGreenColor,
+    accentColor: AppColors.greenColor,
   ),
 ];
 

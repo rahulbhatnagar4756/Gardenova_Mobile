@@ -90,8 +90,8 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                         color: AppColors.whiteColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: AppColors.liteGreenColor.withValues(
-                            alpha: 0.3,
+                          color: AppColors.greenColor.withValues(
+                            alpha: 0.15,
                           ),
                         ),
                       ),
@@ -179,9 +179,11 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(spacerSize16),
                       decoration: BoxDecoration(
-                        color: AppColors.toToLiteGreenColor,
+                        color: AppColors.greenColor.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.liteGreenColor),
+                        border: Border.all(
+                          color: AppColors.greenColor.withValues(alpha: 0.25),
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

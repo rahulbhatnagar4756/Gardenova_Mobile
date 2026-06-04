@@ -6,6 +6,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 import 'model/plan_model.dart';
+import '../../settings/model/subscription_local_status_ui_model.dart';
 
 class UpgradePlanController extends GetxController {
   RxBool isTabMonthly = true.obs;
@@ -18,16 +19,46 @@ class UpgradePlanController extends GetxController {
   RxList<PlanModel> planList = <PlanModel>[].obs;
   PlanModel? selectedPlanData;
   RxBool isLoading = false.obs;
+  SubscriptionStatusUiModel? currentModel;
 
   @override
   void onInit() {
     if (Get.arguments != null) {
-      screenType.value = Get.arguments[AppKeys.screenType] ?? "";
+      if (Get.arguments is SubscriptionStatusUiModel) {
+        currentModel = Get.arguments as SubscriptionStatusUiModel;
+        screenType.value = AppKeys.dashboard;
+
+        if (currentModel!.updatedAt != null) {
+          try {
+            final expirationDate = DateTime.parse(
+              currentModel!.updatedAt!,
+            ).toLocal();
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            final exp = DateTime(
+              expirationDate.year,
+              expirationDate.month,
+              expirationDate.day,
+            );
+            final difference = exp.difference(today).inDays;
+            remainingDays.value = difference.clamp(0, 365).toString();
+          } catch (_) {
+            remainingDays.value = "0";
+          }
+        } else {
+          remainingDays.value = "0";
+        }
+      } else if (Get.arguments is Map) {
+        screenType.value = Get.arguments[AppKeys.screenType] ?? "";
+        remainingDays.value =
+            SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? "0";
+      }
+    } else {
+      remainingDays.value =
+          SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? "0";
     }
-    remainingDays.value =
-        SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? "0";
     callGetAllPlanListApi();
-    if (SharedPrefsService.instance.getString(AppKeys.remainingDays) == "0") {
+    if (remainingDays.value == "0") {
       PlanExpireDialog();
     }
     super.onInit();
@@ -86,6 +117,78 @@ class UpgradePlanController extends GetxController {
       planList.clear();
       planList.addAll(planResponse.data!.plans ?? []);
     }
+    _addMockPlants();
     isLoading.value = false;
+  }
+
+  void _addMockPlants() {
+    planList.clear();
+
+    planList.add(
+      PlanModel(
+        id: "1",
+        planName: "Free",
+        description:
+            "3 diagnosis scans/month\n1 landscape generation/month\nSave 5 plants\nBasic reminders",
+        priceMonthly: "0",
+        priceAnnual: "0",
+        citiesCoverage: 5,
+        appearInSearch: false,
+        leadsLimit: 0,
+        premiumProfileBadge: false,
+        priorityCustomerSupport: false,
+        status: "active",
+      ),
+    );
+
+    planList.add(
+      PlanModel(
+        id: "2",
+        planName: "Starter",
+        description: "15 diagnosis scans\n2 landscape generations\n25 plants",
+        priceMonthly: "99",
+        priceAnnual: "999",
+        citiesCoverage: 25,
+        appearInSearch: true,
+        leadsLimit: 15,
+        premiumProfileBadge: false,
+        priorityCustomerSupport: false,
+        status: "active",
+      ),
+    );
+
+    planList.add(
+      PlanModel(
+        id: "3",
+        planName: "Plus",
+        description:
+            "30 diagnosis scans\n5 landscape generations\nUnlimited plants\nAI Care Assistant\nHD renders",
+        priceMonthly: "199",
+        priceAnnual: "1,999",
+        citiesCoverage: 100,
+        appearInSearch: true,
+        leadsLimit: 0,
+        premiumProfileBadge: true,
+        priorityCustomerSupport: false,
+        status: "active",
+      ),
+    );
+
+    planList.add(
+      PlanModel(
+        id: "4",
+        planName: "Pro",
+        description:
+            "50 diagnosis scans\n10 landscape generations\nPDF export\nPremium styles\nBefore/After download",
+        priceMonthly: "299",
+        priceAnnual: "2,999",
+        citiesCoverage: 500,
+        appearInSearch: true,
+        leadsLimit: 0,
+        premiumProfileBadge: true,
+        priorityCustomerSupport: true,
+        status: "active",
+      ),
+    );
   }
 }

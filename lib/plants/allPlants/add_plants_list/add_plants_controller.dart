@@ -106,6 +106,7 @@ class AllPlantsController extends GetxController {
 
       case 5:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.profile);
         break;
       case 6:
@@ -130,6 +131,7 @@ class AllPlantsController extends GetxController {
         //   Get.find<DashboardController>().refreshSoilAnalysis.refresh();
         // }
         // Get.until((route) => route.settings.name == Routes.settings);
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.settings);
         break;
 

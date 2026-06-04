@@ -10,6 +10,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import '../../settings/settings_view_model.dart';
 import '../../utils/shared_prefs_service.dart';
+import '../../utils/utils.dart';
 import 'clickable_image.dart';
 import 'common_click_widget.dart';
 
@@ -79,6 +80,7 @@ class CircularBottomAppBar extends StatelessWidget
                     return GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        Utils.callSettingBasicApi();
                         Get.toNamed(Routes.profile);
                       },
                       child: AbsorbPointer(
@@ -99,7 +101,7 @@ class CircularBottomAppBar extends StatelessWidget
                               width: double.infinity,
                               fit: BoxFit.cover,
                               heroTag: "profile_image_appbar",
-                              errorWidget: Image.asset(   
+                              errorWidget: Image.asset(
                                 AppAssets.appLogo,
                                 fit: BoxFit.cover,
                               ),

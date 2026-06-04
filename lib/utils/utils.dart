@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/settings/settings_view_model.dart';
 
 class Utils {
   Utils._();
@@ -43,5 +44,9 @@ class Utils {
     }
   }
 
-  
+  static Future<void> callSettingBasicApi() async {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      await Get.find<SettingsViewModel>().initFunctions();
+    }
+  }
 }

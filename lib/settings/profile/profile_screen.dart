@@ -12,6 +12,8 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../base/widgets/subscription_status_view_widget.dart';
+
 class ProfileScreen extends GetWidget<SettingsViewModel> {
   const ProfileScreen({super.key});
 
@@ -53,6 +55,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   title: AppLocalizations.of(context)!.myProfile,
                 ),
                 SizedBox(height: 24.h),
+                subscriptionPlanCard(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: buildCategoryCard([
@@ -122,6 +125,19 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
         ],
       ),
       child: Column(children: children),
+    );
+  }
+
+  Widget subscriptionPlanCard() {
+    return Obx(
+      () => controller.currentSubscriptionStatusModel.value != null
+          ? SubscriptionStatusViewWidget(
+              controller.currentSubscriptionStatusModel.value!,
+              onUpgradeRefresh: () {
+                // controller.getProfessionalProfileDetail();
+              },
+            ).paddingSymmetric(horizontal: 16.w)
+          : Container(),
     );
   }
 }

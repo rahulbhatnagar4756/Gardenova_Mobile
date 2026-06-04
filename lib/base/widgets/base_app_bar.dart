@@ -9,6 +9,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../utils/utils.dart';
 import 'common_click_widget.dart';
 
 // class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -166,6 +167,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
                   PopupMenuItem(
                     padding: const EdgeInsets.all(spacerSize10),
                     onTap: () {
+                      Utils.callSettingBasicApi();
                       Get.toNamed(Routes.profile);
                     },
                     child: BaseText(

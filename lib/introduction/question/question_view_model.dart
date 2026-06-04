@@ -35,6 +35,11 @@ class QuestionViewModel extends GetxController {
   TextEditingController stateSearchController = TextEditingController();
   TextEditingController citySearchController = TextEditingController();
   bool cameFromSetting = false;
+  bool showExtraPreference = false;
+
+  List<Questions> get multipleChoiceQuestions => questionList
+      .where((q) => q.options != null && q.options!.isNotEmpty)
+      .toList();
 
   @override
   onInit() {
@@ -55,7 +60,7 @@ class QuestionViewModel extends GetxController {
       );
       if (questionResponse.data != null) {
         questionList.value = questionResponse.data!.questions!;
-        if (questionList.isNotEmpty && currentQuestion.value == 0) {
+        if (multipleChoiceQuestions.isNotEmpty && currentQuestion.value == 0) {
           currentQuestion.value = 1;
         }
       }
@@ -155,6 +160,7 @@ class QuestionViewModel extends GetxController {
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
+            print('cameFromSetting  $cameFromSetting');
             if (cameFromSetting) {
               // Get.back();
               // Get.back();
@@ -163,7 +169,7 @@ class QuestionViewModel extends GetxController {
                   plantResponse.data!.responseId ?? "",
                 );
               }
-              Get.until((route) => route.settings.name == Routes.settings);
+              Get.until((route) => route.settings.name == Routes.profile);
             } else {
               SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
               Get.offAllNamed(
@@ -177,46 +183,60 @@ class QuestionViewModel extends GetxController {
     }
   }
 
+  void submitAnswers() {
+    answerList.clear();
+    for (var question in questionList) {
+      if (question.options != null && question.options!.isNotEmpty) {
+        if (question.selectedAnswer != null &&
+            question.selectedAnswer!.isNotEmpty) {
+          answerList.add(
+            Answers(
+              type: AppKeys.multipleChoiceType,
+              questionId: question.questionId,
+              selectedOption: question.selectedAnswer,
+            ),
+          );
+        }
+      } else if (showExtraPreference) {
+        answerList.add(
+          Answers(
+            type: AppKeys.dropDownType,
+            questionId: question.questionId,
+            selectedAddress: SelectedAddress(
+              city: cityController.text,
+              state: stateController.text,
+            ),
+          ),
+        );
+      }
+    }
+    saveAnswer(saveAnswer: SaveAnswerRequestModel(answers: answerList));
+  }
+
   void onContinuePressed() {
-    // currentQuestion goes from 1..questionList.length for questions,
-    // and questionList.length + 1 for the state/city tab.
-    if (currentQuestion.value <= questionList.length) {
-      if (questionList[currentQuestion.value - 1].selectedAnswer == null) {
+    if (currentQuestion.value <= multipleChoiceQuestions.length) {
+      if (multipleChoiceQuestions[currentQuestion.value - 1].selectedAnswer ==
+          null) {
         BaseSnackBar.show(
           title: AppStrings.selectionRequired.tr,
           message: AppStrings.pleaseSelectAnAnswerToContinue.tr,
         );
         return;
       } else {
-        // When moving to the last tab (state/city), pre-fetch states
-        if (currentQuestion.value == questionList.length) {
-          getStateList();
+        if (currentQuestion.value == multipleChoiceQuestions.length) {
+          if (showExtraPreference) {
+            getStateList();
+            currentQuestion++;
+          } else {
+            submitAnswers();
+          }
+        } else {
+          currentQuestion++;
         }
-        currentQuestion++;
       }
     } else {
       if (formKey.currentState?.validate() == true) {
-        answerList.clear();
-        for (var question in questionList) {
-          answerList.add(
-            question.selectedAnswer != null &&
-                    question.selectedAnswer!.isNotEmpty
-                ? Answers(
-                    type: AppKeys.multipleChoiceType,
-                    questionId: question.questionId,
-                    selectedOption: question.selectedAnswer,
-                  )
-                : Answers(
-                    type: AppKeys.dropDownType,
-                    questionId: question.questionId,
-                    selectedAddress: SelectedAddress(
-                      city: cityController.text,
-                      state: stateController.text,
-                    ),
-                  ),
-          );
-        }
-        saveAnswer(saveAnswer: SaveAnswerRequestModel(answers: answerList));
+        submitAnswers();
       }
     }
   }
@@ -225,8 +245,8 @@ class QuestionViewModel extends GetxController {
     if (currentQuestion.value <= 1) {
       Get.back();
     } else {
-      // Only clear state/city fields when leaving the state/city tab
-      if (currentQuestion.value == questionList.length + 1) {
+      if (showExtraPreference &&
+          currentQuestion.value == multipleChoiceQuestions.length + 1) {
         stateController.clear();
         cityController.clear();
         stateSearchController.clear();

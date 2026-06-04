@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/network_services/app_exceptions.dart';
 import '../../utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
+import '../../utils/utils.dart';
 import '../dashboard_controller.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
@@ -276,6 +277,7 @@ class PlantDiagnosisViewModel extends GetxController {
 
       case 5:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.profile);
         break;
 
@@ -286,6 +288,7 @@ class PlantDiagnosisViewModel extends GetxController {
 
       case 7:
         Get.back();
+        Utils.callSettingBasicApi();
         Get.toNamed(Routes.settings);
         break;
 
