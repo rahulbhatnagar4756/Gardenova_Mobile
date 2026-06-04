@@ -1,5 +1,3 @@
-import 'dart:developer' show log;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
@@ -57,7 +55,7 @@ class AllPlantsDetailsController extends GetxController {
       plantId.value = Get.arguments['plant_id'].toString();
       screenType.value = Get.arguments['screen_type'].toString();
     }
-    print(
+    debugPrint(
       'AllPlantsDetailsController plantId $plantId and screenType $screenType',
     );
     if (screenType.value == "add") {

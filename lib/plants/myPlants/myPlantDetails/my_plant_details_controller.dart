@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';

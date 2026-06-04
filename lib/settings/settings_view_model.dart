@@ -234,44 +234,44 @@ class SettingsViewModel extends GetxController {
     //   updatedAt: profileResponse.data!.endDate,
     // );
     // Trial Subscription
-    final trialSubscription = SubscriptionStatusUiModel(
-      name: "Trial",
-      status: "Active",
-      isActive: true,
-      isTrialActive: true,
-      createdAt: "2026-06-01",
-      updatedAt: "2026-06-15",
-    );
+    // final trialSubscription = SubscriptionStatusUiModel(
+    //   name: "Trial",
+    //   status: "Active",
+    //   isActive: true,
+    //   isTrialActive: true,
+    //   createdAt: "2026-06-01",
+    //   updatedAt: "2026-06-15",
+    // );
 
-    // Active Subscription
-    final activeSubscription = SubscriptionStatusUiModel(
-      name: "Premium",
-      status: "Active",
-      isActive: true,
-      isTrialActive: false,
-      createdAt: "2026-05-01",
-      updatedAt: "2026-07-01",
-    );
+    // // Active Subscription
+    // final activeSubscription = SubscriptionStatusUiModel(
+    //   name: "Premium",
+    //   status: "Active",
+    //   isActive: true,
+    //   isTrialActive: false,
+    //   createdAt: "2026-05-01",
+    //   updatedAt: "2026-07-01",
+    // );
 
-    // Cancelled Subscription
-    final cancelledSubscription = SubscriptionStatusUiModel(
-      name: "Premium",
-      status: "Cancelled",
-      isActive: false,
-      isTrialActive: false,
-      createdAt: "2026-04-01",
-      updatedAt: "2026-05-15",
-    );
+    // // Cancelled Subscription
+    // final cancelledSubscription = SubscriptionStatusUiModel(
+    //   name: "Premium",
+    //   status: "Cancelled",
+    //   isActive: false,
+    //   isTrialActive: false,
+    //   createdAt: "2026-04-01",
+    //   updatedAt: "2026-05-15",
+    // );
 
-    // Renewed Subscription
-    final renewedSubscription = SubscriptionStatusUiModel(
-      name: "Premium",
-      status: "Renewed",
-      isActive: true,
-      isTrialActive: false,
-      createdAt: "2026-06-01",
-      updatedAt: "2027-06-01",
-    );
+    // // Renewed Subscription
+    // final renewedSubscription = SubscriptionStatusUiModel(
+    //   name: "Premium",
+    //   status: "Renewed",
+    //   isActive: true,
+    //   isTrialActive: false,
+    //   createdAt: "2026-06-01",
+    //   updatedAt: "2027-06-01",
+    // );
     // currentSubscriptionStatusModel.value = trialSubscription;
     // currentSubscriptionStatusModel.value = activeSubscription;
     // currentSubscriptionStatusModel.value = cancelledSubscription;

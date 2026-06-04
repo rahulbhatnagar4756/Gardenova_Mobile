@@ -99,9 +99,9 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
   }
 
   Widget settingItemsLayout(BuildContext context) {
-    final bool isProfessional =
-        SharedPrefsService.instance.getString(AppKeys.role) ==
-        AppKeys.professional;
+    // final bool isProfessional =
+    //     SharedPrefsService.instance.getString(AppKeys.role) ==
+    //     AppKeys.professional;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
