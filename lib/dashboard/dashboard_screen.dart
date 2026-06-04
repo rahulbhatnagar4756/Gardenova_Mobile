@@ -212,7 +212,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 case BottomNavType.report:
                   break;
                 case BottomNavType.profile:
-                  Get.toNamed(Routes.settings)?.then((value) {
+                  Get.toNamed(Routes.profile)?.then((value) {
                     controller.selectedNavType.value = BottomNavType.home;
                   });
                   break;

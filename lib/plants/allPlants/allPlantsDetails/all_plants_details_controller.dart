@@ -2,9 +2,11 @@ import 'dart:developer' show log;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
 import '../../../base/widgets/base_date_format.dart';
+import '../../../dashboard/dashboard_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/routes.dart';
@@ -339,10 +341,23 @@ class AllPlantsDetailsController extends GetxController {
       return false;
     });
     debugPrint("Filtered map :::::: $map");
-
     final response = await plantsRepository.addPlant(addPlantReq: map);
-
     if (response != null) {
+      AllPlantsController? myPlantsController;
+      if (Get.isRegistered<AllPlantsController>()) {
+        myPlantsController = Get.find<AllPlantsController>();
+        myPlantsController.allPlantList.removeWhere(
+          (element) => element.id?.toString() == plantId.value,
+        );
+        myPlantsController.allPlantList.refresh();
+      }
+      if (Get.isRegistered<DashboardController>()) {
+        var dashboardController = Get.find<DashboardController>();
+        dashboardController.plantRecommendationList.removeWhere(
+          (element) => element.id?.toString() == plantId.value,
+        );
+        dashboardController.plantRecommendationList.refresh();
+      }
       plantDetailData.value.data?.alreadyAdded = true;
       plantDetailData.refresh();
       PlantAddSuccessDialog.show(
@@ -354,9 +369,10 @@ class AllPlantsDetailsController extends GetxController {
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
         onButtonPressed: () async {
           if (Get.isRegistered<MyPlantsController>()) {
-            Get.back();
-            Get.back();
-            Get.back();
+            // Get.back();
+            // Get.back();
+            // Get.back();
+            Get.until((route) => route.settings.name == Routes.allPlantsScreen);
           } else {
             Get.back();
             await Future.delayed(Duration(milliseconds: 100));

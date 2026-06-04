@@ -150,7 +150,9 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                                 padding: const EdgeInsets.all(spacerSize14),
                                 decoration: BoxDecoration(
                                   color: AppColors.greenColor,
-                                  borderRadius: BorderRadius.circular(spacerSize12),
+                                  borderRadius: BorderRadius.circular(
+                                    spacerSize12,
+                                  ),
                                 ),
                                 child: Image.asset(
                                   Assets.imagesNotification,
@@ -167,7 +169,9 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
                                 padding: const EdgeInsets.all(spacerSize14),
                                 decoration: BoxDecoration(
                                   color: AppColors.red,
-                                  borderRadius: BorderRadius.circular(spacerSize12),
+                                  borderRadius: BorderRadius.circular(
+                                    spacerSize12,
+                                  ),
                                 ),
                                 child: const Icon(
                                   Icons.delete_outline_rounded,
@@ -763,11 +767,11 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
         Get.back(); // close dialog
         controller.callDeletePlantApi().then((success) {
           if (success) {
-            Get.back(); // navigate back to my plants list screen
-            BaseSnackBar.show(
-              title: appName,
-              message: successMessage,
-            );
+            // Get.back(); // navigate back to my plants list screen
+            Get.until((route) => route.settings.name == Routes.myPlantsScreen);
+            Future.delayed(Duration(milliseconds: 400), () {
+              BaseSnackBar.show(title: appName, message: successMessage);
+            });
           }
         });
       },

@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "581483405194-gnu18fc8129u7p760veukv1csekmd408.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "f7bd919050407562f066c1c567b82e9215395bcd"
+          }
+        },
+        {
+          "client_id": "581483405194-nebdha5tkeub73b2iq8t8u0khf6h9lb9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "aef6a82f9ade057d547e58b9857f88e465ed0c9b"
+          }
+        },
+        {
           "client_id": "581483405194-urtvjqiakseva6mnnv88tv5gg8oagqiu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
