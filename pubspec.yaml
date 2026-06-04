@@ -52,6 +52,8 @@ dependencies:
   firebase_crashlytics: ^5.2.2
   firebase_analytics: ^12.4.1
   geocoding: ^4.0.0
+  in_app_purchase: ^3.3.0
+  google_mobile_ads: ^8.0.0
   
 
   flutter_localizations:

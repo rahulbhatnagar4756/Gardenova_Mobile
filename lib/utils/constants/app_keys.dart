@@ -31,4 +31,5 @@ class AppKeys {
   static const remainingDays = 'remainingDays';
   static const currentLatKey = 'currentLat';
   static const currentLongKey = 'currentLongKey';
+  
 }

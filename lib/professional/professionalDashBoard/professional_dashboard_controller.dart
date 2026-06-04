@@ -12,6 +12,8 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 
+import '../../services/subscription_service.dart';
+
 class ProfessionalDashboardController extends GetxController {
   RxBool isUserLoggedIn = false.obs;
   RxBool isLoading = false.obs;
@@ -68,6 +70,7 @@ class ProfessionalDashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    SubscriptionService.instance.checkAndRecoverPendingPurchases();
     if (Get.arguments != null && Get.arguments < 2) {
       debugPrint("selected index:::::${Get.arguments}");
       selectedTabIndex.value = Get.arguments;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
+import '../../../services/admob_service.dart';
 import '../../plant_repository.dart';
 import '../myPlantsList/my_plants_controller.dart';
 
@@ -12,13 +14,40 @@ class MyPlantDetailsController extends GetxController {
   RxBool isLoading = false.obs;
   RxString errorMessage = "".obs;
 
+  BannerAd? bannerAd;
+  RxBool isAdLoaded = false.obs;
+
   @override
   void onInit() {
     if (Get.arguments != null) {
       plantId.value = Get.arguments.toString();
     }
     callGetMyPlantDetailsApi();
+    loadBannerAd();
     super.onInit();
+  }
+
+  void loadBannerAd() {
+    if (!AdMobService.instance.shouldShowBanners) {
+      isAdLoaded.value = false;
+      return;
+    }
+    bannerAd = AdMobService.instance.loadBannerAd(
+      onAdLoaded: (ad) {
+        isAdLoaded.value = true;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 
   Future callGetMyPlantDetailsApi() async {

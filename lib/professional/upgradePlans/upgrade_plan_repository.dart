@@ -13,4 +13,12 @@ class UpgradePlanRepository {
     var planResponse = await ApiRepository.instance.get(getPlanUrl);
     return planResponse;
   }
+
+  verifyPurchase(Map<String, dynamic> body) async {
+    var verifyResponse = await ApiRepository.instance.post(
+      'api/v1/subscription/verify',
+      body: body,
+    );
+    return verifyResponse;
+  }
 }

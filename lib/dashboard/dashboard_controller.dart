@@ -18,6 +18,10 @@ import '../utils/location_helper/location_service.dart';
 import '../utils/permission_manager.dart';
 import '../utils/utils.dart';
 
+import '../services/subscription_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../services/admob_service.dart';
+
 enum ImagePickerSource { diagnosis, landscape }
 
 class DashboardController extends GetxController {
@@ -44,8 +48,13 @@ class DashboardController extends GetxController {
     ChartData('Clay', 1, AppColors.clayColor),
   ].obs;
 
+  BannerAd? bannerAd;
+  RxBool isAdLoaded = false.obs;
+
   @override
   void onInit() {
+    SubscriptionService.instance.checkAndRecoverPendingPurchases();
+    loadBannerAd();
     responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getPlantsRecommendations(responseId);
@@ -55,6 +64,29 @@ class DashboardController extends GetxController {
     getCurrentLocation();
 
     super.onInit();
+  }
+
+  void loadBannerAd() {
+    if (!AdMobService.instance.shouldShowBanners) {
+      isAdLoaded.value = false;
+      return;
+    }
+    bannerAd = AdMobService.instance.loadBannerAd(
+      onAdLoaded: (ad) {
+        isAdLoaded.value = true;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 
   void navigateToNext(int index) {
@@ -327,7 +359,9 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-          goToPlantDiagnosis(result);
+          _showAdAndProceed(() {
+            goToPlantDiagnosis(result);
+          });
         }
         return;
       }
@@ -346,15 +380,72 @@ class DashboardController extends GetxController {
           Get.back();
         }
 
-        if (source == ImagePickerSource.diagnosis) {
-          goToPlantDiagnosis(pickedFile);
-        } else {
-          goToLandscapeDesign(pickedFile, selectedStyle);
-        }
+        _showAdAndProceed(() {
+          if (source == ImagePickerSource.diagnosis) {
+            goToPlantDiagnosis(pickedFile);
+          } else {
+            goToLandscapeDesign(pickedFile, selectedStyle);
+          }
+        });
       }
     } catch (e) {
       debugPrint("Error::: $e");
     }
+  }
+
+  void _showAdAndProceed(VoidCallback onProceed) {
+    if (!AdMobService.instance.shouldShowRewarded) {
+      onProceed();
+      return;
+    }
+
+    // Show loading dialog
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(color: AppColors.greenColor),
+      ),
+      barrierDismissible: false,
+    );
+
+    bool hasProceeded = false;
+    bool earnedReward = false;
+
+    // Helper to dismiss loading and proceed
+    void proceed() {
+      if (!hasProceeded) {
+        hasProceeded = true;
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+        onProceed();
+      }
+    }
+
+    // Helper to just close loading dialog (without proceeding)
+    void cancel() {
+      if (!hasProceeded) {
+        hasProceeded = true; // prevent any subsequent actions
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+      }
+    }
+
+    AdMobService.instance.showRewardedAd(
+      onUserEarnedReward: () {
+        earnedReward = true;
+      },
+      onAdDismissed: () {
+        if (earnedReward) {
+          proceed();
+        } else {
+          cancel();
+        }
+      },
+      onAdFailedToShow: () {
+        proceed();
+      },
+    );
   }
 
   // Future<void> pickImage({required bool isCamera}) async {

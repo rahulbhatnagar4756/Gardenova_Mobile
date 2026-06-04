@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 
@@ -13,6 +14,7 @@ import '../../../base/widgets/base_text.dart';
 import '../../../base/widgets/circular_bottom_app_bar.dart';
 import '../../../dashboard/components/full_drawer.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../services/admob_service.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
@@ -59,11 +61,14 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
       ),
 
       /// 🔹 BODY
-      body: RefreshIndicator(
-        onRefresh: () async {
-          controller.pageNumber.value = 1;
-          controller.callGetMyPlantListApi();
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                controller.pageNumber.value = 1;
+                controller.callGetMyPlantListApi();
+              },
 
         /// 🚀 IMPORTANT: Obx wraps CustomScrollView to handle slivers correctly
         child: Obx(
@@ -155,15 +160,28 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
                       )
                     : const SizedBox(),
               ),
-
-              /// 🔹 SPACE
-              SliverToBoxAdapter(child: SizedBox(height: spacerSize20)),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+    Obx(() {
+      if (AdMobService.instance.shouldShowBanners &&
+          controller.isAdLoaded.value &&
+          controller.bannerAd != null) {
+        return Container(
+          alignment: Alignment.center,
+          width: controller.bannerAd!.size.width.toDouble().w,
+          height: controller.bannerAd!.size.height.toDouble().h,
+          child: AdWidget(ad: controller.bannerAd!),
+        );
+      }
+      return const SizedBox.shrink();
+    }),
+  ],
+),
+);
+}
 
   /// 🔹 HEADER UI
   Widget titleWithSearch(BuildContext context) {

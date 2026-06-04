@@ -27,7 +27,7 @@ android {
         }
     }
     namespace = "com.gardenova.digisoft"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -45,7 +45,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
@@ -81,5 +81,6 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.facebook.android:facebook-login:latest.release")
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("com.google.android.gms:play-services-ads:25.3.0")
 
 }

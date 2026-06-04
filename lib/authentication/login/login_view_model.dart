@@ -51,7 +51,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     );
     // need change
     if (kDebugMode) {
-      emailController.text = 'ashirwad1@yopmail.com';
+      emailController.text = 'ashirwad11@yopmail.com';
       passwordController.text = 'Test@123';
     }
   }

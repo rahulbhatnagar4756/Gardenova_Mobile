@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide appFlavor;
@@ -7,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/firebase_options.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -41,6 +44,9 @@ Future<void> main() async {
 
   Flavor? currentFlavor;
   String? baseUrl;
+  String? adMobId;
+  String? bannerId;
+  String? rewardId;
 
   switch (flavorString.toLowerCase()) {
     case 'dev':
@@ -51,10 +57,26 @@ Future<void> main() async {
     case 'prod':
       currentFlavor = Flavor.prod;
       baseUrl = dotenv.env['prod_url'];
+
       break;
   }
-
-  AppConfig.create(appName: appName, baseUrl: baseUrl!, flavor: currentFlavor!);
+  if (Platform.isIOS) {
+    adMobId = dotenv.env['android_admob_id'];
+    bannerId = dotenv.env['android_banner_id'];
+    rewardId = dotenv.env['android_reward_id'];
+  } else {
+    adMobId = dotenv.env['android_admob_id'];
+    bannerId = dotenv.env['android_banner_id'];
+    rewardId = dotenv.env['android_reward_id'];
+  }
+  AppConfig.create(
+    appName: appName,
+    baseUrl: baseUrl!,
+    flavor: currentFlavor!,
+    adMobId: adMobId,
+    bannerId: bannerId,
+    rewardId:rewardId
+  );
 
   SharedPrefsService sharedPrefsService = SharedPrefsService();
   await sharedPrefsService.init();
@@ -75,6 +97,7 @@ Future<void> main() async {
   selectedLocale = enUS;
 
   await initServices();
+  MobileAds.instance.initialize();
   FlutterNativeSplash.remove();
 
   SharedPrefsService.instance.setString(

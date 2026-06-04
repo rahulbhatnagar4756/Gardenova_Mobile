@@ -9,7 +9,6 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
-import 'package:kasagardem/utils/routes.dart';
 
 import '../../l10n/app_localizations.dart';
 
@@ -350,16 +349,22 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
             // Bottom Button
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: spacerSize16),
-              child: SizedBox(
-                width: double.infinity,
-                child: BaseButton(
-                  onPressed: () {
-                    Get.offAllNamed(Routes.professionalDashboard);
-                  },
-                  backgroundColor: AppColors.greenColor,
-                  buttonLabel: "Full Payment",
-                  fontSize: fontSize15,
-                  textColor: Colors.white,
+              child: Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  child: BaseButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () {
+                            controller.startPurchaseFlow();
+                          },
+                    backgroundColor: controller.isLoading.value
+                        ? AppColors.liteGreyColor
+                        : AppColors.greenColor,
+                    buttonLabel: controller.isLoading.value ? "Processing..." : "Full Payment",
+                    fontSize: fontSize15,
+                    textColor: Colors.white,
+                  ),
                 ),
               ),
             ),

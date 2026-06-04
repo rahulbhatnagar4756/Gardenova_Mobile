@@ -157,6 +157,14 @@ class PlanModel {
     _isSelect = value;
   }
 
+  set priceMonthly(String? value) {
+    _priceMonthly = value;
+  }
+
+  set priceAnnual(String? value) {
+    _priceAnnual = value;
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
 

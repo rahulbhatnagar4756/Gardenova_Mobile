@@ -7,6 +7,7 @@ import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 import 'model/plan_model.dart';
 import '../../settings/model/subscription_local_status_ui_model.dart';
+import '../../services/subscription_service.dart';
 
 class UpgradePlanController extends GetxController {
   RxBool isTabMonthly = true.obs;
@@ -23,6 +24,7 @@ class UpgradePlanController extends GetxController {
 
   @override
   void onInit() {
+    initIAP();
     if (Get.arguments != null) {
       if (Get.arguments is SubscriptionStatusUiModel) {
         currentModel = Get.arguments as SubscriptionStatusUiModel;
@@ -118,7 +120,65 @@ class UpgradePlanController extends GetxController {
       planList.addAll(planResponse.data!.plans ?? []);
     }
     _addMockPlants();
+    updateStorePrices();
     isLoading.value = false;
+  }
+
+  Future<void> initIAP() async {
+    await SubscriptionService.instance.setupInAppPurchase();
+    updateStorePrices();
+  }
+
+  void updateStorePrices() {
+    if (SubscriptionService.instance.isAvailable &&
+        SubscriptionService.instance.products.isNotEmpty) {
+      for (var plan in planList) {
+        final monthlyProdId = SubscriptionService.instance.getProductId(
+          plan.planName ?? "",
+          true,
+        );
+        final annualProdId = SubscriptionService.instance.getProductId(
+          plan.planName ?? "",
+          false,
+        );
+
+        if (monthlyProdId.isNotEmpty) {
+          final monthlyProduct = SubscriptionService.instance.products
+              .firstWhereOrNull((p) => p.id == monthlyProdId);
+          if (monthlyProduct != null) {
+            plan.priceMonthly = monthlyProduct.rawPrice.toInt().toString();
+          }
+        }
+        if (annualProdId.isNotEmpty) {
+          final annualProduct = SubscriptionService.instance.products
+              .firstWhereOrNull((p) => p.id == annualProdId);
+          if (annualProduct != null) {
+            plan.priceAnnual = annualProduct.rawPrice.toInt().toString();
+          }
+        }
+      }
+      planList.refresh();
+    }
+  }
+
+  void startPurchaseFlow() async {
+    final plan = selectedPlanData;
+    if (plan == null) {
+      BaseSnackBar.show(title: "Plan", message: "Please select a plan");
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      await SubscriptionService.instance.buyPlan(
+        plan,
+        isTabMonthly.value,
+        currentModel,
+      );
+    } catch (_) {
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void _addMockPlants() {

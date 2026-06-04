@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
 import '../../../base/widgets/base_date_format.dart';
 import '../../../dashboard/dashboard_controller.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../services/admob_service.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/routes.dart';
 import '../../model/plant_details_model.dart';
@@ -49,6 +51,9 @@ class AllPlantsDetailsController extends GetxController {
     90,
   ];
 
+  BannerAd? bannerAd;
+  RxBool isAdLoaded = false.obs;
+
   @override
   void onInit() {
     if (Get.arguments != null) {
@@ -63,7 +68,31 @@ class AllPlantsDetailsController extends GetxController {
     } else {
       callGetMyPlantDetailsApi();
     }
+    loadBannerAd();
     super.onInit();
+  }
+
+  void loadBannerAd() {
+    if (!AdMobService.instance.shouldShowBanners) {
+      isAdLoaded.value = false;
+      return;
+    }
+    bannerAd = AdMobService.instance.loadBannerAd(
+      onAdLoaded: (ad) {
+        isAdLoaded.value = true;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 
   void toggleWatering(bool value) {

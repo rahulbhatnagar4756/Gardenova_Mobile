@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
+import '../../../services/admob_service.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
@@ -30,6 +32,9 @@ class MyPlantsController extends GetxController {
   String get andCounting => "and counting";
   ScrollController scrollController = ScrollController();
 
+  BannerAd? bannerAd;
+  RxBool isAdLoaded = false.obs;
+
   @override
   void onInit() {
     isUserLoggedIn.value =
@@ -45,7 +50,31 @@ class MyPlantsController extends GetxController {
     });
 
     callGetMyPlantListApi();
+    loadBannerAd();
     super.onInit();
+  }
+
+  void loadBannerAd() {
+    if (!AdMobService.instance.shouldShowBanners) {
+      isAdLoaded.value = false;
+      return;
+    }
+    bannerAd = AdMobService.instance.loadBannerAd(
+      onAdLoaded: (ad) {
+        isAdLoaded.value = true;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 
   void navigateToNext(int index) {
