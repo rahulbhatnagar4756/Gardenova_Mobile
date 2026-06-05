@@ -596,8 +596,7 @@ class MainContentCard extends StatelessWidget {
   }
 
   Widget plantTitle() {
-    bool isAlreadyAdded =
-        controller.plantDetailData.value.data?.alreadyAdded ?? false;
+    controller.plantDetailData.value.data?.alreadyAdded ?? false;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,

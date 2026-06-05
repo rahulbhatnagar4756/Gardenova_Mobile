@@ -68,11 +68,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToIntroductionScreen({required bool isUserAlreadyLogedIn}) {
-    // Get.back();
     bool isSoftLogin =
         SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
-    bool isLoggedIn =
-        SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     String currentRole =
         SharedPrefsService.instance.getString(AppKeys.role) ?? '';
     Future.delayed(Duration(seconds: 1)).then((value) {
