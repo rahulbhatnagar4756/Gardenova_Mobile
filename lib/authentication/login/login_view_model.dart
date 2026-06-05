@@ -193,12 +193,14 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
   void _navigateToDashboardFlow({required String responseIdd}) {
     if (responseIdd.trim().isEmpty) {
+      SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, true);
       Get.offAllNamed(Routes.question);
     } else {
       SharedPrefsService.instance.setString(
         AppKeys.submissionResponseId,
         responseIdd,
       );
+      SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, false);
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       Get.offAllNamed(Routes.dashboard);
     }

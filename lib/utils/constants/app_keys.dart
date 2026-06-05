@@ -4,6 +4,7 @@ class AppKeys {
   static const idToken = 'id_token';
  
   static const isLoggedIn = 'is_logged_in';
+  static const isSoftLoggedIn = 'is_soft_logged_in';
   static const isGuestLoggedIn = 'is_guest_logged_in';
   static const users = 'users';
   static const role = 'role';
