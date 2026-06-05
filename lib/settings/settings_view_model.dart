@@ -254,14 +254,14 @@ class SettingsViewModel extends GetxController {
     // );
 
     // Cancelled Subscription
-    // final cancelledSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Cancelled",
-    //   isActive: false,
-    //   isTrialActive: false,
-    //   createdAt: "2026-04-01",
-    //   updatedAt: "2026-05-15",
-    // );
+    final cancelledSubscription = SubscriptionStatusUiModel(
+      name: "Premium",
+      status: "Cancelled",
+      isActive: false,
+      isTrialActive: false,
+      createdAt: "2026-04-01",
+      updatedAt: "2026-05-15",
+    );
 
     // Renewed Subscription
     // final renewedSubscription = SubscriptionStatusUiModel(
@@ -275,7 +275,7 @@ class SettingsViewModel extends GetxController {
     // need change
     // currentSubscriptionStatusModel.value = trialSubscription;
     // currentSubscriptionStatusModel.value = activeSubscription;
-    // currentSubscriptionStatusModel.value = cancelledSubscription;
+    currentSubscriptionStatusModel.value = cancelledSubscription;
     // currentSubscriptionStatusModel.value = renewedSubscription;
     // currentSubscriptionStatusModel.value = realDetialModel;
 

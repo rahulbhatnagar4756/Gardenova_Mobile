@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../settings/settings_view_model.dart';
 import '../utils/app_config.dart';
 
 class AdMobService {

@@ -5,7 +5,7 @@ import 'model/plan_model.dart';
 
 class UpgradePlanRepository {
   // final String getPlanUrl = 'api/v1/subscription';
-  final String getPlanUrl = 'api/v1/subscription/subscription-plans';
+  final String getPlanUrl = 'api/v1/plans/getplans';
   RxInt remainingDays = 0.obs;
   RxList<PlanModel> planList = <PlanModel>[].obs;
 

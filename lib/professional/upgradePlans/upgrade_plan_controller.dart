@@ -84,15 +84,14 @@ class UpgradePlanController extends GetxController {
     isTabAdditionalCoverage.value = value;
   }
 
-  void selectPlan(int index) {
+  void selectPlan(PlanModel plan) {
     for (int i = 0; i < planList.length; i++) {
-      planList[i].setSelect = i == index;
+      planList[i].setSelect = planList[i] == plan;
     }
-    final selectedPlan = planList[index];
     if (isTabMonthly.value) {
-      selectedPrice.value = "${selectedPlan.priceMonthly!}/mo";
+      selectedPrice.value = "${plan.priceMonthly!}/mo";
     } else {
-      selectedPrice.value = "${selectedPlan.priceAnnual!}/an";
+      selectedPrice.value = "${plan.priceAnnual!}/an";
     }
     planList.refresh();
     selectedPlanData = null;
@@ -117,9 +116,83 @@ class UpgradePlanController extends GetxController {
     if (response != null) {
       PlansResponseModel planResponse = PlansResponseModel.fromJson(response);
       planList.clear();
-      planList.addAll(planResponse.data!.plans ?? []);
+
+      final apiPlans = planResponse.data ?? [];
+      final tiers = ['free', 'starter', 'plus', 'pro'];
+
+      for (var t in tiers) {
+        final tierPlans = apiPlans.where((p) => p.tier == t).toList();
+        if (tierPlans.isEmpty) continue;
+
+        final monthlyPlan = tierPlans.firstWhereOrNull(
+          (p) => p.billingPeriod == 'monthly',
+        );
+        final yearlyPlan = tierPlans.firstWhereOrNull(
+          (p) => p.billingPeriod == 'yearly',
+        );
+        final template = monthlyPlan ?? yearlyPlan ?? tierPlans.first;
+
+        final cities = t == 'free'
+            ? 5
+            : t == 'starter'
+            ? 25
+            : t == 'plus'
+            ? 100
+            : 500;
+        final name = t == 'free'
+            ? 'Free'
+            : t == 'starter'
+            ? 'Starter'
+            : t == 'plus'
+            ? 'Plus'
+            : 'Pro';
+
+        String cleanPrice(String? priceStr) {
+          if (priceStr == null) return "0";
+          final d = double.tryParse(priceStr);
+          if (d == null) return priceStr;
+          return d.toStringAsFixed(0);
+        }
+
+        final consolidatedPlan = PlanModel(
+          id: template.id,
+          planName: name,
+          tier: t,
+          citiesCoverage: cities,
+          priceMonthly: cleanPrice(monthlyPlan?.price ?? "0"),
+          priceAnnual: cleanPrice(
+            yearlyPlan?.price ?? cleanPrice(monthlyPlan?.price ?? "0"),
+          ),
+          appearInSearch: t != 'free',
+          leadsLimit: t == 'free'
+              ? 0
+              : t == 'starter'
+              ? 15
+              : 0,
+          premiumProfileBadge: t == 'plus' || t == 'pro',
+          priorityCustomerSupport: t == 'pro',
+          status: 'active',
+          isSelect: false,
+
+          diagnosisScans: template.diagnosisScans,
+          landscapeGen: template.landscapeGen,
+          maxPlants: template.maxPlants,
+          aiAssistant: template.aiAssistant,
+          hdRenders: template.hdRenders,
+          pdfExport: template.pdfExport,
+          premiumStyles: template.premiumStyles,
+          beforeAfterDownload: template.beforeAfterDownload,
+          basicReminders: template.basicReminders,
+
+          monthlyProductId: monthlyPlan?.productId,
+          yearlyProductId: yearlyPlan?.productId,
+          monthlyId: monthlyPlan?.id,
+          yearlyId: yearlyPlan?.id,
+        );
+
+        planList.add(consolidatedPlan);
+      }
     }
-    _addMockPlants();
     updateStorePrices();
     isLoading.value = false;
   }
@@ -179,76 +252,5 @@ class UpgradePlanController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  void _addMockPlants() {
-    planList.clear();
-
-    planList.add(
-      PlanModel(
-        id: "1",
-        planName: "Free",
-        description:
-            "3 diagnosis scans/month\n1 landscape generation/month\nSave 5 plants\nBasic reminders",
-        priceMonthly: "0",
-        priceAnnual: "0",
-        citiesCoverage: 5,
-        appearInSearch: false,
-        leadsLimit: 0,
-        premiumProfileBadge: false,
-        priorityCustomerSupport: false,
-        status: "active",
-      ),
-    );
-
-    planList.add(
-      PlanModel(
-        id: "2",
-        planName: "Starter",
-        description: "15 diagnosis scans\n2 landscape generations\n25 plants",
-        priceMonthly: "99",
-        priceAnnual: "999",
-        citiesCoverage: 25,
-        appearInSearch: true,
-        leadsLimit: 15,
-        premiumProfileBadge: false,
-        priorityCustomerSupport: false,
-        status: "active",
-      ),
-    );
-
-    planList.add(
-      PlanModel(
-        id: "3",
-        planName: "Plus",
-        description:
-            "30 diagnosis scans\n5 landscape generations\nUnlimited plants\nAI Care Assistant\nHD renders",
-        priceMonthly: "199",
-        priceAnnual: "1,999",
-        citiesCoverage: 100,
-        appearInSearch: true,
-        leadsLimit: 0,
-        premiumProfileBadge: true,
-        priorityCustomerSupport: false,
-        status: "active",
-      ),
-    );
-
-    planList.add(
-      PlanModel(
-        id: "4",
-        planName: "Pro",
-        description:
-            "50 diagnosis scans\n10 landscape generations\nPDF export\nPremium styles\nBefore/After download",
-        priceMonthly: "299",
-        priceAnnual: "2,999",
-        citiesCoverage: 500,
-        appearInSearch: true,
-        leadsLimit: 0,
-        premiumProfileBadge: true,
-        priorityCustomerSupport: true,
-        status: "active",
-      ),
-    );
   }
 }

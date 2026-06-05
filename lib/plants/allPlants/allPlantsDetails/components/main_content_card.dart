@@ -5,7 +5,6 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
 import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_toggle_card.dart';
-
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../base/widgets/common_click_widget.dart';
@@ -38,12 +37,11 @@ class MainContentCard extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // const SizedBox(height: spacerSize300),
           GestureDetector(
             onTap: () {
               final imageUrl =
                   controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
-         
+
               if (imageUrl.isNotEmpty) {
                 FullScreenImageView.open(
                   imageUrl: imageUrl,
@@ -85,26 +83,7 @@ class MainContentCard extends StatelessWidget {
                   textColor: AppColors.liteGreyColor,
                   lineHeight: 1.5,
                 ),
-                // if (controller.plantDetailData.value.data?.plant?.lat != null &&
-                //     controller.plantDetailData.value.data?.plant?.lon != null)
-                //   Row(
-                //     children: [
-                //       Icon(
-                //         Icons.location_on,
-                //         size: 14.sp,
-                //         color: AppColors.greenColor,
-                //       ),
-                //       SizedBox(width: 4.w),
-                //       BaseText(
-                //         text:
-                //             "Location: ${controller.plantDetailData.value.data?.plant?.lat?.toStringAsFixed(4)}, ${controller.plantDetailData.value.data?.plant?.lon?.toStringAsFixed(4)}",
-                //         fontFamily: AppKeys.inter,
-                //         fontSize: fontSize12,
-                //         fontWeight: FontWeight.w400,
-                //         textColor: AppColors.liteGreyColor,
-                //       ),
-                //     ],
-                //   ),
+
                 Obx(
                   () => controller.screenType.value == 'add'
                       ? Column(
@@ -173,80 +152,12 @@ class MainContentCard extends StatelessWidget {
                                   controller.plantDetailData.value.data?.plant,
                             ),
                             SizedBox(height: 15.h),
-                            // if (controller
-                            //         .plantDetailData
-                            //         .value
-                            //         .data
-                            //         ?.plant
-                            //         ?.careGuidesUrl !=
-                            //     null)
-                            //   Padding(
-                            //     padding: const EdgeInsets.only(top: 8.0),
-                            //     child: OutlinedButton.icon(
-                            //       onPressed: () {
-                            //         final url = controller
-                            //             .plantDetailData
-                            //             .value
-                            //             .data
-                            //             ?.plant
-                            //             ?.careGuidesUrl;
-                            //         final title =
-                            //             controller
-                            //                 .plantDetailData
-                            //                 .value
-                            //                 .data
-                            //                 ?.plant
-                            //                 ?.commonName ??
-                            //             "Care Guide";
-
-                            //         if (url != null && url.isNotEmpty) {
-                            //           Get.to(
-                            //             () => BaseWebViewScreen(
-                            //               url: url,
-                            //               title: "$title Care Guide",
-                            //             ),
-                            //           );
-                            //         }
-                            //       },
-                            //       icon: Icon(Icons.menu_book),
-                            //       label: Text("View Detailed Care Guide"),
-                            //       style: OutlinedButton.styleFrom(
-                            //         foregroundColor: AppColors.greenColor,
-                            //         side: BorderSide(
-                            //           color: AppColors.greenColor,
-                            //         ),
-                            //         shape: RoundedRectangleBorder(
-                            //           borderRadius: BorderRadius.circular(12),
-                            //         ),
-                            //         minimumSize: Size(double.infinity, 50),
-                            //       ),
-                            //     ),
-                            //   ),
-
-                            // Divider(color: AppColors.backgroundGrey),
                           ],
                         )
                       : Column(
                           children: [
                             Divider(color: AppColors.backgroundGrey),
-                            // if (controller
-                            //         .plantDetailData
-                            //         .value
-                            //         .data
-                            //         ?.disease !=
-                            //     null) ...[
-                            //   SizedBox(height: 15.h),
-                            //   PlantDiseaseSection(
-                            //     disease: controller
-                            //         .plantDetailData
-                            //         .value
-                            //         .data!
-                            //         .disease,
-                            //     showImage: true,
-                            //   ),
-                            //   SizedBox(height: 15.h),
-                            //   Divider(color: AppColors.backgroundGrey),
-                            // ],
+
                             Obx(
                               () => PlantToggleCard(
                                 icon: Assets.imagesWatering,
@@ -676,12 +587,6 @@ class MainContentCard extends StatelessWidget {
                         ),
                 ),
                 SizedBox(height: 25.h),
-                // Obx(
-                //   () => addPlantButton(
-                //     context,
-                //     controller.screenType.value == 'add',
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -691,6 +596,8 @@ class MainContentCard extends StatelessWidget {
   }
 
   Widget plantTitle() {
+    bool isAlreadyAdded =
+        controller.plantDetailData.value.data?.alreadyAdded ?? false;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -742,11 +649,44 @@ class MainContentCard extends StatelessWidget {
             ],
           ),
         ),
-        Obx(
-          () =>
-              (controller.plantDetailData.value.data?.alreadyAdded ?? false) !=
-                  false
-              ? SizedBox()
+        Obx(() {
+          final isAdded =
+              controller.plantDetailData.value.data?.alreadyAdded ?? false;
+          return isAdded
+              ? Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.greenColor.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.greenColor.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check_circle_rounded,
+                        color: AppColors.greenColor,
+                        size: 16.w,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        'Added',
+                        style: TextStyle(
+                          color: AppColors.greenColor,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: AppKeys.inter,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               : CommonClickWidget(
                   onTap: () {
                     controller.validateAndSubmit(Get.context!);
@@ -757,108 +697,29 @@ class MainContentCard extends StatelessWidget {
                       vertical: 14.h,
                     ),
                     decoration: BoxDecoration(
-                      // gradient: AppColors.linearGradientForBtn,
                       color: AppColors.greenColor,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.greenColor.withOpacity(0.25),
+                          color: AppColors.greenColor.withValues(alpha: 0.25),
                           blurRadius: 12,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Container(
-                        //   padding: const EdgeInsets.all(6),
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white.withOpacity(0.18),
-                        //     shape: BoxShape.circle,
-                        //   ),
-                        //   child: Icon(
-                        //     controller.screenType.value == 'add'
-                        //         ? Icons.add_rounded
-                        //         : Icons.save_rounded,
-                        //     color: Colors.white,
-                        //     size: 15.w,
-                        //   ),
-                        // ),
-                        // SizedBox(width: 12.w),
-                        Text(
-                          controller.screenType.value == 'add'
-                              ? AppLocalizations.of(Get.context!)!.addPlant
-                              : 'Save Changes',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      AppLocalizations.of(Get.context!)!.addPlant,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
+                      ),
                     ),
                   ),
-                ),
-        ),
-        // Obx(
-        //   () => CommonClickWidget(
-        //     onTap: () {
-        //       controller.validateAndSubmit(Get.context!);
-        //     },
-        //     child: Container(
-        //       padding: const EdgeInsets.all(spacerSize14),
-        //       decoration: BoxDecoration(
-        //         color: AppColors.greenColor,
-        //
-        //         borderRadius: BorderRadius.circular(spacerSize12),
-        //       ),
-        //       // child: Image.asset(
-        //       //   Assets.imagesNotification,
-        //       //   height: spacerSize20,
-        //       //   width: spacerSize20,
-        //       // ),
-        //       child: Row(
-        //         children: [
-        //           Icon(
-        //             controller.screenType.value == 'add'
-        //                 ? Icons.add
-        //                 : Icons.save,
-        //             color: Colors.white,
-        //             size: spacerSize20,
-        //           ),
-        //           SizedBox(width: 10.w),
-        //           Text(
-        //             controller.screenType.value == 'add'
-        //                 ? AppLocalizations.of(Get.context!)!.addPlant
-        //                 : 'Save Changes',
-        //             style: TextStyle(
-        //               color: Colors.white,
-        //               fontWeight: FontWeight.w600,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
+                );
+        }),
       ],
     );
   }
-
-  // Widget addPlantButton(BuildContext context, bool addPlant) {
-  //   return BaseButton(
-  //     onPressed: () {
-  //       controller.validateAndSubmit(context);
-  //     },
-  //     backgroundColor: AppColors.burntGold,
-  //     buttonLabel: addPlant
-  //         ? AppLocalizations.of(context)!.addPlant
-  //         : 'Save Changes',
-  //     fontSize: fontSize16,
-  //     textColor: Colors.white,
-  //     buttonWidth: double.infinity,
-  //   );
-  // }
 }

@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../model/plan_model.dart';
 import '../upgrade_plan_controller.dart';
 
 class PlanCard extends StatelessWidget {
@@ -16,8 +17,16 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Padding(
+    return Obx(() {
+      final filteredPlans = controller.planList.where((plan) {
+        if (controller.isTabMonthly.value) {
+          return plan.monthlyId != null || plan.tier == 'free';
+        } else {
+          return plan.yearlyId != null;
+        }
+      }).toList();
+
+      return Padding(
         padding: const EdgeInsets.symmetric(horizontal: spacerSize20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,22 +40,21 @@ class PlanCard extends StatelessWidget {
             ).marginOnly(top: spacerSize25, bottom: spacerSize15),
 
             Column(
-              children: List.generate(controller.planList.length, (index) {
-                return planCardItem(context, index);
+              children: List.generate(filteredPlans.length, (index) {
+                return planCardItem(context, filteredPlans[index]);
               }),
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 
   //
-  Widget planCardItem(BuildContext context, int index) {
-    final plan = controller.planList[index];
+  Widget planCardItem(BuildContext context, PlanModel plan) {
     return GestureDetector(
       onTap: () {
-        controller.selectPlan(index);
+        controller.selectPlan(plan);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: spacerSize12),
@@ -63,15 +71,15 @@ class PlanCard extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: spacerSize6-1),
+              padding: EdgeInsets.symmetric(vertical: spacerSize6 - 1),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(spacerSize12),
-                    topRight: Radius.circular(spacerSize12),
-                  ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(spacerSize12),
+                  topRight: Radius.circular(spacerSize12),
+                ),
                 color: (plan.isSelect ?? false)
                     ? AppColors.greenColor
-                    : AppColors.borderLiteGreyColor
+                    : AppColors.borderLiteGreyColor,
               ),
               child: BaseText(
                 textColor: (plan.isSelect ?? false)
@@ -84,7 +92,7 @@ class PlanCard extends StatelessWidget {
                 text: plan.planName ?? "",
               ),
             ),
-            SizedBox(height: spacerSize15,),
+            SizedBox(height: spacerSize15),
 
             Row(
               children: [
@@ -149,7 +157,7 @@ class PlanCard extends StatelessWidget {
                       color: plan.isSelect!
                           ? AppColors.greenColor
                           : AppColors.blackColor,
-                      width: 2
+                      width: 2,
                     ),
                   ),
                   child: CircleAvatar(

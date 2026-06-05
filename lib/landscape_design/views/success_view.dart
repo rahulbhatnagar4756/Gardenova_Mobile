@@ -8,6 +8,7 @@ import 'package:kasagardem/landscape_design/landscape_design_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import '../../dashboard/components/landscape_style_bottom_sheet.dart';
 
 class LandscapeDesignSuccessView extends StatelessWidget {
   final LandscapeDesignViewModel controller;
@@ -83,63 +84,44 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                     ),
                     const SizedBox(height: spacerSize16),
 
-                    /// 🔹 STYLE SELECTION DROPDOWN
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: spacerSize16.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.greenColor.withValues(
-                            alpha: 0.15,
+                    /// 🔹 STYLE SELECTION SELECTOR (BOTTOM SHEET)
+                    GestureDetector(
+                      onTap: () async {
+                        final selected = await LandscapeStyleBottomSheet.show();
+                        if (selected != null) {
+                          controller.updateStyle(selected);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: spacerSize16.w,
+                          vertical: 14.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.greenColor.withValues(alpha: 0.15),
                           ),
                         ),
-                      ),
-                      child: Obx(
-                        () => DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: controller.selectedStyle.value,
-                            dropdownColor: AppColors.appColor,
-                            icon: const Icon(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Obx(
+                              () => BaseText(
+                                text: controller.selectedStyle.value
+                                    .replaceAll('_', ' ')
+                                    .toUpperCase(),
+                                fontSize: fontSize14,
+                                textColor: AppColors.blackColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Icon(
                               Icons.keyboard_arrow_down,
                               color: AppColors.greenColor,
                             ),
-                            isExpanded: true,
-                            items: controller.gardenStyles.map((String style) {
-                              return DropdownMenuItem<String>(
-                                value: style,
-                                child: BaseText(
-                                  text: style
-                                      .replaceAll('_', ' ')
-                                      .toUpperCase(),
-                                  fontSize: fontSize14,
-                                  textColor: AppColors.blackColor,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (String? newStyle) {
-                              if (newStyle != null) {
-                                controller.updateStyle(newStyle);
-                              }
-                            },
-                            selectedItemBuilder: (BuildContext context) {
-                              return controller.gardenStyles.map((
-                                String style,
-                              ) {
-                                return Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: BaseText(
-                                    text: style
-                                        .replaceAll('_', ' ')
-                                        .toUpperCase(),
-                                    fontSize: fontSize14,
-                                    textColor: AppColors.blackColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                );
-                              }).toList();
-                            },
-                          ),
+                          ],
                         ),
                       ),
                     ),
