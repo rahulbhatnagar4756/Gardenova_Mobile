@@ -23,13 +23,11 @@ class BottomSheetLayout extends StatelessWidget {
     return isButtonVisible!
         ? Center(
             child: Column(
-              // alignment: Alignment.bottomCenter,
               children: [
                 Expanded(child: childLayout!),
                 Visibility(
                   visible: true,
                   child: SizedBox(
-
                     width: double.infinity,
                     child: BaseButton(
                       bottomPadding: true,

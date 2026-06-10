@@ -64,7 +64,7 @@ class ClickableImage extends StatelessWidget {
       errorWidget: (_, __, ___) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          print('onClick erro image');
+          debugPrint('onClick erro image');
           FullScreenImageView.open(imageUrl: errorImageUrl, heroTag: heroTag);
         },
         child: errorWidget ?? const Center(child: Icon(Icons.broken_image)),

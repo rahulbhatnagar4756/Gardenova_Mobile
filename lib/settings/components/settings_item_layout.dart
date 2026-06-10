@@ -28,7 +28,8 @@ class SettingsItemLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveIconBgColor = iconBgColor ?? AppColors.greenColor.withValues(alpha: 0.1);
+    final effectiveIconBgColor =
+        iconBgColor ?? AppColors.greenColor.withValues(alpha: 0.1);
     final effectiveIconColor = iconColor ?? AppColors.greenColor;
     final effectiveTitleColor = titleColor ?? AppColors.blackColor;
     final effectiveTrailingColor = trailingIconColor ?? Colors.black87;
@@ -52,11 +53,7 @@ class SettingsItemLayout extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Center(
-                    child: Icon(
-                      icon,
-                      color: effectiveIconColor,
-                      size: 20.w,
-                    ),
+                    child: Icon(icon, color: effectiveIconColor, size: 20.w),
                   ),
                 ),
                 SizedBox(width: 14.w),

@@ -32,5 +32,5 @@ class AppKeys {
   static const remainingDays = 'remainingDays';
   static const currentLatKey = 'currentLat';
   static const currentLongKey = 'currentLongKey';
-  
+  static const fcmToken = 'fcm_token';
 }

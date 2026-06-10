@@ -23,13 +23,24 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:kasagardem/utils/utils.dart';
 
 import 'base/widgets/base_calculate_remaining_days.dart';
+import 'services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: "secret.env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ),
+  );
+
   String flavorString = String.fromEnvironment(
     'appFlavor',
     defaultValue: 'prod',
@@ -75,7 +86,7 @@ Future<void> main() async {
     flavor: currentFlavor!,
     adMobId: adMobId,
     bannerId: bannerId,
-    rewardId:rewardId
+    rewardId: rewardId,
   );
 
   SharedPrefsService sharedPrefsService = SharedPrefsService();
@@ -112,6 +123,8 @@ Future<void> initServices() async {
     NetworkConnectivityService(),
     permanent: true,
   );
+  await NotificationService.instance.initialize();
+ 
 }
 
 class MyApp extends StatelessWidget {

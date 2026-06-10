@@ -156,7 +156,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
         fit: BoxFit.cover,
         width: 108.w,
         height: 108.w,
-        errorBuilder: (_, __, ___) => _defaultImage(),
+        errorBuilder: (_, error, errorThird) => _defaultImage(),
       );
     }
 
@@ -171,12 +171,12 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
         fit: BoxFit.cover,
         width: 108.w,
         height: 108.w,
-        placeholder: (_, __) => BaseShimmer(
+        placeholder: (_, second) => BaseShimmer(
           backgroundColor: AppColors.antiqueWhite,
           height: 108.w,
           width: 108.w,
         ),
-        errorWidget: (_, __, ___) => _defaultImage(),
+        errorWidget: (_, error, errorThird) => _defaultImage(),
       );
     }
 

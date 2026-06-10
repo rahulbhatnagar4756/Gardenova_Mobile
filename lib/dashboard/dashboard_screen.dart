@@ -21,6 +21,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
+import '../utils/utils.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/soil_analysis.dart';
 import 'components/landscape_style_bottom_sheet.dart';
@@ -88,9 +89,16 @@ class DashboardScreen extends GetWidget<DashboardController> {
                           Obx(() {
                             controller.refreshSoilAnalysis.value;
                             return HeadingUiLayout(
-                              sectionTitle: AppLocalizations.of(context)!.overview,
-                              child: SoilAnalysis(chartData: controller.chartData),
-                            ).marginOnly(left: spacerSize20, right: spacerSize20);
+                              sectionTitle: AppLocalizations.of(
+                                context,
+                              )!.overview,
+                              child: SoilAnalysis(
+                                chartData: controller.chartData,
+                              ),
+                            ).marginOnly(
+                              left: spacerSize20,
+                              right: spacerSize20,
+                            );
                           }),
                           // const SizedBox(height: spacerSize15),
                           // HeadingUiLayout(
@@ -117,14 +125,16 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                     Get.back();
                                     Get.offAllNamed(
                                       Routes.login,
-                                      arguments: {"question_state_passed": true},
+                                      arguments: {
+                                        "question_state_passed": true,
+                                      },
                                     );
                                   },
                                   title: AppLocalizations.of(
                                     Get.context!,
                                   )!.login.toUpperCase(),
-                                  description:
-                                      AppStrings.pleaseLoginToMakeAiLandscapeDesign,
+                                  description: AppStrings
+                                      .pleaseLoginToMakeAiLandscapeDesign,
                                   buttonLabel: AppLocalizations.of(
                                     Get.context!,
                                   )!.login.toUpperCase(),
@@ -163,19 +173,24 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                     // color: AppColors.blackColor.withValues(
                                     //   alpha: 0.6,
                                     // ),
-                                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                                    child: BaseButton(
-                                      bottomPadding: false,
-                                      buttonLabel: AppLocalizations.of(
-                                        context,
-                                      )!.addPlant,
-                                      buttonWidth: Get.width,
-                                      fontSize: fontSize15,
-                                      onPressed: () {
-                                        Get.toNamed(Routes.allPlantsScreen);
-                                        return;
-                                      },
-                                    ).paddingSymmetric(horizontal: spacerSize20),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 10.h,
+                                    ),
+                                    child:
+                                        BaseButton(
+                                          bottomPadding: false,
+                                          buttonLabel: AppLocalizations.of(
+                                            context,
+                                          )!.addPlant,
+                                          buttonWidth: Get.width,
+                                          fontSize: fontSize15,
+                                          onPressed: () {
+                                            Get.toNamed(Routes.allPlantsScreen);
+                                            return;
+                                          },
+                                        ).paddingSymmetric(
+                                          horizontal: spacerSize20,
+                                        ),
                                   ),
                           ),
                           SizedBox(height: 0.h),
@@ -233,6 +248,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 case BottomNavType.report:
                   break;
                 case BottomNavType.profile:
+                  Utils.callSettingBasicApi();
                   Get.toNamed(Routes.profile)?.then((value) {
                     controller.selectedNavType.value = BottomNavType.home;
                   });

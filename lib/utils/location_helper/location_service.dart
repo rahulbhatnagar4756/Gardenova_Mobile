@@ -57,12 +57,8 @@ class LocationService {
     try {
       final LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.low,
-        // distanceFilter: 100,
       );
-      // Better for emulator & slow GPS devices
       return await Geolocator.getCurrentPosition(
-        // desiredAccuracy: LocationAccuracy.low,
-        // timeLimit: const Duration(seconds: 20),
         locationSettings: locationSettings,
       );
     } catch (e) {
@@ -79,54 +75,6 @@ class LocationService {
       throw Exception(AppStrings.unableToFetchLocation);
     }
   }
-
-  /// 🔹 Dialog: GPS OFF
-  // Future<void> _showLocationServiceDialog() async {
-  //   await Get.dialog(
-  //     AlertDialog(
-  //       title: const Text(AppStrings.locationDisabled),
-
-  //       content: const Text(AppStrings.enableLocationServices),
-
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Get.back(),
-  //           child: const Text(AppStrings.cancel),
-  //         ),
-  //         TextButton(
-  //           onPressed: () async {
-  //             await Geolocator.openLocationSettings();
-  //             Get.back();
-  //           },
-  //           child: const Text(AppStrings.openSettings),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // /// 🔹 Dialog: Permission permanently denied
-  // Future<void> _showPermissionDeniedDialog() async {
-  //   await Get.dialog(
-  //     AlertDialog(
-  //       title: const Text(AppStrings.permissionRequired),
-  //       content: const Text(AppStrings.locationPermissionPermanentlyDenied),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Get.back(),
-  //           child: const Text(AppStrings.cancel),
-  //         ),
-  //         TextButton(
-  //           onPressed: () async {
-  //             await Geolocator.openAppSettings();
-  //             Get.back();
-  //           },
-  //           child: const Text(AppStrings.openSettings),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   /// LOCATION SERVICE OFF
   Future<void> _showLocationServiceDialog() async {

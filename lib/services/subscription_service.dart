@@ -4,12 +4,15 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
-import 'package:in_app_purchase_android/in_app_purchase_android.dart';
-import 'package:in_app_purchase_android/billing_client_wrappers.dart';
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart'
+    as iapstorekit;
+import 'package:in_app_purchase_android/in_app_purchase_android.dart'
+    as iapandroidkit;
+import 'package:in_app_purchase_android/billing_client_wrappers.dart'
+    as iapandroidbillingkit;
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart'
+    as iap_stpre_kit;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../settings/model/subscription_local_status_ui_model.dart';
 import '../settings/settings_view_model.dart';
 import '../utils/network_services/api_repository.dart';
@@ -59,9 +62,11 @@ class SubscriptionService {
       }
 
       if (Platform.isIOS) {
-        final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-            _iapConnection
-                .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+        final iapstorekit.InAppPurchaseStoreKitPlatformAddition
+        iosPlatformAddition = _iapConnection
+            .getPlatformAddition<
+              iapstorekit.InAppPurchaseStoreKitPlatformAddition
+            >();
         await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
       }
 
@@ -89,9 +94,10 @@ class SubscriptionService {
 
     if (Platform.isIOS) {
       try {
-        final transactions = await SKPaymentQueueWrapper().transactions();
+        final transactions = await iap_stpre_kit.SKPaymentQueueWrapper()
+            .transactions();
         for (final t in transactions) {
-          await SKPaymentQueueWrapper().finishTransaction(t);
+          await iap_stpre_kit.SKPaymentQueueWrapper().finishTransaction(t);
         }
       } catch (e) {
         log('Drain pending iOS transactions error: $e');
@@ -168,7 +174,10 @@ class SubscriptionService {
 
     // Try to find the product in queried details
     final productDetails = products.firstWhereOrNull(
-      (p) => p.id == productId || p.id.endsWith(productId) || productId.endsWith(p.id)
+      (p) =>
+          p.id == productId ||
+          p.id.endsWith(productId) ||
+          productId.endsWith(p.id),
     );
 
     if (productDetails != null) {
@@ -249,17 +258,20 @@ class SubscriptionService {
     try {
       _showLoading();
       if (Platform.isAndroid) {
-        GooglePlayPurchaseDetails? existingAndroidPurchase;
+        iapandroidkit.GooglePlayPurchaseDetails? existingAndroidPurchase;
 
         if (currentSubscription != null && currentSubscription.id != null) {
-          final InAppPurchaseAndroidPlatformAddition androidAddition =
-              _iapConnection
-                  .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+          final iapandroidkit.InAppPurchaseAndroidPlatformAddition
+          androidAddition = _iapConnection
+              .getPlatformAddition<
+                iapandroidkit.InAppPurchaseAndroidPlatformAddition
+              >();
           final pastPurchasesResponse = await androidAddition
               .queryPastPurchases();
           for (final p in pastPurchasesResponse.pastPurchases) {
             if (p.productID == currentSubscription.id) {
-              existingAndroidPurchase = p as GooglePlayPurchaseDetails;
+              existingAndroidPurchase =
+                  p as iapandroidkit.GooglePlayPurchaseDetails;
               break;
             }
           }
@@ -276,17 +288,17 @@ class SubscriptionService {
           final newTier = getPlanTier(plan.planName);
           final isUpgrade = newTier > currentTier;
 
-          final ReplacementMode replacementMode = isUpgrade
-              ? ReplacementMode.chargeFullPrice
-              : ReplacementMode.deferred;
+          final iapandroidbillingkit.ReplacementMode replacementMode = isUpgrade
+              ? iapandroidbillingkit.ReplacementMode.chargeFullPrice
+              : iapandroidbillingkit.ReplacementMode.deferred;
 
           log(
             'Google Play Upgrade/Downgrade: from ${currentSubscription?.id} to $productId. Replacement Mode: $replacementMode',
           );
 
-          final param = GooglePlayPurchaseParam(
+          final param = iapandroidkit.GooglePlayPurchaseParam(
             productDetails: productDetails,
-            changeSubscriptionParam: ChangeSubscriptionParam(
+            changeSubscriptionParam: iapandroidkit.ChangeSubscriptionParam(
               oldPurchaseDetails: existingAndroidPurchase,
               replacementMode: replacementMode,
             ),
@@ -294,7 +306,9 @@ class SubscriptionService {
           await _iapConnection.buyNonConsumable(purchaseParam: param);
         } else {
           log('Google Play Fresh Purchase: $productId');
-          final param = GooglePlayPurchaseParam(productDetails: productDetails);
+          final param = iapandroidkit.GooglePlayPurchaseParam(
+            productDetails: productDetails,
+          );
           await _iapConnection.buyNonConsumable(purchaseParam: param);
         }
       } else {
@@ -462,10 +476,14 @@ class SubscriptionService {
         'platform': platform,
         'productId': productId,
         'purchaseToken': purchaseToken,
-        if (orderId != null) 'orderId': orderId,
-        if (transactionId != null) 'transactionId': transactionId,
         'purchaseTime': normalizedPurchaseIso,
       };
+      if (orderId != null) {
+        body['orderId'] = orderId;
+      }
+      if (transactionId != null) {
+        body['transactionId'] = transactionId;
+      }
 
       log("body verification =>$body");
       final response = await ApiRepository.instance.post(
@@ -614,11 +632,12 @@ class SubscriptionService {
   }
 }
 
-class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
+class ExamplePaymentQueueDelegate
+    implements iap_stpre_kit.SKPaymentQueueDelegateWrapper {
   @override
   bool shouldContinueTransaction(
-    SKPaymentTransactionWrapper transaction,
-    SKStorefrontWrapper storefront,
+    iap_stpre_kit.SKPaymentTransactionWrapper transaction,
+    iap_stpre_kit.SKStorefrontWrapper storefront,
   ) {
     return true;
   }

@@ -81,6 +81,7 @@ class PlanModel {
   String? yearlyProductId;
   String? monthlyId;
   String? yearlyId;
+  List<PlanFeature>? features;
 
   PlanModel({
     String? id,
@@ -116,6 +117,7 @@ class PlanModel {
     this.yearlyProductId,
     this.monthlyId,
     this.yearlyId,
+    this.features,
   }) {
     if (id != null) {
       this._id = id;
@@ -228,6 +230,10 @@ class PlanModel {
     _basicReminders = json['basic_reminders'];
 
     if (json['features'] != null) {
+      features = <PlanFeature>[];
+      json['features'].forEach((v) {
+        features!.add(PlanFeature.fromJson(v));
+      });
       json['features'].forEach((f) {
         final key = f['key'];
         final label = f['label'];
@@ -299,6 +305,31 @@ class PlanModel {
     data['premium_styles'] = this._premiumStyles;
     data['before_after_download'] = this._beforeAfterDownload;
     data['basic_reminders'] = this._basicReminders;
+    if (this.features != null) {
+      data['features'] = this.features!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class PlanFeature {
+  String? key;
+  String? label;
+  bool? enabled;
+
+  PlanFeature({this.key, this.label, this.enabled});
+
+  PlanFeature.fromJson(Map<String, dynamic> json) {
+    key = json['key'];
+    label = json['label'];
+    enabled = json['enabled'] == true;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['key'] = this.key;
+    data['label'] = this.label;
+    data['enabled'] = this.enabled;
     return data;
   }
 }

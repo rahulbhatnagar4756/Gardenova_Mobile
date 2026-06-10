@@ -18,9 +18,9 @@ class FullScreenImageView extends StatelessWidget {
   const FullScreenImageView({super.key, required this.imageUrl, this.heroTag});
 
   static void open({required String imageUrl, String? heroTag}) {
-    print('open from full image view');
+    debugPrint('open from full image view');
     if (imageUrl.trim().isEmpty) return;
-    print('open image url is $imageUrl');
+    debugPrint('open image url is $imageUrl');
     Get.to(
       () => FullScreenImageView(imageUrl: imageUrl, heroTag: heroTag),
       transition: Transition.fadeIn,
@@ -34,7 +34,7 @@ class FullScreenImageView extends StatelessWidget {
   //                             fit: BoxFit.cover,
   //                           )
   ImageProvider _getImageProvider() {
-    print('image url is $imageUrl');
+    debugPrint('image url is $imageUrl');
     // Network image
     if (imageUrl.startsWith('http')) {
       return CachedNetworkImageProvider(imageUrl);

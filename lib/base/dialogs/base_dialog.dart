@@ -191,7 +191,7 @@ class BaseDialog {
         ],
       ),
     ).then((value) {
-      print('onCancel diaog called');
+      debugPrint('onCancel diaog called');
       onCancelDialog?.call();
     });
   }

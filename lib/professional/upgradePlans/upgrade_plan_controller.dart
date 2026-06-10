@@ -188,6 +188,7 @@ class UpgradePlanController extends GetxController {
           yearlyProductId: yearlyPlan?.productId,
           monthlyId: monthlyPlan?.id,
           yearlyId: yearlyPlan?.id,
+          features: template.features,
         );
 
         planList.add(consolidatedPlan);

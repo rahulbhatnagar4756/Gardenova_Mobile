@@ -160,7 +160,7 @@ class QuestionViewModel extends GetxController {
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
-            print('cameFromSetting  $cameFromSetting');
+            debugPrint('cameFromSetting  $cameFromSetting');
             if (cameFromSetting) {
               // Get.back();
               // Get.back();

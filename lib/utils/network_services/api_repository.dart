@@ -166,7 +166,7 @@ class ApiRepository {
       }
     } catch (e) {
       if (kDebugMode) {
-        print("API Request Error: $e");
+        debugPrint("API Request Error: $e");
         log('---------------------------------catch');
         log('Api response->  $e');
         log('---------------------------------catch');

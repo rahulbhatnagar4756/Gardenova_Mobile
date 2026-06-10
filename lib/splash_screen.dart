@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/services/notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -73,6 +73,17 @@ class _SplashScreenState extends State<SplashScreen> {
     String currentRole =
         SharedPrefsService.instance.getString(AppKeys.role) ?? '';
     Future.delayed(Duration(seconds: 1)).then((value) {
+      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      // SystemChrome.setSystemUIOverlayStyle(
+      // SystemUiOverlayStyle(
+      // statusBarColor: Colors.transparent,
+      // statusBarIconBrightness: Brightness.dark,
+      // statusBarBrightness: Brightness.light,
+      // ),
+      // );
+      Future.delayed(Duration(seconds: 1), () {
+        NotificationService.instance.requestNotificationPermission();
+      });
       if (currentRole != AppKeys.professional) {
         // need change
         if (isUserAlreadyLogedIn) {

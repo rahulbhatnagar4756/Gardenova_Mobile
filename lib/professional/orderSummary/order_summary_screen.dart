@@ -229,33 +229,73 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
                             
                             // Feature Items List
                             Column(
-                              children: [
-                                _buildFeatureRow(
-                                  icon: Icons.location_on_outlined,
-                                  title: "${plan?.citiesCoverage ?? 3} Cities Coverage",
-                                ),
-                                if (plan?.appearInSearch ?? false)
-                                  _buildFeatureRow(
-                                    icon: Icons.search,
-                                    title: "Appear In Search Results",
-                                  ),
-                                _buildFeatureRow(
-                                  icon: Icons.trending_up,
-                                  title: (plan?.leadsLimit == null || plan?.leadsLimit == 0)
-                                      ? "Unlimited Leads"
-                                      : "${plan?.leadsLimit} Leads",
-                                ),
-                                if (plan?.premiumProfileBadge ?? false)
-                                  _buildFeatureRow(
-                                    icon: Icons.workspace_premium_outlined,
-                                    title: "Premium Profile Badge",
-                                  ),
-                                if (plan?.priorityCustomerSupport ?? false)
-                                  _buildFeatureRow(
-                                    icon: Icons.headset_mic_outlined,
-                                    title: "Priority Customer Support",
-                                  ),
-                              ],
+                              children: plan?.features != null && plan!.features!.isNotEmpty
+                                  ? plan.features!.map((feature) {
+                                      if (feature.enabled != true) {
+                                        return const SizedBox.shrink();
+                                      }
+                                      IconData icon = Icons.check_circle_outline;
+                                      switch (feature.key) {
+                                        case 'diagnosis_scans':
+                                          icon = Icons.qr_code_scanner;
+                                          break;
+                                        case 'landscape_gen':
+                                          icon = Icons.landscape_outlined;
+                                          break;
+                                        case 'max_plants':
+                                          icon = Icons.eco_outlined;
+                                          break;
+                                        case 'ai_assistant':
+                                          icon = Icons.assistant_outlined;
+                                          break;
+                                        case 'hd_renders':
+                                          icon = Icons.hd_outlined;
+                                          break;
+                                        case 'pdf_export':
+                                          icon = Icons.picture_as_pdf_outlined;
+                                          break;
+                                        case 'premium_styles':
+                                          icon = Icons.style_outlined;
+                                          break;
+                                        case 'before_after_download':
+                                          icon = Icons.compare_arrows_outlined;
+                                          break;
+                                        case 'basic_reminders':
+                                          icon = Icons.notifications_active_outlined;
+                                          break;
+                                      }
+                                      return _buildFeatureRow(
+                                        icon: icon,
+                                        title: feature.label ?? "",
+                                      );
+                                    }).toList()
+                                  : [
+                                      _buildFeatureRow(
+                                        icon: Icons.location_on_outlined,
+                                        title: "${plan?.citiesCoverage ?? 3} Cities Coverage",
+                                      ),
+                                      if (plan?.appearInSearch ?? false)
+                                        _buildFeatureRow(
+                                          icon: Icons.search,
+                                          title: "Appear In Search Results",
+                                        ),
+                                      _buildFeatureRow(
+                                        icon: Icons.trending_up,
+                                        title: (plan?.leadsLimit == null || plan?.leadsLimit == 0)
+                                            ? "Unlimited Leads"
+                                            : "${plan?.leadsLimit} Leads",
+                                        ),
+                                      if (plan?.premiumProfileBadge ?? false)
+                                        _buildFeatureRow(
+                                          icon: Icons.workspace_premium_outlined,
+                                          title: "Premium Profile Badge",
+                                        ),
+                                      if (plan?.priorityCustomerSupport ?? false)
+                                        _buildFeatureRow(
+                                          icon: Icons.headset_mic_outlined,
+                                          title: "Priority Customer Support",
+                                        ),
+                                    ],
                             ),
                           ],
                         ),

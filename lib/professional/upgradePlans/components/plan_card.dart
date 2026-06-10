@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:get/get_utils/src/extensions/widget_extensions.dart';
+import 'package:get/get.dart';
 
 import '../../../base/widgets/base_text.dart';
 import '../../../l10n/app_localizations.dart';
@@ -133,16 +132,8 @@ class PlanCard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             fontFamily: AppKeys.inter,
                             fontSize: fontSize12,
-                            text: plan.citiesCoverage.toString(),
-                          ),
-
-                          BaseText(
-                            textAlign: TextAlign.center,
-                            textColor: AppColors.liteGreyColor,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: AppKeys.inter,
-                            fontSize: fontSize12,
-                            text: AppLocalizations.of(context)!.city,
+                            text: plan.features?.firstWhereOrNull((f) => f.key == 'max_plants')?.label ??
+                                (plan.maxPlants == -1 ? "Unlimited Plants" : "${plan.maxPlants ?? 0} Plants"),
                           ),
                         ],
                       ),
