@@ -1,6 +1,8 @@
 import 'dart:io' show Platform;
+import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide appFlavor;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,6 +33,17 @@ Future<void> main() async {
   await dotenv.load(fileName: "secret.env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -41,10 +54,7 @@ Future<void> main() async {
     ),
   );
 
-  String flavorString = String.fromEnvironment(
-    'appFlavor',
-    defaultValue: 'prod',
-  );
+  String flavorString = String.fromEnvironment('appFlavor', defaultValue: 'dev');
 
   await FacebookAuth.i.webAndDesktopInitialize(
     appId: "1530353791540365",
@@ -111,20 +121,13 @@ Future<void> main() async {
   MobileAds.instance.initialize();
   FlutterNativeSplash.remove();
 
-  SharedPrefsService.instance.setString(
-    AppKeys.selectedLang,
-    Get.locale?.languageCode ?? 'en',
-  );
+  SharedPrefsService.instance.setString(AppKeys.selectedLang, Get.locale?.languageCode ?? 'en');
   runApp(MyApp(locale: selectedLocale));
 }
 
 Future<void> initServices() async {
-  Get.put<NetworkConnectivityService>(
-    NetworkConnectivityService(),
-    permanent: true,
-  );
+  Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
   await NotificationService.instance.initialize();
- 
 }
 
 class MyApp extends StatelessWidget {
@@ -176,15 +179,11 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 scaffoldBackgroundColor: AppColors.appColor,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: AppColors.appColor,
-                ),
+                colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColor),
                 useMaterial3: true,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                appBarTheme: const AppBarTheme(
-                  surfaceTintColor: Colors.transparent,
-                ),
+                appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
               ),
               color: AppColors.offWhite,
               initialRoute: Routes.splash,
@@ -192,9 +191,7 @@ class MyApp extends StatelessWidget {
               getPages: Routes.getPages(),
               builder: (context, child) {
                 return MediaQuery(
-                  data: MediaQuery.of(
-                    context,
-                  ).copyWith(textScaler: const TextScaler.linear(1.0)),
+                  data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
                   child: child!,
                 );
               },

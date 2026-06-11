@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../services/admob_service.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
-import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
+import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -19,12 +18,14 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
+import '../../services/admob_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
 import '../utils/utils.dart';
 import 'components/heading_ui_layout.dart';
-import 'components/soil_analysis.dart';
 import 'components/landscape_style_bottom_sheet.dart';
+import 'components/soil_analysis.dart';
 
 class DashboardScreen extends GetWidget<DashboardController> {
   const DashboardScreen({super.key});
@@ -65,10 +66,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 title: AppLocalizations.of(context)!.report,
                 isAppIconVisible: false,
                 onBackPressed: () {
-                  Get.offAllNamed(
-                    Routes.login,
-                    arguments: {"question_state_passed": true},
-                  );
+                  Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
                 },
               ),
 
@@ -89,16 +87,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                           Obx(() {
                             controller.refreshSoilAnalysis.value;
                             return HeadingUiLayout(
-                              sectionTitle: AppLocalizations.of(
-                                context,
-                              )!.overview,
-                              child: SoilAnalysis(
-                                chartData: controller.chartData,
-                              ),
-                            ).marginOnly(
-                              left: spacerSize20,
-                              right: spacerSize20,
-                            );
+                              sectionTitle: AppLocalizations.of(context)!.overview,
+                              child: SoilAnalysis(chartData: controller.chartData),
+                            ).marginOnly(left: spacerSize20, right: spacerSize20);
                           }),
                           // const SizedBox(height: spacerSize15),
                           // HeadingUiLayout(
@@ -110,9 +101,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                           const SizedBox(height: spacerSize12),
                           AiPlantDiagnosisCard(
                             onTap: () {
-                              openImagePickerBottomSheet(
-                                source: ImagePickerSource.diagnosis,
-                              );
+                              openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                             },
                           ).marginOnly(left: spacerSize20, right: spacerSize20),
                           const SizedBox(height: spacerSize12),
@@ -125,16 +114,11 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                     Get.back();
                                     Get.offAllNamed(
                                       Routes.login,
-                                      arguments: {
-                                        "question_state_passed": true,
-                                      },
+                                      arguments: {"question_state_passed": true},
                                     );
                                   },
-                                  title: AppLocalizations.of(
-                                    Get.context!,
-                                  )!.login.toUpperCase(),
-                                  description: AppStrings
-                                      .pleaseLoginToMakeAiLandscapeDesign,
+                                  title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+                                  description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
                                   buttonLabel: AppLocalizations.of(
                                     Get.context!,
                                   )!.login.toUpperCase(),
@@ -154,14 +138,8 @@ class DashboardScreen extends GetWidget<DashboardController> {
                           const SizedBox(height: spacerSize12),
                           HeadingUiLayout(
                             titleLeftPadding: spacerSize20,
-                            sectionTitle: AppLocalizations.of(
-                              context,
-                            )!.plantRecommendations,
-                            child: Column(
-                              children: [
-                                PlantRecommendations(controller: controller),
-                              ],
-                            ),
+                            sectionTitle: AppLocalizations.of(context)!.plantRecommendations,
+                            child: Column(children: [PlantRecommendations(controller: controller)]),
                           ),
 
                           SizedBox(height: spacerSize5),
@@ -173,24 +151,17 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                     // color: AppColors.blackColor.withValues(
                                     //   alpha: 0.6,
                                     // ),
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 10.h,
-                                    ),
-                                    child:
-                                        BaseButton(
-                                          bottomPadding: false,
-                                          buttonLabel: AppLocalizations.of(
-                                            context,
-                                          )!.addPlant,
-                                          buttonWidth: Get.width,
-                                          fontSize: fontSize15,
-                                          onPressed: () {
-                                            Get.toNamed(Routes.allPlantsScreen);
-                                            return;
-                                          },
-                                        ).paddingSymmetric(
-                                          horizontal: spacerSize20,
-                                        ),
+                                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                                    child: BaseButton(
+                                      bottomPadding: false,
+                                      buttonLabel: AppLocalizations.of(context)!.addPlant,
+                                      buttonWidth: Get.width,
+                                      fontSize: fontSize15,
+                                      onPressed: () {
+                                        Get.toNamed(Routes.allPlantsScreen);
+                                        return;
+                                      },
+                                    ).paddingSymmetric(horizontal: spacerSize20),
                                   ),
                           ),
                           SizedBox(height: 0.h),
@@ -236,9 +207,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 case BottomNavType.home:
                   break;
                 case BottomNavType.scan:
-                  openImagePickerBottomSheet(
-                    source: ImagePickerSource.diagnosis,
-                  );
+                  openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                   break;
                 case BottomNavType.plant:
                   Get.toNamed(Routes.myPlantsScreen)?.then((value) {
@@ -270,10 +239,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
         context: Get.context!,
         onButtonPressed: () {
           Get.back();
-          Get.offAllNamed(
-            Routes.login,
-            arguments: {"question_state_passed": true},
-          );
+          Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
         },
         title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
         description: source == ImagePickerSource.diagnosis
@@ -291,11 +257,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
         //   directApiCall: true,
         // );
         await Future.delayed(Duration(milliseconds: 200));
-        controller.pickImage(
-          isCamera: isCamera,
-          source: source,
-          selectedStyle: selectedStyle,
-        );
+        controller.pickImage(isCamera: isCamera, source: source, selectedStyle: selectedStyle);
       },
       onThenCall: () {
         controller.selectedNavType.value = BottomNavType.home;

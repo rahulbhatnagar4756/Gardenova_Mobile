@@ -14,6 +14,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
 import '../../utils/constants/app_assets.dart';
 
 class QuestionScreen extends GetWidget<QuestionViewModel> {
@@ -50,7 +51,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       children: [
                         QuestionProgressIndicator(
                           currentQuestion: controller.currentQuestion.value,
-                          totalQuestions: controller.multipleChoiceQuestions.length +
+                          totalQuestions:
+                              controller.multipleChoiceQuestions.length +
                               (controller.showExtraPreference ? 1 : 0),
                         ).marginOnly(top: 25.h),
 
@@ -69,9 +71,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                   runSpacing: spacerSize10,
                                   children: List.generate(
                                     controller
-                                        .multipleChoiceQuestions[controller
-                                                .currentQuestion
-                                                .value -
+                                        .multipleChoiceQuestions[controller.currentQuestion.value -
                                             1]
                                         .options!
                                         .length,
@@ -119,15 +119,11 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       child: Container(
         height: spacerSize60,
         width: double.infinity,
-        padding: EdgeInsets.symmetric(
-          horizontal: spacerSize17,
-          vertical: spacerSize10,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: spacerSize17, vertical: spacerSize10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize10),
           border: Border.all(
-            color:
-                (question.options![index].optionText == question.selectedAnswer)
+            color: (question.options![index].optionText == question.selectedAnswer)
                 ? AppColors
                       .greenColor // selected border
                 : AppColors.borderLiteGreyColor,
@@ -230,9 +226,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       text: isStateCityTab
           ? ""
           : controller.multipleChoiceQuestions.isNotEmpty
-          ? controller
-                .multipleChoiceQuestions[controller.currentQuestion.value - 1]
-                .questionText!
+          ? controller.multipleChoiceQuestions[controller.currentQuestion.value - 1].questionText!
                 .toTitleCase()
           : "",
       textColor: AppColors.blackColor,
@@ -266,10 +260,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           }
           return null;
         },
-        suffixIcon: Icon(
-          Icons.keyboard_arrow_down_outlined,
-          color: AppColors.liteGreyColor,
-        ),
+        suffixIcon: Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.liteGreyColor),
       ),
     );
   }
@@ -296,10 +287,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           }
           return null;
         },
-        suffixIcon: Icon(
-          Icons.keyboard_arrow_down_outlined,
-          color: AppColors.liteGreyColor,
-        ),
+        suffixIcon: Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.liteGreyColor),
       ),
     );
   }
@@ -340,10 +328,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               child: Obx(
                 () => ListView.separated(
                   itemCount: controller.filteredStateList.length,
-                  separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withValues(alpha: 0.1),
-                    height: 1,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      Divider(color: AppColors.offWhite.withValues(alpha: 0.1), height: 1),
                   itemBuilder: (context, index) {
                     final state = controller.filteredStateList[index];
                     return ListTile(
@@ -407,10 +393,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               child: Obx(
                 () => ListView.separated(
                   itemCount: controller.filteredCityList.length,
-                  separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withValues(alpha: 0.1),
-                    height: 1,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      Divider(color: AppColors.offWhite.withValues(alpha: 0.1), height: 1),
                   itemBuilder: (context, index) {
                     final city = controller.filteredCityList[index];
                     return ListTile(

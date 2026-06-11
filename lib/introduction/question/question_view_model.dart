@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
+import 'package:kasagardem/introduction/question/models/answer_response_model.dart';
 import 'package:kasagardem/introduction/question/models/city_response_model.dart';
 import 'package:kasagardem/introduction/question/models/question_response_model.dart';
 import 'package:kasagardem/introduction/question/models/save_answer_request_model.dart';
@@ -37,15 +38,14 @@ class QuestionViewModel extends GetxController {
   bool cameFromSetting = false;
   bool showExtraPreference = false;
 
-  List<Questions> get multipleChoiceQuestions => questionList
-      .where((q) => q.options != null && q.options!.isNotEmpty)
-      .toList();
+  List<Questions> get multipleChoiceQuestions =>
+      questionList.where((q) => q.options != null && q.options!.isNotEmpty).toList();
 
   @override
   onInit() {
     cameFromSetting = Get.arguments as bool? ?? false;
     questionRepository = QuestionRepository();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       getQuestionList();
     });
 
@@ -55,14 +55,42 @@ class QuestionViewModel extends GetxController {
   void getQuestionList() async {
     var response = await questionRepository.fetchQuestions();
     if (response != null) {
-      QuestionResponseModel questionResponse = QuestionResponseModel.fromJson(
-        response,
-      );
+      QuestionResponseModel questionResponse = QuestionResponseModel.fromJson(response);
       if (questionResponse.data != null) {
+        print(questionResponse.data!.toJson());
         questionList.value = questionResponse.data!.questions!;
         if (multipleChoiceQuestions.isNotEmpty && currentQuestion.value == 0) {
           currentQuestion.value = 1;
         }
+        getAnswerList();
+      }
+    }
+  }
+
+  void getAnswerList() async {
+    String recommendationId =
+        SharedPrefsService.instance.getString(AppKeys.submissionResponseId) ?? '';
+
+    var response = await questionRepository.fetchAnswers(userId: recommendationId);
+    if (response != null) {
+      AnswerResponseModel answerResponse = AnswerResponseModel.fromJson(response);
+      print("value of response $answerResponse");
+
+      if (answerResponse.data != null && answerResponse.data!.isNotEmpty) {
+        print(questionList.length);
+        var answerList = answerResponse.data;
+
+        for (var answer in answerList!) {
+          int index = questionList.indexWhere((q) => q.questionId == answer.questionId);
+          if (index != -1) {
+            questionList[index].selectedAnswer = answer.selectedOption;
+
+            print("value of answer is ${questionList[index].selectedAnswer}");
+          }
+        }
+        questionList.refresh();
+
+        print("value of question now ${questionList[0].selectedAnswer}");
       }
     }
   }
@@ -90,11 +118,7 @@ class QuestionViewModel extends GetxController {
     } else {
       filteredStateList.assignAll(
         stateList
-            .where(
-              (state) =>
-                  state.name?.toLowerCase().contains(query.toLowerCase()) ??
-                  false,
-            )
+            .where((state) => state.name?.toLowerCase().contains(query.toLowerCase()) ?? false)
             .toList(),
       );
     }
@@ -122,24 +146,16 @@ class QuestionViewModel extends GetxController {
     } else {
       filteredCityList.assignAll(
         cityList
-            .where(
-              (city) =>
-                  city.name?.toLowerCase().contains(query.toLowerCase()) ??
-                  false,
-            )
+            .where((city) => city.name?.toLowerCase().contains(query.toLowerCase()) ?? false)
             .toList(),
       );
     }
   }
 
   void saveAnswer({required SaveAnswerRequestModel? saveAnswer}) async {
-    var response = await questionRepository.saveAnswers(
-      saveAnswerRequest: saveAnswer,
-    );
+    var response = await questionRepository.saveAnswers(saveAnswerRequest: saveAnswer);
     if (response != null) {
-      SaveAnswerResponseModel plantResponse = SaveAnswerResponseModel.fromJson(
-        response,
-      );
+      SaveAnswerResponseModel plantResponse = SaveAnswerResponseModel.fromJson(response);
       if (plantResponse.data != null) {
         SharedPrefsService.instance.setString(
           AppKeys.submissionResponseId,
@@ -154,9 +170,7 @@ class QuestionViewModel extends GetxController {
           barrieDismissible: false,
           Get.context!,
           buttonLabel: AppLocalizations.of(Get.context!)!.viewReport,
-          dialogTitle: AppLocalizations.of(
-            Get.context!,
-          )!.yourIntelligentDiagnosisReportIsReady,
+          dialogTitle: AppLocalizations.of(Get.context!)!.yourIntelligentDiagnosisReportIsReady,
           dialogDescription: '',
           onButtonPressed: () {
             Get.back();
@@ -172,10 +186,7 @@ class QuestionViewModel extends GetxController {
               Get.until((route) => route.settings.name == Routes.profile);
             } else {
               SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
-              Get.offAllNamed(
-                Routes.dashboard,
-                arguments: {plantResponse.data!.responseId ?? ""},
-              );
+              Get.offAllNamed(Routes.dashboard, arguments: {plantResponse.data!.responseId ?? ""});
             }
           },
         );
@@ -187,8 +198,7 @@ class QuestionViewModel extends GetxController {
     answerList.clear();
     for (var question in questionList) {
       if (question.options != null && question.options!.isNotEmpty) {
-        if (question.selectedAnswer != null &&
-            question.selectedAnswer!.isNotEmpty) {
+        if (question.selectedAnswer != null && question.selectedAnswer!.isNotEmpty) {
           answerList.add(
             Answers(
               type: AppKeys.multipleChoiceType,
@@ -215,8 +225,7 @@ class QuestionViewModel extends GetxController {
 
   void onContinuePressed() {
     if (currentQuestion.value <= multipleChoiceQuestions.length) {
-      if (multipleChoiceQuestions[currentQuestion.value - 1].selectedAnswer ==
-          null) {
+      if (multipleChoiceQuestions[currentQuestion.value - 1].selectedAnswer == null) {
         BaseSnackBar.show(
           title: AppStrings.selectionRequired.tr,
           message: AppStrings.pleaseSelectAnAnswerToContinue.tr,
@@ -245,8 +254,7 @@ class QuestionViewModel extends GetxController {
     if (currentQuestion.value <= 1) {
       Get.back();
     } else {
-      if (showExtraPreference &&
-          currentQuestion.value == multipleChoiceQuestions.length + 1) {
+      if (showExtraPreference && currentQuestion.value == multipleChoiceQuestions.length + 1) {
         stateController.clear();
         cityController.clear();
         stateSearchController.clear();

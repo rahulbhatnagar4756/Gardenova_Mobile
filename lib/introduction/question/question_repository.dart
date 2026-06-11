@@ -3,36 +3,38 @@ import 'package:kasagardem/utils/network_services/api_repository.dart';
 
 class QuestionRepository {
   final String _questionApiEndPoint = 'api/v1/admin/question';
+  final String _answerApiEndPoint = 'api/v1/answers/';
   final String _statesApiEndPoint = 'api/v1/stateCityData/countries/states';
   final String _cityApiEndPoint = 'api/v1/stateCityData/countries';
   final String _saveAnswersEndPoint = 'api/v1/answers';
 
-  getCityEndPoint({String? stateCode}) {
+  String getCityEndPoint({String? stateCode}) {
     var language = 'IN';
     // String language ='BR'
     return '$_cityApiEndPoint/$language/states/$stateCode/cities';
   }
 
-  fetchQuestions() async {
-    var questionResponse = await ApiRepository.instance.get(
-      _questionApiEndPoint,
-    );
+  Future<dynamic> fetchQuestions() async {
+    var questionResponse = await ApiRepository.instance.get(_questionApiEndPoint);
     return questionResponse;
   }
 
-  fetchStates() async {
+  Future<dynamic> fetchAnswers({required String? userId}) async {
+    var questionResponse = await ApiRepository.instance.get(_answerApiEndPoint + userId!);
+    return questionResponse;
+  }
+
+  Future<dynamic> fetchStates() async {
     var statesResponse = await ApiRepository.instance.get(_statesApiEndPoint);
     return statesResponse;
   }
 
-  fetchCities({required String? stateCode}) async {
-    var loginResponse = await ApiRepository.instance.get(
-      getCityEndPoint(stateCode: stateCode),
-    );
+  Future<dynamic> fetchCities({required String? stateCode}) async {
+    var loginResponse = await ApiRepository.instance.get(getCityEndPoint(stateCode: stateCode));
     return loginResponse;
   }
 
-  saveAnswers({required SaveAnswerRequestModel? saveAnswerRequest}) async {
+  Future<dynamic> saveAnswers({required SaveAnswerRequestModel? saveAnswerRequest}) async {
     var saveAnswerResponse = await ApiRepository.instance.post(
       _saveAnswersEndPoint,
       body: saveAnswerRequest,

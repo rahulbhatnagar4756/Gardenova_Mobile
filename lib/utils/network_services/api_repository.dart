@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/utils/app_config.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -43,8 +44,8 @@ class ApiRepository {
     };
   }
 
-  // static final String baseUrl = AppConfig.shared.baseUrl;
-  static final String baseUrl = "http://69.62.81.167:8080/";
+  static final String baseUrl = AppConfig.shared.baseUrl;
+  // static final String baseUrl = "http://69.62.81.167:8080/";
   ApiRepository? apiRepository;
 
   Future<dynamic> request(
@@ -104,21 +105,13 @@ class ApiRepository {
           );
           break;
         case ApiKeys.put:
-          response = await http.put(
-            uri,
-            body: jsonEncode(body),
-            headers: defaultHeaders,
-          );
+          response = await http.put(uri, body: jsonEncode(body), headers: defaultHeaders);
           break;
         case ApiKeys.delete:
           response = await http.delete(uri, headers: defaultHeaders);
           break;
         case ApiKeys.patch:
-          response = await http.patch(
-            uri,
-            body: jsonEncode(body),
-            headers: defaultHeaders,
-          );
+          response = await http.patch(uri, body: jsonEncode(body), headers: defaultHeaders);
 
         case ApiKeys.multipartPut:
           final request = http.MultipartRequest(ApiKeys.put, uri);
@@ -133,11 +126,7 @@ class ApiRepository {
 
           final streamedResponse = await request.send();
           response = await http.Response.fromStream(streamedResponse);
-          response = await http.put(
-            uri,
-            body: jsonEncode(body),
-            headers: defaultHeaders,
-          );
+          response = await http.put(uri, body: jsonEncode(body), headers: defaultHeaders);
           break;
         default:
           throw ArgumentError('${AppStrings.invalidHttpMethod}: $method');
@@ -159,8 +148,7 @@ class ApiRepository {
         log('---------------------------------responseElse');
         BaseSnackBar.show(
           title: AppStrings.exception,
-          message:
-              responseData[ApiKeys.message] ?? AppStrings.somethingWentWrong,
+          message: responseData[ApiKeys.message] ?? AppStrings.somethingWentWrong,
         );
         return null;
       }
@@ -235,22 +223,14 @@ class ApiRepository {
     rethrowExceptions: rethrowExceptions,
   );
 
-  Future<dynamic> patch(
-    String endPoint,
-    dynamic body, {
-    Map<String, String>? headers,
-  }) async => request(ApiKeys.patch, endPoint, body: body, headers: headers);
+  Future<dynamic> patch(String endPoint, dynamic body, {Map<String, String>? headers}) async =>
+      request(ApiKeys.patch, endPoint, body: body, headers: headers);
 
-  Future<dynamic> put(
-    String endPoint, {
-    dynamic body,
-    Map<String, String>? headers,
-  }) async => request(ApiKeys.put, endPoint, body: body, headers: headers);
+  Future<dynamic> put(String endPoint, {dynamic body, Map<String, String>? headers}) async =>
+      request(ApiKeys.put, endPoint, body: body, headers: headers);
 
-  Future<dynamic> delete(
-    String endPoint, {
-    Map<String, String>? headers,
-  }) async => request(ApiKeys.delete, endPoint, headers: headers);
+  Future<dynamic> delete(String endPoint, {Map<String, String>? headers}) async =>
+      request(ApiKeys.delete, endPoint, headers: headers);
 
   dynamic _returnResponse(http.Response response) {
     debugPrint("response.statusCode:::${response.statusCode}");
@@ -276,8 +256,7 @@ class ApiRepository {
         Future.delayed(Duration.zero, () {
           BaseDialog.showUnauthorizedDialog(
             context: Get.context!,
-            message:
-                'Your session has expired. Please login again to continue.',
+            message: 'Your session has expired. Please login again to continue.',
             onLoginPressed: () {
               SharedPrefsService.instance.clear();
               Get.back();
@@ -295,9 +274,7 @@ class ApiRepository {
         throw ConflictException(message ?? response.body.toString());
       case 500:
       default:
-        throw FetchDataException(
-          message ?? '${AppStrings.serverException} ${response.statusCode}',
-        );
+        throw FetchDataException(message ?? '${AppStrings.serverException} ${response.statusCode}');
     }
   }
 
@@ -311,9 +288,7 @@ class ApiRepository {
         context: Get.context!,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return const Center(
-            child: SpinKitSpinningLines(color: AppColors.greenColor),
-          );
+          return const Center(child: SpinKitSpinningLines(color: AppColors.greenColor));
         },
       );
 
