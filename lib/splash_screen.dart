@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/services/notification_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -81,8 +82,14 @@ class _SplashScreenState extends State<SplashScreen> {
       // statusBarBrightness: Brightness.light,
       // ),
       // );
-      Future.delayed(Duration(seconds: 1), () {
-        NotificationService.instance.requestNotificationPermission();
+      Future.delayed(Duration(seconds: 1), () async {
+        final granted =
+            await NotificationService.instance.requestNotificationPermission();
+        if (granted) {
+          await ReminderPushNotificationService.instance
+              .registerDeviceTokenIfNeeded();
+        }
+        ReminderPushNotificationService.instance.processPendingNotificationClick();
       });
       if (currentRole != AppKeys.professional) {
         // need change

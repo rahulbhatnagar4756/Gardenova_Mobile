@@ -8,14 +8,14 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
+
 import '../../settings/settings_view_model.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../../utils/utils.dart';
 import 'clickable_image.dart';
 import 'common_click_widget.dart';
 
-class CircularBottomAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class CircularBottomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CircularBottomAppBar({
     super.key,
     this.onSettingPressed,
@@ -52,16 +52,8 @@ class CircularBottomAppBar extends StatelessWidget
                 onTap: () => Get.back(result: true),
                 child: Container(
                   // color: Colors.red,
-                  padding: EdgeInsets.only(
-                    left: 12.w,
-                    bottom: 6.h,
-                    right: 20.w,
-                  ),
-                  child: Image.asset(
-                    AppAssets.backBtnIc,
-                    width: 20.w,
-                    height: 16.w,
-                  ),
+                  padding: EdgeInsets.only(left: 12.w, bottom: 6.h, right: 20.w),
+                  child: Image.asset(AppAssets.backBtnIc, width: 20.w, height: 16.w),
                 ),
               ),
 
@@ -101,10 +93,7 @@ class CircularBottomAppBar extends StatelessWidget
                               width: double.infinity,
                               fit: BoxFit.cover,
                               heroTag: "profile_image_appbar",
-                              errorWidget: Image.asset(
-                                AppAssets.appLogo,
-                                fit: BoxFit.cover,
-                              ),
+                              errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
                             ),
                           ),
                           // child: ClipOval(
@@ -144,18 +133,12 @@ class CircularBottomAppBar extends StatelessWidget
 
                         SizedBox(height: 2),
 
-                        SharedPrefsService.instance.getString(AppKeys.role) ==
-                                AppKeys.professional
+                        SharedPrefsService.instance.getString(AppKeys.role) == AppKeys.professional
                             ? Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: spacerSize8,
-                                  vertical: 2,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: spacerSize8, vertical: 2),
                                 decoration: BoxDecoration(
                                   color: AppColors.toLiteGreenColor,
-                                  borderRadius: BorderRadius.circular(
-                                    spacerSize20,
-                                  ),
+                                  borderRadius: BorderRadius.circular(spacerSize20),
                                 ),
                                 child: BaseText(
                                   text:
@@ -183,12 +166,12 @@ class CircularBottomAppBar extends StatelessWidget
                   GestureDetector(
                     onTap: () {
                       // onNotificationPressed?.call();
-                      BaseSnackBar.show(
-                        title: 'Temporarily Unavailable',
-                        message:
-                            // 'The store is currently on hold. We’ll be back soon with updates.',
-                            'The notification section is currently on hold. We\'ll be back soon with updates.',
-                      );
+                      // BaseSnackBar.show(
+                      //   title: 'Temporarily Unavailable',
+                      //   message:
+                      //       // 'The store is currently on hold. We’ll be back soon with updates.',
+                      //       'The notification section is currently on hold. We\'ll be back soon with updates.',
+                      // );
                     },
                     behavior: HitTestBehavior.opaque,
                     child: Container(
@@ -201,11 +184,7 @@ class CircularBottomAppBar extends StatelessWidget
                           ),
                         ],
                       ),
-                      child: Image.asset(
-                        AppAssets.notificationIc,
-                        height: 32.w,
-                        width: 32.w,
-                      ),
+                      child: Image.asset(AppAssets.notificationIc, height: 32.w, width: 32.w),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -224,11 +203,7 @@ class CircularBottomAppBar extends StatelessWidget
                           ),
                         ],
                       ),
-                      child: Image.asset(
-                        AppAssets.drawerMenuIc,
-                        height: 32.w,
-                        width: 32.w,
-                      ),
+                      child: Image.asset(AppAssets.drawerMenuIc, height: 32.w, width: 32.w),
                     ),
                   ),
 
@@ -254,8 +229,7 @@ class CircularBottomAppBar extends StatelessWidget
 
   /// 🔥 Increased safe height to prevent overflow
   @override
-  Size get preferredSize =>
-      Size.fromHeight(110.h + ((isBackButtonVisible ?? false) ? 30.h : 0));
+  Size get preferredSize => Size.fromHeight(110.h + ((isBackButtonVisible ?? false) ? 30.h : 0));
 }
 
 String getGreeting() {

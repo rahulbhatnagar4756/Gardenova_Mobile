@@ -80,13 +80,7 @@ class PlantDetailData {
   DiseaseModel? disease;
   ReminderModel? reminder;
 
-  PlantDetailData({
-    this.userPlantId,
-    this.plant,
-    this.reminder,
-    this.care,
-    this.disease,
-  });
+  PlantDetailData({this.userPlantId, this.plant, this.reminder, this.care, this.disease});
 
   PlantDetailData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
@@ -101,9 +95,7 @@ class PlantDetailData {
       disease = DiseaseModel.fromJson(json['disease']);
     }
 
-    reminder = json['reminder'] != null
-        ? ReminderModel.fromJson(json['reminder'])
-        : null;
+    reminder = json['reminder'] != null ? ReminderModel.fromJson(json['reminder']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -317,11 +309,7 @@ class PlantDetails {
           imageRegularUrl;
     } else {
       imageUrl =
-          imageOriginalUrl ??
-          imageMediumUrl ??
-          imageSmallUrl ??
-          imageThumbnail ??
-          imageRegularUrl;
+          imageOriginalUrl ?? imageMediumUrl ?? imageSmallUrl ?? imageThumbnail ?? imageRegularUrl;
     }
     imageOriginalUrl = json['image_original_url'];
     imageRegularUrl = json['image_regular_url'];
@@ -403,6 +391,10 @@ class ReminderModel {
   bool? wateringNotificationEnabled;
   int? wateringReminderFrequency;
   String? wateringPreferredTime;
+  String? wateringNote;
+  String? fertilizerNote;
+  String? pruningNote;
+  String? genericCareNote;
 
   DateTime? nextWateredAt;
   DateTime? lastWateredAt;
@@ -430,6 +422,10 @@ class ReminderModel {
     this.wateringNotificationEnabled,
     this.wateringReminderFrequency,
     this.wateringPreferredTime,
+    this.pruningNote,
+    this.wateringNote,
+    this.fertilizerNote,
+    this.genericCareNote,
     this.nextWateredAt,
     this.lastWateredAt,
     this.fertilizerNotificationEnabled,
@@ -455,6 +451,14 @@ class ReminderModel {
     wateringReminderFrequency = json['watering_reminder_frequency'];
 
     wateringPreferredTime = json['watering_preferred_time'];
+
+    wateringNote = json['watering_note'];
+
+    fertilizerNote = json['fertilizer_note'];
+
+    pruningNote = json['pruning_note'];
+
+    genericCareNote = json['generic_care_note'];
 
     nextWateredAt = _parseDate(json['next_watered_at']);
 
@@ -504,6 +508,14 @@ class ReminderModel {
       'watering_reminder_frequency': wateringReminderFrequency,
 
       'watering_preferred_time': wateringPreferredTime,
+
+      'watering_note': wateringNote,
+
+      'fertilizer_note': fertilizerNote,
+
+      'pruning_note': pruningNote,
+
+      'generic_care_note': genericCareNote,
 
       'next_watered_at': nextWateredAt?.toIso8601String(),
 

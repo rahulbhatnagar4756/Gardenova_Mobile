@@ -20,9 +20,7 @@ class PlantDetailsResponseModel {
     success = Utils.parseBool(json['success']);
     message = json['message']?.toString();
 
-    data = json['data'] != null
-        ? PlantDetailsData.fromJson(json['data'])
-        : null;
+    data = json['data'] != null ? PlantDetailsData.fromJson(json['data']) : null;
   }
 }
 
@@ -43,17 +41,10 @@ class Care {
 
   String toJson() => json.encode(toMap());
 
-  factory Care.fromMap(Map<String, dynamic> json) => Care(
-    watering: json["watering"],
-    sunlight: json["sunlight"],
-    pruning: json["pruning"],
-  );
+  factory Care.fromMap(Map<String, dynamic> json) =>
+      Care(watering: json["watering"], sunlight: json["sunlight"], pruning: json["pruning"]);
 
-  Map<String, dynamic> toMap() => {
-    "watering": watering,
-    "sunlight": sunlight,
-    "pruning": pruning,
-  };
+  Map<String, dynamic> toMap() => {"watering": watering, "sunlight": sunlight, "pruning": pruning};
 }
 
 class DiseaseModel {
@@ -83,12 +74,19 @@ class DiseaseModel {
   }
 
   String? get host => _host;
+
   set host(String? host) => _host = host;
+
   String? get description => _description;
+
   set description(String? description) => _description = description;
+
   String? get solution => _solution;
+
   set solution(String? solution) => _solution = solution;
+
   String? get localImageDiseasePath => _localImageDiseasePath;
+
   set localImageDiseasePath(String? localImageDiseasePath) =>
       _localImageDiseasePath = localImageDiseasePath;
 
@@ -116,44 +114,40 @@ class PlantDetailsData {
   DiseaseModel? disease;
   ReminderModel? reminder;
 
-  PlantDetailsData({
-    this.plant,
-    this.alreadyAdded,
-    this.reminder,
-    this.care,
-    this.disease,
-  });
+  PlantDetailsData({this.plant, this.alreadyAdded, this.reminder, this.care, this.disease});
 
   PlantDetailsData.fromJson(Map<String, dynamic>? json) {
     if (json == null) return;
 
-    plant = json['plant'] != null
-        ? PlantModelDetails.fromJson(json['plant'])
-        : null;
+    plant = json['plant'] != null ? PlantModelDetails.fromJson(json['plant']) : null;
 
     alreadyAdded = Utils.parseBool(json['AlreadyAdded']);
     care = json['care'] != null ? Care.fromMap(json['care']) : null;
 
-    reminder = json['reminder'] != null
-        ? ReminderModel.fromJson(json['reminder'])
-        : null;
+    reminder = json['reminder'] != null ? ReminderModel.fromJson(json['reminder']) : null;
 
     if (json['disease'] != null) {
       disease = new DiseaseModel.fromJson(json['disease']);
     }
   }
 
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = <String, dynamic>{};
-  //   if (plant != null) {
-  //     data['plant'] = plant!.toJson();
-  //   }
-  //   data['alreadyAdded'] = alreadyAdded;
-  //   if (reminder != null) {
-  //     data['reminder'] = reminder!.toJson();
-  //   }
-  //   return data;
-  // }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (plant != null) {
+      data['plant'] = plant!.toJson();
+    }
+    data['AlreadyAdded'] = alreadyAdded;
+    if (care != null) {
+      data['care'] = care!.toMap();
+    }
+    if (reminder != null) {
+      data['reminder'] = reminder!.toJson();
+    }
+    if (disease != null) {
+      data['disease'] = disease!.toJson();
+    }
+    return data;
+  }
 }
 
 class PlantModelDetails {
@@ -409,12 +403,70 @@ class PlantModelDetails {
           imageRegularUrl;
     } else {
       imageUrl =
-          imageOriginalUrl ??
-          imageMediumUrl ??
-          imageSmallUrl ??
-          imageThumbnail ??
-          imageRegularUrl;
+          imageOriginalUrl ?? imageMediumUrl ?? imageSmallUrl ?? imageThumbnail ?? imageRegularUrl;
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['common_name'] = commonName;
+    data['scientific_name'] = scientificName;
+    data['other_name'] = otherName;
+    data['family'] = family;
+    data['genus'] = genus;
+    data['species_epithet'] = speciesEpithet;
+    data['origin'] = origin;
+    data['type'] = type;
+    data['cycle'] = cycle;
+    data['watering'] = watering;
+    data['watering_benchmark_value'] = wateringBenchmarkValue;
+    data['watering_benchmark_unit'] = wateringBenchmarkUnit;
+    data['sunlight'] = sunlight;
+    data['soil'] = soil;
+    data['hardiness_min'] = hardinessMin;
+    data['hardiness_max'] = hardinessMax;
+    data['dimension_type'] = dimensionType;
+    data['dimension_min_value'] = dimensionMinValue;
+    data['dimension_max_value'] = dimensionMaxValue;
+    data['dimension_unit'] = dimensionUnit;
+    data['growth_rate'] = growthRate;
+    data['maintenance'] = maintenance;
+    data['care_level'] = careLevel;
+    data['care_guides_url'] = careGuidesUrl;
+    data['pruning_month'] = pruningMonth;
+    data['propagation'] = propagation;
+    data['attracts'] = attracts;
+    data['pest_susceptibility'] = pestSusceptibility;
+    data['plant_anatomy'] = plantAnatomy;
+    data['drought_tolerant'] = droughtTolerant;
+    data['salt_tolerant'] = saltTolerant;
+    data['thorny'] = thorny;
+    data['invasive'] = invasive;
+    data['tropical'] = tropical;
+    data['indoor'] = indoor;
+    data['flowers'] = flowers;
+    data['cones'] = cones;
+    data['fruits'] = fruits;
+    data['edible_fruit'] = edibleFruit;
+    data['leaf'] = leaf;
+    data['edible_leaf'] = edibleLeaf;
+    data['seeds'] = seeds;
+    data['cuisine'] = cuisine;
+    data['medicinal'] = medicinal;
+    data['poisonous_to_humans'] = poisonousToHumans;
+    data['poisonous_to_pets'] = poisonousToPets;
+    data['flowering_season'] = floweringSeason;
+    data['harvest_season'] = harvestSeason;
+    data['description'] = description;
+    data['image_original_url'] = imageOriginalUrl;
+    data['image_regular_url'] = imageRegularUrl;
+    data['image_medium_url'] = imageMediumUrl;
+    data['image_small_url'] = imageSmallUrl;
+    data['image_thumbnail'] = imageThumbnail;
+    data['image_license'] = imageLicense;
+    data['image_url'] = imageUrl;
+    return data;
   }
 }
 
@@ -966,6 +1018,7 @@ class ReminderModel {
   int? wateringReminderFrequency;
   bool? wateringNotificationEnabled;
   String? wateringPreferredTime;
+  String? wateringNote;
   DateTime? nextWateredAt;
   DateTime? lastWateredAt;
 
@@ -973,6 +1026,7 @@ class ReminderModel {
   int? fertilizerReminderFrequency;
   bool? fertilizerNotificationEnabled;
   String? fertilizerPreferredTime;
+  String? fertilizerNote;
   DateTime? nextFertilizedAt;
   DateTime? lastFertilizedAt;
 
@@ -981,6 +1035,10 @@ class ReminderModel {
   bool? pruningNotificationEnabled;
   DateTime? nextPrunedAt;
   DateTime? lastPrunedAt;
+  String? pruningPreferredTime;
+  String? genericPreferredTime;
+  String? genericCareNote;
+  String? pruningNote;
 
   /// 🧪 Generic Care
   int? genericCareReminderFrequency;
@@ -990,6 +1048,7 @@ class ReminderModel {
 
   ReminderModel({
     this.wateringReminderFrequency,
+    this.wateringNote,
     this.wateringNotificationEnabled,
     this.wateringPreferredTime,
     this.nextWateredAt,
@@ -999,12 +1058,17 @@ class ReminderModel {
     this.fertilizerPreferredTime,
     this.nextFertilizedAt,
     this.lastFertilizedAt,
+    this.fertilizerNote,
     this.pruningReminderFrequency,
     this.pruningNotificationEnabled,
+    this.pruningPreferredTime,
+    this.genericPreferredTime,
+    this.pruningNote,
     this.nextPrunedAt,
     this.lastPrunedAt,
     this.genericCareReminderFrequency,
     this.genericNotificationEnabled,
+    this.genericCareNote,
     this.nextGenericCareAt,
     this.lastGenericCareAt,
   });
@@ -1013,47 +1077,43 @@ class ReminderModel {
     if (json == null) return;
 
     /// 🌱 Watering
-    wateringReminderFrequency = Utils.parseInt(
-      json['watering_reminder_frequency'],
-    );
+    wateringReminderFrequency = Utils.parseInt(json['watering_reminder_frequency']);
 
-    wateringNotificationEnabled = Utils.parseBool(
-      json['watering_notification_enabled'],
-    );
+    wateringNotificationEnabled = Utils.parseBool(json['watering_notification_enabled']);
 
     wateringPreferredTime = json['watering_preferred_time']?.toString();
+    wateringNote = json['watering_note']?.toString();
 
     nextWateredAt = Utils.parseDate(json['next_watered_at']);
 
     lastWateredAt = Utils.parseDate(json['last_watered_at']);
 
     /// 🌿 Fertilizer
-    fertilizerReminderFrequency = Utils.parseInt(
-      json['fertilizer_reminder_frequency'],
-    );
+    fertilizerReminderFrequency = Utils.parseInt(json['fertilizer_reminder_frequency']);
 
-    fertilizerNotificationEnabled = Utils.parseBool(
-      json['fertilizer_notification_enabled'],
-    );
+    fertilizerNotificationEnabled = Utils.parseBool(json['fertilizer_notification_enabled']);
 
     fertilizerPreferredTime = json['fertilizer_preferred_time']?.toString();
 
     nextFertilizedAt = Utils.parseDate(json['next_fertilized_at']);
 
     lastFertilizedAt = Utils.parseDate(json['last_fertilized_at']);
+    fertilizerNote = json['fertilizer_note']?.toString();
 
     /// ✂️ Pruning
-    pruningReminderFrequency = Utils.parseInt(
-      json['pruning_reminder_frequency'],
-    );
+    pruningReminderFrequency = Utils.parseInt(json['pruning_reminder_frequency']);
+
+    pruningPreferredTime = json['pruning_preferred_time']?.toString();
+    genericPreferredTime = json['generic_care_preferred_time']?.toString();
+    genericCareNote = json['generic_care_note']?.toString();
+    pruningNote = json['pruning_note']?.toString();
 
     /// API TYPO FIX
     // pruningNotificationEnabled = Utils.parseBool(
     //   json['puring_notification_enabled'],
     // );
     pruningNotificationEnabled = Utils.parseBool(
-      json['puring_notification_enabled'] ??
-          json['pruning_notification_enabled'],
+      json['puring_notification_enabled'] ?? json['pruning_notification_enabled'],
     );
 
     nextPrunedAt = Utils.parseDate(json['next_pruned_at']);
@@ -1061,13 +1121,9 @@ class ReminderModel {
     lastPrunedAt = Utils.parseDate(json['last_pruned_at']);
 
     /// 🧪 Generic Care
-    genericCareReminderFrequency = Utils.parseInt(
-      json['generic_care_reminder_frequency'],
-    );
+    genericCareReminderFrequency = Utils.parseInt(json['generic_care_reminder_frequency']);
 
-    genericNotificationEnabled = Utils.parseBool(
-      json['generic_notification_enabled'],
-    );
+    genericNotificationEnabled = Utils.parseBool(json['generic_notification_enabled']);
 
     nextGenericCareAt = Utils.parseDate(json['next_generic_care_at']);
 
@@ -1082,6 +1138,7 @@ class ReminderModel {
       "watering_preferred_time": wateringPreferredTime,
       "next_watered_at": nextWateredAt?.toIso8601String(),
       "last_watered_at": lastWateredAt?.toIso8601String(),
+      "watering_note": wateringNote,
 
       /// 🌿 Fertilizer
       "fertilizer_reminder_frequency": fertilizerReminderFrequency,
@@ -1089,12 +1146,15 @@ class ReminderModel {
       "fertilizer_preferred_time": fertilizerPreferredTime,
       "next_fertilized_at": nextFertilizedAt?.toIso8601String(),
       "last_fertilized_at": lastFertilizedAt?.toIso8601String(),
+      "fertilizer_note": fertilizerNote,
 
       /// ✂️ Pruning
       "pruning_reminder_frequency": pruningReminderFrequency,
 
       /// keeping correct api key
       "pruning_notification_enabled": pruningNotificationEnabled,
+      "pruning_preferred_time": pruningPreferredTime,
+      "pruning_note": pruningNote,
 
       "next_pruned_at": nextPrunedAt?.toIso8601String(),
       "last_pruned_at": lastPrunedAt?.toIso8601String(),
@@ -1107,6 +1167,8 @@ class ReminderModel {
       "next_generic_care_at": nextGenericCareAt?.toIso8601String(),
 
       "last_generic_care_at": lastGenericCareAt?.toIso8601String(),
+      "generic_care_preferred_time": genericPreferredTime,
+      "generic_care_note": genericCareNote,
     };
   }
 

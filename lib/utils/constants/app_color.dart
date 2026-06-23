@@ -10,6 +10,7 @@ class AppColors {
   static const greenColor = Color(0xFF01AF55);
   static const borderLiteGreyColor = Color(0xFFE4E4E4);
   static const orangeColor = Color(0xFFFF8833);
+  static const lightGreen = Color(0xFFE9F9EF);
 
   // char item colors
   static const liteYellowColor = Color(0xFFB5E48C);
@@ -18,7 +19,8 @@ class AppColors {
   static const toLiteGreenColor = Color(0xFF95D5B2);
   static const toToLiteGreenColor = Color(0xFFE6F7EE);
   static const chartBorderColor = Color(0xFF2D6647);
-
+  static const lightGreenColor = Color(0xFFD4EDD6);
+  static const navyBlueColor = Color(0xFF3070AD);
 
   static const sandColor = Color(0xFF076E3B);
   static const siltColor = Color(0xFF8BC65E);
@@ -69,6 +71,8 @@ class AppColors {
   static const harvestGold = Color(0xFFB2883D);
   static const mossGold = Color(0xFF706136);
   static const amberGold = Color(0xFFB48A3E);
+  static const lightGreyColor = Color(0x99111111);
+  static const opaqueWhite = Color(0xffF2EEE8);
   static const linearGradientForBtn = LinearGradient(
     colors: [Color(0XFF004A24), Color(0XFF00B056)],
     begin: Alignment.centerLeft,

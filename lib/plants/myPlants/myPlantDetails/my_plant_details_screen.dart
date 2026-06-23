@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import '../../../services/admob_service.dart';
+
 import 'my_plant_details_controller.dart';
 import 'views/error_view.dart';
 import 'views/loading_view.dart';
@@ -38,19 +36,19 @@ class MyPlantDetailsScreen extends GetWidget<MyPlantDetailsController> {
         body: Column(
           children: [
             Expanded(child: MyPlantDetailsSuccessView(controller: controller)),
-            Obx(() {
-              if (AdMobService.instance.shouldShowBanners &&
-                  controller.isAdLoaded.value &&
-                  controller.bannerAd != null) {
-                return Container(
-                  alignment: Alignment.center,
-                  width: controller.bannerAd!.size.width.toDouble().w,
-                  height: controller.bannerAd!.size.height.toDouble().h,
-                  child: AdWidget(ad: controller.bannerAd!),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+            // Obx(() {
+            //   if (AdMobService.instance.shouldShowBanners &&
+            //       controller.isAdLoaded.value &&
+            //       controller.bannerAd != null) {
+            //     return Container(
+            //       alignment: Alignment.center,
+            //       width: controller.bannerAd!.size.width.toDouble().w,
+            //       height: controller.bannerAd!.size.height.toDouble().h,
+            //       child: AdWidget(ad: controller.bannerAd!),
+            //     );
+            //   }
+            //   return const SizedBox.shrink();
+            // }),
           ],
         ),
       );

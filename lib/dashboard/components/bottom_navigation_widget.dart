@@ -3,10 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
+
 import '../../base/widgets/base_text.dart';
 import '../model/bottom_navigation_local_model.dart';
 
-enum BottomNavType { home, plant, scan, report, profile }
+enum BottomNavType { home, plant, scan, reminders, report /*profile*/ }
 
 List<BottomNavigationLocalModel> bottomNavigationList() {
   return [
@@ -26,16 +27,22 @@ List<BottomNavigationLocalModel> bottomNavigationList() {
       icon: AppAssets.scanIc,
       isCenterIcon: true,
     ),
+
     BottomNavigationLocalModel(
       type: BottomNavType.report,
       label: AppStrings.reports,
       icon: AppAssets.reportIc,
     ),
     BottomNavigationLocalModel(
-      type: BottomNavType.profile,
-      label: AppStrings.profile,
-      icon: AppAssets.profileIc,
+      type: BottomNavType.reminders,
+      label: AppStrings.reminders,
+      icon: AppAssets.reminderIc,
     ),
+    // BottomNavigationLocalModel(
+    //   type: BottomNavType.profile,
+    //   label: AppStrings.profile,
+    //   icon: AppAssets.profileIc,
+    // ),
   ];
 }
 
@@ -64,10 +71,7 @@ class BottomNavigationWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(0),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.1),
-            width: 1.w,
-          ),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.1), width: 1.w),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -84,10 +88,7 @@ class BottomNavigationWidget extends StatelessWidget {
             children: bottomNavigationList().asMap().entries.map((entry) {
               BottomNavigationLocalModel item = entry.value;
 
-              Color? selectedColor = item.type == selectNavType
-                  ? AppColors.greenColor
-                  : null;
-
+              Color? selectedColor = item.type == selectNavType ? AppColors.greenColor : null;
               return Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -109,9 +110,7 @@ class BottomNavigationWidget extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.blackColor.withValues(
-                                      alpha: 0.15,
-                                    ),
+                                    color: AppColors.blackColor.withValues(alpha: 0.15),
                                     blurRadius: 14,
                                     spreadRadius: 2,
                                     offset: const Offset(0, 6),
@@ -148,23 +147,16 @@ class BottomNavigationWidget extends StatelessWidget {
                                   duration: const Duration(milliseconds: 250),
 
                                   style: TextStyle(
-                                    fontSize: item.type == selectNavType
-                                        ? 11.sp
-                                        : 10.sp,
+                                    fontSize: item.type == selectNavType ? 11.sp : 10.sp,
 
                                     fontWeight: item.type == selectNavType
                                         ? FontWeight.w600
                                         : FontWeight.w400,
 
-                                    color:
-                                        selectedColor ??
-                                        AppColors.liteGreyColor,
+                                    color: selectedColor ?? AppColors.liteGreyColor,
                                   ),
 
-                                  child: BaseText(
-                                    text: item.label,
-                                    textColor: selectedColor,
-                                  ),
+                                  child: BaseText(text: item.label, textColor: selectedColor),
                                 ),
                               ],
                             ),

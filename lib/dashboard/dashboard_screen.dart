@@ -22,7 +22,6 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../../services/admob_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
-import '../utils/utils.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/landscape_style_bottom_sheet.dart';
 import 'components/soil_analysis.dart';
@@ -209,6 +208,12 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 case BottomNavType.scan:
                   openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                   break;
+
+                case BottomNavType.reminders:
+                  Get.toNamed(Routes.plantRemindersListing)?.then((value) {
+                    controller.selectedNavType.value = BottomNavType.home;
+                  });
+                  break;
                 case BottomNavType.plant:
                   Get.toNamed(Routes.myPlantsScreen)?.then((value) {
                     controller.selectedNavType.value = BottomNavType.home;
@@ -216,12 +221,12 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   break;
                 case BottomNavType.report:
                   break;
-                case BottomNavType.profile:
+                /*  case BottomNavType.profile:
                   Utils.callSettingBasicApi();
                   Get.toNamed(Routes.profile)?.then((value) {
                     controller.selectedNavType.value = BottomNavType.home;
                   });
-                  break;
+                  break;*/
               }
             },
           );

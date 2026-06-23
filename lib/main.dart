@@ -26,6 +26,7 @@ import 'package:kasagardem/utils/utils.dart';
 
 import 'base/widgets/base_calculate_remaining_days.dart';
 import 'services/notification_service.dart';
+import 'services/reminder_push_notification_service.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -128,6 +129,7 @@ Future<void> main() async {
 Future<void> initServices() async {
   Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
   await NotificationService.instance.initialize();
+  ReminderPushNotificationService.instance.configure();
 }
 
 class MyApp extends StatelessWidget {

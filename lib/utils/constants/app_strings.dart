@@ -8,10 +8,10 @@ class AppStrings {
       'Error occurred while Communication with Server with StatusCode';
   static const String invalidHttpMethod = 'Invalid HTTP method';
   static const String cancel = "Cancel";
+  static const String save = "Save";
   static const String confirm = "Confirm";
   static const String changeLanguage = "Change Language";
-  static const String areYouSureYouWantLanguage =
-      "Are You Sure You Want Language";
+  static const String areYouSureYouWantLanguage = "Are You Sure You Want Language";
   static const String areYouSureWantToLogout = "Are you sure want to logout?";
 
   // static const String exception = "Exception";
@@ -63,8 +63,7 @@ class AppStrings {
 
   static const String locationDisabled = "Location Disabled";
 
-  static const String enableLocationServices =
-      "Please enable location services to continue.";
+  static const String enableLocationServices = "Please enable location services to continue.";
 
   static const String openSettings = "Open Settings";
 
@@ -73,13 +72,11 @@ class AppStrings {
   static const String locationPermissionPermanentlyDenied =
       "Location permission is permanently denied. Enable it from settings.";
 
-  static const String locationServicesDisabled =
-      "Location services are disabled.";
+  static const String locationServicesDisabled = "Location services are disabled.";
 
   static const String locationPermissionDenied = "Location permission denied";
 
-  static const String permissionPermanentlyDenied =
-      "Permission permanently denied";
+  static const String permissionPermanentlyDenied = "Permission permanently denied";
 
   static const String unableToFetchLocation = "Unable to fetch location";
 
@@ -113,8 +110,7 @@ class AppStrings {
   static const String tryAgain = "Try Again";
   static const String unknownPlant = "Unknown Plant";
   static const String noPlantDetected = "No Plant Detected";
-  static const String pleaseUpload =
-      "Please upload a clearer plant image for better diagnosis.";
+  static const String pleaseUpload = "Please upload a clearer plant image for better diagnosis.";
 
   static const String careGuide = "Care Guide";
   static const String lightCondition = "Light Condition";
@@ -123,8 +119,7 @@ class AppStrings {
   static const String comingSoon = "Coming Soon";
   static const String addPlantFunctionalityWillBeAvailableSoon =
       "Add Plant functionality will be available soon!";
-  static const String noDetailsFoundForThisPlant =
-      "No details found for this plant.";
+  static const String noDetailsFoundForThisPlant = "No details found for this plant.";
   static const String careOverview = "Care Overview";
   static const String fertilizer = "Fertilizer";
   static const String sunlight = "Sunlight";
@@ -139,11 +134,11 @@ class AppStrings {
   static const String changeDiagnosis = 'Preferences';
   // static const String changeDiagnosis = 'Change Diagnosis';
   static const String selectionRequired = 'Selection Required';
-  static const String pleaseSelectAnAnswerToContinue =
-      'Please select an answer to continue';
+  static const String pleaseSelectAnAnswerToContinue = 'Please select an answer to continue';
   static const String plants = "Plants";
   static const String scan = "Scan";
   static const String reports = "Reports";
+  static const String reminders = "Reminders";
   static const String profile = "Profile";
   static const String yourPhoneNo = "Your Phone no.";
 
@@ -151,34 +146,55 @@ class AppStrings {
   static const String accountAction = "Account Setting";
 
   static const String verifyEmailAddress = "Verify Email Address";
-  static const String verifyEmailSubTxt =
-      "We have sent a verification code to EMAIL_ADDRESS";
+  static const String verifyEmailSubTxt = "We have sent a verification code to EMAIL_ADDRESS";
   static const setPwd = 'Set Password';
   static const changePwdMsg = "Update your security password";
   static const setPwdMsg = "Set your security password";
   static const setPwdBtnMsg = "Set Password";
-  static const tapAddPlantsToAddNewPlant =
-      "Tap “Add Plants” to add your first plant";
+  static const tapAddPlantsToAddNewPlant = "Tap “Add Plants” to add your first plant";
+  static const saveChanges = "Save Changes";
+  static const selectPruningTime = "Please select pruning time";
+  static const selectCriticalCareTime = "Please select critical care time";
+  static const editNote = "Edit note";
+  static const addANote = "Add a note";
+  static const addNote = "Add note";
+  static const viewNote = "View note";
+  static const theNoteWillBeAttachedTo = "This note will be attached to";
+  static const enterYourNoteHere = "Enter your note here...";
+  static const plantCareReminders = "Plant Care Reminders";
+  static const String noRemindersFound = "No reminders found";
+  static const allTypes = "All Types";
+  static const fertilize = "Fertilize";
+  static const prune = "Prune";
+  static const generic = "Generic";
+  static const all = "All";
+  static const upcoming = "Upcoming";
+  static const missed = "Missed";
+  static const completed = "Completed";
+  static const String reminderCard = "Reminder Card";
+  static const String done = "Done";
+  static const String reschedule = "Reschedule";
+  static const String disableReminder = "Disable Reminder";
+  static const String markAsComplete = "Mark as Complete";
+  static const String generalCare= "General Care";
+
 }
 
 class ErrorStrings {
   static const invalidName = 'Please enter a valid Name.';
   static const invalidEmail = 'Please enter a valid Email.';
   static const invalidPhoneNo = 'Please enter a valid Phone Number.';
-  static const phoneNoMustBeAtleast7Digits =
-      'Phone number must contain 7 to 14 digits.';
+  static const phoneNoMustBeAtleast7Digits = 'Phone number must contain 7 to 14 digits.';
 
   static const pwdFieldNotEmpty = 'Password field cannot be Empty.';
   static const invalidPassword = 'Please enter a valid Password.';
 
-  static const pwdMustBeAtLeadEightCharecter =
-      'Password must be at least 8 Characters.';
+  static const pwdMustBeAtLeadEightCharecter = 'Password must be at least 8 Characters.';
   static const pwdMustContainAtLeastOneCapitalLetter =
       'Password must contain at least one Capital Letter.';
   static const pwdMustContainAtLeastOneSmallLetter =
       'Password must contain at least one Small Letter.';
-  static const pwdMustContainAtLeastOneNumber =
-      'Password must contain at least one Number.';
+  static const pwdMustContainAtLeastOneNumber = 'Password must contain at least one Number.';
   static const pwdMustContainAtLeastOneSpecialCharacter =
       'Password must contain at least one Special Character.';
   static const confirmPasswordsNotMatch = 'Confirm Password do not Match.';

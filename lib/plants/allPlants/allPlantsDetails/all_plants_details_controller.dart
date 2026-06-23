@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
+import 'package:kasagardem/plants/model/plant_info_item.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../../../base/widgets/base_date_format.dart';
 import '../../../dashboard/dashboard_controller.dart';
@@ -22,6 +24,9 @@ class AllPlantsDetailsController extends GetxController {
   RxBool isFertilizingOn = false.obs;
   RxBool isPruningOn = false.obs;
   RxBool isCriticalOn = false.obs;
+  RxBool isLoading = false.obs;
+  RxBool isAdLoaded = false.obs;
+  bool showMore = false;
   RxString plantId = "".obs;
   RxString screenType = "".obs;
   RxInt wateringFrequency = 0.obs;
@@ -30,39 +35,35 @@ class AllPlantsDetailsController extends GetxController {
   RxInt criticalCareFrequency = 0.obs;
   RxString wateringTime = "".obs;
   RxString fertilizingTime = "".obs;
+  RxString pruningTime = "".obs;
+  RxString criticalTime = "".obs;
   RxString userPlantId = "".obs;
-  PlantsRepository plantsRepository = PlantsRepository();
-  Rx<PlantDetailsResponseModel> plantDetailData =
-      PlantDetailsResponseModel().obs;
-  RxBool isLoading = false.obs;
   RxString errorMessage = "".obs;
-  final List<int> frequencyOptions = [
-    1,
-    2,
-    3,
-    5,
-    7,
-    10,
-    15,
-    20,
-    30,
-    45,
-    60,
-    90,
-  ];
+  RxString wateringNote = "".obs;
+  RxString fertilizingNote = "".obs;
+  RxString pruningNote = "".obs;
+  RxString criticalNote = "".obs;
 
+  PlantsRepository plantsRepository = PlantsRepository();
+  Rx<PlantDetailsResponseModel> plantDetailData = PlantDetailsResponseModel().obs;
+  final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
+  RxList<PlantInfoItem> plantInfoList = <PlantInfoItem>[].obs;
   BannerAd? bannerAd;
-  RxBool isAdLoaded = false.obs;
+
+  TextEditingController pruningController = TextEditingController();
+  TextEditingController fertilizeController = TextEditingController();
+  TextEditingController wateringController = TextEditingController();
+  TextEditingController criticalController = TextEditingController();
 
   @override
   void onInit() {
     if (Get.arguments != null) {
       plantId.value = Get.arguments['plant_id'].toString();
       screenType.value = Get.arguments['screen_type'].toString();
+
+      print("value screenType ${screenType.value}");
     }
-    debugPrint(
-      'AllPlantsDetailsController plantId $plantId and screenType $screenType',
-    );
+    debugPrint('AllPlantsDetailsController plantId $plantId and screenType $screenType');
     if (screenType.value == "add") {
       callGetPlantDetailsApi();
     } else {
@@ -89,6 +90,35 @@ class AllPlantsDetailsController extends GetxController {
     );
   }
 
+  void setPlantInfoData(PlantModelDetails plantDetails) {
+    plantInfoList.add(
+      PlantInfoItem(icon: Icons.eco_outlined, label: 'Type', value: plantDetails.type ?? ''),
+    );
+
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.keyboard_arrow_down,
+        label: 'Height',
+        value: "${plantDetails.dimensionMinValue} - ${plantDetails.dimensionMaxValue}ft",
+      ),
+    );
+
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.wb_sunny_outlined,
+        label: 'Sunlight',
+        value: plantDetails.sunlight ?? "",
+      ),
+    );
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.thermostat,
+        label: 'Hardiness',
+        value: "USDA ${plantDetails.hardinessMin ?? ""} - ${plantDetails.hardinessMax ?? ""}",
+      ),
+    );
+  }
+
   @override
   void onClose() {
     bannerAd?.dispose();
@@ -99,22 +129,32 @@ class AllPlantsDetailsController extends GetxController {
     isWateringOn.value = !isWateringOn.value;
     wateringFrequency.value = 0;
     wateringTime.value = "";
+    wateringController.clear();
+    wateringNote.value = "";
   }
 
   void toggleFertilizing(bool value) {
     isFertilizingOn.value = !isFertilizingOn.value;
     fertilizingFrequency.value = 0;
     fertilizingTime.value = "";
+    fertilizeController.clear();
+    fertilizingNote.value = "";
   }
 
   void togglePruning(bool value) {
     isPruningOn.value = !isPruningOn.value;
     pruningFrequency.value = 0;
+    pruningTime.value = "";
+    pruningController.clear();
+    pruningNote.value = "";
   }
 
   void toggleCritical(bool value) {
     isCriticalOn.value = !isCriticalOn.value;
     criticalCareFrequency.value = 0;
+    criticalTime.value = "";
+    criticalController.clear();
+    criticalNote.value = "";
   }
 
   void validateAndSubmit(BuildContext context) {
@@ -172,6 +212,10 @@ class AllPlantsDetailsController extends GetxController {
           );
           return;
         }
+        if (pruningTime.isEmpty) {
+          BaseSnackBar.show(title: appName, message: AppStrings.selectPruningTime);
+          return;
+        }
       }
 
       if (isCriticalOn.value) {
@@ -180,6 +224,10 @@ class AllPlantsDetailsController extends GetxController {
             title: appName,
             message: AppLocalizations.of(context)!.selectGeneralFrequency,
           );
+          return;
+        }
+        if (criticalTime.isEmpty) {
+          BaseSnackBar.show(title: appName, message: AppStrings.selectCriticalCareTime);
           return;
         }
       }
@@ -192,30 +240,29 @@ class AllPlantsDetailsController extends GetxController {
   }
 
   void setDataForUpdate() {
-    isWateringOn.value =
-        plantDetailData.value.data?.reminder?.wateringNotificationEnabled ??
-        false;
+    setPlantInfoData(plantDetailData.value.data!.plant!);
+    isWateringOn.value = plantDetailData.value.data?.reminder?.wateringNotificationEnabled ?? false;
     isFertilizingOn.value =
-        plantDetailData.value.data?.reminder?.fertilizerNotificationEnabled ??
-        false;
-    isPruningOn.value =
-        plantDetailData.value.data?.reminder?.pruningNotificationEnabled ??
-        false;
-    isCriticalOn.value =
-        plantDetailData.value.data?.reminder?.genericNotificationEnabled ??
-        false;
-    wateringFrequency.value =
-        plantDetailData.value.data?.reminder?.wateringReminderFrequency ?? 0;
+        plantDetailData.value.data?.reminder?.fertilizerNotificationEnabled ?? false;
+    isPruningOn.value = plantDetailData.value.data?.reminder?.pruningNotificationEnabled ?? false;
+    isCriticalOn.value = plantDetailData.value.data?.reminder?.genericNotificationEnabled ?? false;
+    wateringFrequency.value = plantDetailData.value.data?.reminder?.wateringReminderFrequency ?? 0;
+    wateringNote.value = plantDetailData.value.data?.reminder?.wateringNote ?? "";
+    fertilizingNote.value = plantDetailData.value.data?.reminder?.fertilizerNote ?? "";
+    pruningNote.value = plantDetailData.value.data?.reminder?.pruningNote ?? "";
+    wateringController.text = plantDetailData.value.data?.reminder?.wateringNote ?? "";
+    fertilizeController.text = plantDetailData.value.data?.reminder?.fertilizerNote ?? "";
+    pruningController.text = plantDetailData.value.data?.reminder?.pruningNote ?? "";
+
     fertilizingFrequency.value =
         plantDetailData.value.data?.reminder?.fertilizerReminderFrequency ?? 0;
-    pruningFrequency.value =
-        plantDetailData.value.data?.reminder?.pruningReminderFrequency ?? 0;
+    pruningFrequency.value = plantDetailData.value.data?.reminder?.pruningReminderFrequency ?? 0;
     criticalCareFrequency.value =
         plantDetailData.value.data?.reminder?.genericCareReminderFrequency ?? 0;
-    wateringTime.value =
-        plantDetailData.value.data?.reminder?.wateringPreferredTime ?? "";
-    fertilizingTime.value =
-        plantDetailData.value.data?.reminder?.fertilizerPreferredTime ?? "";
+    wateringTime.value = plantDetailData.value.data?.reminder?.wateringPreferredTime ?? "";
+    fertilizingTime.value = plantDetailData.value.data?.reminder?.fertilizerPreferredTime ?? "";
+    pruningTime.value = plantDetailData.value.data?.reminder?.pruningPreferredTime ?? "";
+    criticalTime.value = plantDetailData.value.data?.reminder?.genericPreferredTime ?? "";
   }
 
   Future<void> pickerTime(BuildContext context, CareType careType) async {
@@ -231,27 +278,23 @@ class AllPlantsDetailsController extends GetxController {
             data: Theme.of(context).copyWith(
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: Colors.white,
-                dialBackgroundColor: AppColors.darkGreen.withValues(
-                  alpha: 0.08,
-                ),
+                dialBackgroundColor: AppColors.darkGreen.withValues(alpha: 0.08),
                 dialHandColor: AppColors.darkGreen,
                 dialTextColor: WidgetStateColor.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
                     return Colors.white;
                   }
-                  return Colors.black87;
+                  return Colors.green;
                 }),
                 hourMinuteColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                hourMinuteTextColor: Colors.black87,
+                hourMinuteTextColor: Colors.green,
                 dayPeriodColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                dayPeriodTextColor: Colors.black87,
+                dayPeriodTextColor: Colors.green,
                 confirmButtonStyle: TextButton.styleFrom(
                   foregroundColor: AppColors.darkGreen,
                   textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                cancelButtonStyle: TextButton.styleFrom(
-                  foregroundColor: Colors.grey.shade600,
-                ),
+                cancelButtonStyle: TextButton.styleFrom(foregroundColor: Colors.green.shade600),
               ),
               colorScheme: const ColorScheme.light(
                 primary: AppColors.darkGreen,
@@ -271,18 +314,11 @@ class AllPlantsDetailsController extends GetxController {
     );
 
     if (picked == null) return;
+
+    print(picked);
     final now = DateTime.now();
-    final dateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      picked.hour,
-      picked.minute,
-    );
-    final formatted = BaseDateTimeFormat.format(
-      dateTime: dateTime.toString(),
-      format: "hh:mm:ss",
-    );
+    final dateTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+    final formatted = BaseDateTimeFormat.format(dateTime: dateTime.toString(), format: "HH:mm");
 
     switch (careType) {
       case CareType.watering:
@@ -292,8 +328,10 @@ class AllPlantsDetailsController extends GetxController {
         fertilizingTime.value = formatted;
         break;
       case CareType.pruning:
+        pruningTime.value = formatted;
         break;
       case CareType.critical:
+        criticalTime.value = formatted;
         break;
     }
   }
@@ -302,9 +340,7 @@ class AllPlantsDetailsController extends GetxController {
     isLoading.value = true;
     errorMessage.value = "";
     try {
-      var response = await plantsRepository.fetchPlantDetail(
-        plantId: plantId.value,
-      );
+      var response = await plantsRepository.fetchPlantDetail(plantId: plantId.value);
       if (response != null) {
         plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
         if (plantDetailData.value.data == null) {
@@ -320,17 +356,29 @@ class AllPlantsDetailsController extends GetxController {
     }
   }
 
+  String getType(CareType type) {
+    switch (type) {
+      case CareType.watering:
+        return "Watering";
+      case CareType.fertilizing:
+        return "Fertilizing";
+      case CareType.pruning:
+        return "Pruning";
+      case CareType.critical:
+        return "Generic Care";
+    }
+  }
+
   Future callGetMyPlantDetailsApi() async {
     isLoading.value = true;
     errorMessage.value = "";
     try {
-      var response = await plantsRepository.fetchMyPlantDetail(
-        plantId: plantId.value,
-      );
+      var response = await plantsRepository.fetchMyPlantDetail(plantId: plantId.value);
       if (response != null) {
         userPlantId.value = response['data']['user_plant_id'].toString();
         debugPrint("userPlantId:::: ${userPlantId.value}");
         plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        debugPrint("response of plantDetailData::::: ${plantDetailData.value.data!.toJson()}");
         if (plantDetailData.value.data == null) {
           errorMessage.value = "No plant details found";
         } else {
@@ -357,6 +405,7 @@ class AllPlantsDetailsController extends GetxController {
       "fertilizer_preferred_time": fertilizingTime.value,
       "pruning_notification_enabled": isPruningOn.value,
       "pruning_reminder_frequency": pruningFrequency.value,
+      "pruning_preferred_time": pruningTime.value,
       "generic_notification_enabled": isCriticalOn.value,
       "generic_care_reminder_frequency": criticalCareFrequency.value,
     };
@@ -422,10 +471,16 @@ class AllPlantsDetailsController extends GetxController {
       "fertilizer_notification_enabled": isFertilizingOn.value,
       "fertilizer_reminder_frequency": fertilizingFrequency.value,
       "fertilizer_preferred_time": fertilizingTime.value,
+      "pruning_preferred_time": pruningTime.value,
+      "generic_care_preferred_time": criticalTime.value,
       "pruning_notification_enabled": isPruningOn.value,
       "pruning_reminder_frequency": pruningFrequency.value,
       "generic_notification_enabled": isCriticalOn.value,
       "generic_care_reminder_frequency": criticalCareFrequency.value,
+      "watering_note": wateringController.text,
+      "fertilizer_note": fertilizeController.text,
+      "pruning_note": pruningController.text,
+      "generic_note": criticalController.text,
     };
     debugPrint("Filtered map :::::: $map");
     final response = await plantsRepository.editPlant(

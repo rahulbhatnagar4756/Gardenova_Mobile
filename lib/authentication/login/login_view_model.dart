@@ -11,6 +11,7 @@ import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import '../../base/widgets/base_calculate_remaining_days.dart';
 import '../../settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import '../../utils/constants/app_constants.dart';
@@ -202,6 +203,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       );
       SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, false);
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
       Get.offAllNamed(Routes.dashboard);
     }
   }

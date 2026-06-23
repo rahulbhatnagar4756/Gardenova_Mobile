@@ -33,4 +33,6 @@ class AppKeys {
   static const currentLatKey = 'currentLat';
   static const currentLongKey = 'currentLongKey';
   static const fcmToken = 'fcm_token';
+  static const lastRegisteredFcmToken = 'last_registered_fcm_token';
+  static const notificationsEnabled = 'notifications_enabled';
 }

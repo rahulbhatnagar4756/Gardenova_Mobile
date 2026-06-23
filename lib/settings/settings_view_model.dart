@@ -22,6 +22,8 @@ import '../utils/constants/app_strings.dart';
 import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
+import 'package:kasagardem/services/notification_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import '../utils/device_info_helper.dart';
 
 class SettingsViewModel extends GetxController {
@@ -63,7 +65,7 @@ class SettingsViewModel extends GetxController {
     isEmailLogedInUser.value =
         SharedPrefsService.instance.getBool(AppKeys.emailLogedInUser) ?? true;
     notificationsEnabled.value =
-        SharedPrefsService.instance.getBool('notifications_enabled') ?? true;
+        SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
     fetchAppVersion();
     emailController.addListener(() {
       final mail = emailController.text.trim();
@@ -110,7 +112,20 @@ class SettingsViewModel extends GetxController {
 
   void toggleNotifications(bool value) async {
     notificationsEnabled.value = value;
-    await SharedPrefsService.instance.setBool('notifications_enabled', value);
+    await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, value);
+
+    if (value) {
+      final granted =
+          await NotificationService.instance.requestNotificationPermission();
+      if (granted) {
+        await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+      } else {
+        notificationsEnabled.value = false;
+        await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, false);
+      }
+    } else {
+      await ReminderPushNotificationService.instance.unregisterDeviceToken();
+    }
   }
 
   void fetchAppVersion() async {

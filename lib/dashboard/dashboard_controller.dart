@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
@@ -11,16 +12,15 @@ import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
 import '../base/dialogs/base_dialog.dart';
+import '../services/admob_service.dart';
+import '../services/subscription_service.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_helper/location_service.dart';
 import '../utils/permission_manager.dart';
 import '../utils/utils.dart';
-
-import '../services/subscription_service.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../services/admob_service.dart';
 
 enum ImagePickerSource { diagnosis, landscape }
 
@@ -58,10 +58,9 @@ class DashboardController extends GetxController {
     responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getPlantsRecommendations(responseId);
-      isUserLoggedIn.value =
-          sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+      isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     });
-    getCurrentLocation();
+    //    getCurrentLocation();
 
     super.onInit();
   }
@@ -98,19 +97,13 @@ class DashboardController extends GetxController {
         break;
       case 1:
         if (isUserLoggedIn.value) {
-          Get.toNamed(
-            Routes.recommendedProfessionals,
-            arguments: {"lat": lat, "lng": long},
-          );
+          Get.toNamed(Routes.recommendedProfessionals, arguments: {"lat": lat, "lng": long});
         } else {
           BaseDialog.showAlertDialog(
             context: Get.context!,
             onButtonPressed: () {
               Get.back();
-              Get.toNamed(
-                Routes.login,
-                arguments: {"question_state_passed": true},
-              );
+              Get.toNamed(Routes.login, arguments: {"question_state_passed": true});
             },
             title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
             description: AppLocalizations.of(
@@ -167,16 +160,12 @@ class DashboardController extends GetxController {
   void goToLandscapeDesign(XFile? pickedFile, String? selectedStyle) {
     Get.toNamed(
       Routes.landscapeDesign,
-      arguments: {
-        ApiKeys.imagePath: pickedFile!.path,
-        "selected_style": selectedStyle,
-      },
+      arguments: {ApiKeys.imagePath: pickedFile!.path, "selected_style": selectedStyle},
     );
   }
 
   void getPlantsRecommendations(String responseId) async {
-    String recommendationId =
-        sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
+    String recommendationId = sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
     if (recommendationId.trim().isEmpty) {
       recommendationId = responseId;
     }
@@ -188,8 +177,7 @@ class DashboardController extends GetxController {
     PlantRecommendationsResponseModel recommendationsResponse =
         PlantRecommendationsResponseModel.fromJson(response);
     if (recommendationsResponse.data != null) {
-      plantRecommendationList.value =
-          recommendationsResponse.data!.plantRecommendations ?? [];
+      plantRecommendationList.value = recommendationsResponse.data!.plantRecommendations ?? [];
       _scrollToFirstIndex();
     }
     isLoading.value = false;
@@ -197,8 +185,7 @@ class DashboardController extends GetxController {
 
   void _scrollToFirstIndex() {
     try {
-      if (plantRecController.hasClients &&
-          plantRecController.position.hasPixels) {
+      if (plantRecController.hasClients && plantRecController.position.hasPixels) {
         plantRecController.animateTo(
           0.0,
           duration: const Duration(milliseconds: 300),
@@ -235,10 +222,7 @@ class DashboardController extends GetxController {
     }
   }
 
-  Future<void> getSoilAnalysis({
-    required double lat,
-    required double long,
-  }) async {
+  Future<void> getSoilAnalysis({required double lat, required double long}) async {
     // chartData.assignAll([
     //   ChartData('Organic', 15, AppColors.liteYellowColor),
     //   ChartData('Sand', 40, AppColors.darkGreenColor),
@@ -275,10 +259,7 @@ class DashboardController extends GetxController {
 
         // Stop if still null
         if (position == null) {
-          BaseSnackBar.show(
-            title: 'Location Error',
-            message: 'Unable to fetch location',
-          );
+          BaseSnackBar.show(title: 'Location Error', message: 'Unable to fetch location');
           return;
         }
       }
@@ -331,9 +312,7 @@ class DashboardController extends GetxController {
 
     // Show loading dialog
     Get.dialog(
-      const Center(
-        child: CircularProgressIndicator(color: AppColors.greenColor),
-      ),
+      const Center(child: CircularProgressIndicator(color: AppColors.greenColor)),
       barrierDismissible: false,
     );
 

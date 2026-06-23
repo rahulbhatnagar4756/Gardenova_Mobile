@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
@@ -10,7 +9,6 @@ import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/clickable_image.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../services/admob_service.dart';
 import 'all_plants_details_controller.dart';
 import 'components/main_content_card.dart';
 
@@ -45,19 +43,28 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                 ],
               ),
             ),
-            Obx(() {
-              if (AdMobService.instance.shouldShowBanners &&
-                  controller.isAdLoaded.value &&
-                  controller.bannerAd != null) {
-                return Container(
-                  alignment: Alignment.center,
-                  width: controller.bannerAd!.size.width.toDouble().w,
-                  height: controller.bannerAd!.size.height.toDouble().h,
-                  child: AdWidget(ad: controller.bannerAd!),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+            if (controller.screenType.value == "edit")
+              BaseButton(
+                buttonLabel: AppStrings.saveChanges,
+                buttonWidth: double.infinity,
+                onPressed: () {
+                  //Get.toNamed(Routes.plantRemindersListing);
+                  controller.validateAndSubmit(context);
+                },
+              ).marginAll(spacerSize10),
+            // Obx(() {
+            //   if (AdMobService.instance.shouldShowBanners &&
+            //       controller.isAdLoaded.value &&
+            //       controller.bannerAd != null) {
+            //     return Container(
+            //       alignment: Alignment.center,
+            //       width: controller.bannerAd!.size.width.toDouble().w,
+            //       height: controller.bannerAd!.size.height.toDouble().h,
+            //       child: AdWidget(ad: controller.bannerAd!),
+            //     );
+            //   }
+            //   return const SizedBox.shrink();
+            // }),
           ],
         ),
       );
@@ -81,37 +88,23 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                   padding: const EdgeInsets.all(spacerSize20),
                   decoration: const BoxDecoration(
                     color: AppColors.appColor,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(spacerSize30),
-                    ),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(spacerSize30)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title Shimmer
-                      const BaseShimmer(
-                        height: 30,
-                        width: 200,
-                        borderRadious: 8,
-                      ),
+                      const BaseShimmer(height: 30, width: 200, borderRadious: 8),
                       const SizedBox(height: 12),
                       // Subtitle Shimmer
-                      const BaseShimmer(
-                        height: 20,
-                        width: 150,
-                        borderRadious: 6,
-                      ),
+                      const BaseShimmer(height: 20, width: 150, borderRadious: 6),
                       const SizedBox(height: 24),
                       // Description Shimmer
                       const BaseShimmer(height: 16, borderRadious: 4),
                       const SizedBox(height: 8),
                       const BaseShimmer(height: 16, borderRadious: 4),
                       const SizedBox(height: 8),
-                      const BaseShimmer(
-                        height: 16,
-                        width: 200,
-                        borderRadious: 4,
-                      ),
+                      const BaseShimmer(height: 16, width: 200, borderRadious: 4),
                       const SizedBox(height: 32),
 
                       // Quick Info Shimmer (Horizontal List)
@@ -122,11 +115,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                             4,
                             (index) => const Padding(
                               padding: EdgeInsets.only(right: 12),
-                              child: BaseShimmer(
-                                height: 110,
-                                width: 140,
-                                borderRadious: 16,
-                              ),
+                              child: BaseShimmer(height: 110, width: 140, borderRadious: 16),
                             ),
                           ),
                         ),
@@ -134,18 +123,12 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                       const SizedBox(height: 32),
 
                       // Care Overview Shimmer Section
-                      const BaseShimmer(
-                        height: 25,
-                        width: 150,
-                        borderRadious: 6,
-                      ),
+                      const BaseShimmer(height: 25, width: 150, borderRadious: 6),
                       const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.all(spacerSize16),
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundGrey.withValues(
-                            alpha: 0.3,
-                          ),
+                          color: AppColors.backgroundGrey.withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(spacerSize18),
                           border: Border.all(color: AppColors.backgroundGrey),
                         ),
@@ -156,29 +139,14 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                               children: [
                                 Row(
                                   children: [
-                                    const BaseShimmer(
-                                      height: 24,
-                                      width: 24,
-                                      borderRadious: 12,
-                                    ),
+                                    const BaseShimmer(height: 24, width: 24, borderRadious: 12),
                                     const SizedBox(width: 12),
-                                    const BaseShimmer(
-                                      height: 14,
-                                      width: 100,
-                                      borderRadious: 4,
-                                    ),
+                                    const BaseShimmer(height: 14, width: 100, borderRadious: 4),
                                     const Spacer(),
-                                    const BaseShimmer(
-                                      height: 12,
-                                      width: 60,
-                                      borderRadious: 4,
-                                    ),
+                                    const BaseShimmer(height: 12, width: 60, borderRadious: 4),
                                   ],
                                 ),
-                                if (index < 3)
-                                  const Divider(
-                                    color: AppColors.backgroundGrey,
-                                  ),
+                                if (index < 3) const Divider(color: AppColors.backgroundGrey),
                               ],
                             ),
                           ),
@@ -187,32 +155,20 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                       const SizedBox(height: 32),
 
                       // Special Traits Shimmer Section
-                      const BaseShimmer(
-                        height: 25,
-                        width: 150,
-                        borderRadious: 6,
-                      ),
+                      const BaseShimmer(height: 25, width: 150, borderRadious: 6),
                       const SizedBox(height: 16),
                       Wrap(
                         spacing: 10,
                         runSpacing: 10,
                         children: List.generate(
                           5,
-                          (index) => const BaseShimmer(
-                            height: 35,
-                            width: 110,
-                            borderRadious: 100,
-                          ),
+                          (index) => const BaseShimmer(height: 35, width: 110, borderRadious: 100),
                         ),
                       ),
                       const SizedBox(height: 32),
 
                       // Plant Health Shimmer
-                      const BaseShimmer(
-                        height: 25,
-                        width: 150,
-                        borderRadious: 6,
-                      ),
+                      const BaseShimmer(height: 25, width: 150, borderRadious: 6),
                       const SizedBox(height: 16),
                       const BaseShimmer(height: 120, borderRadious: 18),
                     ],
@@ -258,9 +214,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
                       controller.callGetMyPlantDetailsApi();
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.greenColor,
-                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.greenColor),
                   child: Text("Retry", style: TextStyle(color: Colors.white)),
                 ),
               ],
@@ -303,9 +257,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
           controller.validateAndSubmit(context);
         },
         backgroundColor: AppColors.burntGold,
-        buttonLabel: addPlant
-            ? AppLocalizations.of(context)!.addPlant
-            : 'Save Changes',
+        buttonLabel: addPlant ? AppLocalizations.of(context)!.addPlant : 'Save Changes',
         fontSize: fontSize16,
         textColor: Colors.white,
         buttonWidth: double.infinity,
@@ -314,8 +266,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
   }
 
   Widget imageCard() {
-    final imageUrl =
-        controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
+    final imageUrl = controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
 
     return Container(
       color: AppColors.charcoalGrey,
@@ -325,11 +276,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
         width: double.infinity,
         fit: BoxFit.cover,
         heroTag: "plant_detail_image",
-        errorWidget: Icon(
-          Icons.broken_image,
-          color: AppColors.offWhite,
-          size: spacerSize40,
-        ),
+        errorWidget: Icon(Icons.broken_image, color: AppColors.offWhite, size: spacerSize40),
       ),
     );
   }
