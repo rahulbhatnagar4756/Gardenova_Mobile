@@ -69,7 +69,7 @@ class AllPlantsDetailsController extends GetxController {
     } else {
       callGetMyPlantDetailsApi();
     }
-    loadBannerAd();
+    //   loadBannerAd();
     super.onInit();
   }
 
@@ -107,7 +107,7 @@ class AllPlantsDetailsController extends GetxController {
       PlantInfoItem(
         icon: Icons.wb_sunny_outlined,
         label: 'Sunlight',
-        value: plantDetails.sunlight ?? "",
+        value: (plantDetails.sunlight?.toString() ?? "").capitalizeFirst ?? "",
       ),
     );
     plantInfoList.add(

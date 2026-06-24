@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -18,20 +19,71 @@ const AndroidNotificationChannel _reminderChannel = AndroidNotificationChannel(
   playSound: true,
 );
 
+const String _androidNotificationIcon = 'ic_notification';
+const String _androidNotificationLargeIcon = '@mipmap/ic_launcher';
+const Color _androidNotificationAccentColor = Color(0xFF01AF55);
+
+AndroidNotificationDetails _buildAndroidNotificationDetails() {
+  return AndroidNotificationDetails(
+    _reminderChannel.id,
+    _reminderChannel.name,
+    channelDescription: _reminderChannel.description,
+    importance: Importance.high,
+    priority: Priority.high,
+    playSound: true,
+    icon: _androidNotificationIcon,
+    largeIcon: const DrawableResourceAndroidBitmap(_androidNotificationLargeIcon),
+    color: _androidNotificationAccentColor,
+  );
+}
+
+const DarwinNotificationDetails _iosNotificationDetails = DarwinNotificationDetails(
+  presentAlert: true,
+  presentBadge: true,
+  presentSound: true,
+);
+
+void _logPushNotification(
+  String source,
+  RemoteMessage message,
+  Map<String, dynamic> payload, {
+  String? extra,
+}) {
+  final title = message.notification?.title ?? payload['title'];
+  final body = message.notification?.body ?? payload['body'] ?? payload['message'];
+  final messageLog =
+      '[PUSH][$source] id=${message.messageId} | title=$title | body=$body | data=$payload${extra != null ? ' | $extra' : ''}';
+  log(messageLog);
+  debugPrint(messageLog);
+}
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  log("Handling a background message: ${message.messageId}");
+  final payload = normalizeNotificationPayload(message);
+  _logPushNotification('background', message, payload);
 
-  if (message.notification != null) return;
+  if (!NotificationService.areNotificationsEnabledInPrefs()) {
+    debugPrint('[PUSH][background] skipped: notifications disabled in settings');
+    return;
+  }
 
-  final data = message.data;
-  final title = data['title']?.toString();
-  final body = data['body']?.toString() ?? data['message']?.toString();
-  if (title == null || body == null || title.isEmpty || body.isEmpty) return;
+  final title = payload['title']?.toString();
+  final body = payload['body']?.toString() ?? payload['message']?.toString();
+  if (title == null || body == null || title.isEmpty || body.isEmpty) {
+    debugPrint('[PUSH][background] skipped: missing title/body');
+    return;
+  }
 
+  // Notification payload is shown by the OS when present; show local only for data-only.
+  if (message.notification != null) {
+    debugPrint('[PUSH][background] skipped local show: OS handles notification payload');
+    return;
+  }
+
+  debugPrint('[PUSH][background] showing local notification');
   final plugin = FlutterLocalNotificationsPlugin();
-  const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const androidSettings = AndroidInitializationSettings(_androidNotificationIcon);
   const iosSettings = DarwinInitializationSettings();
   await plugin.initialize(
     settings: const InitializationSettings(
@@ -46,15 +98,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       >()
       ?.createNotificationChannel(_reminderChannel);
 
-  final androidDetails = AndroidNotificationDetails(
-    _reminderChannel.id,
-    _reminderChannel.name,
-    channelDescription: _reminderChannel.description,
-    importance: Importance.high,
-    priority: Priority.high,
-    playSound: true,
-    icon: '@mipmap/ic_launcher',
-  );
+  final androidDetails = _buildAndroidNotificationDetails();
 
   await plugin.show(
     id: message.hashCode,
@@ -62,14 +106,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     body: body,
     notificationDetails: NotificationDetails(
       android: androidDetails,
-      iOS: const DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
+      iOS: _iosNotificationDetails,
     ),
-    payload: jsonEncode(data),
+    payload: jsonEncode(payload),
   );
+}
+
+Map<String, dynamic> normalizeNotificationPayload(RemoteMessage message) {
+  final payload = Map<String, dynamic>.from(message.data);
+  final notification = message.notification;
+
+  if (notification?.title != null && notification!.title!.isNotEmpty) {
+    payload.putIfAbsent('title', () => notification.title);
+  }
+  if (notification?.body != null && notification!.body!.isNotEmpty) {
+    payload.putIfAbsent('body', () => notification.body);
+  }
+
+  return payload;
 }
 
 class NotificationService with WidgetsBindingObserver {
@@ -83,12 +137,20 @@ class NotificationService with WidgetsBindingObserver {
       FlutterLocalNotificationsPlugin();
 
   void Function(Map<String, dynamic>)? onNotificationClick;
-  void Function(RemoteMessage)? onForegroundMessage;
+  void Function(RemoteMessage, Map<String, dynamic>)? onForegroundMessage;
   VoidCallback? onTokenRefreshed;
+  VoidCallback? onAppResumed;
 
   Map<String, dynamic>? _pendingNotificationData;
+  bool _isNavigationReady = false;
 
-  bool get canHandleNavigation => Get.key.currentContext != null;
+  bool get canHandleNavigation =>
+      _isNavigationReady && Get.key.currentContext != null;
+
+  void markNavigationReady() {
+    _isNavigationReady = true;
+    processPendingNotificationClick();
+  }
 
   /// Initialize Firebase Messaging & Local Notifications
   Future<void> initialize() async {
@@ -97,7 +159,7 @@ class NotificationService with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings(_androidNotificationIcon);
 
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
@@ -115,6 +177,7 @@ class NotificationService with WidgetsBindingObserver {
     await _localNotifications.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
+        debugPrint('[PUSH][local tap] payload=${response.payload}');
         _handleNotificationClick(response.payload);
       },
     );
@@ -139,12 +202,16 @@ class NotificationService with WidgetsBindingObserver {
   bool get areNotificationsEnabled =>
       SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
 
+  static bool areNotificationsEnabledInPrefs() =>
+      SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
+
   void setPendingNotificationData(Map<String, dynamic> data) {
     _pendingNotificationData = data;
   }
 
   void processPendingNotificationClick() {
     if (_pendingNotificationData == null) return;
+    debugPrint('[PUSH][cold_start] processing pending click: $_pendingNotificationData');
     final data = Map<String, dynamic>.from(_pendingNotificationData!);
     _pendingNotificationData = null;
     _dispatchNotificationClick(data);
@@ -221,28 +288,18 @@ class NotificationService with WidgetsBindingObserver {
     String? payload,
     int id = 0,
   }) async {
-    if (!areNotificationsEnabled) return;
+    if (!areNotificationsEnabled) {
+      debugPrint('[PUSH][local show] skipped: notifications disabled in settings');
+      return;
+    }
 
-    final AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          _reminderChannel.id,
-          _reminderChannel.name,
-          channelDescription: _reminderChannel.description,
-          importance: Importance.high,
-          priority: Priority.high,
-          playSound: true,
-          icon: '@mipmap/ic_launcher',
-        );
+    debugPrint('[PUSH][local show] title=$title | body=$body | payload=$payload');
 
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+    final androidDetails = _buildAndroidNotificationDetails();
 
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidDetails,
-      iOS: iosDetails,
+      iOS: _iosNotificationDetails,
     );
 
     await _localNotifications.show(
@@ -256,65 +313,83 @@ class NotificationService with WidgetsBindingObserver {
 
   void _setupMessageListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      log('FCM Foreground message received: ${message.messageId}');
-      log('Message data: ${message.data}');
+      final payload = normalizeNotificationPayload(message);
+      _logPushNotification('foreground', message, payload);
 
-      onForegroundMessage?.call(message);
+      onForegroundMessage?.call(message, payload);
 
-      if (!areNotificationsEnabled) return;
-
-      final notification = message.notification;
-      if (notification != null) {
-        showLocalNotification(
-          title: notification.title ?? '',
-          body: notification.body ?? '',
-          payload: jsonEncode(message.data),
-          id: notification.hashCode,
-        );
+      if (!areNotificationsEnabled) {
+        debugPrint('[PUSH][foreground] skipped display: notifications disabled in settings');
         return;
       }
-
-      final title = message.data['title']?.toString();
-      final body =
-          message.data['body']?.toString() ?? message.data['message']?.toString();
-      if (title != null && body != null && title.isNotEmpty && body.isNotEmpty) {
-        showLocalNotification(
-          title: title,
-          body: body,
-          payload: jsonEncode(message.data),
-          id: message.hashCode,
-        );
-      }
+      _presentForegroundNotification(message, payload);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      log('FCM message clicked (app was in background): ${message.messageId}');
-      _handleNotificationClick(jsonEncode(message.data));
+      final payload = normalizeNotificationPayload(message);
+      _logPushNotification('opened_from_background', message, payload);
+      _dispatchNotificationClick(payload);
     });
+  }
+
+  Future<void> _presentForegroundNotification(
+    RemoteMessage message,
+    Map<String, dynamic> payload,
+  ) async {
+    final notification = message.notification;
+    if (notification != null) {
+      await showLocalNotification(
+        title: notification.title ?? payload['title']?.toString() ?? '',
+        body: notification.body ?? payload['body']?.toString() ?? '',
+        payload: jsonEncode(payload),
+        id: notification.hashCode,
+      );
+      return;
+    }
+
+    final title = payload['title']?.toString();
+    final body = payload['body']?.toString() ?? payload['message']?.toString();
+    if (title != null && body != null && title.isNotEmpty && body.isNotEmpty) {
+      await showLocalNotification(
+        title: title,
+        body: body,
+        payload: jsonEncode(payload),
+        id: message.hashCode,
+      );
+    }
   }
 
   Future<void> _captureInitialMessage() async {
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      log(
-        'FCM message clicked (app was terminated): ${initialMessage.messageId}',
-      );
-      _pendingNotificationData = Map<String, dynamic>.from(initialMessage.data);
+      final payload = normalizeNotificationPayload(initialMessage);
+      _logPushNotification('cold_start', initialMessage, payload);
+      _pendingNotificationData = payload;
     }
   }
 
   void _handleNotificationClick(String? payloadString) {
-    if (payloadString == null || payloadString.isEmpty) return;
+    if (payloadString == null || payloadString.isEmpty) {
+      debugPrint('[PUSH][click] skipped: empty payload');
+      return;
+    }
     try {
       final Map<String, dynamic> data = jsonDecode(payloadString);
       _dispatchNotificationClick(data);
     } catch (e) {
-      log("Error handling notification click: $e");
+      log('Error handling notification click: $e');
+      debugPrint('[PUSH][click] error parsing payload: $e | raw=$payloadString');
     }
   }
 
   void _dispatchNotificationClick(Map<String, dynamic> data) {
-    log("Processing notification click payload: $data");
+    debugPrint('[PUSH][click] processing payload: $data');
+    log('Processing notification click payload: $data');
+
+    if (!canHandleNavigation) {
+      setPendingNotificationData(data);
+      return;
+    }
 
     if (onNotificationClick != null) {
       onNotificationClick!(data);
@@ -345,6 +420,7 @@ class NotificationService with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _checkPermissionAndRetrieveTokenOnResume();
+      onAppResumed?.call();
     }
   }
 

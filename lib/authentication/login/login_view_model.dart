@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/authentication/social_sign_in_mixin.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-import 'package:kasagardem/services/reminder_push_notification_service.dart';
+
 import '../../base/widgets/base_calculate_remaining_days.dart';
 import '../../settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import '../../utils/constants/app_constants.dart';
@@ -29,8 +31,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   @override
   onInit() {
     super.onInit();
-    accountType.value =
-        SharedPrefsService.instance.getString(AppKeys.role) ?? "";
+    accountType.value = SharedPrefsService.instance.getString(AppKeys.role) ?? "";
     debugPrint("accountType ${accountType.value}");
     bool questionStatePassed = false;
     if (Get.arguments != null && Get.arguments is Map<String, dynamic>) {
@@ -46,9 +47,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
     googleSignIn.initialize(
       serverClientId: dotenv.env['webClientId']!,
-      clientId: Platform.isIOS
-          ? dotenv.env['iosClientId']!
-          : dotenv.env['androidClientId']!,
+      clientId: Platform.isIOS ? dotenv.env['iosClientId']! : dotenv.env['androidClientId']!,
     );
     // need change
     if (kDebugMode) {
@@ -85,10 +84,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
           loginResponse[ApiKeys.data].containsKey(ApiKeys.responseId)) {
         responseId = loginResponse[ApiKeys.data][ApiKeys.responseId] ?? "";
       }
-      SharedPrefsService.instance.setString(
-        AppKeys.submissionResponseId,
-        responseId,
-      );
+      SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
       SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
 
       if (accountType.value == AppKeys.professional) {
@@ -102,10 +98,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   Future<void> registerGoogleToken() async {
     log('google register google token-> $googleAuthToken');
     var loginResponse = await authRepository.registerGoogleToken(
-      socialLoginReq: {
-        ApiKeys.googleAccessToken: googleAuthToken,
-        ApiKeys.roleCode: "U",
-      },
+      socialLoginReq: {ApiKeys.googleAccessToken: googleAuthToken, ApiKeys.roleCode: "U"},
     );
     if (loginResponse != null) {
       // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
@@ -119,10 +112,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
   Future<void> registerFacebookToken() async {
     var loginResponse = await authRepository.registerFacebookToken(
-      socialLoginReq: {
-        ApiKeys.facebookAccessToken: facebookAuthToken,
-        ApiKeys.roleCode: "U",
-      },
+      socialLoginReq: {ApiKeys.facebookAccessToken: facebookAuthToken, ApiKeys.roleCode: "U"},
     );
     if (loginResponse != null) {
       // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
@@ -157,24 +147,13 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   void getProfileDetail({String responseId = ''}) async {
     var response = await authRepository.fetchProfile();
     if (response != null) {
-      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
-        response,
-      );
+      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(response);
 
       debugPrint("response :::::${profileResponse.data?.name}");
-      SharedPrefsService.instance.setString(
-        AppKeys.name,
-        profileResponse.data?.name ?? "",
-      );
-      SharedPrefsService.instance.setString(
-        AppKeys.email,
-        profileResponse.data?.email ?? "",
-      );
+      SharedPrefsService.instance.setString(AppKeys.name, profileResponse.data?.name ?? "");
+      SharedPrefsService.instance.setString(AppKeys.email, profileResponse.data?.email ?? "");
       bool isSocialLoginUser = profileResponse.data?.isSsoUser ?? false;
-      SharedPrefsService.instance.setBool(
-        AppKeys.emailLogedInUser,
-        !isSocialLoginUser,
-      );
+      SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, !isSocialLoginUser);
       if (profileResponse.data?.profileImage != null) {
         SharedPrefsService.instance.setString(
           AppKeys.profileImage,
@@ -197,10 +176,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, true);
       Get.offAllNamed(Routes.question);
     } else {
-      SharedPrefsService.instance.setString(
-        AppKeys.submissionResponseId,
-        responseIdd,
-      );
+      SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseIdd);
       SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, false);
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
@@ -211,10 +187,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   Future<void> sendEmailVerification({required String responseIdd}) async {
     final String mail = emailController.text.trim();
     if (mail.isEmpty || !GetUtils.isEmail(mail)) {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Please enter a valid email address.",
-      );
+      BaseSnackBar.show(title: "Error", message: "Please enter a valid email address.");
       return;
     }
 
@@ -225,9 +198,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         fromLoginFlow: true,
         userType: 'user',
       );
-      Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((
-        value,
-      ) {
+      Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((value) {
         if (value is VerifiedEmailLocalParsingModel) {
           if (value.requestSussessFull) {
             _navigateToDashboardFlow(responseIdd: responseIdd);
@@ -235,10 +206,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         }
       });
     } else {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Could not connect to verification service.",
-      );
+      BaseSnackBar.show(title: "Error", message: "Could not connect to verification service.");
     }
   }
 
@@ -247,29 +215,16 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     if (response != null) {
       debugPrint("response $response");
       final data = response['data'];
-      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
-        response,
-      );
-      SharedPrefsService.instance.setString(
-        AppKeys.name,
-        profileResponse.data?.name ?? "",
-      );
-      SharedPrefsService.instance.setString(
-        AppKeys.email,
-        profileResponse.data?.email ?? "",
-      );
+      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(response);
+      SharedPrefsService.instance.setString(AppKeys.name, profileResponse.data?.name ?? "");
+      SharedPrefsService.instance.setString(AppKeys.email, profileResponse.data?.email ?? "");
       SharedPrefsService.instance.setString(
         AppKeys.accountStatus,
         data[AppKeys.accountStatus] ?? "",
       );
-      SharedPrefsService.instance.setString(
-        AppKeys.createdAt,
-        data["startDate"] ?? "",
-      );
+      SharedPrefsService.instance.setString(AppKeys.createdAt, data["startDate"] ?? "");
 
-      BaseCalculateRemainingDays().calculateRemainingDays(
-        data["startDate"] ?? "",
-      );
+      BaseCalculateRemainingDays().calculateRemainingDays(data["startDate"] ?? "");
 
       if (profileResponse.data?.profileImage != null) {
         SharedPrefsService.instance.setString(

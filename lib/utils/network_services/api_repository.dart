@@ -20,6 +20,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 import '../../base/dialogs/base_dialog.dart';
+import '../../services/reminder_push_notification_service.dart';
 
 class ApiRepository {
   ApiRepository._privateConstructor();
@@ -257,7 +258,8 @@ class ApiRepository {
           BaseDialog.showUnauthorizedDialog(
             context: Get.context!,
             message: 'Your session has expired. Please login again to continue.',
-            onLoginPressed: () {
+            onLoginPressed: () async {
+              await ReminderPushNotificationService.instance.onUserLogout();
               SharedPrefsService.instance.clear();
               Get.back();
               // then navigate

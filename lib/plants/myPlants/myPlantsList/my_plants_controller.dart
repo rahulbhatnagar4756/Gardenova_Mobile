@@ -4,6 +4,7 @@ import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
+
 import '../../../services/admob_service.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
@@ -37,12 +38,10 @@ class MyPlantsController extends GetxController {
 
   @override
   void onInit() {
-    isUserLoggedIn.value =
-        sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+    isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     scrollController.addListener(() {
       if (scrollController.hasClients &&
-          scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent - 150 &&
+          scrollController.position.pixels >= scrollController.position.maxScrollExtent - 150 &&
           !isLoadMoreRunning.value &&
           isLoadMoreVisible.value) {
         loadMorePlants();
@@ -50,7 +49,7 @@ class MyPlantsController extends GetxController {
     });
 
     callGetMyPlantListApi();
-    loadBannerAd();
+    //loadBannerAd();
     super.onInit();
   }
 
@@ -95,12 +94,8 @@ class MyPlantsController extends GetxController {
         Get.toNamed(
           Routes.recommendedProfessionals,
           arguments: {
-            "lat":
-                SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
-                "0.0",
-            "lng":
-                SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
-                "0.0",
+            "lat": SharedPrefsService.instance.getString(AppKeys.currentLatKey) ?? "0.0",
+            "lng": SharedPrefsService.instance.getString(AppKeys.currentLongKey) ?? "0.0",
           },
         );
         break;
@@ -152,9 +147,7 @@ class MyPlantsController extends GetxController {
   void callGetMyPlantListApi({String searchName = ''}) {
     myPlantList.clear();
     isLoading.value = true;
-    getMyPlantList(
-      searchName: searchName,
-    ).then((value) => isLoading.value = false);
+    getMyPlantList(searchName: searchName).then((value) => isLoading.value = false);
   }
 
   Future getMyPlantList({String searchName = ''}) async {
@@ -166,9 +159,7 @@ class MyPlantsController extends GetxController {
     );
     if (response != null) {
       debugPrint("response:::$response");
-      MyPlantsListingModel allPlantsResponse = MyPlantsListingModel.fromJson(
-        response,
-      );
+      MyPlantsListingModel allPlantsResponse = MyPlantsListingModel.fromJson(response);
 
       myPlantList.addAll(allPlantsResponse.data!.plants ?? []);
 
@@ -187,8 +178,7 @@ class MyPlantsController extends GetxController {
       //
       // myPlantList.addAll(mockData);
 
-      isLoadMoreVisible.value =
-          allPlantsResponse.data!.totalCount! > myPlantList.length
+      isLoadMoreVisible.value = allPlantsResponse.data!.totalCount! > myPlantList.length
           ? true
           : false;
     }
@@ -197,9 +187,7 @@ class MyPlantsController extends GetxController {
   Future<bool> deletePlant(int userPlantId) async {
     isLoading.value = true;
     try {
-      var response = await plantsRepository.deletePlant(
-        userPlantId: userPlantId,
-      );
+      var response = await plantsRepository.deletePlant(userPlantId: userPlantId);
       if (response != null) {
         callGetMyPlantListApi();
         return true;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
+
 import '../../../services/admob_service.dart';
 import '../../plant_repository.dart';
 import '../myPlantsList/my_plants_controller.dart';
@@ -23,7 +24,7 @@ class MyPlantDetailsController extends GetxController {
       plantId.value = Get.arguments.toString();
     }
     callGetMyPlantDetailsApi();
-    loadBannerAd();
+    //   loadBannerAd();
     super.onInit();
   }
 
@@ -54,9 +55,7 @@ class MyPlantDetailsController extends GetxController {
     isLoading.value = true;
     errorMessage.value = "";
     try {
-      var response = await plantsRepository.fetchMyPlantDetail(
-        plantId: plantId.value,
-      );
+      var response = await plantsRepository.fetchMyPlantDetail(plantId: plantId.value);
       if (response != null) {
         plantDetailData.value = MyPlantDetailModel.fromJson(response);
       } else {
@@ -78,9 +77,7 @@ class MyPlantDetailsController extends GetxController {
     isLoading.value = true;
     errorMessage.value = "";
     try {
-      var response = await plantsRepository.deletePlant(
-        userPlantId: userPlantId,
-      );
+      var response = await plantsRepository.deletePlant(userPlantId: userPlantId);
       if (response != null) {
         if (Get.isRegistered<MyPlantsController>()) {
           Get.find<MyPlantsController>().callGetMyPlantListApi();
@@ -88,9 +85,7 @@ class MyPlantDetailsController extends GetxController {
         return true;
       }
     } catch (e) {
-      debugPrint(
-        "callDeletePlantApi MyPlantDetailsController callDeletePlantApi error: $e",
-      );
+      debugPrint("callDeletePlantApi MyPlantDetailsController callDeletePlantApi error: $e");
     } finally {
       isLoading.value = false;
     }

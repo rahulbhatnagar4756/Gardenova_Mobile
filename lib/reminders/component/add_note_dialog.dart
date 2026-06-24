@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/base/dialogs/app_form_dialog.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
 void addNoteDialog(
@@ -12,49 +13,52 @@ void addNoteDialog(
   RxString? notesValue,
   String? type,
 ) {
-  showDialog(
+  AppFormDialog.show(
     context: context,
+    title: title ?? AppStrings.addNote,
+    description: '${AppStrings.theNoteWillBeAttachedTo} ${type ?? ''}',
     barrierDismissible: false,
-    builder: (_) => AlertDialog(
-      title: BaseText(text: title ?? ""),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BaseText(
-            text: "${AppStrings.theNoteWillBeAttachedTo} ${type!}",
-            fontSize: fontSize13,
-            textColor: Colors.grey,
-          ),
-
-          SizedBox(height: spacerSize12),
-          TextField(
-            controller: textController,
-            maxLines: 4,
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: AppStrings.enterYourNoteHere,
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ],
+    primaryButtonLabel: AppStrings.save,
+    secondaryButtonLabel: AppStrings.cancel,
+    onSecondaryPressed: () => Navigator.pop(context),
+    onPrimaryPressed: () {
+      notesValue?.value = textController.text;
+      Navigator.pop(context);
+    },
+    content: TextField(
+      controller: textController,
+      maxLines: 4,
+      autofocus: true,
+      style: TextStyle(
+        color: AppColors.blackColor,
+        fontWeight: FontWeight.w400,
+        fontFamily: AppKeys.inter,
+        fontSize: fontSize14,
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: BaseText(text: AppStrings.cancel),
+      decoration: InputDecoration(
+        hintText: AppStrings.enterYourNoteHere,
+        hintStyle: TextStyle(
+          color: AppColors.liteGreyColor,
+          fontWeight: FontWeight.w300,
+          fontFamily: AppKeys.inter,
+          fontSize: fontSize14,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.greenColor),
-          onPressed: () {
-            notesValue!.value = textController.text;
-            Navigator.pop(context);
-          },
-          child: BaseText(text: AppStrings.save, textColor: AppColors.whiteColor),
+        filled: true,
+        fillColor: AppColors.backgroundGrey,
+        contentPadding: const EdgeInsets.all(spacerSize14),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(spacerSize12),
+          borderSide: const BorderSide(color: AppColors.borderGreyColor),
         ),
-      ],
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(spacerSize12),
+          borderSide: const BorderSide(color: AppColors.greenColor),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(spacerSize12),
+          borderSide: const BorderSide(color: AppColors.borderGreyColor),
+        ),
+      ),
     ),
   );
 }

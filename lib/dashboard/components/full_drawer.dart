@@ -15,6 +15,7 @@ import '../../utils/constants/app_keys.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../dashboard_repository.dart';
 import '../../base/dialogs/base_dialog.dart';
+import '../../services/reminder_push_notification_service.dart';
 import '../../utils/routes.dart';
 
 class FullScreenDrawer extends StatefulWidget {
@@ -448,7 +449,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
       title: AppLocalizations.of(Get.context!)!.logout,
       description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToLogout,
-      onButtonPressed: () {
+      onButtonPressed: () async {
+        await ReminderPushNotificationService.instance.onUserLogout();
         SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
         SharedPrefsService.instance.clear();
         SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);

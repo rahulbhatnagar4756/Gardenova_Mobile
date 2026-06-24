@@ -15,6 +15,9 @@ class ReminderCard extends StatelessWidget {
   final String? note;
   final String? reminderTime;
   final bool showActions;
+  final VoidCallback? onReschedule;
+  final VoidCallback? onMarkComplete;
+  final VoidCallback? onDisableReminder;
 
   const ReminderCard({
     super.key,
@@ -27,6 +30,9 @@ class ReminderCard extends StatelessWidget {
     required this.timeLabel,
     this.note,
     this.showActions = false,
+    this.onReschedule,
+    this.onMarkComplete,
+    this.onDisableReminder,
   });
 
   @override
@@ -83,46 +89,59 @@ class ReminderCard extends StatelessWidget {
                   textColor: textColor ?? AppColors.navyBlueColor,
                 ),
               ),
-              PopupMenuButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                menuPadding: EdgeInsets.zero,
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      child: Row(
-                        spacing: spacerSize6,
-                        children: [
-                          Icon(Icons.check, color: AppColors.lightGreyColor.withAlpha(120)),
-                          BaseText(text: AppStrings.markAsComplete),
-                        ],
+              if (status.toLowerCase() != AppStrings.completed.toLowerCase())
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  menuPadding: EdgeInsets.zero,
+                  onSelected: (value) {
+                    if (value == 'complete') {
+                      onMarkComplete?.call();
+                    } else if (value == 'reschedule') {
+                      onReschedule?.call();
+                    } else if (value == 'disable') {
+                      onDisableReminder?.call();
+                    }
+                  },
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        value: 'complete',
+                        child: Row(
+                          spacing: spacerSize6,
+                          children: [
+                            Icon(Icons.check, color: AppColors.lightGreyColor.withAlpha(120)),
+                            BaseText(text: AppStrings.markAsComplete),
+                          ],
+                        ),
                       ),
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        spacing: spacerSize6,
-                        children: [
-                          Icon(Icons.date_range, color: AppColors.lightGreyColor.withAlpha(120)),
-                          BaseText(text: AppStrings.reschedule),
-                        ],
+                      PopupMenuItem(
+                        value: 'reschedule',
+                        child: Row(
+                          spacing: spacerSize6,
+                          children: [
+                            Icon(Icons.date_range, color: AppColors.lightGreyColor.withAlpha(120)),
+                            BaseText(text: AppStrings.reschedule),
+                          ],
+                        ),
                       ),
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        spacing: spacerSize6,
-                        children: [
-                          Icon(
-                            Icons.notifications_off,
-                            color: AppColors.lightGreyColor.withAlpha(120),
-                          ),
-                          BaseText(text: AppStrings.disableReminder),
-                        ],
+                      PopupMenuItem(
+                        value: 'disable',
+                        child: Row(
+                          spacing: spacerSize6,
+                          children: [
+                            Icon(
+                              Icons.notifications_off,
+                              color: AppColors.lightGreyColor.withAlpha(120),
+                            ),
+                            BaseText(text: AppStrings.disableReminder),
+                          ],
+                        ),
                       ),
-                    ),
-                  ];
-                },
-                icon: const Icon(Icons.more_vert, color: AppColors.lightGreyColor),
-              ),
+                    ];
+                  },
+                  icon: const Icon(Icons.more_vert, color: AppColors.lightGreyColor),
+                ),
             ],
           ),
 
@@ -180,7 +199,7 @@ class ReminderCard extends StatelessWidget {
             Row(
               children: [
                 FilledButton(
-                  onPressed: () {},
+                  onPressed: onMarkComplete,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.chartBorderColor.withValues(alpha: .25),
                   ),
@@ -198,7 +217,7 @@ class ReminderCard extends StatelessWidget {
                 ),
                 const SizedBox(width: spacerSize10),
                 FilledButton(
-                  onPressed: () {},
+                  onPressed: onReschedule,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.mossGold.withValues(alpha: .2),
                   ),

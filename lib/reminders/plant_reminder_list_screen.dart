@@ -118,7 +118,7 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
                     controller: controller.scrollController,
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     slivers: [
-                      if (controller.reminderList.isEmpty)
+                      if (controller.reminderList.isEmpty && controller.isLoading.value == false)
                         const SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(
@@ -142,7 +142,10 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
                             separatorBuilder: (context, index) =>
                                 const SizedBox(height: spacerSize16),
                             itemBuilder: (context, index) {
-                              return ReminderList.buildCard(controller.reminderList[index]);
+                              return ReminderList.buildCard(
+                                controller.reminderList[index],
+                                controller,
+                              );
                             },
                           ),
                         ),

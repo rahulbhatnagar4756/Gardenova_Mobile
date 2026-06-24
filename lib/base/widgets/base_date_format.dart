@@ -63,6 +63,9 @@ String formatReminderTime(String scheduledTimeStr) {
       return ''; // or throw, depending on how strict you want to be
     }
   }
+  print("Before convert $scheduledTime");
+  print("Before after ${scheduledTime.toLocal()}");
+  scheduledTime.toLocal();
 
   final now = DateTime.now();
   final difference = scheduledTime.difference(now);

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +10,8 @@ import 'package:kasagardem/authentication/login/professional_profile_model.dart'
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/services/notification_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
@@ -16,15 +19,14 @@ import 'package:kasagardem/settings/settings_repository.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
 import 'package:kasagardem/utils/utils.dart';
+
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/constants/app_strings.dart';
+import '../utils/device_info_helper.dart';
 import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
-import 'package:kasagardem/services/notification_service.dart';
-import 'package:kasagardem/services/reminder_push_notification_service.dart';
-import '../utils/device_info_helper.dart';
 
 class SettingsViewModel extends GetxController {
   TextEditingController oldPasswordController = TextEditingController();
@@ -91,8 +93,7 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> initFunctions() async {
-    bool isUserLoggedIn =
-        SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+    bool isUserLoggedIn = SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     if (isUserLoggedIn) {
       await Future.wait([getSubcriptionDetail(), getProfileDetail()]);
     }
@@ -115,8 +116,7 @@ class SettingsViewModel extends GetxController {
     await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, value);
 
     if (value) {
-      final granted =
-          await NotificationService.instance.requestNotificationPermission();
+      final granted = await NotificationService.instance.requestNotificationPermission();
       if (granted) {
         await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
       } else {
@@ -144,10 +144,7 @@ class SettingsViewModel extends GetxController {
     focusNode.dispose();
   }
 
-  Future<void> pickImage({
-    required bool isCamera,
-    required bool directApiCall,
-  }) async {
+  Future<void> pickImage({required bool isCamera, required bool directApiCall}) async {
     // Permission check
     if (isCamera) {
       bool hasPermission = await PermissionManager.handleCameraPermission();
@@ -179,9 +176,7 @@ class SettingsViewModel extends GetxController {
   Future<void> getProfileDetail({bool showloader = false}) async {
     var response = await profileRepository.fetchProfile(showloader: showloader);
     if (response != null) {
-      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(
-        response,
-      );
+      ProfileResponseModel profileResponse = ProfileResponseModel.fromJson(response);
       if (profileResponse.data != null) {
         name.value = profileResponse.data?.name ?? '';
         email.value = profileResponse.data?.email ?? '';
@@ -206,8 +201,7 @@ class SettingsViewModel extends GetxController {
   void getProfessionalProfileDetail() async {
     var response = await profileRepository.fetchProfessionalProfile();
     if (response != null) {
-      ProfessionalProfileModel profileResponse =
-          ProfessionalProfileModel.fromJson(response);
+      ProfessionalProfileModel profileResponse = ProfessionalProfileModel.fromJson(response);
       professionalProfileData.value = profileResponse;
       if (profileResponse.data != null) {
         name.value = profileResponse.data!.name ?? '';
@@ -226,9 +220,7 @@ class SettingsViewModel extends GetxController {
           AppKeys.createdAt,
           profileResponse.data!.startDate ?? "",
         );
-        BaseCalculateRemainingDays().calculateRemainingDays(
-          profileResponse.data!.startDate ?? "",
-        );
+        BaseCalculateRemainingDays().calculateRemainingDays(profileResponse.data!.startDate ?? "");
 
         if (profileResponse.data?.imageUrl != null) {
           profileImage.value = profileResponse.data?.imageUrl ?? '';
@@ -301,11 +293,7 @@ class SettingsViewModel extends GetxController {
           final expirationDate = DateTime.parse(model.updatedAt!).toLocal();
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);
-          final exp = DateTime(
-            expirationDate.year,
-            expirationDate.month,
-            expirationDate.day,
-          );
+          final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
           final remaining = exp.difference(today).inDays;
           SharedPrefsService.instance.setString(
             AppKeys.remainingDays,
@@ -327,11 +315,8 @@ class SettingsViewModel extends GetxController {
       base64String = base64Encode(imageBytes);
     }
 
-    UpdateProfilePictureModel? updateProfileResponse =
-        UpdateProfilePictureModel()
-          ..profileImage = base64String != null
-              ? "data:image/png;base64,$base64String"
-              : null;
+    UpdateProfilePictureModel? updateProfileResponse = UpdateProfilePictureModel()
+      ..profileImage = base64String != null ? "data:image/png;base64,$base64String" : null;
 
     var response = await profileRepository.updateProfilePicture(
       updateProfileReq: updateProfileResponse,
@@ -386,9 +371,7 @@ class SettingsViewModel extends GetxController {
 
     log("updateProfileResponse ${updateProfileResponse.toJson()}");
 
-    var response = await profileRepository.updateProfile(
-      updateProfileReq: updateProfileResponse,
-    );
+    var response = await profileRepository.updateProfile(updateProfileReq: updateProfileResponse);
 
     if (response != null) {
       // if (base64String != null) {
@@ -463,9 +446,7 @@ class SettingsViewModel extends GetxController {
         Get.context!,
         buttonLabel: AppLocalizations.of(Get.context!)!.close.toUpperCase(),
         dialogTitle: AppLocalizations.of(Get.context!)!.passwordChanged,
-        dialogDescription: AppLocalizations.of(
-          Get.context!,
-        )!.passwordChangedSuccessfully,
+        dialogDescription: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
         onButtonPressed: () {
           Get.back();
           Get.back();
@@ -476,9 +457,7 @@ class SettingsViewModel extends GetxController {
 
   void setPassword() async {
     log("response::${newPasswordController.text}");
-    var response = await profileRepository.setPassword(
-      newPasswordController.text,
-    );
+    var response = await profileRepository.setPassword(newPasswordController.text);
     log("response::$response");
     if (response != null &&
         response is Map &&
@@ -493,9 +472,7 @@ class SettingsViewModel extends GetxController {
         Get.context!,
         buttonLabel: AppLocalizations.of(Get.context!)!.close.toUpperCase(),
         dialogTitle: AppStrings.setPwd,
-        dialogDescription: AppLocalizations.of(
-          Get.context!,
-        )!.passwordChangedSuccessfully,
+        dialogDescription: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
         onButtonPressed: () {
           Get.back();
           Get.back();
@@ -507,6 +484,7 @@ class SettingsViewModel extends GetxController {
   void callDeleteAccountApi() async {
     var response = await profileRepository.deleteAccount();
     if (response != null) {
+      await ReminderPushNotificationService.instance.onUserLogout();
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
       SharedPrefsService.instance.clear();
       // Get.offAllNamed(Routes.chooseAccountType);
@@ -518,10 +496,7 @@ class SettingsViewModel extends GetxController {
   Future<void> sendEmailVerification() async {
     final String mail = emailController.text.trim();
     if (mail.isEmpty || !GetUtils.isEmail(mail)) {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Please enter a valid email address.",
-      );
+      BaseSnackBar.show(title: "Error", message: "Please enter a valid email address.");
       return;
     }
 
@@ -553,9 +528,7 @@ class SettingsViewModel extends GetxController {
             fromLoginFlow: false,
             userType: 'user',
           );
-          Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((
-            value,
-          ) {
+          Get.toNamed(Routes.verifyEmailOtp, arguments: parsingModel)?.then((value) {
             Utils.hideKeyboard();
             if (value is VerifiedEmailLocalParsingModel) {
               if (value.requestSussessFull) {
@@ -573,18 +546,12 @@ class SettingsViewModel extends GetxController {
           );
         }
       } else {
-        BaseSnackBar.show(
-          title: "Error",
-          message: "Could not connect to verification service.",
-        );
+        BaseSnackBar.show(title: "Error", message: "Could not connect to verification service.");
       }
     } catch (e) {
       ApiRepository.instance.hideLoader();
       debugPrint("sendEmailVerification exception: $e");
-      BaseSnackBar.show(
-        title: "Error",
-        message: "An error occurred during verification process.",
-      );
+      BaseSnackBar.show(title: "Error", message: "An error occurred during verification process.");
     }
   }
 }

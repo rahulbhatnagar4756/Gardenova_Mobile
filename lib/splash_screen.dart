@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -69,10 +70,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToIntroductionScreen({required bool isUserAlreadyLogedIn}) {
-    bool isSoftLogin =
-        SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
-    String currentRole =
-        SharedPrefsService.instance.getString(AppKeys.role) ?? '';
+    bool isSoftLogin = SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
+    String currentRole = SharedPrefsService.instance.getString(AppKeys.role) ?? '';
     Future.delayed(Duration(seconds: 1)).then((value) {
       // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       // SystemChrome.setSystemUIOverlayStyle(
@@ -83,16 +82,12 @@ class _SplashScreenState extends State<SplashScreen> {
       // ),
       // );
       Future.delayed(Duration(seconds: 1), () async {
-        final granted =
-            await NotificationService.instance.requestNotificationPermission();
+        final granted = await NotificationService.instance.requestNotificationPermission();
         if (granted) {
-          await ReminderPushNotificationService.instance
-              .registerDeviceTokenIfNeeded();
+          await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
         }
-        ReminderPushNotificationService.instance.processPendingNotificationClick();
       });
       if (currentRole != AppKeys.professional) {
-        // need change
         if (isUserAlreadyLogedIn) {
           Get.offAllNamed(Routes.dashboard);
         } else {

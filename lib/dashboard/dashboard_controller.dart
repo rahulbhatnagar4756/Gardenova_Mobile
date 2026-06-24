@@ -54,7 +54,7 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     SubscriptionService.instance.checkAndRecoverPendingPurchases();
-    loadBannerAd();
+    // loadBannerAd();
     responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getPlantsRecommendations(responseId);

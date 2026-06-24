@@ -20,6 +20,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 import '../../services/admob_service.dart';
+import '../../services/reminder_push_notification_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
 import 'components/heading_ui_layout.dart';
@@ -34,6 +35,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.isUserLoggedIn.value =
           SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+      ReminderPushNotificationService.instance.onAppReady();
     });
     return Obx(
       () => Scaffold(

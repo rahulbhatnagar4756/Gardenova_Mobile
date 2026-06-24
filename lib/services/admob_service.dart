@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 import '../utils/app_config.dart';
 
 class AdMobService {
@@ -83,10 +85,7 @@ class AdMobService {
       adUnitId: bannerAdUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: onAdLoaded,
-        onAdFailedToLoad: onAdFailedToLoad,
-      ),
+      listener: BannerAdListener(onAdLoaded: onAdLoaded, onAdFailedToLoad: onAdFailedToLoad),
     );
     ad.load();
     return ad;
@@ -110,8 +109,7 @@ class AdMobService {
         onAdLoaded: (RewardedAd ad) {
           debugPrint('RewardedAd loaded: $ad');
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (RewardedAd ad) =>
-                debugPrint('RewardedAd showed: $ad'),
+            onAdShowedFullScreenContent: (RewardedAd ad) => debugPrint('RewardedAd showed: $ad'),
             onAdDismissedFullScreenContent: (RewardedAd ad) {
               debugPrint('RewardedAd dismissed: $ad');
               ad.dispose();

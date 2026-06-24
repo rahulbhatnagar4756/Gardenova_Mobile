@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/reminders/component/reminder_card.dart';
 import 'package:kasagardem/reminders/model/notification_response_model.dart';
+import 'package:kasagardem/reminders/plant_reminder_controller.dart';
 
 class ReminderList {
   ReminderList._();
@@ -18,19 +19,26 @@ class ReminderList {
     }
   }
 
-  static Widget buildCard(Tasks task) {
+  static Widget buildCard(Tasks task, PlantReminderController controller) {
     final eventType = task.eventType?.toLowerCase() ?? '';
 
     return ReminderCard(
       plantName: (task.commonName ?? '').capitalizeFirst ?? '',
       task: task.activityType ?? '',
       status: (task.eventType ?? '').capitalizeFirst ?? '',
-      textColor: eventType == 'missed' ? Colors.red : null,
+      textColor: eventType == 'missed'
+          ? Colors.red
+          : eventType == 'completed'
+          ? Colors.green
+          : null,
       statusColor: statusColorFor(task),
       timeLabel: task.preferredTime ?? '',
-      reminderTime: task.nextAt,
+      reminderTime: task.nextAt ?? "",
       note: task.note?.toString(),
       showActions: eventType == 'missed',
+      onReschedule: () => controller.openRescheduleDialog(task),
+      onMarkComplete: () => controller.markReminderComplete(task),
+      onDisableReminder: () => controller.disableReminder(task),
     );
   }
 }

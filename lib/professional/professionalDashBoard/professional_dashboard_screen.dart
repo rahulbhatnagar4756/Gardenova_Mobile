@@ -11,6 +11,7 @@ import '../../base/widgets/circular_bottom_app_bar.dart';
 import '../../dashboard/components/full_drawer.dart';
 import '../../l10n/app_localizations.dart';
 import '../../recommended_professionals/components/service_bottom_sheet.dart';
+import '../../services/reminder_push_notification_service.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_constants.dart';
 import '../../utils/constants/app_keys.dart';
@@ -23,6 +24,9 @@ class ProfessionalDashboardScreen
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ReminderPushNotificationService.instance.onAppReady();
+    });
     return Obx(
       () => Scaffold(
         appBar:  PreferredSize(

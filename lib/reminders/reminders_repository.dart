@@ -22,7 +22,8 @@ class RemindersRepository {
   }
 
   final String deletePlantUrl = 'api/v1/allplants/user/notification';
-  final String _deviceTokenUrl = 'api/v1/allplants/user/notification/device-token';
+  final String _deviceTokenUrl = 'api/v1/reminders/token';
+  final String _rescheduleUrl = 'api/v1/allplants/user/notifications';
 
   Future<dynamic> registerDeviceToken({
     required String fcmToken,
@@ -32,8 +33,8 @@ class RemindersRepository {
     return ApiRepository.instance.post(
       _deviceTokenUrl,
       body: {
-        'fcm_token': fcmToken,
-        'device_type': deviceType,
+        'token': fcmToken,
+        'deviceType': deviceType,
         'enabled': enabled,
       },
       showDefaultLoader: false,
@@ -59,5 +60,36 @@ class RemindersRepository {
     );
     print(plantsResponse);
     return plantsResponse;
+  }
+
+  Future<dynamic> rescheduleReminder({
+    required String userPlantId,
+    required String activityType,
+    required String preferredTime,
+    required int frequency,
+  }) async {
+    return ApiRepository.instance.patch('$_rescheduleUrl/$userPlantId/reschedule', {
+      'activityType': activityType,
+      'preferred_time': preferredTime,
+      'frequency': frequency,
+    });
+  }
+
+  Future<dynamic> completeReminder({
+    required String userPlantId,
+    required String activityType,
+  }) async {
+    return ApiRepository.instance.patch('$_rescheduleUrl/$userPlantId/complete', {
+      'activityType': activityType,
+    });
+  }
+
+  Future<dynamic> disableReminder({
+    required String userPlantId,
+    required String activityType,
+  }) async {
+    return ApiRepository.instance.patch('$_rescheduleUrl/$userPlantId/disable', {
+      'activityType': activityType,
+    });
   }
 }

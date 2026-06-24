@@ -12,6 +12,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import '../base/widgets/full_screen_image_preview.dart';
 import '../base/widgets/subscription_status_view_widget.dart';
 import '../utils/constants/app_assets.dart';
@@ -296,7 +297,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
       title: AppLocalizations.of(Get.context!)!.logout,
       description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToLogout,
-      onButtonPressed: () {
+      onButtonPressed: () async {
+        await ReminderPushNotificationService.instance.onUserLogout();
         SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
         SharedPrefsService.instance.clear();
         SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);

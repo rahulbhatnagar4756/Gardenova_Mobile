@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
+import 'package:kasagardem/reminders/component/reschedule_reminder_dialog.dart';
 import 'package:kasagardem/reminders/model/category_model.dart';
 import 'package:kasagardem/reminders/model/notification_response_model.dart';
 import 'package:kasagardem/reminders/reminders_repository.dart';
@@ -24,12 +25,14 @@ class PlantReminderController extends GetxController {
   RxBool hasUpcomingTask = false.obs;
   RxString upcomingCount = "".obs;
   RxBool isRefreshing = false.obs;
-  RxInt pageNumber = 1.obs;
-  int pageSize = 5;
   RxBool isLoadMoreVisible = false.obs;
   RxBool isSearching = false.obs;
   RxBool isLoadMoreRunning = false.obs;
+  RxInt pageNumber = 1.obs;
+  int pageSize = 5;
+
   final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
+
   ScrollController scrollController = ScrollController();
 
   @override
@@ -44,6 +47,9 @@ class PlantReminderController extends GetxController {
       _resetPagination();
       getAllNotifications();
     };
+    if (ReminderPushNotificationService.instance.consumePendingReminderRefresh()) {
+      _resetPagination();
+    }
     ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
     getAllNotifications();
     super.onInit();
@@ -69,6 +75,7 @@ class PlantReminderController extends GetxController {
   }
 
   Future<void> getAllNotifications({bool append = false, bool showDefaultLoader = true}) async {
+    isLoading.value = true;
     var response = await remindersRepository.fetchAllPlants(
       eventType: selectedStatus.value.code,
       activityType: selectedType.value.code,
@@ -106,6 +113,7 @@ class PlantReminderController extends GetxController {
       final totalCount = _totalCountForSelectedFilter(notificationData.counts!);
       isLoadMoreVisible.value = reminderList.length < totalCount;
     }
+    isLoading.value = false;
   }
 
   Future<void> loadMoreNotifications() async {
@@ -136,9 +144,91 @@ class PlantReminderController extends GetxController {
     isLoadMoreRunning.value = false;
   }
 
+  void openRescheduleDialog(Tasks task) {
+    final context = Get.context;
+    if (context == null) return;
+
+    showRescheduleReminderDialog(
+      context,
+      task: task,
+      onSave: (frequency, preferredTime) {
+        rescheduleReminder(task, frequency, preferredTime);
+      },
+    );
+  }
+
+  Future<void> rescheduleReminder(Tasks task, int frequency, String preferredTime) async {
+    final userPlantId = task.userPlantId;
+    final activityType = task.activityType;
+    if (userPlantId == null || userPlantId.isEmpty || activityType == null) return;
+
+    final response = await remindersRepository.rescheduleReminder(
+      userPlantId: userPlantId,
+      activityType: activityType,
+      preferredTime: _formatPreferredTimeForApi(preferredTime),
+      frequency: frequency,
+    );
+
+    if (response != null) {
+      _resetPagination();
+      _scrollToTop();
+      await getAllNotifications();
+    }
+  }
+
+  Future<void> markReminderComplete(Tasks task) async {
+    final userPlantId = task.userPlantId;
+    final activityType = task.activityType;
+    if (userPlantId == null || userPlantId.isEmpty || activityType == null) return;
+
+    final response = await remindersRepository.completeReminder(
+      userPlantId: userPlantId,
+      activityType: activityType,
+    );
+
+    if (response != null) {
+      _resetPagination();
+      _scrollToTop();
+      await getAllNotifications();
+    }
+  }
+
+  Future<void> disableReminder(Tasks task) async {
+    final userPlantId = task.userPlantId;
+    final activityType = task.activityType;
+    if (userPlantId == null || userPlantId.isEmpty || activityType == null) return;
+
+    final response = await remindersRepository.disableReminder(
+      userPlantId: userPlantId,
+      activityType: activityType,
+    );
+
+    if (response != null) {
+      _resetPagination();
+      _scrollToTop();
+      await getAllNotifications();
+    }
+  }
+
+  String _formatPreferredTimeForApi(String time) {
+    final parts = time.split(':');
+    if (parts.length == 2) return '$time:00';
+    return time;
+  }
+
+  void _scrollToTop() {
+    if (!scrollController.hasClients) return;
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
   void updateStatus(CategoryModel status) {
     selectedStatus.value = status;
     _resetPagination();
+    _scrollToTop();
     getAllNotifications();
     selectedStatus.refresh();
   }
@@ -146,6 +236,7 @@ class PlantReminderController extends GetxController {
   void updateType(CategoryModel type) {
     selectedType.value = type;
     _resetPagination();
+    _scrollToTop();
     getAllNotifications();
     selectedType.refresh();
   }
