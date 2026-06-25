@@ -165,7 +165,8 @@ class CircularBottomAppBar extends StatelessWidget implements PreferredSizeWidge
                   ),
                   GestureDetector(
                     onTap: () {
-                      // onNotificationPressed?.call();
+                      Get.toNamed(Routes.plantRemindersListing);
+                      //onNotificationPressed?.call();
                       // BaseSnackBar.show(
                       //   title: 'Temporarily Unavailable',
                       //   message:

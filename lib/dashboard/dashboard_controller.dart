@@ -255,13 +255,13 @@ class DashboardController extends GetxController {
 
       // Fetch location first if not available (only for diagnosis)
       if (source == ImagePickerSource.diagnosis && position == null) {
-        await getCurrentLocation();
+        // await getCurrentLocation();
 
         // Stop if still null
-        if (position == null) {
+        /*  if (position == null) {
           BaseSnackBar.show(title: 'Location Error', message: 'Unable to fetch location');
           return;
-        }
+        }*/
       }
 
       if (isCamera && source == ImagePickerSource.diagnosis) {

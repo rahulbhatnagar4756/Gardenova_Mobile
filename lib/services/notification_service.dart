@@ -3,23 +3,27 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:flutter/widgets.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const String kReminderNotificationChannelId = 'plant_reminders';
 
 const AndroidNotificationChannel _reminderChannel = AndroidNotificationChannel(
-  'high_importance_channel',
-  'High Importance Notifications',
-  description: 'This channel is used for important notifications.',
-  importance: Importance.high,
+  kReminderNotificationChannelId,
+  'Plant Reminders',
+  description: 'Plant care reminder notifications',
+  importance: Importance.max,
   playSound: true,
 );
 
-const String _androidNotificationIcon = 'ic_notification';
+const String _androidNotificationIcon = 'ic_notification_large';
 const String _androidNotificationLargeIcon = '@mipmap/ic_launcher';
 const Color _androidNotificationAccentColor = Color(0xFF01AF55);
 
@@ -28,13 +32,34 @@ AndroidNotificationDetails _buildAndroidNotificationDetails() {
     _reminderChannel.id,
     _reminderChannel.name,
     channelDescription: _reminderChannel.description,
-    importance: Importance.high,
+    importance: Importance.max,
     priority: Priority.high,
     playSound: true,
     icon: _androidNotificationIcon,
     largeIcon: const DrawableResourceAndroidBitmap(_androidNotificationLargeIcon),
     color: _androidNotificationAccentColor,
+    category: AndroidNotificationCategory.reminder,
+    visibility: NotificationVisibility.public,
+    autoCancel: true,
   );
+}
+
+@pragma('vm:entry-point')
+Future<void> notificationTapBackground(NotificationResponse response) async {
+  final payload = response.payload;
+  if (payload == null || payload.isEmpty) return;
+
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(AppKeys.pendingNotificationPayload, payload);
+}
+
+Future<void> _persistNotificationTap(Map<String, dynamic> data) async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppKeys.pendingNotificationPayload, jsonEncode(data));
+  } catch (e) {
+    log('Failed to persist notification tap payload: $e');
+  }
 }
 
 const DarwinNotificationDetails _iosNotificationDetails = DarwinNotificationDetails(
@@ -58,12 +83,23 @@ void _logPushNotification(
 }
 
 @pragma('vm:entry-point')
+Future<void> _ensureAndroidNotificationChannel() async {
+  final plugin = FlutterLocalNotificationsPlugin();
+  await plugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(_reminderChannel);
+}
+
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  await _ensureAndroidNotificationChannel();
   final payload = normalizeNotificationPayload(message);
   _logPushNotification('background', message, payload);
 
-  if (!NotificationService.areNotificationsEnabledInPrefs()) {
+  final prefs = await SharedPreferences.getInstance();
+  final notificationsEnabled = prefs.getBool(AppKeys.notificationsEnabled) ?? true;
+  if (!notificationsEnabled) {
     debugPrint('[PUSH][background] skipped: notifications disabled in settings');
     return;
   }
@@ -75,41 +111,41 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     return;
   }
 
-  // Notification payload is shown by the OS when present; show local only for data-only.
+  // FCM auto-displays notification-payload messages in the tray — skip local to avoid duplicates.
+  // Tap is handled via onMessageOpenedApp / getInitialMessage after the activity is ready.
   if (message.notification != null) {
-    debugPrint('[PUSH][background] skipped local show: OS handles notification payload');
+    debugPrint(
+      '[PUSH][background] OS notification shown — tap via onMessageOpenedApp/getInitialMessage',
+    );
     return;
   }
 
-  debugPrint('[PUSH][background] showing local notification');
+  debugPrint('[PUSH][background] showing local notification for data-only message');
   final plugin = FlutterLocalNotificationsPlugin();
   const androidSettings = AndroidInitializationSettings(_androidNotificationIcon);
   const iosSettings = DarwinInitializationSettings();
   await plugin.initialize(
-    settings: const InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    ),
+    settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
+    onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
-
-  await plugin
-      .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin
-      >()
-      ?.createNotificationChannel(_reminderChannel);
 
   final androidDetails = _buildAndroidNotificationDetails();
+  final notificationId = _notificationIdForPayload(payload, message);
 
   await plugin.show(
-    id: message.hashCode,
+    id: notificationId,
     title: title,
     body: body,
-    notificationDetails: NotificationDetails(
-      android: androidDetails,
-      iOS: _iosNotificationDetails,
-    ),
+    notificationDetails: NotificationDetails(android: androidDetails, iOS: _iosNotificationDetails),
     payload: jsonEncode(payload),
   );
+}
+
+int _notificationIdForPayload(Map<String, dynamic> payload, RemoteMessage message) {
+  final logId = payload['notification_log_id']?.toString();
+  if (logId != null && logId.isNotEmpty) return logId.hashCode;
+
+  return message.messageId?.hashCode ?? message.hashCode;
 }
 
 Map<String, dynamic> normalizeNotificationPayload(RemoteMessage message) {
@@ -122,6 +158,22 @@ Map<String, dynamic> normalizeNotificationPayload(RemoteMessage message) {
   if (notification?.body != null && notification!.body!.isNotEmpty) {
     payload.putIfAbsent('body', () => notification.body);
   }
+  payload.putIfAbsent('openedFromNotification', () => true);
+
+  final hasReminderData =
+      payload.containsKey('activity_type') ||
+      payload.containsKey('activityType') ||
+      payload.containsKey('user_plant_id') ||
+      payload.containsKey('userPlantId') ||
+      payload['type'] == 'plant_reminder' ||
+      payload['action'] == 'plant_reminder' ||
+      payload['type'] == 'reminder' ||
+      payload['route'] == Routes.plantRemindersListing;
+
+  if (!hasReminderData && (notification != null || payload['openedFromNotification'] == true)) {
+    payload.putIfAbsent('type', () => 'plant_reminder');
+    payload.putIfAbsent('route', () => Routes.plantRemindersListing);
+  }
 
   return payload;
 }
@@ -129,12 +181,10 @@ Map<String, dynamic> normalizeNotificationPayload(RemoteMessage message) {
 class NotificationService with WidgetsBindingObserver {
   NotificationService._privateConstructor();
 
-  static final NotificationService instance =
-      NotificationService._privateConstructor();
+  static final NotificationService instance = NotificationService._privateConstructor();
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
   void Function(Map<String, dynamic>)? onNotificationClick;
   void Function(RemoteMessage, Map<String, dynamic>)? onForegroundMessage;
@@ -143,13 +193,21 @@ class NotificationService with WidgetsBindingObserver {
 
   Map<String, dynamic>? _pendingNotificationData;
   bool _isNavigationReady = false;
+  bool _isPendingClickScheduled = false;
+  bool _fcmLaunchMessageChecked = false;
 
-  bool get canHandleNavigation =>
-      _isNavigationReady && Get.key.currentContext != null;
+  bool get isNavigationReady => _isNavigationReady;
+
+  bool get hasPendingNotificationData => _pendingNotificationData != null;
+
+  bool get hasPendingLaunchNotification =>
+      _pendingNotificationData != null || _fcmLaunchMessageChecked;
+
+  bool get canHandleNavigation => _isNavigationReady && Get.key.currentContext != null;
 
   void markNavigationReady() {
     _isNavigationReady = true;
-    processPendingNotificationClick();
+    schedulePendingNotificationClick();
   }
 
   /// Initialize Firebase Messaging & Local Notifications
@@ -158,21 +216,21 @@ class NotificationService with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
+    _setupMessageListeners();
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings(_androidNotificationIcon);
 
-    const DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
+    const DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
 
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsDarwin,
-        );
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
 
     await _localNotifications.initialize(
       settings: initializationSettings,
@@ -180,13 +238,10 @@ class NotificationService with WidgetsBindingObserver {
         debugPrint('[PUSH][local tap] payload=${response.payload}');
         _handleNotificationClick(response.payload);
       },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(_reminderChannel);
+    await _ensureAndroidNotificationChannel();
 
     await _messaging.setForegroundNotificationPresentationOptions(
       alert: true,
@@ -194,8 +249,7 @@ class NotificationService with WidgetsBindingObserver {
       sound: true,
     );
 
-    _setupMessageListeners();
-    await _captureInitialMessage();
+    await _captureLocalNotificationLaunch();
     await refreshFcmToken();
   }
 
@@ -205,16 +259,106 @@ class NotificationService with WidgetsBindingObserver {
   static bool areNotificationsEnabledInPrefs() =>
       SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
 
-  void setPendingNotificationData(Map<String, dynamic> data) {
-    _pendingNotificationData = data;
+  void setPendingNotificationData(Map<String, dynamic> data, {bool persist = true}) {
+    _pendingNotificationData = Map<String, dynamic>.from(data);
+    if (persist) {
+      _persistNotificationTap(data);
+    }
+  }
+
+  Future<void> consumePersistedNotificationTap() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(AppKeys.pendingNotificationPayload);
+      if (raw == null || raw.isEmpty) return;
+
+      await prefs.remove(AppKeys.pendingNotificationPayload);
+      final data = Map<String, dynamic>.from(jsonDecode(raw));
+      debugPrint('[PUSH][persisted] loaded notification tap payload: $data');
+      setPendingNotificationData(data, persist: false);
+    } catch (e) {
+      log('Failed to consume persisted notification tap: $e');
+    }
+  }
+
+  void schedulePendingNotificationClick({int delayMs = 450}) {
+    if (_pendingNotificationData == null) return;
+
+    if (canHandleNavigation) {
+      processPendingNotificationClick();
+      return;
+    }
+
+    if (_isPendingClickScheduled) return;
+    _isPendingClickScheduled = true;
+
+    void attemptProcess() {
+      _isPendingClickScheduled = false;
+      if (_pendingNotificationData == null) return;
+      if (!canHandleNavigation) {
+        schedulePendingNotificationClick(delayMs: delayMs);
+        return;
+      }
+      processPendingNotificationClick();
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(Duration(milliseconds: delayMs), attemptProcess);
+    });
+  }
+
+  /// Call once after the first home screen is mounted (activity must be attached).
+  Future<void> tryCaptureFcmLaunchMessage() async {
+    if (_fcmLaunchMessageChecked) return;
+    _fcmLaunchMessageChecked = true;
+
+    // Wait for Android activity + FCM plugin to process the launch intent.
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      final payload = normalizeNotificationPayload(initialMessage);
+      _logPushNotification('cold_start', initialMessage, payload);
+      setPendingNotificationData(payload);
+      debugPrint('[PUSH][cold_start] captured FCM launch message after home ready');
+      return;
+    }
+
+    debugPrint('[PUSH][cold_start] no FCM launch message');
+  }
+
+  /// @deprecated Use [tryCaptureFcmLaunchMessage] after the home screen mounts.
+  Future<void> captureFcmInitialMessageOnce() => tryCaptureFcmLaunchMessage();
+
+  /// Call after the first home screen is mounted to process any launch notification.
+  Future<void> captureTerminatedNotificationLaunch() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    await consumePersistedNotificationTap();
+  }
+
+  Future<void> processLaunchNavigation({int delayMs = 600}) async {
+    await tryCaptureFcmLaunchMessage();
+    await captureTerminatedNotificationLaunch();
+
+    if (!isNavigationReady) {
+      markNavigationReady();
+    } else {
+      schedulePendingNotificationClick(delayMs: delayMs);
+    }
+
+    Future.delayed(Duration(milliseconds: delayMs + 500), () {
+      if (_pendingNotificationData != null) {
+        schedulePendingNotificationClick(delayMs: 200);
+      }
+    });
   }
 
   void processPendingNotificationClick() {
-    if (_pendingNotificationData == null) return;
-    debugPrint('[PUSH][cold_start] processing pending click: $_pendingNotificationData');
+    if (_pendingNotificationData == null || !canHandleNavigation) return;
+    debugPrint('[PUSH][pending] processing click: $_pendingNotificationData');
     final data = Map<String, dynamic>.from(_pendingNotificationData!);
     _pendingNotificationData = null;
-    _dispatchNotificationClick(data);
+    _executeNotificationClick(data);
   }
 
   /// Request permissions for iOS and Android 13+
@@ -328,6 +472,7 @@ class NotificationService with WidgetsBindingObserver {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       final payload = normalizeNotificationPayload(message);
       _logPushNotification('opened_from_background', message, payload);
+      _prepareForBackgroundNotificationTap();
       _dispatchNotificationClick(payload);
     });
   }
@@ -359,12 +504,19 @@ class NotificationService with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _captureInitialMessage() async {
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      final payload = normalizeNotificationPayload(initialMessage);
-      _logPushNotification('cold_start', initialMessage, payload);
-      _pendingNotificationData = payload;
+  Future<void> _captureLocalNotificationLaunch() async {
+    final launchDetails = await _localNotifications.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      final payloadString = launchDetails!.notificationResponse?.payload;
+      if (payloadString != null && payloadString.isNotEmpty) {
+        try {
+          final data = Map<String, dynamic>.from(jsonDecode(payloadString));
+          setPendingNotificationData(data);
+          debugPrint('[PUSH][cold_start] stored local notification launch payload');
+        } catch (e) {
+          log('Error parsing local notification launch payload: $e');
+        }
+      }
     }
   }
 
@@ -382,14 +534,32 @@ class NotificationService with WidgetsBindingObserver {
     }
   }
 
-  void _dispatchNotificationClick(Map<String, dynamic> data) {
-    debugPrint('[PUSH][click] processing payload: $data');
-    log('Processing notification click payload: $data');
+  void _prepareForBackgroundNotificationTap() {
+    _isNavigationReady = true;
+    debugPrint('[PUSH][background tap] navigation marked ready');
+  }
 
-    if (!canHandleNavigation) {
-      setPendingNotificationData(data);
+  void _dispatchNotificationClick(Map<String, dynamic> data) {
+    debugPrint('[PUSH][click] payload: $data');
+    log('Processing notification click payload: $data');
+    setPendingNotificationData(data);
+    _prepareForBackgroundNotificationTap();
+
+    if (canHandleNavigation) {
+      processPendingNotificationClick();
       return;
     }
+
+    schedulePendingNotificationClick(delayMs: 500);
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (_pendingNotificationData != null) {
+        schedulePendingNotificationClick(delayMs: 200);
+      }
+    });
+  }
+
+  void _executeNotificationClick(Map<String, dynamic> data) {
+    debugPrint('[PUSH][click] executing payload: $data');
 
     if (onNotificationClick != null) {
       onNotificationClick!(data);
@@ -420,7 +590,11 @@ class NotificationService with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _checkPermissionAndRetrieveTokenOnResume();
-      onAppResumed?.call();
+      _prepareForBackgroundNotificationTap();
+      consumePersistedNotificationTap().then((_) {
+        onAppResumed?.call();
+        schedulePendingNotificationClick(delayMs: 300);
+      });
     }
   }
 

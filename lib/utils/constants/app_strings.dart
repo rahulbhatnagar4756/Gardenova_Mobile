@@ -176,6 +176,9 @@ class AppStrings {
   static const String reschedule = "Reschedule";
   static const String disableReminder = "Disable Reminder";
   static const String markAsComplete = "Mark as Complete";
+  static const String reminderMarkedCompleteSuccess = "Reminder marked as complete successfully.";
+  static const String reminderRescheduledSuccess = "Reminder rescheduled successfully.";
+  static const String reminderDisabledSuccess = "Reminder disabled successfully.";
   static const String generalCare= "General Care";
 
 }

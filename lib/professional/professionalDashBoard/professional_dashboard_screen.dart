@@ -24,8 +24,8 @@ class ProfessionalDashboardScreen
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ReminderPushNotificationService.instance.onAppReady();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ReminderPushNotificationService.instance.onAppReady();
     });
     return Obx(
       () => Scaffold(

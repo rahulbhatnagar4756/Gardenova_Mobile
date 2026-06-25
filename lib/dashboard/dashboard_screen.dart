@@ -32,10 +32,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller.isUserLoggedIn.value =
           SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
-      ReminderPushNotificationService.instance.onAppReady();
+      await ReminderPushNotificationService.instance.onAppReady();
     });
     return Obx(
       () => Scaffold(

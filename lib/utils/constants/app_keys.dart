@@ -35,4 +35,5 @@ class AppKeys {
   static const fcmToken = 'fcm_token';
   static const lastRegisteredFcmToken = 'last_registered_fcm_token';
   static const notificationsEnabled = 'notifications_enabled';
+  static const pendingNotificationPayload = 'pending_notification_payload';
 }

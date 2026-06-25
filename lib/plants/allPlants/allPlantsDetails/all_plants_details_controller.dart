@@ -99,7 +99,7 @@ class AllPlantsDetailsController extends GetxController {
       PlantInfoItem(
         icon: Icons.keyboard_arrow_down,
         label: 'Height',
-        value: "${plantDetails.dimensionMinValue} - ${plantDetails.dimensionMaxValue}ft",
+        value: "${plantDetails.dimensionMinValue} - ${plantDetails.dimensionMaxValue} ft",
       ),
     );
 
@@ -463,7 +463,80 @@ class AllPlantsDetailsController extends GetxController {
   }
 
   Future<void> callEditPlantApi() async {
-    final map = <String, dynamic>{
+    final map = _buildChangedBlockEditPlantMap();
+
+    debugPrint("Filtered map :::::: $map");
+
+    if (map.isEmpty) {
+      Get.back(result: true);
+      return;
+    }
+
+    final response = await plantsRepository.editPlant(
+      userPlantId: userPlantId.value,
+      editPlantReq: map,
+    );
+    debugPrint("response::::: callEditPlantApi $response");
+    if (response != null) {
+      Get.back(result: true);
+      if (Get.isRegistered<MyPlantsController>()) {
+        Get.find<MyPlantsController>().callGetMyPlantListApi();
+      }
+    }
+  }
+
+  static const List<String> _wateringEditKeys = [
+    'watering_notification_enabled',
+    'watering_reminder_frequency',
+    'watering_preferred_time',
+    'watering_note',
+  ];
+
+  static const List<String> _fertilizerEditKeys = [
+    'fertilizer_notification_enabled',
+    'fertilizer_reminder_frequency',
+    'fertilizer_preferred_time',
+    'fertilizer_note',
+  ];
+
+  static const List<String> _pruningEditKeys = [
+    'pruning_notification_enabled',
+    'pruning_reminder_frequency',
+    'pruning_preferred_time',
+    'pruning_note',
+  ];
+
+  static const List<String> _genericEditKeys = [
+    'generic_notification_enabled',
+    'generic_care_reminder_frequency',
+    'generic_care_preferred_time',
+    'generic_note',
+  ];
+
+  Map<String, dynamic> _buildChangedBlockEditPlantMap() {
+    final current = _buildEditPlantRequestMap();
+    final original = _buildOriginalEditPlantMap();
+    final changedMap = <String, dynamic>{};
+
+    void addBlockIfChanged(List<String> keys) {
+      final hasChange = keys.any((key) => !_isSameEditPlantValue(current[key], original[key]));
+      if (!hasChange) return;
+
+      for (final key in keys) {
+        changedMap[key] = current[key];
+      }
+    }
+
+    addBlockIfChanged(_wateringEditKeys);
+    addBlockIfChanged(_fertilizerEditKeys);
+    addBlockIfChanged(_pruningEditKeys);
+    addBlockIfChanged(_genericEditKeys);
+
+    return changedMap;
+  }
+
+  Map<String, dynamic> _buildEditPlantRequestMap() {
+    return {
       "plant_id": plantId.value,
       "watering_notification_enabled": isWateringOn.value,
       "watering_reminder_frequency": wateringFrequency.value,
@@ -482,17 +555,67 @@ class AllPlantsDetailsController extends GetxController {
       "pruning_note": pruningController.text,
       "generic_note": criticalController.text,
     };
-    debugPrint("Filtered map :::::: $map");
-    final response = await plantsRepository.editPlant(
-      userPlantId: userPlantId.value,
-      editPlantReq: map,
-    );
-    debugPrint("response::::: callEditPlantApi $response");
-    if (response != null) {
-      Get.back(result: true);
-      if (Get.isRegistered<MyPlantsController>()) {
-        Get.find<MyPlantsController>().callGetMyPlantListApi();
+  }
+
+  Map<String, dynamic> _buildOriginalEditPlantMap() {
+    final reminder = plantDetailData.value.data?.reminder;
+
+    return {
+      "plant_id": plantId.value,
+      "watering_notification_enabled": reminder?.wateringNotificationEnabled ?? false,
+      "watering_reminder_frequency": reminder?.wateringReminderFrequency ?? 0,
+      "watering_preferred_time": reminder?.wateringPreferredTime ?? "",
+      "fertilizer_notification_enabled": reminder?.fertilizerNotificationEnabled ?? false,
+      "fertilizer_reminder_frequency": reminder?.fertilizerReminderFrequency ?? 0,
+      "fertilizer_preferred_time": reminder?.fertilizerPreferredTime ?? "",
+      "pruning_preferred_time": reminder?.pruningPreferredTime ?? "",
+      "generic_care_preferred_time": reminder?.genericPreferredTime ?? "",
+      "pruning_notification_enabled": reminder?.pruningNotificationEnabled ?? false,
+      "pruning_reminder_frequency": reminder?.pruningReminderFrequency ?? 0,
+      "generic_notification_enabled": reminder?.genericNotificationEnabled ?? false,
+      "generic_care_reminder_frequency": reminder?.genericCareReminderFrequency ?? 0,
+      "watering_note": reminder?.wateringNote ?? "",
+      "fertilizer_note": reminder?.fertilizerNote ?? "",
+      "pruning_note": reminder?.pruningNote ?? "",
+      "generic_note": reminder?.genericCareNote ?? "",
+    };
+  }
+
+  bool _isSameEditPlantValue(dynamic current, dynamic original) {
+    if (current is String || original is String) {
+      return _normalizeEditPlantString(current) == _normalizeEditPlantString(original);
+    }
+
+    if (current is bool || original is bool) {
+      return _toBool(current) == _toBool(original);
+    }
+
+    if (current is num || original is num) {
+      return _toNum(current) == _toNum(original);
+    }
+
+    return current == original;
+  }
+
+  String _normalizeEditPlantString(dynamic value) {
+    final text = (value ?? '').toString().trim();
+    final parts = text.split(':');
+
+    if (parts.length >= 2) {
+      final hour = int.tryParse(parts[0]);
+      final minute = int.tryParse(parts[1]);
+      if (hour != null && minute != null) {
+        return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
       }
     }
+
+    return text;
+  }
+
+  bool _toBool(dynamic value) => value == true;
+
+  num _toNum(dynamic value) {
+    if (value is num) return value;
+    return num.tryParse(value?.toString() ?? '') ?? 0;
   }
 }

@@ -6,6 +6,7 @@ import 'package:kasagardem/reminders/model/category_model.dart';
 import 'package:kasagardem/reminders/model/notification_response_model.dart';
 import 'package:kasagardem/reminders/reminders_repository.dart';
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class PlantReminderController extends GetxController {
@@ -173,6 +174,10 @@ class PlantReminderController extends GetxController {
       _resetPagination();
       _scrollToTop();
       await getAllNotifications();
+      _showReminderActionSuccessSnackBar(
+        title: AppStrings.reschedule,
+        message: AppStrings.reminderRescheduledSuccess,
+      );
     }
   }
 
@@ -190,6 +195,10 @@ class PlantReminderController extends GetxController {
       _resetPagination();
       _scrollToTop();
       await getAllNotifications();
+      _showReminderActionSuccessSnackBar(
+        title: AppStrings.markAsComplete,
+        message: AppStrings.reminderMarkedCompleteSuccess,
+      );
     }
   }
 
@@ -207,7 +216,22 @@ class PlantReminderController extends GetxController {
       _resetPagination();
       _scrollToTop();
       await getAllNotifications();
+      _showReminderActionSuccessSnackBar(
+        title: AppStrings.disableReminder,
+        message: AppStrings.reminderDisabledSuccess,
+      );
     }
+  }
+
+  void _showReminderActionSuccessSnackBar({
+    required String title,
+    required String message,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        BaseSnackBar.show(title: title, message: message);
+      });
+    });
   }
 
   String _formatPreferredTimeForApi(String time) {

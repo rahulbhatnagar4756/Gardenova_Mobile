@@ -12,6 +12,7 @@ import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_to
 import 'package:kasagardem/reminders/component/add_note.dart';
 import 'package:kasagardem/reminders/component/add_note_dialog.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
+import 'package:kasagardem/utils/routes.dart';
 
 import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
@@ -80,7 +81,7 @@ class MainContentCard extends StatelessWidget {
                         textColor: AppColors.liteGreyColor,
                         lineHeight: 1.5,
                       ),
-                      //  Divider(thickness: 1),
+                      if (Get.currentRoute != Routes.allPlantsDetails) Divider(thickness: 1),
                       PlantPropertyCard(allPlantsDetailsController: controller),
                     ],
                   ).paddingAll(spacerSize10),

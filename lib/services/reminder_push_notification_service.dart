@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/reminders/reminders_repository.dart';
@@ -20,12 +19,13 @@ class ReminderPushNotificationService {
 
   VoidCallback? onRemindersShouldRefresh;
   bool pendingReminderRefresh = false;
+  bool _homeScreenReady = false;
 
   void configure() {
     NotificationService.instance.onNotificationClick = _handleNotificationClick;
     NotificationService.instance.onForegroundMessage = _handleForegroundMessage;
     NotificationService.instance.onTokenRefreshed = registerDeviceTokenIfNeeded;
-    NotificationService.instance.onAppResumed = onAppReady;
+    NotificationService.instance.onAppResumed = _onAppResumed;
 
     FirebaseMessaging.instance.onTokenRefresh.listen((_) {
       registerDeviceTokenIfNeeded();
@@ -85,9 +85,23 @@ class ReminderPushNotificationService {
     }
   }
 
-  void onAppReady() {
-    debugPrint('[PUSH][app_ready] marking navigation ready');
-    NotificationService.instance.markNavigationReady();
+  void _onAppResumed() {
+    debugPrint('[PUSH][app_resumed] processing pending notification navigation');
+    _ensureHomeScreenReady();
+    NotificationService.instance.consumePersistedNotificationTap().then((_) {
+      NotificationService.instance.schedulePendingNotificationClick(delayMs: 300);
+    });
+  }
+
+  Future<void> onAppReady() async {
+    if (!_isLoggedIn) return;
+
+    if (!_homeScreenReady) {
+      _homeScreenReady = true;
+      debugPrint('[PUSH][app_ready] home screen ready, processing launch notification');
+    }
+
+    await NotificationService.instance.processLaunchNavigation();
   }
 
   bool consumePendingReminderRefresh() {
@@ -118,19 +132,29 @@ class ReminderPushNotificationService {
       return;
     }
 
-    if (!NotificationService.instance.canHandleNavigation) {
-      NotificationService.instance.setPendingNotificationData(data);
-      return;
+    _ensureHomeScreenReady();
+    if (!NotificationService.instance.isNavigationReady) {
+      NotificationService.instance.markNavigationReady();
     }
-
     pendingReminderRefresh = true;
     _navigateToReminders(data);
   }
 
+  void _ensureHomeScreenReady() {
+    if (_homeScreenReady) return;
+    if (!_isLoggedIn || Get.key.currentContext == null) return;
+
+    _homeScreenReady = true;
+    if (!NotificationService.instance.isNavigationReady) {
+      NotificationService.instance.markNavigationReady();
+    }
+  }
+
   bool isReminderNotification(Map<String, dynamic> data) {
-    final type = data['type'] ?? data['notification_type'] ?? data['category'];
+    final type = data['type'] ?? data['notification_type'] ?? data['category'] ?? data['action'];
     return type == 'plant_reminder' ||
         type == 'reminder' ||
+        data['action'] == 'plant_reminder' ||
         data['route'] == Routes.plantRemindersListing ||
         data.containsKey('activity_type') ||
         data.containsKey('activityType') ||
@@ -139,7 +163,7 @@ class ReminderPushNotificationService {
   }
 
   void _navigateToReminders(Map<String, dynamic> data) {
-    debugPrint('[PUSH][reminder] navigating to reminders list');
+    debugPrint('[PUSH][reminder] navigating to reminders list from ${Get.currentRoute}');
 
     void navigate() {
       if (Get.currentRoute == Routes.plantRemindersListing) {
@@ -147,16 +171,28 @@ class ReminderPushNotificationService {
         return;
       }
 
-      Get.toNamed(Routes.plantRemindersListing, arguments: data)?.then((_) {
+      Get.until((route) {
+        final name = route.settings.name;
+        return name == Routes.plantRemindersListing ||
+            name == Routes.dashboard ||
+            name == Routes.professionalDashboard ||
+            route.isFirst;
+      });
+
+      if (Get.currentRoute == Routes.plantRemindersListing) {
+        onRemindersShouldRefresh?.call();
+        return;
+      }
+
+      Get.toNamed(Routes.plantRemindersListing, arguments: data, preventDuplicates: false)?.then((
+        _,
+      ) {
         onRemindersShouldRefresh?.call();
       });
     }
 
-    if (WidgetsBinding.instance.schedulerPhase == SchedulerPhase.idle) {
-      navigate();
-      return;
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => navigate());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 350), navigate);
+    });
   }
 }

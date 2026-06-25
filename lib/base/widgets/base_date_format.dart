@@ -77,7 +77,7 @@ String formatReminderTime(String scheduledTimeStr) {
   final dayDifference = today.difference(scheduledDay).inDays;
 
   if (absDiff.inSeconds < 60) {
-    return 'Just now';
+    return isFuture ? 'In a few seconds' : 'Just now';
   }
 
   if (absDiff.inMinutes < 60) {
