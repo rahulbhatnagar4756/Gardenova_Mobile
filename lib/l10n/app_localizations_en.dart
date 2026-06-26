@@ -112,6 +112,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
+  String get loginWithOtp => 'Login with OTP';
+
+  @override
+  String get loginWithEmail => 'Login with Email';
+
+  @override
+  String get loginMobileOtpSubTitle =>
+      'Enter your mobile number to receive a one-time password';
+
+  @override
   String get dontHaveAnAccount => 'Don\'t have an account?';
 
   @override

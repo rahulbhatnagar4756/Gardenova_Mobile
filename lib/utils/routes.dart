@@ -5,6 +5,7 @@ import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_mo
 import 'package:kasagardem/authentication/forgotPassword/reset_password.dart';
 import 'package:kasagardem/authentication/forgotPassword/verify_otp.dart';
 import 'package:kasagardem/authentication/login/login_screen.dart';
+import 'package:kasagardem/authentication/login/login_verify_otp_screen.dart';
 import 'package:kasagardem/authentication/login/login_view_model.dart';
 import 'package:kasagardem/authentication/register/register_screen.dart';
 import 'package:kasagardem/authentication/register/register_view_model.dart';
@@ -68,6 +69,7 @@ class Routes {
   static const introduction = '/introduction';
   static const dashboard = '/dashboard';
   static const login = '/login';
+  static const loginVerifyOtp = '/login_verify_otp';
   static const signUp = '/sign_up';
   static const forgotPassword = '/forgot_password';
   static const verifyOtp = '/verify_otp';
@@ -129,6 +131,13 @@ class Routes {
         name: Routes.login,
         page: () => LoginScreen(),
         binding: BindingsBuilder.put(() => LoginViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+
+      GetPage(
+        name: Routes.loginVerifyOtp,
+        page: () => const LoginVerifyOtpScreen(),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

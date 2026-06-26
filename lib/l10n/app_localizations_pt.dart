@@ -108,6 +108,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get forgotPassword => 'Esqueceu a senha?';
 
   @override
+  String get loginWithOtp => 'Entrar com OTP';
+
+  @override
+  String get loginWithEmail => 'Entrar com e-mail';
+
+  @override
+  String get loginMobileOtpSubTitle =>
+      'Digite seu número de celular para receber uma senha de uso único';
+
+  @override
   String get dontHaveAnAccount => 'Não tem uma conta?';
 
   @override

@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/authentication/social_sign_in_mixin.dart';
+import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -21,16 +22,27 @@ import '../../utils/constants/app_constants.dart';
 class LoginViewModel extends GetxController with SocialSignInMixin {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController pinController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final verifyOtpFormKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
+  late final FocusNode otpFocusNode;
   RxBool isPasswordObscure = true.obs;
+  RxBool isMobileOtpLoginMode = false.obs;
   RxBool isQuestionStatePassed = true.obs;
   RxString accountType = "".obs;
   RxInt remainingDays = 0.obs;
+  Timer? resendTimer;
+  Timer? expiryTimer;
+  RxInt resendCountdown = 60.obs;
+  RxBool canResendOtp = false.obs;
+  RxInt otpExpiryCountdown = 300.obs;
 
   @override
   onInit() {
     super.onInit();
+    otpFocusNode = FocusNode();
     accountType.value = SharedPrefsService.instance.getString(AppKeys.role) ?? "";
     debugPrint("accountType ${accountType.value}");
     bool questionStatePassed = false;
@@ -58,10 +70,99 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
   @override
   void dispose() {
+    resendTimer?.cancel();
+    expiryTimer?.cancel();
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    phoneController.dispose();
+    pinController.dispose();
+    otpFocusNode.dispose();
     scrollController.dispose();
+  }
+
+  void toggleLoginMode() {
+    isMobileOtpLoginMode.value = !isMobileOtpLoginMode.value;
+    passwordController.clear();
+    pinController.clear();
+  }
+
+  String get _loginType =>
+      accountType.value.isNotEmpty ? accountType.value : "user";
+
+  void startResendTimer() {
+    resendTimer?.cancel();
+    canResendOtp.value = false;
+    resendCountdown.value = 60;
+    resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendCountdown.value <= 1) {
+        canResendOtp.value = true;
+        timer.cancel();
+      } else {
+        resendCountdown.value--;
+      }
+    });
+  }
+
+  void startOtpExpiryTimer() {
+    expiryTimer?.cancel();
+    otpExpiryCountdown.value = 300;
+    expiryTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (otpExpiryCountdown.value <= 0) {
+        timer.cancel();
+      } else {
+        otpExpiryCountdown.value--;
+      }
+    });
+  }
+
+  Future<void> sendLoginOtp({bool isResend = false}) async {
+    resendTimer?.cancel();
+    final response = await authRepository.sendLoginOtp(
+      phoneNumber: phoneController.text.trim(),
+      loginType: _loginType,
+      isResend: isResend,
+    );
+    if (response != null) {
+      pinController.clear();
+      startResendTimer();
+      startOtpExpiryTimer();
+      if (isResend) {
+        BaseSnackBar.show(
+          title: AppLocalizations.of(Get.context!)!.success,
+          message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
+        );
+      } else {
+        Get.toNamed(Routes.loginVerifyOtp);
+      }
+    }
+  }
+
+  Future<void> verifyLoginOtp() async {
+    final response = await authRepository.verifyLoginOtp(
+      phoneNumber: phoneController.text.trim(),
+      otp: pinController.text.trim(),
+      loginType: _loginType,
+    );
+    if (response != null) {
+      SharedPrefsService.instance.setString(
+        AppKeys.idToken,
+        response[ApiKeys.data][ApiKeys.token],
+      );
+      String responseId = '';
+      if (response.containsKey(ApiKeys.data) &&
+          response[ApiKeys.data].containsKey(ApiKeys.responseId)) {
+        responseId = response[ApiKeys.data][ApiKeys.responseId] ?? "";
+      }
+      SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
+      SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
+
+      if (accountType.value == AppKeys.professional) {
+        getProfessionalProfileDetail();
+      } else {
+        getProfileDetail();
+      }
+    }
   }
 
   Future<void> login() async {

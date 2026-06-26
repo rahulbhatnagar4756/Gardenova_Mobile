@@ -293,6 +293,24 @@ abstract class AppLocalizations {
   /// **'Forgot password?'**
   String get forgotPassword;
 
+  /// No description provided for @loginWithOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with OTP'**
+  String get loginWithOtp;
+
+  /// No description provided for @loginWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Email'**
+  String get loginWithEmail;
+
+  /// No description provided for @loginMobileOtpSubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your mobile number to receive a one-time password'**
+  String get loginMobileOtpSubTitle;
+
   /// No description provided for @dontHaveAnAccount.
   ///
   /// In en, this message translates to:

@@ -18,6 +18,8 @@ class AuthRepository {
   final String _refreshTokenUrl = 'api/v1/auth/refresh';
   final String _sentEmailVerificationUrl =
       'api/v1/userProfile/sentemailvarification';
+  final String _loginOtpUrl = 'api/v1/auth/loginOtp';
+  final String _verifyLoginOtpUrl = 'api/v1/auth/verifyLoginOtp';
 
   registerUser({RegisterRequestModel? registerReq}) async {
     var registerResponse = await ApiRepository.instance.post(
@@ -121,6 +123,38 @@ class AuthRepository {
     var response = await ApiRepository.instance.patch(
       _sentEmailVerificationUrl,
       {"email": email},
+    );
+    return response;
+  }
+
+  sendLoginOtp({
+    required String? phoneNumber,
+    required String loginType,
+    bool isResend = false,
+  }) async {
+    var response = await ApiRepository.instance.post(
+      _loginOtpUrl,
+      body: {
+        ApiKeys.phoneNumber: phoneNumber,
+        'loginType': loginType,
+        ApiKeys.isResend: isResend,
+      },
+    );
+    return response;
+  }
+
+  verifyLoginOtp({
+    required String? phoneNumber,
+    required String? otp,
+    required String loginType,
+  }) async {
+    var response = await ApiRepository.instance.post(
+      _verifyLoginOtpUrl,
+      body: {
+        ApiKeys.phoneNumber: phoneNumber,
+        ApiKeys.token: otp,
+        'loginType': loginType,
+      },
     );
     return response;
   }

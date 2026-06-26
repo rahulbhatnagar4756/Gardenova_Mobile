@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
@@ -59,9 +60,12 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                           Obx(
                             () => HeaderLogoLayout(
                               title: AppLocalizations.of(context)!.loginAccount,
-                              subTitle:
-                                  controller.accountType.value ==
-                                      AppKeys.professional
+                              subTitle: controller.isMobileOtpLoginMode.value
+                                  ? AppLocalizations.of(
+                                      context,
+                                    )!.loginMobileOtpSubTitle
+                                  : controller.accountType.value ==
+                                        AppKeys.professional
                                   ? AppLocalizations.of(
                                       context,
                                     )!.loginAccountProfessionalSubTitle
@@ -70,9 +74,22 @@ class LoginScreen extends GetWidget<LoginViewModel> {
                                     )!.loginAccountSubTitle,
                             ),
                           ),
-                          emailField(context),
-                          passwordField(context),
-                          forgotPassword(context),
+                          Obx(
+                            () => controller.isMobileOtpLoginMode.value
+                                ? Column(
+                                    children: [
+                                      phoneField(context),
+                                      loginModeToggle(context),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      emailField(context),
+                                      passwordField(context),
+                                      forgotPassword(context),
+                                    ],
+                                  ),
+                          ),
                           login(context),
                           Visibility(
                             visible:
@@ -149,16 +166,57 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     );
   }
 
+  Widget phoneField(BuildContext context) {
+    return BaseTextField(
+      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+      hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+      keyboardType: TextInputType.phone,
+      textEditingController: controller.phoneController,
+      errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: ValidationHelper.validatePhone,
+    ).marginOnly(bottom: 10.h);
+  }
+
   Widget forgotPassword(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        GestureDetector(
+          onTap: controller.toggleLoginMode,
+          child: BaseText(
+            text: AppLocalizations.of(context)!.loginWithOtp,
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 13.sp,
+            textColor: AppColors.greenColor,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(Routes.forgotPassword);
+          },
+          child: BaseText(
+            textAlign: TextAlign.right,
+            text: AppLocalizations.of(context)!.forgotPassword,
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 13.sp,
+            textColor: AppColors.greenColor,
+          ),
+        ),
+      ],
+    ).marginOnly(top: 10.h);
+  }
+
+  Widget loginModeToggle(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routes.forgotPassword);
-      },
+      onTap: controller.toggleLoginMode,
       child: Align(
         alignment: Alignment.centerRight,
         child: BaseText(
           textAlign: TextAlign.right,
-          text: AppLocalizations.of(context)!.forgotPassword,
+          text: AppLocalizations.of(context)!.loginWithEmail,
           fontFamily: AppKeys.inter,
           fontWeight: FontWeight.w500,
           fontSize: 13.sp,
@@ -169,20 +227,28 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   }
 
   Widget login(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: BaseButton(
-        bottomPadding: true,
-        backgroundColor: AppColors.burntGold,
-        onPressed: () {
-          FocusScope.of(context).requestFocus(FocusNode());
+    return Obx(
+      () => SizedBox(
+        width: double.infinity,
+        child: BaseButton(
+          bottomPadding: true,
+          backgroundColor: AppColors.burntGold,
+          onPressed: () {
+            FocusScope.of(context).requestFocus(FocusNode());
 
-          if (controller.formKey.currentState!.validate()) {
-            controller.login();
-          }
-        },
-        buttonLabel: AppLocalizations.of(context)!.login,
-      ).marginOnly(bottom: 10.h, top: spacerSize25),
+            if (controller.formKey.currentState!.validate()) {
+              if (controller.isMobileOtpLoginMode.value) {
+                controller.sendLoginOtp();
+              } else {
+                controller.login();
+              }
+            }
+          },
+          buttonLabel: controller.isMobileOtpLoginMode.value
+              ? AppLocalizations.of(context)!.sendOtp
+              : AppLocalizations.of(context)!.login,
+        ).marginOnly(bottom: 10.h, top: spacerSize25),
+      ),
     );
   }
 
