@@ -21,6 +21,7 @@ import 'package:kasagardem/utils/network_services/api_repository.dart';
 import 'package:kasagardem/utils/utils.dart';
 
 import '../base/widgets/base_calculate_remaining_days.dart';
+import '../utils/constants/api_keys.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/constants/app_strings.dart';
 import '../utils/device_info_helper.dart';
@@ -60,6 +61,8 @@ class SettingsViewModel extends GetxController {
 
   late final FocusNode focusNode;
   var isEmailLogedInUser = true.obs;
+  var isNewUserOtpLogin = false.obs;
+  String otpLoginResponseId = '';
   var currentSubscriptionStatusModel = Rxn<SubscriptionStatusUiModel>();
 
   @override
@@ -80,10 +83,24 @@ class SettingsViewModel extends GetxController {
       }
     });
     focusNode = FocusNode();
-    if (Get.arguments != null && Get.arguments is String) {
-      screenType.value = Get.arguments as String;
+    if (Get.arguments != null) {
+      if (Get.arguments is String) {
+        screenType.value = Get.arguments as String;
+      } else if (Get.arguments is Map) {
+        final args = Map<String, dynamic>.from(Get.arguments as Map);
+        if (args[AppKeys.isNewUserOtpLogin] == true) {
+          isNewUserOtpLogin.value = true;
+          otpLoginResponseId = args[ApiKeys.responseId]?.toString() ?? '';
+          phoneNoController.text = args[ApiKeys.phoneNumber]?.toString() ?? '';
+        }
+        if (args.containsKey(AppKeys.screenType)) {
+          screenType.value = args[AppKeys.screenType]?.toString() ?? '';
+        }
+      }
     }
-    if (screenType.value == AppKeys.professional) {
+    if (isNewUserOtpLogin.value) {
+      getProfileDetail();
+    } else if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {
       initFunctions();
@@ -374,11 +391,13 @@ class SettingsViewModel extends GetxController {
     var response = await profileRepository.updateProfile(updateProfileReq: updateProfileResponse);
 
     if (response != null) {
-      // if (base64String != null) {
-      //   profileImage.value = updateProfileResponse.profileImage ?? "";
-      //   profileImage.refresh();
-      // }
-      getProfileDetail();
+      await getProfileDetail();
+      if (isNewUserOtpLogin.value) {
+        SharedPrefsService.instance.setString(AppKeys.name, nameController.text);
+        SharedPrefsService.instance.setString(AppKeys.email, emailController.text);
+        _completeNewUserOtpLoginNavigation();
+        return;
+      }
       Get.back();
     } else {
       profileImage.value = '';
@@ -387,6 +406,19 @@ class SettingsViewModel extends GetxController {
         profileImage.value = apiImage;
         profileImage.refresh();
       }
+    }
+  }
+
+  void _completeNewUserOtpLoginNavigation() {
+    if (otpLoginResponseId.trim().isEmpty) {
+      SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, true);
+      Get.offAllNamed(Routes.question);
+    } else {
+      SharedPrefsService.instance.setString(AppKeys.submissionResponseId, otpLoginResponseId);
+      SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, false);
+      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+      ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+      Get.offAllNamed(Routes.dashboard);
     }
   }
 

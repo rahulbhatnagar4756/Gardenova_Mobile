@@ -215,6 +215,7 @@ class Routes {
       GetPage(
         name: Routes.editProfile,
         page: () => const EditProfileScreen(),
+        binding: BindingsBuilder.put(() => SettingsViewModel()),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

@@ -13,27 +13,19 @@ class AuthRepository {
   final String _verifyCode = 'api/v1/auth/verifyToken';
   final String _resetPassword = 'api/v1/auth/resetPassword';
   final String _profileDetail = 'api/v1/userProfile';
-  final String _professionalProfileDetail =
-      'api/v1/professional/ProfessionalsProfile';
+  final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
   final String _refreshTokenUrl = 'api/v1/auth/refresh';
-  final String _sentEmailVerificationUrl =
-      'api/v1/userProfile/sentemailvarification';
-  final String _loginOtpUrl = 'api/v1/auth/loginOtp';
-  final String _verifyLoginOtpUrl = 'api/v1/auth/verifyLoginOtp';
+  final String _sentEmailVerificationUrl = 'api/v1/userProfile/sentemailvarification';
+  final String _sendPhoneLoginOtpUrl = 'api/v1/auth/phone/send-otp';
+  final String _verifyLoginOtpUrl = 'api/v1/auth/phone/verify-otp';
 
   registerUser({RegisterRequestModel? registerReq}) async {
-    var registerResponse = await ApiRepository.instance.post(
-      _registerUrl,
-      body: registerReq,
-    );
+    var registerResponse = await ApiRepository.instance.post(_registerUrl, body: registerReq);
     return registerResponse;
   }
 
   loginUser({Map? loginReq}) async {
-    var loginResponse = await ApiRepository.instance.post(
-      _loginUrl,
-      body: loginReq,
-    );
+    var loginResponse = await ApiRepository.instance.post(_loginUrl, body: loginReq);
     return loginResponse;
   }
 
@@ -69,10 +61,7 @@ class AuthRepository {
     return loginResponse;
   }
 
-  sendPasswordResetCode({
-    required String? email,
-    bool? isResend = false,
-  }) async {
+  sendPasswordResetCode({required String? email, bool? isResend = false}) async {
     var loginResponse = await ApiRepository.instance.post(
       _passwordResetCode,
       body: {ApiKeys.email: email, ApiKeys.isResend: isResend},
@@ -88,15 +77,12 @@ class AuthRepository {
     return verifyOtpResponse;
   }
 
-  resetPassword({
-    required String? email,
-    required String? otp,
-    required String? password,
-  }) async {
-    var resetPasswordResponse = await ApiRepository.instance.patch(
-      _resetPassword,
-      {ApiKeys.email: email, ApiKeys.token: otp, ApiKeys.password: password},
-    );
+  resetPassword({required String? email, required String? otp, required String? password}) async {
+    var resetPasswordResponse = await ApiRepository.instance.patch(_resetPassword, {
+      ApiKeys.email: email,
+      ApiKeys.token: otp,
+      ApiKeys.password: password,
+    });
     return resetPasswordResponse;
   }
 
@@ -106,39 +92,24 @@ class AuthRepository {
   }
 
   fetchProfessionalProfile() async {
-    var profileResponse = await ApiRepository.instance.get(
-      _professionalProfileDetail,
-    );
+    var profileResponse = await ApiRepository.instance.get(_professionalProfileDetail);
     return profileResponse;
   }
 
   refreshToken() async {
-    var refreshTokenResponse = await ApiRepository.instance.get(
-      _refreshTokenUrl,
-    );
+    var refreshTokenResponse = await ApiRepository.instance.get(_refreshTokenUrl);
     return refreshTokenResponse;
   }
 
   sentEmailVerification(String email) async {
-    var response = await ApiRepository.instance.patch(
-      _sentEmailVerificationUrl,
-      {"email": email},
-    );
+    var response = await ApiRepository.instance.patch(_sentEmailVerificationUrl, {"email": email});
     return response;
   }
 
-  sendLoginOtp({
-    required String? phoneNumber,
-    required String loginType,
-    bool isResend = false,
-  }) async {
+  sendLoginOtp({required String? phoneNumber}) async {
     var response = await ApiRepository.instance.post(
-      _loginOtpUrl,
-      body: {
-        ApiKeys.phoneNumber: phoneNumber,
-        'loginType': loginType,
-        ApiKeys.isResend: isResend,
-      },
+      _sendPhoneLoginOtpUrl,
+      body: {ApiKeys.phoneNumber: phoneNumber},
     );
     return response;
   }
@@ -146,14 +117,14 @@ class AuthRepository {
   verifyLoginOtp({
     required String? phoneNumber,
     required String? otp,
-    required String loginType,
+    required String reqType,
   }) async {
     var response = await ApiRepository.instance.post(
       _verifyLoginOtpUrl,
       body: {
         ApiKeys.phoneNumber: phoneNumber,
-        ApiKeys.token: otp,
-        'loginType': loginType,
+        ApiKeys.otp: otp,
+        if (reqType != "login") ApiKeys.reqType: reqType,
       },
     );
     return response;

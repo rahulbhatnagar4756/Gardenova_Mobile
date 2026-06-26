@@ -87,8 +87,12 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     pinController.clear();
   }
 
-  String get _loginType =>
-      accountType.value.isNotEmpty ? accountType.value : "user";
+  String get formattedPhoneNumber {
+    final phone = phoneController.text.trim().replaceAll(' ', '');
+    if (phone.startsWith('+91')) return phone;
+    if (phone.startsWith('91')) return '+$phone';
+    return '+91$phone';
+  }
 
   void startResendTimer() {
     resendTimer?.cancel();
@@ -118,11 +122,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
   Future<void> sendLoginOtp({bool isResend = false}) async {
     resendTimer?.cancel();
-    final response = await authRepository.sendLoginOtp(
-      phoneNumber: phoneController.text.trim(),
-      loginType: _loginType,
-      isResend: isResend,
-    );
+    final response = await authRepository.sendLoginOtp(phoneNumber: formattedPhoneNumber);
     if (response != null) {
       pinController.clear();
       startResendTimer();
@@ -140,29 +140,53 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
 
   Future<void> verifyLoginOtp() async {
     final response = await authRepository.verifyLoginOtp(
-      phoneNumber: phoneController.text.trim(),
+      phoneNumber: formattedPhoneNumber,
       otp: pinController.text.trim(),
-      loginType: _loginType,
+      reqType: 'login',
+    );
+    print(
+      'verifyLoginOtp response $response',
+
     );
     if (response != null) {
+      final data = response[ApiKeys.data] ?? {};
+      final isNewUser = data[ApiKeys.isNewUser] == true;
+
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
-        response[ApiKeys.data][ApiKeys.token],
+        data[ApiKeys.token],
       );
-      String responseId = '';
-      if (response.containsKey(ApiKeys.data) &&
-          response[ApiKeys.data].containsKey(ApiKeys.responseId)) {
-        responseId = response[ApiKeys.data][ApiKeys.responseId] ?? "";
-      }
+      String responseId = data[ApiKeys.responseId]?.toString() ?? '';
       SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
       SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
+
+      if (isNewUser) {
+        _openEditProfileForNewOtpUser(responseId: responseId);
+        return;
+      }
 
       if (accountType.value == AppKeys.professional) {
         getProfessionalProfileDetail();
       } else {
-        getProfileDetail();
+        getProfileDetail(responseId: responseId);
       }
     }
+  }
+
+  void _openEditProfileForNewOtpUser({required String responseId}) {
+    SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, false);
+    final phone = formattedPhoneNumber.startsWith('+91')
+        ? formattedPhoneNumber.substring(3)
+        : formattedPhoneNumber.replaceAll(RegExp(r'\D'), '');
+
+    Get.offAllNamed(
+      Routes.editProfile,
+      arguments: {
+        AppKeys.isNewUserOtpLogin: true,
+        ApiKeys.phoneNumber: phone,
+        ApiKeys.responseId: responseId,
+      },
+    );
   }
 
   Future<void> login() async {

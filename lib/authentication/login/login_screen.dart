@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
+
 import '../../utils/validation_healper.dart';
 import '../components/social_login_layout.dart';
 
@@ -50,78 +51,56 @@ class LoginScreen extends GetWidget<LoginViewModel> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child:
-                    BaseForm(
-                      formKey: controller.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          // BasBBackButton(),
-                          Obx(
-                            () => HeaderLogoLayout(
-                              title: AppLocalizations.of(context)!.loginAccount,
-                              subTitle: controller.isMobileOtpLoginMode.value
-                                  ? AppLocalizations.of(
-                                      context,
-                                    )!.loginMobileOtpSubTitle
-                                  : controller.accountType.value ==
-                                        AppKeys.professional
-                                  ? AppLocalizations.of(
-                                      context,
-                                    )!.loginAccountProfessionalSubTitle
-                                  : AppLocalizations.of(
-                                      context,
-                                    )!.loginAccountSubTitle,
-                            ),
-                          ),
-                          Obx(
-                            () => controller.isMobileOtpLoginMode.value
-                                ? Column(
-                                    children: [
-                                      phoneField(context),
-                                      loginModeToggle(context),
-                                    ],
-                                  )
-                                : Column(
-                                    children: [
-                                      emailField(context),
-                                      passwordField(context),
-                                      forgotPassword(context),
-                                    ],
-                                  ),
-                          ),
-                          login(context),
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: orLoginWith(context),
-                          ),
-
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: SocialLoginLayout(
-                              loginController: controller,
-                              type: AppStrings.login,
-                            ),
-                          ),
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: dontHaveAnAccount(context),
-                            ).marginOnly(top: 35.h),
-                          ),
-                        ],
+                child: BaseForm(
+                  formKey: controller.formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      // BasBBackButton(),
+                      Obx(
+                        () => HeaderLogoLayout(
+                          title: AppLocalizations.of(context)!.loginAccount,
+                          subTitle: controller.isMobileOtpLoginMode.value
+                              ? AppLocalizations.of(context)!.loginMobileOtpSubTitle
+                              : controller.accountType.value == AppKeys.professional
+                              ? AppLocalizations.of(context)!.loginAccountProfessionalSubTitle
+                              : AppLocalizations.of(context)!.loginAccountSubTitle,
+                        ),
                       ),
-                    ).marginSymmetric(
-                      horizontal: spacerSize20,
-                      vertical: spacerSize0,
-                    ),
+                      Obx(
+                        () => controller.isMobileOtpLoginMode.value
+                            ? Column(children: [phoneField(context), loginModeToggle(context)])
+                            : Column(
+                                children: [
+                                  emailField(context),
+                                  passwordField(context),
+                                  forgotPassword(context),
+                                ],
+                              ),
+                      ),
+                      login(context),
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: orLoginWith(context),
+                      ),
+
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: SocialLoginLayout(
+                          loginController: controller,
+                          type: AppStrings.login,
+                        ),
+                      ),
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: dontHaveAnAccount(context),
+                        ).marginOnly(top: 35.h),
+                      ),
+                    ],
+                  ),
+                ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
               ),
             ),
           ],
@@ -143,10 +122,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
-        prefixIcon: Icon(
-          Icons.lock_outline_rounded,
-          color: AppColors.greenColor,
-        ),
+        prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.greenColor),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
@@ -155,8 +131,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
         suffixIcon: IconButton(
           color: AppColors.liteGreyColor,
           onPressed: () {
-            controller.isPasswordObscure.value =
-                !controller.isPasswordObscure.value;
+            controller.isPasswordObscure.value = !controller.isPasswordObscure.value;
           },
           icon: controller.isPasswordObscure.value
               ? Icon(Icons.visibility_outlined)
@@ -167,14 +142,38 @@ class LoginScreen extends GetWidget<LoginViewModel> {
   }
 
   Widget phoneField(BuildContext context) {
-    return BaseTextField(
-      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
-      hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
-      keyboardType: TextInputType.phone,
-      textEditingController: controller.phoneController,
-      errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      validator: ValidationHelper.validatePhone,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 52.h,
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGrey,
+            borderRadius: BorderRadius.circular(spacerSize10),
+            border: Border.all(color: AppColors.borderGreyColor),
+          ),
+          alignment: Alignment.center,
+          child: BaseText(
+            text: '+91',
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 14.sp,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: BaseTextField(
+            prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+            hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+            keyboardType: TextInputType.phone,
+            textEditingController: controller.phoneController,
+            errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            validator: ValidationHelper.validatePhone,
+          ),
+        ),
+      ],
     ).marginOnly(bottom: 10.h);
   }
 
@@ -271,11 +270,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   Widget divider() {
     return Expanded(
-      child: Divider(
-        thickness: spacerSize1,
-        height: spacerSize1,
-        color: AppColors.liteGreyColor,
-      ),
+      child: Divider(thickness: spacerSize1, height: spacerSize1, color: AppColors.liteGreyColor),
     );
   }
 

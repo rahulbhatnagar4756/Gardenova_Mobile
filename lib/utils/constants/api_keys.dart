@@ -42,4 +42,7 @@ class ApiKeys {
   static const appleIdToken = 'appleIdToken';
   static const firstName = 'firstName';
   static const lastName = 'lastName';
+  static const otp = 'otp';
+  static const reqType = 'reqType';
+  static const isNewUser = 'isNewUser';
 }
