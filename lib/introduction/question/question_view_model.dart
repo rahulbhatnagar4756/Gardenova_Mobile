@@ -70,27 +70,28 @@ class QuestionViewModel extends GetxController {
   void getAnswerList() async {
     String recommendationId =
         SharedPrefsService.instance.getString(AppKeys.submissionResponseId) ?? '';
+    if (recommendationId.isNotEmpty) {
+      var response = await questionRepository.fetchAnswers(userId: recommendationId);
+      if (response != null) {
+        AnswerResponseModel answerResponse = AnswerResponseModel.fromJson(response);
+        print("value of response $answerResponse");
 
-    var response = await questionRepository.fetchAnswers(userId: recommendationId);
-    if (response != null) {
-      AnswerResponseModel answerResponse = AnswerResponseModel.fromJson(response);
-      print("value of response $answerResponse");
+        if (answerResponse.data != null && answerResponse.data!.isNotEmpty) {
+          print(questionList.length);
+          var answerList = answerResponse.data;
 
-      if (answerResponse.data != null && answerResponse.data!.isNotEmpty) {
-        print(questionList.length);
-        var answerList = answerResponse.data;
+          for (var answer in answerList!) {
+            int index = questionList.indexWhere((q) => q.questionId == answer.questionId);
+            if (index != -1) {
+              questionList[index].selectedAnswer = answer.selectedOption;
 
-        for (var answer in answerList!) {
-          int index = questionList.indexWhere((q) => q.questionId == answer.questionId);
-          if (index != -1) {
-            questionList[index].selectedAnswer = answer.selectedOption;
-
-            print("value of answer is ${questionList[index].selectedAnswer}");
+              print("value of answer is ${questionList[index].selectedAnswer}");
+            }
           }
-        }
-        questionList.refresh();
+          questionList.refresh();
 
-        print("value of question now ${questionList[0].selectedAnswer}");
+          print("value of question now ${questionList[0].selectedAnswer}");
+        }
       }
     }
   }

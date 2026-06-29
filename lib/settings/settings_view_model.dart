@@ -385,7 +385,7 @@ class SettingsViewModel extends GetxController {
       ..company = ""
       ..name = nameController.text
       ..email = emailController.text
-      ..phoneNo = phoneNoController.text;
+      ..phoneNo = "+91${phoneNoController.text}";
 
     log("updateProfileResponse ${updateProfileResponse.toJson()}");
 
