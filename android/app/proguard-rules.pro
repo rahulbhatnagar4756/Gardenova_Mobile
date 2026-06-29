@@ -1,4 +1,19 @@
 #########################################
+# Flutter Local Notifications
+#########################################
+
+-keep class com.dexterous.** { *; }
+-keep class androidx.core.app.NotificationCompat** { *; }
+
+#########################################
+# Google Mobile Ads
+#########################################
+
+-keep class com.google.android.gms.ads.** { *; }
+-keep public class com.google.ads.** { *; }
+-dontwarn com.google.android.gms.ads.**
+
+#########################################
 # Flutter
 #########################################
 
@@ -103,3 +118,6 @@
 
 -keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
+
+-keep class com.dexterous.** { *; }
+-dontwarn com.dexterous.**
