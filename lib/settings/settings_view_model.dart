@@ -99,7 +99,8 @@ class SettingsViewModel extends GetxController {
       }
     }
     if (isNewUserOtpLogin.value) {
-      getProfileDetail();
+      print("otpLoginResponseId::::$otpLoginResponseId");
+      //  getProfileDetail();
     } else if (screenType.value == AppKeys.professional) {
       getProfessionalProfileDetail();
     } else {

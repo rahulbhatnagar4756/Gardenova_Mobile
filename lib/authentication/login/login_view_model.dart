@@ -144,18 +144,12 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       otp: pinController.text.trim(),
       reqType: 'login',
     );
-    print(
-      'verifyLoginOtp response $response',
-
-    );
+    print('verifyLoginOtp response $response');
     if (response != null) {
       final data = response[ApiKeys.data] ?? {};
       final isNewUser = data[ApiKeys.isNewUser] == true;
 
-      SharedPrefsService.instance.setString(
-        AppKeys.idToken,
-        data[ApiKeys.token],
-      );
+      SharedPrefsService.instance.setString(AppKeys.idToken, data[ApiKeys.token]);
       String responseId = data[ApiKeys.responseId]?.toString() ?? '';
       SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
       SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
