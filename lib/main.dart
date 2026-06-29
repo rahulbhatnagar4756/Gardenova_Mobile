@@ -31,105 +31,129 @@ import 'services/reminder_push_notification_service.dart';
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await dotenv.load(fileName: "secret.env");
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
-  // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  Locale selectedLocale = enUS;
+  try {
+    await dotenv.load(fileName: "secret.env");
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // Pass all uncaught "fatal" errors from the framework to Crashlytics
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
 
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-    ),
-  );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  String flavorString = String.fromEnvironment('appFlavor', defaultValue: 'dev');
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+    );
 
-  await FacebookAuth.i.webAndDesktopInitialize(
-    appId: "1530353791540365",
-    cookie: true,
-    xfbml: true,
-    version: "v19.0",
-  );
+    String flavorString = String.fromEnvironment('appFlavor', defaultValue: 'dev');
 
-  Flavor? currentFlavor;
-  String? baseUrl;
-  String? adMobId;
-  String? bannerId;
-  String? rewardId;
+    await FacebookAuth.i.webAndDesktopInitialize(
+      appId: "1530353791540365",
+      cookie: true,
+      xfbml: true,
+      version: "v19.0",
+    );
 
-  switch (flavorString.toLowerCase()) {
-    case 'dev':
-      currentFlavor = Flavor.dev;
-      baseUrl = dotenv.env['dev_url'];
-      break;
+    Flavor? currentFlavor;
+    String? baseUrl;
+    String? adMobId;
+    String? bannerId;
+    String? rewardId;
 
-    case 'prod':
-      currentFlavor = Flavor.prod;
-      baseUrl = dotenv.env['prod_url'];
+    switch (flavorString.toLowerCase()) {
+      case 'dev':
+        currentFlavor = Flavor.dev;
+        baseUrl = dotenv.env['dev_url'];
+        break;
 
-      break;
+      case 'prod':
+        currentFlavor = Flavor.prod;
+        baseUrl = dotenv.env['prod_url'];
+
+        break;
+    }
+    if (Platform.isIOS) {
+      adMobId = dotenv.env['android_admob_id'];
+      bannerId = dotenv.env['android_banner_id'];
+      rewardId = dotenv.env['android_reward_id'];
+    } else {
+      adMobId = dotenv.env['android_admob_id'];
+      bannerId = dotenv.env['android_banner_id'];
+      rewardId = dotenv.env['android_reward_id'];
+    }
+    AppConfig.create(
+      appName: appName,
+      baseUrl: baseUrl!,
+      flavor: currentFlavor!,
+      adMobId: adMobId,
+      bannerId: bannerId,
+      rewardId: rewardId,
+    );
+
+    SharedPrefsService sharedPrefsService = SharedPrefsService();
+    await sharedPrefsService.init();
+    String createdAt = sharedPrefsService.getString(AppKeys.createdAt) ?? "";
+
+    if (createdAt.isNotEmpty) {
+      BaseCalculateRemainingDays().calculateRemainingDays(createdAt);
+    }
+
+    var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "en";
+
+    selectedLocale = locale.isEmpty
+        // ? ptBR
+        ? enUS
+        : locale == ptBR.languageCode
+        ? ptBR
+        : enUS;
+    selectedLocale = enUS;
+
+    await initServices();
+    try {
+      await MobileAds.instance.initialize();
+    } catch (e, stack) {
+      await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
+    }
+
+    SharedPrefsService.instance.setString(AppKeys.selectedLang, Get.locale?.languageCode ?? 'en');
+    runApp(MyApp(locale: selectedLocale));
+  } catch (error, stack) {
+    try {
+      await FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    } catch (_) {}
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(child: Text('Startup failed: $error')),
+        ),
+      ),
+    );
+  } finally {
+    FlutterNativeSplash.remove();
   }
-  if (Platform.isIOS) {
-    adMobId = dotenv.env['android_admob_id'];
-    bannerId = dotenv.env['android_banner_id'];
-    rewardId = dotenv.env['android_reward_id'];
-  } else {
-    adMobId = dotenv.env['android_admob_id'];
-    bannerId = dotenv.env['android_banner_id'];
-    rewardId = dotenv.env['android_reward_id'];
-  }
-  AppConfig.create(
-    appName: appName,
-    baseUrl: baseUrl!,
-    flavor: currentFlavor!,
-    adMobId: adMobId,
-    bannerId: bannerId,
-    rewardId: rewardId,
-  );
-
-  SharedPrefsService sharedPrefsService = SharedPrefsService();
-  await sharedPrefsService.init();
-  String createdAt = sharedPrefsService.getString(AppKeys.createdAt) ?? "";
-
-  if (createdAt.isNotEmpty) {
-    BaseCalculateRemainingDays().calculateRemainingDays(createdAt);
-  }
-
-  var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "en";
-
-  Locale selectedLocale = locale.isEmpty
-      // ? ptBR
-      ? enUS
-      : locale == ptBR.languageCode
-      ? ptBR
-      : enUS;
-  selectedLocale = enUS;
-
-  await initServices();
-  MobileAds.instance.initialize();
-  FlutterNativeSplash.remove();
-
-  SharedPrefsService.instance.setString(AppKeys.selectedLang, Get.locale?.languageCode ?? 'en');
-  runApp(MyApp(locale: selectedLocale));
 }
 
 Future<void> initServices() async {
   Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
-  await NotificationService.instance.initialize();
-  ReminderPushNotificationService.instance.configure();
+  try {
+    await NotificationService.instance.initialize();
+    ReminderPushNotificationService.instance.configure();
+  } catch (e, stack) {
+    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
+  }
 }
 
 class MyApp extends StatelessWidget {
