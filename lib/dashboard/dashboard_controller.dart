@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
@@ -48,7 +48,7 @@ class DashboardController extends GetxController {
     ChartData('Clay', 1, AppColors.clayColor),
   ].obs;
 
-  BannerAd? bannerAd;
+  //BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
 
   @override
@@ -70,21 +70,21 @@ class DashboardController extends GetxController {
       isAdLoaded.value = false;
       return;
     }
-    bannerAd = AdMobService.instance.loadBannerAd(
-      onAdLoaded: (ad) {
-        isAdLoaded.value = true;
-      },
-      onAdFailedToLoad: (ad, error) {
-        ad.dispose();
-        isAdLoaded.value = false;
-        debugPrint('BannerAd failed to load: $error');
-      },
-    );
+    // bannerAd = AdMobService.instance.loadBannerAd(
+    //   onAdLoaded: (ad) {
+    //     isAdLoaded.value = true;
+    //   },
+    //   onAdFailedToLoad: (ad, error) {
+    //     ad.dispose();
+    //     isAdLoaded.value = false;
+    //     debugPrint('BannerAd failed to load: $error');
+    //   },
+    // );
   }
 
   @override
   void onClose() {
-    bannerAd?.dispose();
+    //  bannerAd?.dispose();
     super.onClose();
   }
 
@@ -150,8 +150,8 @@ class DashboardController extends GetxController {
     Get.toNamed(
       Routes.plantDiagnosis,
       arguments: {
-        ApiKeys.latitude: position!.latitude,
-        ApiKeys.longitude: position!.longitude,
+        /*ApiKeys.latitude: position!.latitude,
+        ApiKeys.longitude: position!.longitude,*/
         ApiKeys.imagePath: pickedFile!.path,
       },
     );
@@ -270,9 +270,10 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-          _showAdAndProceed(() {
+          goToPlantDiagnosis(result);
+          /*_showAdAndProceed(() {
             goToPlantDiagnosis(result);
-          });
+          });*/
         }
         return;
       }
@@ -291,13 +292,13 @@ class DashboardController extends GetxController {
           Get.back();
         }
 
-        _showAdAndProceed(() {
-          if (source == ImagePickerSource.diagnosis) {
-            goToPlantDiagnosis(pickedFile);
-          } else {
-            goToLandscapeDesign(pickedFile, selectedStyle);
-          }
-        });
+        /*_showAdAndProceed(() {*/
+        if (source == ImagePickerSource.diagnosis) {
+          goToPlantDiagnosis(pickedFile);
+        } else {
+          goToLandscapeDesign(pickedFile, selectedStyle);
+        }
+        /* });*/
       }
     } catch (e) {
       debugPrint("Error::: $e");

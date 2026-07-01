@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
@@ -18,8 +18,8 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/utils/utils.dart';
 
-import '../../services/admob_service.dart';
 import '../../services/reminder_push_notification_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
@@ -173,7 +173,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 ),
               ),
               // AdMob Banner Ad Area (only if user does not have a premium subscription)
-              Obx(() {
+              /* Obx(() {
                 if (AdMobService.instance.shouldShowBanners &&
                     controller.isAdLoaded.value &&
                     controller.bannerAd != null) {
@@ -185,7 +185,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   );
                 }
                 return const SizedBox.shrink();
-              }),
+              })*/
             ],
           ),
         ),
@@ -194,16 +194,19 @@ class DashboardScreen extends GetWidget<DashboardController> {
             selectNavType: controller.selectedNavType.value,
             needToShow: controller.isUserLoggedIn.value,
             onAddPlantClick: (p0) {
-              if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
+              controller.selectedNavType.value = p0;
+              /*   if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
                 controller.selectedNavType.value = p0;
               }
               if (p0 == BottomNavType.report) {
-                BaseSnackBar.show(
-                  title: 'Temporarily Unavailable',
-                  message:
-                      'The Report section is currently on hold. We’ll be back soon with updates.',
-                );
-              }
+                if(Get.isSnackbarOpen==false) {
+                  BaseSnackBar.show(
+                    title: 'Temporarily Unavailable',
+                    message:
+                    'The Report section is currently on hold. We’ll be back soon with updates.',
+                  );
+                }
+              }*/
               switch (p0) {
                 case BottomNavType.home:
                   break;
@@ -221,14 +224,14 @@ class DashboardScreen extends GetWidget<DashboardController> {
                     controller.selectedNavType.value = BottomNavType.home;
                   });
                   break;
-                case BottomNavType.report:
-                  break;
-                /*  case BottomNavType.profile:
+                /*case BottomNavType.report:
+                  break;*/
+                case BottomNavType.profile:
                   Utils.callSettingBasicApi();
                   Get.toNamed(Routes.profile)?.then((value) {
                     controller.selectedNavType.value = BottomNavType.home;
                   });
-                  break;*/
+                  break;
               }
             },
           );

@@ -7,7 +7,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import '../../base/widgets/base_text.dart';
 import '../model/bottom_navigation_local_model.dart';
 
-enum BottomNavType { home, plant, scan, reminders, report /*profile*/ }
+enum BottomNavType { home, plant, scan, reminders, /*report*/ profile }
 
 List<BottomNavigationLocalModel> bottomNavigationList() {
   return [
@@ -28,21 +28,21 @@ List<BottomNavigationLocalModel> bottomNavigationList() {
       isCenterIcon: true,
     ),
 
-    BottomNavigationLocalModel(
+    /*  BottomNavigationLocalModel(
       type: BottomNavType.report,
       label: AppStrings.reports,
       icon: AppAssets.reportIc,
-    ),
+    ),*/
     BottomNavigationLocalModel(
       type: BottomNavType.reminders,
       label: AppStrings.reminders,
       icon: AppAssets.reminderIc,
     ),
-    // BottomNavigationLocalModel(
-    //   type: BottomNavType.profile,
-    //   label: AppStrings.profile,
-    //   icon: AppAssets.profileIc,
-    // ),
+    BottomNavigationLocalModel(
+      type: BottomNavType.profile,
+      label: AppStrings.profile,
+      icon: AppAssets.profileIc,
+    ),
   ];
 }
 
@@ -88,7 +88,9 @@ class BottomNavigationWidget extends StatelessWidget {
             children: bottomNavigationList().asMap().entries.map((entry) {
               BottomNavigationLocalModel item = entry.value;
 
-              Color? selectedColor = item.type == selectNavType ? AppColors.greenColor : null;
+              Color? selectedColor = item.type == selectNavType
+                  ? AppColors.greenColor
+                  : AppColors.grey;
               return Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,

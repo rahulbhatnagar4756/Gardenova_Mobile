@@ -97,7 +97,11 @@ class AuthRepository {
   }
 
   refreshToken() async {
-    var refreshTokenResponse = await ApiRepository.instance.get(_refreshTokenUrl);
+    var refreshTokenResponse = await ApiRepository.instance.get(
+      _refreshTokenUrl,
+      showDefaultLoader: false,
+      showRunTimeError: false,
+    );
     return refreshTokenResponse;
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 
@@ -33,7 +33,7 @@ class MyPlantsController extends GetxController {
   String get andCounting => "and counting";
   ScrollController scrollController = ScrollController();
 
-  BannerAd? bannerAd;
+  /* BannerAd? bannerAd;*/
   RxBool isAdLoaded = false.obs;
 
   @override
@@ -58,7 +58,7 @@ class MyPlantsController extends GetxController {
       isAdLoaded.value = false;
       return;
     }
-    bannerAd = AdMobService.instance.loadBannerAd(
+    /*    bannerAd = AdMobService.instance.loadBannerAd(
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
       },
@@ -67,12 +67,12 @@ class MyPlantsController extends GetxController {
         isAdLoaded.value = false;
         debugPrint('BannerAd failed to load: $error');
       },
-    );
+    );*/
   }
 
   @override
   void onClose() {
-    bannerAd?.dispose();
+    /*    bannerAd?.dispose();*/
     super.onClose();
   }
 

@@ -19,7 +19,6 @@ class ReminderPushNotificationService {
 
   VoidCallback? onRemindersShouldRefresh;
   bool pendingReminderRefresh = false;
-  bool _homeScreenReady = false;
 
   void configure() {
     NotificationService.instance.onNotificationClick = _handleNotificationClick;
@@ -81,27 +80,16 @@ class ReminderPushNotificationService {
       debugPrint('[PUSH][logout] FCM token deregistered and deleted');
     } catch (e) {
       log('Failed to deregister FCM token on logout: $e');
-      debugPrint('[PUSH][logout] deregister failed: $e');
     }
-  }
-
-  void _onAppResumed() {
-    debugPrint('[PUSH][app_resumed] processing pending notification navigation');
-    _ensureHomeScreenReady();
-    NotificationService.instance.consumePersistedNotificationTap().then((_) {
-      NotificationService.instance.schedulePendingNotificationClick(delayMs: 300);
-    });
   }
 
   Future<void> onAppReady() async {
     if (!_isLoggedIn) return;
-
-    if (!_homeScreenReady) {
-      _homeScreenReady = true;
-      debugPrint('[PUSH][app_ready] home screen ready, processing launch notification');
-    }
-
     await NotificationService.instance.processLaunchNavigation();
+  }
+
+  void _onAppResumed() {
+    debugPrint('[PUSH][app_resumed] background tap handling complete');
   }
 
   bool consumePendingReminderRefresh() {
@@ -111,12 +99,7 @@ class ReminderPushNotificationService {
   }
 
   void _handleForegroundMessage(RemoteMessage message, Map<String, dynamic> payload) {
-    final isReminder = isReminderNotification(payload);
-    debugPrint(
-      '[PUSH][reminder] foreground received | isReminder=$isReminder | payload=$payload',
-    );
-
-    if (!isReminder) return;
+    if (!isReminderNotification(payload)) return;
 
     log('Reminder push intercepted (foreground): $payload');
     pendingReminderRefresh = true;
@@ -125,29 +108,16 @@ class ReminderPushNotificationService {
 
   void _handleNotificationClick(Map<String, dynamic> data) {
     debugPrint('[PUSH][reminder] click received | data=$data');
-    log('Notification click intercepted: $data');
 
     if (!_isLoggedIn) {
+      debugPrint('[PUSH][reminder] User not logged in, persisting data for later');
       NotificationService.instance.setPendingNotificationData(data);
       return;
     }
 
-    _ensureHomeScreenReady();
-    if (!NotificationService.instance.isNavigationReady) {
-      NotificationService.instance.markNavigationReady();
-    }
     pendingReminderRefresh = true;
+    debugPrint('[PUSH][reminder] Navigating to reminders screen');
     _navigateToReminders(data);
-  }
-
-  void _ensureHomeScreenReady() {
-    if (_homeScreenReady) return;
-    if (!_isLoggedIn || Get.key.currentContext == null) return;
-
-    _homeScreenReady = true;
-    if (!NotificationService.instance.isNavigationReady) {
-      NotificationService.instance.markNavigationReady();
-    }
   }
 
   bool isReminderNotification(Map<String, dynamic> data) {
@@ -162,11 +132,21 @@ class ReminderPushNotificationService {
         data.containsKey('userPlantId');
   }
 
-  void _navigateToReminders(Map<String, dynamic> data) {
-    debugPrint('[PUSH][reminder] navigating to reminders list from ${Get.currentRoute}');
+  void _navigateToReminders(Map<String, dynamic> data, {int attempt = 0}) {
+    if (Get.key.currentContext == null && attempt < 20) {
+      debugPrint('[PUSH][reminder] No context yet, retrying navigation ($attempt)...');
+      Future.delayed(const Duration(milliseconds: 250), () {
+        _navigateToReminders(data, attempt: attempt + 1);
+      });
+      return;
+    }
 
     void navigate() {
+      debugPrint(
+        '[PUSH][reminder] Internal navigate() called | current route: ${Get.currentRoute}',
+      );
       if (Get.currentRoute == Routes.plantRemindersListing) {
+        debugPrint('[PUSH][reminder] Already on reminders screen, refreshing...');
         onRemindersShouldRefresh?.call();
         return;
       }

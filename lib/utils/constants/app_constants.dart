@@ -110,17 +110,16 @@ class BaseSnackBar {
     if (title.trim().isEmpty && message.trim().isEmpty) {
       return;
     }
-    // Get.snackbar(
-    //   title.trim(),
-    //   message.trim(),
-    //   shouldIconPulse: true,
-    //   boxShadows: [BoxShadow(color: AppColors.greenColor, spreadRadius: 1)],
-    //   backgroundColor: AppColors.darkGreen,
-    //   colorText: AppColors.offWhite,
-    //   icon: Image.asset(
-    //     AppAssets.appLogo,
-    //   ).marginOnly(left: spacerSize5,),
-    // );
+
+    if (Get.isSnackbarOpen) {
+      Get.closeCurrentSnackbar();
+    }
+
+    void dismiss() {
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+    }
 
     Get.snackbar(
       '',
@@ -130,69 +129,71 @@ class BaseSnackBar {
       borderRadius: 14,
       padding: EdgeInsets.only(left: 12.w, bottom: 10.h, top: 4.h),
       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+      isDismissible: true,
+      onTap: (_) => dismiss(),
 
       titleText: const SizedBox.shrink(),
 
-      messageText: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      messageText: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: dismiss,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
 
-        children: [
-          // SizedBox(width: 15.w, height: 60.h),
-
-          /// ICON
-          Container(
-            margin: EdgeInsets.only(right: 11.w),
-            padding: EdgeInsets.all(5.w),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.greenColor.withValues(alpha: 0.5),
-            ),
-            height: 40.w,
-            width: 40.w,
-            child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain),
-          ),
-
-          /// TEXT
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BaseText(
-                  text: title.trim(),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14.sp,
-                  textColor: AppColors.offWhite,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                BaseText(
-                  text: message.trim(),
-                  fontWeight: FontWeight.w400,
-                  fontSize: (11.2).sp,
-                  textColor: AppColors.offWhite,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              Get.back();
-            },
-            child: Container(
-              padding: EdgeInsets.only(
-                left: 12.w,
-                bottom: 10.h,
-                top: 0.h,
-                right: 10.w,
+          children: [
+            /// ICON
+            Container(
+              margin: EdgeInsets.only(right: 11.w),
+              padding: EdgeInsets.all(5.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.greenColor.withValues(alpha: 0.5),
               ),
-              color: Colors.transparent,
-              child: Icon(Icons.close, color: AppColors.offWhite, size: 20.w),
+              height: 40.w,
+              width: 40.w,
+              child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain),
             ),
-          ),
-        ],
+
+            /// TEXT
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BaseText(
+                    text: title.trim(),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                    textColor: AppColors.offWhite,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  BaseText(
+                    text: message.trim(),
+                    fontWeight: FontWeight.w400,
+                    fontSize: (11.2).sp,
+                    textColor: AppColors.offWhite,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: dismiss,
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 12.w,
+                  bottom: 10.h,
+                  top: 0.h,
+                  right: 10.w,
+                ),
+                color: Colors.transparent,
+                child: Icon(Icons.close, color: AppColors.offWhite, size: 20.w),
+              ),
+            ),
+          ],
+        ),
       ),
 
       boxShadows: [

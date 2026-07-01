@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../utils/app_config.dart';
 
@@ -76,20 +77,20 @@ class AdMobService {
   }
 
   /// Helper to create and load a BannerAd
-  BannerAd loadBannerAd({
-    required Function(Ad) onAdLoaded,
-    required Function(Ad, LoadAdError) onAdFailedToLoad,
-  }) {
-    debugPrint('bannerAdUnitIdbannerAdUnitId $bannerAdUnitId');
-    final ad = BannerAd(
-      adUnitId: bannerAdUnitId,
-      size: AdSize.banner,
-      request: const AdRequest(),
-      listener: BannerAdListener(onAdLoaded: onAdLoaded, onAdFailedToLoad: onAdFailedToLoad),
-    );
-    ad.load();
-    return ad;
-  }
+  // BannerAd loadBannerAd({
+  //   required Function(Ad) onAdLoaded,
+  //   required Function(Ad, LoadAdError) onAdFailedToLoad,
+  // }) {
+  //   debugPrint('bannerAdUnitIdbannerAdUnitId $bannerAdUnitId');
+  //   final ad = BannerAd(
+  //     adUnitId: bannerAdUnitId,
+  //     size: AdSize.banner,
+  //     request: const AdRequest(),
+  //     listener: BannerAdListener(onAdLoaded: onAdLoaded, onAdFailedToLoad: onAdFailedToLoad),
+  //   );
+  //   ad.load();
+  //   return ad;
+  // }
 
   /// Helper to load and show a RewardedAd
   void showRewardedAd({
@@ -102,38 +103,38 @@ class AdMobService {
       return;
     }
 
-    RewardedAd.load(
-      adUnitId: rewardedAdUnitId,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (RewardedAd ad) {
-          debugPrint('RewardedAd loaded: $ad');
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdShowedFullScreenContent: (RewardedAd ad) => debugPrint('RewardedAd showed: $ad'),
-            onAdDismissedFullScreenContent: (RewardedAd ad) {
-              debugPrint('RewardedAd dismissed: $ad');
-              ad.dispose();
-              onAdDismissed();
-            },
-            onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
-              debugPrint('RewardedAd failed to show: $error');
-              ad.dispose();
-              onAdFailedToShow();
-            },
-          );
-
-          ad.show(
-            onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-              debugPrint('User earned reward: $reward');
-              onUserEarnedReward();
-            },
-          );
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('RewardedAd failed to load: $error');
-          onAdFailedToShow();
-        },
-      ),
-    );
+    // RewardedAd.load(
+    //   adUnitId: rewardedAdUnitId,
+    //   request: const AdRequest(),
+    //   rewardedAdLoadCallback: RewardedAdLoadCallback(
+    //     onAdLoaded: (RewardedAd ad) {
+    //       debugPrint('RewardedAd loaded: $ad');
+    //       ad.fullScreenContentCallback = FullScreenContentCallback(
+    //         onAdShowedFullScreenContent: (RewardedAd ad) => debugPrint('RewardedAd showed: $ad'),
+    //         onAdDismissedFullScreenContent: (RewardedAd ad) {
+    //           debugPrint('RewardedAd dismissed: $ad');
+    //           ad.dispose();
+    //           onAdDismissed();
+    //         },
+    //         onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+    //           debugPrint('RewardedAd failed to show: $error');
+    //           ad.dispose();
+    //           onAdFailedToShow();
+    //         },
+    //       );
+    //
+    //       ad.show(
+    //         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
+    //           debugPrint('User earned reward: $reward');
+    //           onUserEarnedReward();
+    //         },
+    //       );
+    //     },
+    //     onAdFailedToLoad: (LoadAdError error) {
+    //       debugPrint('RewardedAd failed to load: $error');
+    //       onAdFailedToShow();
+    //     },
+    //   ),
+    // );
   }
 }

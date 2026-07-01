@@ -154,7 +154,7 @@ class MainContentCard extends StatelessWidget {
                                         if (controller.isWateringOn.value) {
                                           FrequencyBottomSheet.show(controller, CareType.watering);
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.watering,
                                             message: AppLocalizations.of(context)!.enableWatering,
                                           );
@@ -209,9 +209,13 @@ class MainContentCard extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         if (controller.isWateringOn.value) {
-                                          controller.pickerTime(context, CareType.watering);
+                                          controller.pickerTime(
+                                            context,
+                                            CareType.watering,
+                                            controller.wateringTime.value,
+                                          );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.watering,
                                             message: AppLocalizations.of(context)!.enableWatering,
                                           );
@@ -277,7 +281,7 @@ class MainContentCard extends StatelessWidget {
                                             "${controller.getType(CareType.watering).toLowerCase()} alert.",
                                           );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.watering,
                                             message: AppLocalizations.of(context)!.enableWatering,
                                           );
@@ -311,7 +315,7 @@ class MainContentCard extends StatelessWidget {
                                             CareType.fertilizing,
                                           );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.fertilizing,
                                             message: AppLocalizations.of(
                                               context,
@@ -366,9 +370,13 @@ class MainContentCard extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         if (controller.isFertilizingOn.value) {
-                                          controller.pickerTime(context, CareType.fertilizing);
+                                          controller.pickerTime(
+                                            context,
+                                            CareType.fertilizing,
+                                            controller.fertilizingTime.value,
+                                          );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.fertilizing,
                                             message: AppLocalizations.of(
                                               context,
@@ -436,7 +444,7 @@ class MainContentCard extends StatelessWidget {
                                             "${controller.getType(CareType.fertilizing).toLowerCase()} alert.",
                                           );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.fertilizing,
                                             message: AppLocalizations.of(
                                               context,
@@ -470,7 +478,7 @@ class MainContentCard extends StatelessWidget {
                                         if (controller.isPruningOn.value) {
                                           FrequencyBottomSheet.show(controller, CareType.pruning);
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.pruning,
                                             message: AppLocalizations.of(context)!.enablePruning,
                                           );
@@ -525,9 +533,13 @@ class MainContentCard extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         if (controller.isPruningOn.value) {
-                                          controller.pickerTime(context, CareType.pruning);
+                                          controller.pickerTime(
+                                            context,
+                                            CareType.pruning,
+                                            controller.pruningTime.value,
+                                          );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.pruning,
                                             message: AppLocalizations.of(context)!.enablePruning,
                                           );
@@ -593,7 +605,7 @@ class MainContentCard extends StatelessWidget {
                                             "${controller.getType(CareType.pruning).toLowerCase()} alert.",
                                           );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.pruning,
                                             message: AppLocalizations.of(context)!.enablePruning,
                                           );
@@ -625,7 +637,7 @@ class MainContentCard extends StatelessWidget {
                                         if (controller.isCriticalOn.value) {
                                           FrequencyBottomSheet.show(controller, CareType.critical);
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.criticalCare,
                                             message: AppLocalizations.of(
                                               context,
@@ -673,9 +685,13 @@ class MainContentCard extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         if (controller.isCriticalOn.value) {
-                                          controller.pickerTime(context, CareType.critical);
+                                          controller.pickerTime(
+                                            context,
+                                            CareType.critical,
+                                            controller.criticalTime.value,
+                                          );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.criticalCare,
                                             message: AppLocalizations.of(
                                               context,
@@ -743,7 +759,7 @@ class MainContentCard extends StatelessWidget {
                                             "${controller.getType(CareType.critical).toLowerCase()} alert.",
                                           );
                                         } else {
-                                          BaseSnackBar.show(
+                                          controller.showSnackBar(
                                             title: AppLocalizations.of(context)!.criticalCare,
                                             message: AppLocalizations.of(
                                               context,

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,53 +57,51 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> refreshToken() async {
-    var response = await authRepository.refreshToken();
-    if (response != null) {
-      await SharedPrefsService.instance.setString(
-        AppKeys.idToken,
-        response[ApiKeys.data][ApiKeys.token],
-      );
-      log('user t13');
-    } else {
-      log('user t131');
+    try {
+      final response = await authRepository
+          .refreshToken()
+          .timeout(const Duration(seconds: 10), onTimeout: () => null);
+      if (response != null) {
+        await SharedPrefsService.instance.setString(
+          AppKeys.idToken,
+          response[ApiKeys.data][ApiKeys.token],
+        );
+        log('user t13');
+      } else {
+        log('user t131');
+      }
+    } catch (e) {
+      log('refreshToken failed: $e');
+    } finally {
+      navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
     }
-    navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
   }
 
   void navigateToIntroductionScreen({required bool isUserAlreadyLogedIn}) {
     bool isSoftLogin = SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
     String currentRole = SharedPrefsService.instance.getString(AppKeys.role) ?? '';
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      // SystemChrome.setSystemUIOverlayStyle(
-      // SystemUiOverlayStyle(
-      // statusBarColor: Colors.transparent,
-      // statusBarIconBrightness: Brightness.dark,
-      // statusBarBrightness: Brightness.light,
-      // ),
-      // );
-      Future.delayed(Duration(seconds: 1), () async {
-        final granted = await NotificationService.instance.requestNotificationPermission();
-        if (granted) {
-          await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
-        }
-      });
-      if (currentRole != AppKeys.professional) {
-        if (isUserAlreadyLogedIn) {
-          Get.offAllNamed(Routes.dashboard);
-        } else {
-          if (isSoftLogin) {
-            Get.offAllNamed(Routes.question);
-          } else {
-            Get.offAllNamed(Routes.login);
-          }
-        }
-        log('user t14');
-        // Get.offAllNamed(Routes.dashboard);
+
+    unawaited(_registerPushAfterNavigation());
+
+    if (currentRole != AppKeys.professional) {
+      if (isUserAlreadyLogedIn) {
+        Get.offAllNamed(Routes.dashboard);
+      } else if (isSoftLogin) {
+        Get.offAllNamed(Routes.question);
       } else {
-        log('user t15');
-        Get.offAllNamed(Routes.professionalDashboard);
+        Get.offAllNamed(Routes.login);
       }
-    });
+      log('user t14');
+    } else {
+      log('user t15');
+      Get.offAllNamed(Routes.professionalDashboard);
+    }
+  }
+
+  Future<void> _registerPushAfterNavigation() async {
+    final granted = await NotificationService.instance.requestNotificationPermission();
+    if (granted) {
+      await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+    }
   }
 }

@@ -10,8 +10,8 @@ import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_res
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_repository.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import 'package:kasagardem/utils/permission_manager.dart';
 import 'package:kasagardem/utils/network_services/app_exceptions.dart';
+import 'package:kasagardem/utils/permission_manager.dart';
 
 import '../../utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
@@ -20,11 +20,9 @@ import '../../utils/utils.dart';
 import '../dashboard_controller.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
-  PlantDiagnosisRepository plantDiagnosisRepository =
-      PlantDiagnosisRepository();
+  PlantDiagnosisRepository plantDiagnosisRepository = PlantDiagnosisRepository();
   Rx<File>? imageFile = File('').obs;
-  Rx<PlantDiagnosisResponseModel> plantDiagnosisResponse =
-      PlantDiagnosisResponseModel().obs;
+  Rx<PlantDiagnosisResponseModel> plantDiagnosisResponse = PlantDiagnosisResponseModel().obs;
   RxBool isCurrentImagePlant = true.obs;
   RxBool isLoading = false.obs;
   RxString errorMessage = "".obs;
@@ -52,8 +50,8 @@ class PlantDiagnosisViewModel extends GetxController {
     var data = Get.arguments;
 
     imageFile!.value = File(data['image_path']);
-    latitude = data['latitude'];
-    longitude = data['longitude'];
+    latitude = data['latitude'] ?? 0.0;
+    longitude = data['longitude'] ?? 0.0;
     diagnosePlant();
   }
 
@@ -63,18 +61,15 @@ class PlantDiagnosisViewModel extends GetxController {
     try {
       List<int> imageBytes = await imageFile!.value.readAsBytes();
       String base64String = base64Encode(imageBytes);
-      PlantDiagnosisRequestModel? plantDiagnosisRequest =
-          PlantDiagnosisRequestModel()
-            ..images = ["data:image/png;base64, $base64String"]
-            ..latitude = latitude
-            ..longitude = longitude;
+      PlantDiagnosisRequestModel? plantDiagnosisRequest = PlantDiagnosisRequestModel()
+        ..images = ["data:image/png;base64, $base64String"]
+        ..latitude = latitude
+        ..longitude = longitude;
       var response = await plantDiagnosisRepository.diagnosePlant(
         plantDiagnosisRequest: plantDiagnosisRequest,
       );
       if (response != null) {
-        plantDiagnosisResponse.value = PlantDiagnosisResponseModel.fromJson(
-          response,
-        );
+        plantDiagnosisResponse.value = PlantDiagnosisResponseModel.fromJson(response);
         if (plantDiagnosisResponse.value.success != true) {
           errorMessage.value = _cleanErrorMessage(
             plantDiagnosisResponse.value.message ?? "Unable to analyze plant",
@@ -83,8 +78,7 @@ class PlantDiagnosisViewModel extends GetxController {
       } else {
         errorMessage.value = "Unable to analyze plant";
       }
-      isCurrentImagePlant.value =
-          plantDiagnosisResponse.value.data?.isPlant ?? false;
+      isCurrentImagePlant.value = plantDiagnosisResponse.value.data?.isPlant ?? false;
 
       if (isCurrentImagePlant.value) {
         getKasagardemData();
@@ -127,18 +121,14 @@ class PlantDiagnosisViewModel extends GetxController {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ListTile(
-              leading: const Icon(
-                Icons.camera_alt,
-                color: AppColors.greenColor,
-              ),
+              leading: const Icon(Icons.camera_alt, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
                 Get.back();
                 await Future.delayed(const Duration(milliseconds: 200));
 
                 // Camera Permission
-                bool hasPermission =
-                    await PermissionManager.handleCameraPermission();
+                bool hasPermission = await PermissionManager.handleCameraPermission();
                 if (!hasPermission) return;
 
                 final result = await Get.toNamed(Routes.cameraCapture);
@@ -150,10 +140,7 @@ class PlantDiagnosisViewModel extends GetxController {
               },
             ),
             ListTile(
-              leading: const Icon(
-                Icons.photo_library,
-                color: AppColors.greenColor,
-              ),
+              leading: const Icon(Icons.photo_library, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
               onTap: () async {
                 Get.back();
@@ -179,8 +166,7 @@ class PlantDiagnosisViewModel extends GetxController {
   }
 
   void getKasagardemData() {
-    for (var plantData
-        in plantDiagnosisResponse.value.data!.kasagardemSolutions ?? []) {
+    for (var plantData in plantDiagnosisResponse.value.data!.kasagardemSolutions ?? []) {
       issueList.add(plantData.issue!);
       automationFeatureList.add(plantData.automationFeature!);
       howItHelpsList.add(plantData.howItHelps!);
@@ -208,8 +194,7 @@ class PlantDiagnosisViewModel extends GetxController {
 
   void getAutomationFeature() {
     for (var automationFeatureData in automationFeatureList) {
-      automationFeature.value =
-          "${automationFeature.value}$automationFeatureData\n";
+      automationFeature.value = "${automationFeature.value}$automationFeatureData\n";
     }
   }
 
@@ -244,9 +229,7 @@ class PlantDiagnosisViewModel extends GetxController {
         if (Get.isRegistered<DashboardController>()) {
           Get.find<DashboardController>().refreshSoilAnalysis.refresh();
         }
-        Get.key.currentState?.popUntil(
-          (route) => route.settings.name == Routes.dashboard,
-        );
+        Get.key.currentState?.popUntil((route) => route.settings.name == Routes.dashboard);
         break;
 
       case 1:
@@ -254,12 +237,8 @@ class PlantDiagnosisViewModel extends GetxController {
         Get.toNamed(
           Routes.recommendedProfessionals,
           arguments: {
-            "lat":
-                SharedPrefsService.instance.getString(AppKeys.currentLatKey) ??
-                0.0,
-            "lng":
-                SharedPrefsService.instance.getString(AppKeys.currentLongKey) ??
-                0.0,
+            "lat": SharedPrefsService.instance.getString(AppKeys.currentLatKey) ?? 0.0,
+            "lng": SharedPrefsService.instance.getString(AppKeys.currentLongKey) ?? 0.0,
           },
         );
         break;
@@ -317,9 +296,7 @@ class PlantDiagnosisViewModel extends GetxController {
       } catch (_) {}
     }
 
-    final messageMatch = RegExp(
-      r'"message"\s*:\s*"([^"]+)"',
-    ).firstMatch(errorMsg);
+    final messageMatch = RegExp(r'"message"\s*:\s*"([^"]+)"').firstMatch(errorMsg);
     if (messageMatch != null && messageMatch.groupCount >= 1) {
       return messageMatch.group(1)!;
     }

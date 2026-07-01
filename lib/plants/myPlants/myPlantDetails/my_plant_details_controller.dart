@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
 
 import '../../../services/admob_service.dart';
@@ -15,7 +15,7 @@ class MyPlantDetailsController extends GetxController {
   RxBool isLoading = false.obs;
   RxString errorMessage = "".obs;
 
-  BannerAd? bannerAd;
+  // BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
 
   @override
@@ -33,7 +33,7 @@ class MyPlantDetailsController extends GetxController {
       isAdLoaded.value = false;
       return;
     }
-    bannerAd = AdMobService.instance.loadBannerAd(
+    /*    bannerAd = AdMobService.instance.loadBannerAd(
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
       },
@@ -42,12 +42,12 @@ class MyPlantDetailsController extends GetxController {
         isAdLoaded.value = false;
         debugPrint('BannerAd failed to load: $error');
       },
-    );
+    );*/
   }
 
   @override
   void onClose() {
-    bannerAd?.dispose();
+    // bannerAd?.dispose();
     super.onClose();
   }
 

@@ -2,14 +2,13 @@ import 'dart:developer' show log;
 
 import 'package:flutter/foundation.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
+
 import 'model/landscape_design_model.dart';
 
 class LandscapeDesignRepository {
   final String _landscapeDesignEndPoint = "api/v1/landscape/";
 
-  dynamic generateLandscapeDesign({
-    LandscapeDesignRequestModel? request,
-  }) async {
+  dynamic generateLandscapeDesign({LandscapeDesignRequestModel? request}) async {
     if (kDebugMode) {
       await Future.delayed(Duration(seconds: 2));
       var response = {

@@ -123,6 +123,7 @@ class _RescheduleReminderFieldsState extends State<_RescheduleReminderFields> {
                     itemBuilder: (_, index) {
                       final value = _frequencyOptions[index];
                       final dayText = value == 1 ? loc.day : loc.days;
+                      final isSelected = value == frequency;
                       return InkWell(
                         onTap: () {
                           setState(() => frequency = value);
@@ -130,12 +131,23 @@ class _RescheduleReminderFieldsState extends State<_RescheduleReminderFields> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: spacerSize10),
-                          child: BaseText(
-                            text: '${loc.every} $value $dayText',
-                            fontFamily: AppKeys.inter,
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.white,
-                            fontSize: fontSize15,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              BaseText(
+                                text: '${loc.every} $value $dayText',
+                                fontFamily: AppKeys.inter,
+                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                textColor: isSelected ? AppColors.greenColor : Colors.white,
+                                fontSize: fontSize15,
+                              ),
+                              if (isSelected)
+                                const Icon(
+                                  Icons.check_circle,
+                                  color: AppColors.greenColor,
+                                  size: spacerSize20,
+                                ),
+                            ],
                           ),
                         ),
                       );
@@ -206,8 +218,14 @@ class _RescheduleReminderFieldsState extends State<_RescheduleReminderFields> {
                   if (states.contains(WidgetState.selected)) return Colors.white;
                   return Colors.green;
                 }),
-                hourMinuteColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                hourMinuteTextColor: Colors.green,
+                hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return AppColors.greenColor;
+                  return AppColors.darkGreen.withValues(alpha: 0.1);
+                }),
+                hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return Colors.white;
+                  return Colors.green;
+                }),
                 dayPeriodColor: AppColors.darkGreen.withValues(alpha: 0.12),
                 dayPeriodTextColor: Colors.green,
                 confirmButtonStyle: TextButton.styleFrom(

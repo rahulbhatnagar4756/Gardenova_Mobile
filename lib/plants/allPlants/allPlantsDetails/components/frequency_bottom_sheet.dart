@@ -12,11 +12,7 @@ class FrequencyBottomSheet extends StatelessWidget {
   final AllPlantsDetailsController controller;
   final CareType careType;
 
-  const FrequencyBottomSheet({
-    super.key,
-    required this.controller,
-    required this.careType,
-  });
+  const FrequencyBottomSheet({super.key, required this.controller, required this.careType});
 
   static void show(AllPlantsDetailsController controller, CareType careType) {
     Get.bottomSheet(
@@ -64,10 +60,10 @@ class FrequencyBottomSheet extends StatelessWidget {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             itemCount: controller.frequencyOptions.length,
-            separatorBuilder: (context, index) =>
-                Divider(color: AppColors.offWhite10),
+            separatorBuilder: (context, index) => Divider(color: AppColors.offWhite10),
             itemBuilder: (context, index) {
               final value = controller.frequencyOptions[index];
+              final isSelected = value.toString() == getSelectedValue();
 
               return GestureDetector(
                 onTap: () {
@@ -76,12 +72,19 @@ class FrequencyBottomSheet extends StatelessWidget {
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: spacerSize6),
-                  child: BaseText(
-                    text: _getFrequencyText(value),
-                    fontFamily: AppKeys.inter,
-                    fontWeight: FontWeight.w500,
-                    textColor: Colors.white,
-                    fontSize: fontSize15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BaseText(
+                        text: _getFrequencyText(value),
+                        fontFamily: AppKeys.inter,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        textColor: isSelected ? AppColors.greenColor : Colors.white,
+                        fontSize: fontSize15,
+                      ),
+                      if (isSelected)
+                        Icon(Icons.check_circle, color: AppColors.greenColor, size: spacerSize20),
+                    ],
                   ),
                 ),
               );

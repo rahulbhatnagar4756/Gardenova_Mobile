@@ -11,7 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/firebase_options.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -123,7 +123,7 @@ Future<void> main() async {
 
     await initServices();
     try {
-      await MobileAds.instance.initialize();
+      //await MobileAds.instance.initialize();
     } catch (e, stack) {
       await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
     }
@@ -136,9 +136,7 @@ Future<void> main() async {
     } catch (_) {}
     runApp(
       MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('Startup failed: $error')),
-        ),
+        home: Scaffold(body: Center(child: Text('Startup failed: $error'))),
       ),
     );
   } finally {

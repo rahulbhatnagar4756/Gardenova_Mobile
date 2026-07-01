@@ -86,7 +86,8 @@
 
 
 
-# Note: This file is not required for flutter_local_notifications v19 and higher
+# Gardenova push notification bridge
+-keep class com.gardenova.digisoft.** { *; }
 
 ## Gson rules
 # Gson uses generic type information stored in a class file when working with fields. Proguard

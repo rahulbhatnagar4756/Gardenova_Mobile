@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
 import 'package:kasagardem/plants/model/plant_info_item.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -48,7 +50,7 @@ class AllPlantsDetailsController extends GetxController {
   Rx<PlantDetailsResponseModel> plantDetailData = PlantDetailsResponseModel().obs;
   final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
   RxList<PlantInfoItem> plantInfoList = <PlantInfoItem>[].obs;
-  BannerAd? bannerAd;
+  // BannerAd? bannerAd;
 
   TextEditingController pruningController = TextEditingController();
   TextEditingController fertilizeController = TextEditingController();
@@ -78,7 +80,7 @@ class AllPlantsDetailsController extends GetxController {
       isAdLoaded.value = false;
       return;
     }
-    bannerAd = AdMobService.instance.loadBannerAd(
+    /*  bannerAd = AdMobService.instance.loadBannerAd(
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
       },
@@ -87,7 +89,7 @@ class AllPlantsDetailsController extends GetxController {
         isAdLoaded.value = false;
         debugPrint('BannerAd failed to load: $error');
       },
-    );
+    );*/
   }
 
   void setPlantInfoData(PlantModelDetails plantDetails) {
@@ -121,7 +123,7 @@ class AllPlantsDetailsController extends GetxController {
 
   @override
   void onClose() {
-    bannerAd?.dispose();
+    // bannerAd?.dispose();
     super.onClose();
   }
 
@@ -163,71 +165,67 @@ class AllPlantsDetailsController extends GetxController {
           !isFertilizingOn.value &&
           !isPruningOn.value &&
           !isCriticalOn.value) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
-        );
+        if (Get.isSnackbarOpen == false) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
+          );
+        }
         return;
       }
 
       if (isWateringOn.value) {
         if (wateringFrequency.value == 0) {
-          BaseSnackBar.show(
+          showSnackBar(
             title: appName,
             message: AppLocalizations.of(context)!.selectWateringFrequency,
           );
           return;
         }
         if (wateringTime.isEmpty) {
-          BaseSnackBar.show(
-            title: appName,
-            message: AppLocalizations.of(context)!.selectWateringTime,
-          );
+          showSnackBar(title: appName, message: AppLocalizations.of(context)!.selectWateringTime);
           return;
         }
       }
 
       if (isFertilizingOn.value) {
         if (fertilizingFrequency.value == 0) {
-          BaseSnackBar.show(
+          showSnackBar(
             title: appName,
             message: AppLocalizations.of(context)!.selectFertilizerFrequency,
           );
           return;
         }
         if (fertilizingTime.isEmpty) {
-          BaseSnackBar.show(
-            title: appName,
-            message: AppLocalizations.of(context)!.selectFertilizerTime,
-          );
+          showSnackBar(title: appName, message: AppLocalizations.of(context)!.selectFertilizerTime);
           return;
         }
       }
 
       if (isPruningOn.value) {
         if (pruningFrequency.value == 0) {
-          BaseSnackBar.show(
+          showSnackBar(
             title: appName,
             message: AppLocalizations.of(context)!.selectPruningFrequency,
           );
           return;
         }
         if (pruningTime.isEmpty) {
-          BaseSnackBar.show(title: appName, message: AppStrings.selectPruningTime);
+          showSnackBar(title: appName, message: AppStrings.selectPruningTime);
           return;
         }
       }
 
       if (isCriticalOn.value) {
         if (criticalCareFrequency.value == 0) {
-          BaseSnackBar.show(
+          showSnackBar(
             title: appName,
             message: AppLocalizations.of(context)!.selectGeneralFrequency,
           );
           return;
         }
         if (criticalTime.isEmpty) {
-          BaseSnackBar.show(title: appName, message: AppStrings.selectCriticalCareTime);
+          showSnackBar(title: appName, message: AppStrings.selectCriticalCareTime);
           return;
         }
       }
@@ -263,12 +261,25 @@ class AllPlantsDetailsController extends GetxController {
     fertilizingTime.value = plantDetailData.value.data?.reminder?.fertilizerPreferredTime ?? "";
     pruningTime.value = plantDetailData.value.data?.reminder?.pruningPreferredTime ?? "";
     criticalTime.value = plantDetailData.value.data?.reminder?.genericPreferredTime ?? "";
+    criticalNote.value = plantDetailData.value.data?.reminder?.genericCareNote ?? "";
   }
 
-  Future<void> pickerTime(BuildContext context, CareType careType) async {
+  Future<void> pickerTime(BuildContext context, CareType careType, String preferredTime) async {
+    TimeOfDay initialTime = TimeOfDay.now();
+    if (preferredTime.isNotEmpty) {
+      final parts = preferredTime.split(':');
+      print(parts);
+      if (parts.length >= 2) {
+        initialTime = TimeOfDay(
+          hour: int.tryParse(parts[0]) ?? initialTime.hour,
+          minute: int.tryParse(parts[1]) ?? initialTime.minute,
+        );
+      }
+    }
+
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: initialTime,
 
       initialEntryMode: TimePickerEntryMode.dial,
       builder: (context, child) {
@@ -286,8 +297,14 @@ class AllPlantsDetailsController extends GetxController {
                   }
                   return Colors.green;
                 }),
-                hourMinuteColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                hourMinuteTextColor: Colors.green,
+                hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return AppColors.greenColor;
+                  return AppColors.darkGreen.withValues(alpha: 0.1);
+                }),
+                hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return Colors.white;
+                  return Colors.green;
+                }),
                 dayPeriodColor: AppColors.darkGreen.withValues(alpha: 0.12),
                 dayPeriodTextColor: Colors.green,
                 confirmButtonStyle: TextButton.styleFrom(
@@ -379,6 +396,7 @@ class AllPlantsDetailsController extends GetxController {
         debugPrint("userPlantId:::: ${userPlantId.value}");
         plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
         debugPrint("response of plantDetailData::::: ${plantDetailData.value.data!.toJson()}");
+        log(plantDetailData.value.data!.toJson().toString());
         if (plantDetailData.value.data == null) {
           errorMessage.value = "No plant details found";
         } else {
@@ -510,7 +528,7 @@ class AllPlantsDetailsController extends GetxController {
     'generic_notification_enabled',
     'generic_care_reminder_frequency',
     'generic_care_preferred_time',
-    'generic_note',
+    'generic_care_note',
   ];
 
   Map<String, dynamic> _buildChangedBlockEditPlantMap() {
@@ -553,7 +571,7 @@ class AllPlantsDetailsController extends GetxController {
       "watering_note": wateringController.text,
       "fertilizer_note": fertilizeController.text,
       "pruning_note": pruningController.text,
-      "generic_note": criticalController.text,
+      "generic_care_note": criticalController.text,
     };
   }
 
@@ -577,7 +595,7 @@ class AllPlantsDetailsController extends GetxController {
       "watering_note": reminder?.wateringNote ?? "",
       "fertilizer_note": reminder?.fertilizerNote ?? "",
       "pruning_note": reminder?.pruningNote ?? "",
-      "generic_note": reminder?.genericCareNote ?? "",
+      "generic_care_note": reminder?.genericCareNote ?? "",
     };
   }
 
@@ -617,5 +635,11 @@ class AllPlantsDetailsController extends GetxController {
   num _toNum(dynamic value) {
     if (value is num) return value;
     return num.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  void showSnackBar({String? title, String? message}) {
+    if (Get.isSnackbarOpen == false) {
+      BaseSnackBar.show(title: title!, message: message!);
+    }
   }
 }
