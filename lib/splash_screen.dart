@@ -1,5 +1,5 @@
-import 'dart:developer';
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
       refreshToken();
     } else {
       log('user t12');
+
       navigateToIntroductionScreen(isUserAlreadyLogedIn: false);
     }
     super.initState();
@@ -58,9 +59,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> refreshToken() async {
     try {
-      final response = await authRepository
-          .refreshToken()
-          .timeout(const Duration(seconds: 10), onTimeout: () => null);
+      final response = await authRepository.refreshToken().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => null,
+      );
       if (response != null) {
         await SharedPrefsService.instance.setString(
           AppKeys.idToken,
@@ -83,19 +85,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
     unawaited(_registerPushAfterNavigation());
 
-    if (currentRole != AppKeys.professional) {
-      if (isUserAlreadyLogedIn) {
-        Get.offAllNamed(Routes.dashboard);
-      } else if (isSoftLogin) {
-        Get.offAllNamed(Routes.question);
+    Future.delayed(const Duration(seconds: 2), () {
+      if (currentRole != AppKeys.professional) {
+        if (isUserAlreadyLogedIn) {
+          Get.offAllNamed(Routes.dashboard);
+        } else if (isSoftLogin) {
+          Get.offAllNamed(Routes.question);
+        } else {
+          Get.offAllNamed(Routes.login);
+        }
+        log('user t14');
       } else {
-        Get.offAllNamed(Routes.login);
+        log('user t15');
+        Get.offAllNamed(Routes.professionalDashboard);
       }
-      log('user t14');
-    } else {
-      log('user t15');
-      Get.offAllNamed(Routes.professionalDashboard);
-    }
+    });
   }
 
   Future<void> _registerPushAfterNavigation() async {
