@@ -9,9 +9,9 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../settings/model/subscription_local_status_ui_model.dart';
+import '../../subscription/subscription_navigation.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_constants.dart';
-import '../../utils/routes.dart';
 import '../../utils/utils.dart';
 
 class SubscriptionStatusViewWidget extends StatelessWidget {
@@ -101,8 +101,7 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Get.toNamed(
-                            Routes.upgradePlan,
-                            // arguments: {AppKeys.screenType: AppKeys.dashboard},
+                            SubscriptionNavigation.upgradeRoute,
                             arguments: currentModel,
                           )!.then((val) {
                             if (val == true) {
@@ -144,7 +143,7 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         child: CommonClickWidget(
                           onTap: () {
                             Get.toNamed(
-                              Routes.upgradePlan,
+                              SubscriptionNavigation.upgradeRoute,
                               arguments: {
                                 AppKeys.screenType: AppKeys.dashboard,
                               },

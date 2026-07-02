@@ -7,8 +7,8 @@ import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/subscription/subscription_navigation.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
-import 'package:kasagardem/utils/routes.dart';
 
 enum SubscriptionDialogType { trialEnded, upgrade, freshPurchase }
 
@@ -143,7 +143,7 @@ class CommonSubscriptionsDialog {
                             onPressed: () {
                               Get.back();
                               Get.toNamed(
-                                Routes.upgradePlan,
+                                SubscriptionNavigation.upgradeRoute,
                                 arguments: {
                                   AppKeys.screenType: AppKeys.dashboard,
                                 },

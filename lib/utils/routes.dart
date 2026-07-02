@@ -60,8 +60,13 @@ import '../plants/myPlants/myPlantsList/my_plants_controller.dart';
 import '../plants/myPlants/myPlantsList/my_plants_screen.dart';
 import '../professional/professionalDashBoard/components/create_professional_lead_request_screen.dart';
 import '../professional/professionalDashBoard/components/professional_dashbord_success_quote.dart';
+import '../professional/payment/razorpay_payment_controller.dart';
+import '../professional/payment/razorpay_payment_screen.dart';
 import '../professional/upgradePlans/upgrade_plan_controller.dart';
 import '../professional/upgradePlans/upgrade_plan_screen.dart';
+import '../subscription/user_order_summary_screen.dart';
+import '../subscription/user_subscription_controller.dart';
+import '../subscription/user_subscription_screen.dart';
 import '../recommended_professionals/components/create_request_screen.dart';
 import '../settings/profile/verified_email_otp_view/verified_email_otp_view_model.dart';
 
@@ -100,6 +105,9 @@ class Routes {
   static const chooseAccountType = '/choose_account_type';
   static const upgradePlan = '/upgrade_plan';
   static const orderSummary = '/order_summary';
+  static const userSubscription = '/user_subscription';
+  static const userOrderSummary = '/user_order_summary';
+  static const razorpayPayment = '/razorpay_payment';
   static const professionalDashboard = '/professional_dashboard';
   static const myLeadScreen = '/my_lead_screen';
   static const chatScreen = '/chat_screen';
@@ -360,6 +368,30 @@ class Routes {
         name: Routes.orderSummary,
         page: () => OrderSummaryScreen(),
         binding: BindingsBuilder.put(() => UpgradePlanController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+
+      GetPage(
+        name: Routes.userSubscription,
+        page: () => const UserSubscriptionScreen(),
+        binding: BindingsBuilder.put(() => UserSubscriptionController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+
+      GetPage(
+        name: Routes.userOrderSummary,
+        page: () => const UserOrderSummaryScreen(),
+        binding: BindingsBuilder.put(() => UserSubscriptionController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+
+      GetPage(
+        name: Routes.razorpayPayment,
+        page: () => const RazorpayPaymentScreen(),
+        binding: BindingsBuilder.put(() => RazorpayPaymentController()),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

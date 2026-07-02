@@ -52,7 +52,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   title: AppLocalizations.of(context)!.myProfile,
                 ),
                 SizedBox(height: 24.h),
-                //     subscriptionPlanCard(),
+                subscriptionPlanCard(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: buildCategoryCard([

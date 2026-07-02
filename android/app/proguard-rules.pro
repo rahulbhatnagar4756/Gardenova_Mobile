@@ -1,6 +1,15 @@
 #########################################
-# Flutter Local Notifications
+# Razorpay
 #########################################
+
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+-keepattributes JavascriptInterface
+-keepattributes *Annotation*
+-dontwarn com.razorpay.**
+-keep class com.razorpay.** { *; }
+
 
 -keep class com.dexterous.** { *; }
 -keep class androidx.core.app.NotificationCompat** { *; }

@@ -109,6 +109,28 @@ class UpgradePlanController extends GetxController {
     }
   }
 
+  double getOrderTotalAmount() {
+    final plan = selectedPlanData;
+    if (plan == null) return 0;
+
+    final basePriceStr =
+        (isTabMonthly.value ? plan.priceMonthly : plan.priceAnnual) ?? "0";
+    final double basePrice =
+        double.tryParse(basePriceStr.replaceAll(',', '').replaceAll(' ', '')) ??
+            0.0;
+
+    double additionalPrice = 0.0;
+    if (isTabAdditionalCoverage.value) {
+      if (isTabMonthly.value) {
+        additionalPrice = 100.0;
+      } else {
+        additionalPrice = isSelectOneTime.value ? 100.0 : 1200.0;
+      }
+    }
+
+    return basePrice + additionalPrice;
+  }
+
   void callGetAllPlanListApi() async {
     isLoading.value = true;
     var response = await upgradePlanRepository.getPlanList();

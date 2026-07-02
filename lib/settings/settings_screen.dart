@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
 import 'package:kasagardem/settings/components/settings_item_layout.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
@@ -12,9 +13,10 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
-import 'package:kasagardem/services/reminder_push_notification_service.dart';
+
 import '../base/widgets/full_screen_image_preview.dart';
 import '../base/widgets/subscription_status_view_widget.dart';
+import '../subscription/subscription_navigation.dart';
 import '../utils/constants/app_assets.dart';
 import '../utils/constants/app_strings.dart';
 import '../utils/utils.dart';
@@ -100,16 +102,13 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
   }
 
   Widget settingItemsLayout(BuildContext context) {
-    // final bool isProfessional =
-    //     SharedPrefsService.instance.getString(AppKeys.role) ==
-    //     AppKeys.professional;
+    final bool isProfessional = SubscriptionNavigation.isProfessional;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         children: [
-          // need change
-          // subscriptionPlanCard(),
+          if (!isProfessional) subscriptionPlanCard(),
 
           // GENERAL / PROFILE SECTION
           buildSectionHeader("General", icon: Icons.settings_outlined),
@@ -147,10 +146,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ]),
 
           // ACTIONS SECTION
-          buildSectionHeader(
-            AppStrings.accountAction,
-            icon: Icons.shield_outlined,
-          ),
+          buildSectionHeader(AppStrings.accountAction, icon: Icons.shield_outlined),
           buildCategoryCard([
             SettingsItemLayout(
               icon: Icons.delete_outline_rounded,
@@ -278,7 +274,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ? SubscriptionStatusViewWidget(
               controller.currentSubscriptionStatusModel.value!,
               onUpgradeRefresh: () {
-                // controller.getProfessionalProfileDetail();
+                controller.getSubcriptionDetail();
+                controller.getProfileDetail();
               },
             )
           : Container(),
@@ -312,9 +309,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       context: Get.context!,
       buttonLabel: AppLocalizations.of(Get.context!)!.confirm,
       title: AppLocalizations.of(Get.context!)!.deleteAccount,
-      description: AppLocalizations.of(
-        Get.context!,
-      )!.areYouSureYouWantToDeleteYourAccount,
+      description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToDeleteYourAccount,
       onButtonPressed: () {
         controller.callDeleteAccountApi();
       },
