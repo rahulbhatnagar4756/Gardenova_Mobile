@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/validation_healper.dart';
+
 import '../../utils/constants/app_strings.dart';
 import '../components/social_login_layout.dart';
 
@@ -34,37 +35,31 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child:
-                  BaseForm(
-                    formKey: controller.formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        HeaderLogoLayout(
-                          title: AppLocalizations.of(context)!.welcome,
-                          subTitle: AppLocalizations.of(
-                            context,
-                          )!.loginOrRegisterToContinue,
-                        ),
-                        nameField(context),
-                        emailField(context),
-                        phoneNoField(context),
-                        passwordField(context),
-                        termOfUseAndPrivacyPolicy(context),
-                        register(context),
-                        orRegisterWith(context),
-                        /*  orRegisterWith(context),
-                  ,*/
-                        SocialLoginLayout(
-                          registerController: controller,
-                          type: AppStrings.register,
-                        ).paddingOnly(bottom: 25.h),
-                      ],
+              child: BaseForm(
+                formKey: controller.formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    HeaderLogoLayout(
+                      title: AppLocalizations.of(context)!.welcome,
+                      subTitle: AppLocalizations.of(context)!.loginOrRegisterToContinue,
                     ),
-                  ).marginSymmetric(
-                    horizontal: spacerSize20,
-                    vertical: spacerSize0,
-                  ),
+                    nameField(context),
+                    emailField(context),
+                    phoneNoField(context),
+                    passwordField(context),
+                    termOfUseAndPrivacyPolicy(context),
+                    register(context),
+                    orRegisterWith(context),
+                    /*  orRegisterWith(context),
+                  ,*/
+                    SocialLoginLayout(
+                      registerController: controller,
+                      type: AppStrings.register,
+                    ).paddingOnly(bottom: 25.h),
+                  ],
+                ),
+              ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
             ),
           ),
           alreadyHaveAnAccount(context),
@@ -87,10 +82,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
   Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
-        prefixIcon: Icon(
-          Icons.lock_outline_rounded,
-          color: AppColors.greenColor,
-        ),
+        prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.greenColor),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
@@ -99,8 +91,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         suffixIcon: IconButton(
           color: AppColors.liteGreyColor,
           onPressed: () {
-            controller.isPasswordObscure.value =
-                !controller.isPasswordObscure.value;
+            controller.isPasswordObscure.value = !controller.isPasswordObscure.value;
           },
           icon: controller.isPasswordObscure.value
               ? Icon(Icons.visibility_outlined)
@@ -123,14 +114,38 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
 
   // need to change
   Widget phoneNoField(BuildContext context) {
-    return BaseTextField(
-      prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
-      hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
-      keyboardType: TextInputType.phone,
-      textEditingController: controller.phoneNoController,
-      errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      validator: ValidationHelper.validatePhone,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 52.h,
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGrey,
+            borderRadius: BorderRadius.circular(spacerSize10),
+            border: Border.all(color: AppColors.borderGreyColor),
+          ),
+          alignment: Alignment.center,
+          child: BaseText(
+            text: '+91',
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 14.sp,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: BaseTextField(
+            prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+            hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+            keyboardType: TextInputType.phone,
+            textEditingController: controller.phoneNoController,
+            errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            validator: ValidationHelper.validatePhone,
+          ),
+        ),
+      ],
     ).marginOnly(bottom: spacerSize10);
   }
 
@@ -149,9 +164,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                 value: controller.isUserAgreedToTerms.value,
                 activeColor: AppColors.greenColor,
 
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(spacerSize10),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(spacerSize10)),
                 onChanged: (bool? value) {
                   controller.onCheckTermsAndCondition();
                 },
@@ -226,13 +239,12 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
-              controller.registerUser();
+              //controller.registerUser();
+              Get.toNamed(Routes.registerVerifyOtp);
             } else {
               BaseSnackBar.show(
                 title: appName,
-                message: AppLocalizations.of(
-                  context,
-                )!.pleaseAcceptTermsAndConditions,
+                message: AppLocalizations.of(context)!.pleaseAcceptTermsAndConditions,
               );
             }
           }
@@ -260,11 +272,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
 
   Widget divider() {
     return Expanded(
-      child: Divider(
-        thickness: spacerSize1,
-        height: spacerSize1,
-        color: AppColors.liteGreyColor,
-      ),
+      child: Divider(thickness: spacerSize1, height: spacerSize1, color: AppColors.liteGreyColor),
     );
   }
 

@@ -34,10 +34,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   onClickEditPencil: () {
                     OpenImagePickerBottomSheet(
                       onPickImage: (isCamera) {
-                        controller.pickImage(
-                          isCamera: isCamera,
-                          directApiCall: true,
-                        );
+                        controller.pickImage(isCamera: isCamera, directApiCall: true);
                       },
                       onThenCall: () {},
                     ).show();
@@ -55,7 +52,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                   title: AppLocalizations.of(context)!.myProfile,
                 ),
                 SizedBox(height: 24.h),
-                subscriptionPlanCard(),
+                //     subscriptionPlanCard(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: buildCategoryCard([
@@ -68,11 +65,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                         Get.toNamed(Routes.editProfile);
                       },
                     ),
-                    Divider(
-                      color: Colors.grey.shade100,
-                      height: 1,
-                      thickness: 1,
-                    ),
+                    Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
                     Obx(
                       () => SettingsItemLayout(
                         icon: Icons.lock_outline_rounded,
@@ -89,17 +82,12 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                         },
                       ),
                     ),
-                    Divider(
-                      color: Colors.grey.shade100,
-                      height: 1,
-                      thickness: 1,
-                    ),
+                    Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
                     SettingsItemLayout(
                       icon: Icons.history,
                       title: AppStrings.changeDiagnosis,
                       subtitle: "Retake your evaluation answers",
-                      onTap: () =>
-                          Get.toNamed(Routes.question, arguments: true),
+                      onTap: () => Get.toNamed(Routes.question, arguments: true),
                     ),
                   ]),
                 ),

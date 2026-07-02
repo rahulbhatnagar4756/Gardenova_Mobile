@@ -29,7 +29,6 @@ class MainActivity : FlutterActivity() {
         val payload = intent.getStringExtra(PAYLOAD_KEY)
         if (payload.isNullOrBlank()) return
 
-        android.util.Log.d(TAG, "Notification tap payload: $payload")
         GardenovaPushNotifier.persistNotificationPayload(this, payload)
         GardenovaPushBridge.notifyTap(payload)
 

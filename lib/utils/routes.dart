@@ -8,6 +8,7 @@ import 'package:kasagardem/authentication/login/login_screen.dart';
 import 'package:kasagardem/authentication/login/login_verify_otp_screen.dart';
 import 'package:kasagardem/authentication/login/login_view_model.dart';
 import 'package:kasagardem/authentication/register/register_screen.dart';
+import 'package:kasagardem/authentication/register/register_verify_otp_screen.dart';
 import 'package:kasagardem/authentication/register/register_view_model.dart';
 import 'package:kasagardem/base/widgets/coming_soon.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
@@ -70,6 +71,7 @@ class Routes {
   static const dashboard = '/dashboard';
   static const login = '/login';
   static const loginVerifyOtp = '/login_verify_otp';
+  static const registerVerifyOtp = '/register_verify_otp';
   static const signUp = '/sign_up';
   static const forgotPassword = '/forgot_password';
   static const verifyOtp = '/verify_otp';
@@ -157,6 +159,13 @@ class Routes {
         name: Routes.signUp,
         page: () => RegisterScreen(),
         binding: BindingsBuilder.put(() => RegisterViewModel()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+
+      GetPage(
+        name: Routes.registerVerifyOtp,
+        page: () => const RegisterVerifyOtpScreen(),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

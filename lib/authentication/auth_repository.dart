@@ -8,7 +8,7 @@ class AuthRepository {
   final String _googleLoginUrl = 'api/v1/auth/google';
   final String _facebookLoginUrl = 'api/v1/auth/facebook';
   final String _appleLoginUrl = 'api/v1/auth/apple';
-  final String _sendVerificationCode = 'api/v1/auth/sendVerificationToken';
+  final String _sendVerificationCode = 'api/v1/userProfile/sentemailvarification';
   final String _passwordResetCode = 'api/v1/auth/passwordResetToken';
   final String _verifyCode = 'api/v1/auth/verifyToken';
   final String _resetPassword = 'api/v1/auth/resetPassword';
@@ -54,10 +54,7 @@ class AuthRepository {
   }
 
   sendOtp({required String? email}) async {
-    var loginResponse = await ApiRepository.instance.post(
-      _sendVerificationCode,
-      body: {ApiKeys.email: email},
-    );
+    var loginResponse = await ApiRepository.instance.patch(_sendVerificationCode, {"email": email});
     return loginResponse;
   }
 
