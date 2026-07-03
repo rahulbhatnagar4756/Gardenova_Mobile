@@ -2,29 +2,26 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart'
-    as iapstorekit;
-import 'package:in_app_purchase_android/in_app_purchase_android.dart'
-    as iapandroidkit;
-import 'package:in_app_purchase_android/billing_client_wrappers.dart'
-    as iapandroidbillingkit;
-import 'package:in_app_purchase_storekit/store_kit_wrappers.dart'
-    as iap_stpre_kit;
+import 'package:in_app_purchase_android/billing_client_wrappers.dart' as iapandroidbillingkit;
+import 'package:in_app_purchase_android/in_app_purchase_android.dart' as iapandroidkit;
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart' as iapstorekit;
+import 'package:in_app_purchase_storekit/store_kit_wrappers.dart' as iap_stpre_kit;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../professional/upgradePlans/model/plan_model.dart';
 import '../settings/model/subscription_local_status_ui_model.dart';
 import '../settings/settings_view_model.dart';
+import '../utils/constants/app_constants.dart';
 import '../utils/network_services/api_repository.dart';
 import '../utils/routes.dart';
-import '../utils/constants/app_constants.dart';
-import '../professional/upgradePlans/model/plan_model.dart';
 
 class SubscriptionService {
   SubscriptionService._privateConstructor();
 
-  static final SubscriptionService instance =
-      SubscriptionService._privateConstructor();
+  static final SubscriptionService instance = SubscriptionService._privateConstructor();
 
   final InAppPurchase _iapConnection = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
@@ -62,16 +59,14 @@ class SubscriptionService {
       }
 
       if (Platform.isIOS) {
-        final iapstorekit.InAppPurchaseStoreKitPlatformAddition
-        iosPlatformAddition = _iapConnection
-            .getPlatformAddition<
-              iapstorekit.InAppPurchaseStoreKitPlatformAddition
-            >();
+        final iapstorekit.InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _iapConnection
+            .getPlatformAddition<iapstorekit.InAppPurchaseStoreKitPlatformAddition>();
         await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
       }
 
-      final ProductDetailsResponse productDetailResponse = await _iapConnection
-          .queryProductDetails(kProductIds);
+      final ProductDetailsResponse productDetailResponse = await _iapConnection.queryProductDetails(
+        kProductIds,
+      );
 
       if (productDetailResponse.error != null) {
         log('Error fetching products: ${productDetailResponse.error}');
@@ -94,8 +89,7 @@ class SubscriptionService {
 
     if (Platform.isIOS) {
       try {
-        final transactions = await iap_stpre_kit.SKPaymentQueueWrapper()
-            .transactions();
+        final transactions = await iap_stpre_kit.SKPaymentQueueWrapper().transactions();
         for (final t in transactions) {
           await iap_stpre_kit.SKPaymentQueueWrapper().finishTransaction(t);
         }
@@ -151,9 +145,7 @@ class SubscriptionService {
     bool isMonthly,
     SubscriptionStatusUiModel? currentSubscription,
   ) async {
-    String productId = isMonthly
-        ? (plan.monthlyProductId ?? "")
-        : (plan.yearlyProductId ?? "");
+    String productId = isMonthly ? (plan.monthlyProductId ?? "") : (plan.yearlyProductId ?? "");
 
     if (productId.isEmpty) {
       productId = getProductId(plan.planName ?? "", isMonthly);
@@ -174,10 +166,7 @@ class SubscriptionService {
 
     // Try to find the product in queried details
     final productDetails = products.firstWhereOrNull(
-      (p) =>
-          p.id == productId ||
-          p.id.endsWith(productId) ||
-          productId.endsWith(p.id),
+      (p) => p.id == productId || p.id.endsWith(productId) || productId.endsWith(p.id),
     );
 
     if (productDetails != null) {
@@ -186,9 +175,7 @@ class SubscriptionService {
 
     if (productDetails == null) {
       // If store product details are not loaded, simulate a success for sandbox testing
-      log(
-        'Product $productId not found in store. Simulating purchase success.',
-      );
+      log('Product $productId not found in store. Simulating purchase success.');
       _showLoading();
       await Future.delayed(const Duration(milliseconds: 1500));
       _hideLoading();
@@ -196,8 +183,7 @@ class SubscriptionService {
       final mockVerified = await verifyPurchaseWithBackend(
         platform: Platform.isIOS ? 'ios' : 'android',
         productId: productId,
-        purchaseToken:
-            'mock_purchase_token_${DateTime.now().millisecondsSinceEpoch}',
+        purchaseToken: 'mock_purchase_token_${DateTime.now().millisecondsSinceEpoch}',
         orderId: 'mock_order_${DateTime.now().millisecondsSinceEpoch}',
         transactionId: 'mock_tx_${DateTime.now().millisecondsSinceEpoch}',
         purchaseTime: DateTime.now().toUtc().toIso8601String(),
@@ -218,18 +204,15 @@ class SubscriptionService {
         // Fallback for offline/development if verify fails: locally update the profile model so the UI reflects the change
         if (Get.isRegistered<SettingsViewModel>()) {
           final settingsModel = Get.find<SettingsViewModel>();
-          settingsModel.currentSubscriptionStatusModel.value =
-              SubscriptionStatusUiModel(
-                id: productId,
-                name: plan.planName,
-                status: "Active",
-                isActive: true,
-                isTrialActive: false,
-                createdAt: DateTime.now().toIso8601String(),
-                updatedAt: DateTime.now()
-                    .add(const Duration(days: 30))
-                    .toIso8601String(),
-              );
+          settingsModel.currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+            id: productId,
+            name: plan.planName,
+            status: "Active",
+            isActive: true,
+            isTrialActive: false,
+            createdAt: DateTime.now().toIso8601String(),
+            updatedAt: DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+          );
           settingsModel.currentSubscriptionStatusModel.refresh();
         }
         BaseSnackBar.show(
@@ -261,17 +244,12 @@ class SubscriptionService {
         iapandroidkit.GooglePlayPurchaseDetails? existingAndroidPurchase;
 
         if (currentSubscription != null && currentSubscription.id != null) {
-          final iapandroidkit.InAppPurchaseAndroidPlatformAddition
-          androidAddition = _iapConnection
-              .getPlatformAddition<
-                iapandroidkit.InAppPurchaseAndroidPlatformAddition
-              >();
-          final pastPurchasesResponse = await androidAddition
-              .queryPastPurchases();
+          final iapandroidkit.InAppPurchaseAndroidPlatformAddition androidAddition = _iapConnection
+              .getPlatformAddition<iapandroidkit.InAppPurchaseAndroidPlatformAddition>();
+          final pastPurchasesResponse = await androidAddition.queryPastPurchases();
           for (final p in pastPurchasesResponse.pastPurchases) {
             if (p.productID == currentSubscription.id) {
-              existingAndroidPurchase =
-                  p as iapandroidkit.GooglePlayPurchaseDetails;
+              existingAndroidPurchase = p as iapandroidkit.GooglePlayPurchaseDetails;
               break;
             }
           }
@@ -306,9 +284,7 @@ class SubscriptionService {
           await _iapConnection.buyNonConsumable(purchaseParam: param);
         } else {
           log('Google Play Fresh Purchase: $productId');
-          final param = iapandroidkit.GooglePlayPurchaseParam(
-            productDetails: productDetails,
-          );
+          final param = iapandroidkit.GooglePlayPurchaseParam(productDetails: productDetails);
           await _iapConnection.buyNonConsumable(purchaseParam: param);
         }
       } else {
@@ -320,10 +296,7 @@ class SubscriptionService {
       log('Purchase invocation error: $e');
       _resetPurchaseState();
       _hideLoading();
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Purchase failed: ${e.toString()}",
-      );
+      BaseSnackBar.show(title: "Error", message: "Purchase failed: ${e.toString()}");
     }
   }
 
@@ -356,10 +329,7 @@ class SubscriptionService {
   }
 
   /// Cache purchase details before backend validation
-  Future<void> _cachePendingPurchase(
-    PurchaseDetails details, {
-    String? overrideProductId,
-  }) async {
+  Future<void> _cachePendingPurchase(PurchaseDetails details, {String? overrideProductId}) async {
     try {
       final String productId = overrideProductId ?? details.productID;
       final prefs = await SharedPreferences.getInstance();
@@ -369,8 +339,7 @@ class SubscriptionService {
           'productId': productId,
           'purchaseId': details.purchaseID,
           'transactionDate': details.transactionDate,
-          'serverVerificationData':
-              details.verificationData.serverVerificationData,
+          'serverVerificationData': details.verificationData.serverVerificationData,
           'platform': Platform.isIOS ? 'ios' : 'android',
           'timestamp': DateTime.now().toIso8601String(),
         }),
@@ -444,25 +413,14 @@ class SubscriptionService {
         try {
           if (numeric) {
             if (raw.length >= 13) {
-              parsedDate = DateTime.fromMillisecondsSinceEpoch(
-                int.parse(raw),
-                isUtc: true,
-              );
+              parsedDate = DateTime.fromMillisecondsSinceEpoch(int.parse(raw), isUtc: true);
             } else if (raw.length == 10) {
-              parsedDate = DateTime.fromMillisecondsSinceEpoch(
-                int.parse(raw) * 1000,
-                isUtc: true,
-              );
+              parsedDate = DateTime.fromMillisecondsSinceEpoch(int.parse(raw) * 1000, isUtc: true);
             } else {
-              parsedDate = DateTime.fromMillisecondsSinceEpoch(
-                int.parse(raw),
-                isUtc: true,
-              );
+              parsedDate = DateTime.fromMillisecondsSinceEpoch(int.parse(raw), isUtc: true);
             }
           } else {
-            final isoCandidate = raw.contains('T')
-                ? raw
-                : raw.replaceFirst(' ', 'T');
+            final isoCandidate = raw.contains('T') ? raw : raw.replaceFirst(' ', 'T');
             parsedDate = DateTime.tryParse(isoCandidate)?.toUtc();
           }
         } catch (e) {
@@ -486,10 +444,7 @@ class SubscriptionService {
       }
 
       log("body verification =>$body");
-      final response = await ApiRepository.instance.post(
-        'api/v1/subscription/verify',
-        body: body,
-      );
+      final response = await ApiRepository.instance.post('api/v1/subscription/verify', body: body);
 
       if (response != null &&
           (response['success'] == true ||
@@ -508,9 +463,7 @@ class SubscriptionService {
   }
 
   /// Listen updates in the purchase stream
-  Future<void> _listenToPurchaseUpdated(
-    List<PurchaseDetails> purchaseDetailsList,
-  ) async {
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
     try {
       if (!acceptEvents) {
         log('Ignoring purchase updates because acceptEvents=false');
@@ -555,9 +508,7 @@ class SubscriptionService {
   }
 
   /// Handle successful purchase/restore from stream callback
-  Future<void> _handleSuccessfulPurchaseOrRestore(
-    PurchaseDetails purchaseDetails,
-  ) async {
+  Future<void> _handleSuccessfulPurchaseOrRestore(PurchaseDetails purchaseDetails) async {
     try {
       if (userInitiatedPurchase && intendedPurchaseProductId != null) {
         if (purchaseDetails.productID != intendedPurchaseProductId) {
@@ -611,10 +562,7 @@ class SubscriptionService {
           settingsViewModel.getProfessionalProfileDetail();
         }
 
-        BaseSnackBar.show(
-          title: "Success",
-          message: "Plan purchased successfully.",
-        );
+        BaseSnackBar.show(title: "Success", message: "Plan purchased successfully.");
         // need change
         Get.until((route) => route.settings.name == Routes.dashboard);
         // Get.offAllNamed(Routes.professionalDashboard);
@@ -632,8 +580,7 @@ class SubscriptionService {
   }
 }
 
-class ExamplePaymentQueueDelegate
-    implements iap_stpre_kit.SKPaymentQueueDelegateWrapper {
+class ExamplePaymentQueueDelegate implements iap_stpre_kit.SKPaymentQueueDelegateWrapper {
   @override
   bool shouldContinueTransaction(
     iap_stpre_kit.SKPaymentTransactionWrapper transaction,

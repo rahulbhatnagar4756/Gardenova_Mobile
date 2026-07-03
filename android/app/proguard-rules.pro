@@ -19,8 +19,10 @@
 #########################################
 
 -keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.android.gms.internal.ads.** { *; }
 -keep public class com.google.ads.** { *; }
 -dontwarn com.google.android.gms.ads.**
+-dontwarn com.google.android.gms.internal.ads.**
 
 #########################################
 # Flutter

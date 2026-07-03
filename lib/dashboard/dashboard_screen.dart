@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
@@ -12,6 +12,7 @@ import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -173,7 +174,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 ),
               ),
               // AdMob Banner Ad Area (only if user does not have a premium subscription)
-              /* Obx(() {
+              Obx(() {
                 if (AdMobService.instance.shouldShowBanners &&
                     controller.isAdLoaded.value &&
                     controller.bannerAd != null) {
@@ -185,7 +186,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   );
                 }
                 return const SizedBox.shrink();
-              })*/
+              }),
             ],
           ),
         ),

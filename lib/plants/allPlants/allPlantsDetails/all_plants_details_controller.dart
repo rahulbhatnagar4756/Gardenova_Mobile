@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
 import 'package:kasagardem/plants/model/plant_info_item.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -50,7 +50,7 @@ class AllPlantsDetailsController extends GetxController {
   Rx<PlantDetailsResponseModel> plantDetailData = PlantDetailsResponseModel().obs;
   final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
   RxList<PlantInfoItem> plantInfoList = <PlantInfoItem>[].obs;
-  // BannerAd? bannerAd;
+  BannerAd? bannerAd;
 
   TextEditingController pruningController = TextEditingController();
   TextEditingController fertilizeController = TextEditingController();
@@ -71,25 +71,25 @@ class AllPlantsDetailsController extends GetxController {
     } else {
       callGetMyPlantDetailsApi();
     }
-    //   loadBannerAd();
+    loadBannerAd();
     super.onInit();
   }
 
-  void loadBannerAd() {
-    if (!AdMobService.instance.shouldShowBanners) {
-      isAdLoaded.value = false;
-      return;
-    }
-    /*  bannerAd = AdMobService.instance.loadBannerAd(
+  void loadBannerAd() async {
+    isAdLoaded.value = false;
+    final ad = await AdMobService.instance.loadBannerAd(
+      existingAd: bannerAd,
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
       },
       onAdFailedToLoad: (ad, error) {
         ad.dispose();
+        bannerAd = null;
         isAdLoaded.value = false;
         debugPrint('BannerAd failed to load: $error');
       },
-    );*/
+    );
+    bannerAd = ad;
   }
 
   void setPlantInfoData(PlantModelDetails plantDetails) {
@@ -123,7 +123,7 @@ class AllPlantsDetailsController extends GetxController {
 
   @override
   void onClose() {
-    // bannerAd?.dispose();
+    bannerAd?.dispose();
     super.onClose();
   }
 
