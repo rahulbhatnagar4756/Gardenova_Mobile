@@ -1049,6 +1049,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
 
   @override
+  String get planExpired => 'Plan Expired';
+
+  @override
+  String get planExpiredDesc =>
+      'Your subscription has ended. Choose a plan to continue using premium features.';
+
+  @override
   String get selectYourPlan => 'Select Your Plan';
 
   @override

@@ -15,6 +15,7 @@ import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_color.dart';
 import '../../utils/constants/app_constants.dart';
 import '../../utils/constants/app_keys.dart';
+import '../../utils/constants/app_strings.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../dashboard_repository.dart';
@@ -234,9 +235,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                     onTap: () {
                                       // launchExternalUrl("https://loja.kasagardem.com.br/");
                                       BaseSnackBar.show(
-                                        title: 'Temporarily Unavailable',
-                                        message:
-                                            'The store is currently on hold. We’ll be back soon with updates.',
+                                        title: AppStrings.temporarilyUnavailable,
+                                        message: AppStrings.storeOnHold,
                                       );
                                     },
                                   ),

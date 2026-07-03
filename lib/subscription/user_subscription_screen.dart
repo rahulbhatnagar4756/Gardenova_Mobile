@@ -29,7 +29,7 @@ class UserSubscriptionScreen extends GetWidget<UserSubscriptionController> {
           title: l10n.upgradePlanScreen,
         ),
         body: controller.isLoading.value && controller.planList.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? SizedBox()
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -74,30 +74,50 @@ class _HeaderSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BaseText(
-                text: '${l10n.yourPlanEnds}\t\t',
-                fontWeight: FontWeight.w400,
-                fontFamily: AppKeys.poppins,
-                fontSize: fontSize15,
-              ),
-              Obx(
-                () => BaseText(
-                  text: '${controller.remainingDays.value}\t${l10n.days}',
-                  fontWeight: FontWeight.w700,
-                  fontFamily: AppKeys.poppins,
-                  fontSize: fontSize18,
-                ),
-              ),
+              Obx(() {
+                final isExpired = controller.remainingDays.value == '0';
+                if (isExpired) {
+                  return BaseText(
+                    text: l10n.planExpired,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: AppKeys.poppins,
+                    fontSize: fontSize18,
+                    textColor: AppColors.red,
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    BaseText(
+                      text: '${l10n.yourPlanEnds}\t\t',
+                      fontWeight: FontWeight.w400,
+                      fontFamily: AppKeys.poppins,
+                      fontSize: fontSize15,
+                    ),
+                    BaseText(
+                      text: '${controller.remainingDays.value}\t${l10n.days}',
+                      fontWeight: FontWeight.w700,
+                      fontFamily: AppKeys.poppins,
+                      fontSize: fontSize18,
+                    ),
+                  ],
+                );
+              }),
             ],
           ),
           SizedBox(height: spacerSize8),
-          BaseText(
-            text: l10n.yourPlanEndsDesc,
-            textAlign: TextAlign.center,
-            textColor: AppColors.liteGreyColor,
-            fontWeight: FontWeight.w400,
-            fontFamily: AppKeys.inter,
-            fontSize: fontSize14,
+          Obx(
+            () => BaseText(
+              text: controller.remainingDays.value == '0'
+                  ? l10n.planExpiredDesc
+                  : l10n.yourPlanEndsDesc,
+              textAlign: TextAlign.center,
+              textColor: AppColors.liteGreyColor,
+              fontWeight: FontWeight.w400,
+              fontFamily: AppKeys.inter,
+              fontSize: fontSize14,
+            ),
           ),
         ],
       ),

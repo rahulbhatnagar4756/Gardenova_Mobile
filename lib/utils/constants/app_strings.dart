@@ -180,6 +180,18 @@ class AppStrings {
   static const String reminderRescheduledSuccess = "Reminder rescheduled successfully.";
   static const String reminderDisabledSuccess = "Reminder disabled successfully.";
   static const String generalCare = "General Care";
+  static const String temporarilyUnavailable = "Temporarily Unavailable";
+  static const String reportSectionOnHold =
+      "The Report section is currently on hold. We’ll be back soon with updates.";
+  static const String notificationsDisabledDescription =
+      "Notifications are currently disabled. Please enable them in system settings to receive plant care reminders.";
+  static const String storeOnHold =
+      "The store is currently on hold. We’ll be back soon with updates.";
+  static const String subscriptionPayment = "Subscription payment";
+  static const String razorpayKeyNotConfigured = "Razorpay key is not configured.";
+  static const String wallet = "Wallet";
+  static const String externalWallet = "external wallet";
+  static const String redirectedTo = "Redirected to";
 }
 
 class ErrorStrings {

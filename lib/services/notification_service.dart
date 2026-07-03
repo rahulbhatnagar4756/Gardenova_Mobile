@@ -125,8 +125,9 @@ class NotificationService with WidgetsBindingObserver {
   static final NotificationService instance = NotificationService._();
 
   static const MethodChannel _androidPushChannel = MethodChannel('com.gardenova.digisoft/push');
-  static const MethodChannel _androidPushEventsChannel =
-      MethodChannel('com.gardenova.digisoft/push_events');
+  static const MethodChannel _androidPushEventsChannel = MethodChannel(
+    'com.gardenova.digisoft/push_events',
+  );
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();

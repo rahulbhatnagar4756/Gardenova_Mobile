@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../utils/constants/app_constants.dart';
+import '../utils/constants/app_strings.dart';
 
 typedef RazorpayPaymentSuccess = void Function(PaymentSuccessResponse response);
 typedef RazorpayPaymentFailure = void Function(PaymentFailureResponse response);
@@ -48,21 +49,19 @@ class RazorpayPaymentService {
     String? contact,
     String? description,
   }) {
-    final resolvedKeyId = keyIdOverride?.trim().isNotEmpty == true
-        ? keyIdOverride!.trim()
-        : keyId;
+    final resolvedKeyId = keyIdOverride?.trim().isNotEmpty == true ? keyIdOverride!.trim() : keyId;
 
     if (resolvedKeyId.isEmpty) {
-      throw StateError('Razorpay key is not configured.');
+      throw StateError(AppStrings.razorpayKeyNotConfigured);
     }
 
     final options = <String, dynamic>{
       'key': resolvedKeyId,
       'amount': amount,
       'currency': currency,
-      'name': 'Gardenova',
+      'name': appName,
       'order_id': orderId,
-      'description': description ?? 'Subscription payment',
+      'description': description ?? AppStrings.subscriptionPayment,
       'theme': {'color': '#2E7D4F'},
       'retry': {'enabled': true, 'max_count': 1},
       'prefill': {
@@ -90,8 +89,8 @@ class RazorpayPaymentService {
       return;
     }
     BaseSnackBar.show(
-      title: 'Wallet',
-      message: 'Redirected to ${response.walletName ?? 'external wallet'}',
+      title: AppStrings.wallet,
+      message: '${AppStrings.redirectedTo} ${response.walletName ?? AppStrings.externalWallet}',
     );
   }
 

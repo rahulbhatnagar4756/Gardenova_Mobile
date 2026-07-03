@@ -2135,6 +2135,18 @@ abstract class AppLocalizations {
   /// **'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.'**
   String get yourPlanEndsDesc;
 
+  /// No description provided for @planExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Expired'**
+  String get planExpired;
+
+  /// No description provided for @planExpiredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has ended. Choose a plan to continue using premium features.'**
+  String get planExpiredDesc;
+
   /// No description provided for @selectYourPlan.
   ///
   /// In en, this message translates to:

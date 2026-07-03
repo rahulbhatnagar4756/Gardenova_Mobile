@@ -44,6 +44,9 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isExpired = _remainingDays == 0;
+
     return Stack(
       children: [
         Container(
@@ -207,9 +210,9 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         ),
                         SizedBox(width: spacerSize6),
                         BaseText(
-                          text: AppLocalizations.of(
-                            Get.context!,
-                          )!.subscriptionRemaining.toUpperCase(),
+                          text: isExpired
+                              ? l10n.planExpired.toUpperCase()
+                              : l10n.subscriptionRemaining.toUpperCase(),
                           fontFamily: AppKeys.inter,
                           textColor: AppColors.whiteColor,
                           fontSize: fontSize10,
@@ -221,31 +224,39 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: _remainingDays.toString(),
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.whiteColor,
-                                  fontFamily: AppKeys.inter,
+                        isExpired
+                            ? BaseText(
+                                text: l10n.planExpired,
+                                fontSize: fontSize22,
+                                fontWeight: FontWeight.w700,
+                                textColor: AppColors.whiteColor,
+                                fontFamily: AppKeys.inter,
+                              )
+                            : RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: _remainingDays.toString(),
+                                      style: TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.whiteColor,
+                                        fontFamily: AppKeys.inter,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          " ${l10n.days} ${l10n.left}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.offWhite70,
+                                        fontFamily: AppKeys.inter,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              TextSpan(
-                                text:
-                                    " ${AppLocalizations.of(Get.context!)!.days} ${AppLocalizations.of(Get.context!)!.left}",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.offWhite70,
-                                  fontFamily: AppKeys.inter,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
