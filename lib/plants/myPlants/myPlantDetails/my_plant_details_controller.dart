@@ -34,6 +34,7 @@ class MyPlantDetailsController extends GetxController {
       existingAd: bannerAd,
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
+        bannerAd = ad as BannerAd;
       },
       onAdFailedToLoad: (ad, error) {
         ad.dispose();
@@ -42,7 +43,7 @@ class MyPlantDetailsController extends GetxController {
         debugPrint('BannerAd failed to load: $error');
       },
     );
-    bannerAd = ad;
+    if (ad != null) bannerAd = ad;
   }
 
   @override

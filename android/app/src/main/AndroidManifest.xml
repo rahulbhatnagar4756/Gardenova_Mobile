@@ -21,6 +21,7 @@ xmlns:tools="http://schemas.android.com/tools">
     <meta-data
         android:name="com.google.android.gms.ads.APPLICATION_ID"
         android:value="ca-app-pub-9167105189322595~4796206308"/>
+<!--        android:value="ca-app-pub-9167105189322595~3127135447"/>-->
         <!-- Do not set default_notification_icon / channel — those enable a second
              system tray post alongside GardenovaPushNotifier for data-only messages. -->
         <meta-data

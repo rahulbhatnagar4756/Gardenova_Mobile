@@ -178,10 +178,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 if (AdMobService.instance.shouldShowBanners &&
                     controller.isAdLoaded.value &&
                     controller.bannerAd != null) {
-                  return Container(
-                    alignment: Alignment.center,
-                    width: controller.bannerAd!.size.width.toDouble().w,
-                    height: controller.bannerAd!.size.height.toDouble().h,
+                  return SizedBox(
+                    width: controller.bannerAd!.size.width.toDouble(),
+                    height: controller.bannerAd!.size.height.toDouble(),
                     child: AdWidget(ad: controller.bannerAd!),
                   );
                 }

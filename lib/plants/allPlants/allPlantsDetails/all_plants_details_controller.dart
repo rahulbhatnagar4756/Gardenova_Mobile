@@ -81,6 +81,7 @@ class AllPlantsDetailsController extends GetxController {
       existingAd: bannerAd,
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
+        bannerAd = ad as BannerAd;
       },
       onAdFailedToLoad: (ad, error) {
         ad.dispose();
@@ -89,7 +90,9 @@ class AllPlantsDetailsController extends GetxController {
         debugPrint('BannerAd failed to load: $error');
       },
     );
-    bannerAd = ad;
+    if (ad != null) {
+      bannerAd = ad;
+    }
   }
 
   void setPlantInfoData(PlantModelDetails plantDetails) {

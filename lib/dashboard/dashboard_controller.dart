@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../services/admob_service.dart';
 import '../services/subscription_service.dart';
+import '../settings/settings_view_model.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_helper/location_service.dart';
@@ -54,22 +55,37 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     SubscriptionService.instance.checkAndRecoverPendingPurchases();
-    loadBannerAd();
     responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupBannerAds();
       getPlantsRecommendations(responseId);
       isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     });
-    //    getCurrentLocation();
 
     super.onInit();
   }
 
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      final settingsVm = Get.find<SettingsViewModel>();
+      ever(settingsVm.currentSubscriptionStatusModel, (_) => loadBannerAd());
+    }
+    loadBannerAd();
+  }
+
   void loadBannerAd() async {
+    if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
+      isAdLoaded.value = false;
+      return;
+    }
+
     isAdLoaded.value = false;
     final ad = await AdMobService.instance.loadBannerAd(
       existingAd: bannerAd,
       onAdLoaded: (ad) {
+        bannerAd = ad as BannerAd;
         isAdLoaded.value = true;
       },
       onAdFailedToLoad: (ad, error) {
@@ -79,7 +95,9 @@ class DashboardController extends GetxController {
         debugPrint('BannerAd failed to load: $error');
       },
     );
-    bannerAd = ad;
+    if (ad != null) {
+      bannerAd = ad;
+    }
   }
 
   @override
