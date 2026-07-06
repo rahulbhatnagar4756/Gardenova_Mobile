@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 
@@ -60,6 +59,7 @@ class MyPlantsController extends GetxController {
       existingAd: bannerAd,
       onAdLoaded: (ad) {
         isAdLoaded.value = true;
+        bannerAd = ad as BannerAd;
       },
       onAdFailedToLoad: (ad, error) {
         ad.dispose();
@@ -68,7 +68,9 @@ class MyPlantsController extends GetxController {
         debugPrint('BannerAd failed to load: $error');
       },
     );
-    bannerAd = ad;
+    if (ad != null) {
+      bannerAd = ad;
+    }
   }
 
   @override

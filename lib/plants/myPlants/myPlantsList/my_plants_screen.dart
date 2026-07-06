@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
+import 'package:kasagardem/services/admob_service.dart';
 
 import '../../../base/dialogs/base_dialog.dart';
 import '../../../base/widgets/base_app_bar.dart';
@@ -156,19 +158,19 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
               ),
             ),
           ),
-          /*   Obx(() {
-      if (AdMobService.instance.shouldShowBanners &&
-          controller.isAdLoaded.value &&
-          controller.bannerAd != null) {
-        return Container(
-          alignment: Alignment.center,
-          width: controller.bannerAd!.size.width.toDouble().w,
-          height: controller.bannerAd!.size.height.toDouble().h,
-          child: AdWidget(ad: controller.bannerAd!),
-        );
-      }
-      return const SizedBox.shrink();
-    }),*/
+          Obx(() {
+            if (AdMobService.instance.shouldShowBanners &&
+                controller.isAdLoaded.value &&
+                controller.bannerAd != null) {
+              return Container(
+                alignment: Alignment.center,
+                width: controller.bannerAd!.size.width.toDouble().w,
+                height: controller.bannerAd!.size.height.toDouble().h,
+                child: AdWidget(ad: controller.bannerAd!),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
         ],
       ),
     );

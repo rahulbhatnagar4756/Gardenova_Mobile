@@ -250,59 +250,24 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> getSubcriptionDetail() async {
-    // var realDetialModel = SubscriptionStatusUiModel(
-    //   name: profileResponse.data!.subscriptionPlan,
-    //   status: profileResponse.data!.accountStatus,
-    //   isActive: profileResponse.data!.accountStatus?.toLowerCase() == "active",
-    //   isTrialActive: profileResponse.data!.subscriptionPlan?.toLowerCase() == "trial",
-    //   createdAt: profileResponse.data!.startDate,
-    //   updatedAt: profileResponse.data!.endDate,
-    // );
-    // Trial Subscription
-    // final trialSubscription = SubscriptionStatusUiModel(
-    //   name: "Trial",
-    //   status: "Active",
-    //   isActive: true,
-    //   isTrialActive: true,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2026-06-15",
-    // );
-
-    // Active Subscription
-    final activeSubscription = SubscriptionStatusUiModel(
-      name: "Premium",
-      status: "Active",
-      isActive: true,
-      isTrialActive: false,
-      createdAt: "2026-05-01",
-      updatedAt: "2026-07-01",
-    );
-
-    // Cancelled Subscription
-    // final cancelledSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Cancelled",
-    //   isActive: false,
-    //   isTrialActive: false,
-    //   createdAt: "2026-04-01",
-    //   updatedAt: "2026-05-15",
-    // );
-
-    // Renewed Subscription
-    // final renewedSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Renewed",
-    //   isActive: true,
-    //   isTrialActive: false,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2027-06-01",
-    // );
-    // need change
-    // currentSubscriptionStatusModel.value = trialSubscription;
-    currentSubscriptionStatusModel.value = activeSubscription;
-    // currentSubscriptionStatusModel.value = cancelledSubscription;
-    // currentSubscriptionStatusModel.value = renewedSubscription;
-    // currentSubscriptionStatusModel.value = realDetialModel;
+    final response = await profileRepository.fetchProfile();
+    if (response != null) {
+      final data = response['data'];
+      if (data is Map) {
+        final planName =
+            data['subscriptionPlan'] ?? data['SubscriptionPlan'] ?? 'Free';
+        final accountStatus =
+            data['accountStatus'] ?? data['AccountStatus'] ?? 'Active';
+        currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+          name: planName.toString(),
+          status: accountStatus.toString(),
+          isActive: accountStatus.toString().toLowerCase() == 'active',
+          isTrialActive: planName.toString().toLowerCase() == 'trial',
+          createdAt: data['startDate']?.toString() ?? data['StartDate']?.toString(),
+          updatedAt: data['endDate']?.toString() ?? data['EndDate']?.toString(),
+        );
+      }
+    }
 
     if (currentSubscriptionStatusModel.value != null) {
       final model = currentSubscriptionStatusModel.value!;
