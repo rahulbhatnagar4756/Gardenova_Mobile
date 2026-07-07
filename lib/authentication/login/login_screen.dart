@@ -181,7 +181,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        /*    GestureDetector(
+        GestureDetector(
           onTap: controller.toggleLoginMode,
           child: BaseText(
             text: AppLocalizations.of(context)!.loginWithOtp,
@@ -190,7 +190,7 @@ class LoginScreen extends GetWidget<LoginViewModel> {
             fontSize: 13.sp,
             textColor: AppColors.greenColor,
           ),
-        ),*/
+        ),
         GestureDetector(
           onTap: () {
             Get.toNamed(Routes.forgotPassword);

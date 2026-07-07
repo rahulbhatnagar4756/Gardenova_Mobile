@@ -11,9 +11,7 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
-import 'package:kasagardem/utils/routes.dart';
 
-import '../../utils/constants/app_strings.dart';
 import '../../utils/utils.dart';
 
 class RegisterVerifyOtpScreen extends GetWidget<RegisterViewModel> {
@@ -31,11 +29,10 @@ class RegisterVerifyOtpScreen extends GetWidget<RegisterViewModel> {
           child: Column(
             children: [
               HeaderLogoLayout(
-                title: AppStrings.verifyEmailAddress,
-                subTitle: AppStrings.verifyEmailSubTxt.replaceAll(
-                  'EMAIL_ADDRESS',
-                  controller.emailController.text.trim(),
-                ),
+                title: AppLocalizations.of(context)!.enterYourOtp,
+                subTitle: AppLocalizations.of(
+                  context,
+                )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
               ),
               OtpLayout(
                 lengthOtp: 6,
@@ -127,7 +124,6 @@ class RegisterVerifyOtpScreen extends GetWidget<RegisterViewModel> {
                   text: isPt ? ' Reenviar' : ' Resend',
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Get.toNamed(Routes.registerVerifyOtp);
                       if (controller.canResendOtp.value) {
                         controller.sendRegisterOtp(isResend: true);
                       }

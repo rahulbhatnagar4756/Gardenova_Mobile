@@ -77,7 +77,9 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
 
   Future<void> sendRegisterOtp({bool isResend = false}) async {
     resendTimer?.cancel();
-    final response = await authRepository.sendOtp(email: emailController.text.trim());
+    final response = await authRepository.sendLoginOtp(
+      phoneNumber: formattedPhoneNumber,
+    );
     if (response != null) {
       pinController.clear();
       startResendTimer();
@@ -94,9 +96,10 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> verifyRegisterOtp() async {
-    final response = await authRepository.verifyOtp(
-      email: emailController.text.trim(),
+    final response = await authRepository.verifyLoginOtp(
+      phoneNumber: formattedPhoneNumber,
       otp: pinController.text.trim(),
+      reqType: 'register',
     );
     if (response != null) {
       await _submitRegistration();

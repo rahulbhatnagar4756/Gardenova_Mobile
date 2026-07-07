@@ -239,8 +239,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
-              //controller.registerUser();
-              Get.toNamed(Routes.registerVerifyOtp);
+              controller.sendRegisterOtp();
             } else {
               BaseSnackBar.show(
                 title: appName,
