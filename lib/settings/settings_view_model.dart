@@ -203,7 +203,13 @@ class SettingsViewModel extends GetxController {
         originalEmail.value = profileResponse.data?.email ?? '';
         isEmailVerified.value = true;
         showVerifyButton.value = false;
-        phoneNoController.text = profileResponse.data?.contactNumber ?? "";
+        SharedPrefsService.instance.setString(AppKeys.name, name.value);
+        SharedPrefsService.instance.setString(AppKeys.email, email.value);
+        String phone = profileResponse.data?.contactNumber ?? "";
+        if (phone.startsWith("+91")) {
+          phone = phone.replaceFirst("+91", "");
+        }
+        phoneNoController.text = phone;
         if (profileResponse.data?.profileImage != null) {
           profileImage.value = profileResponse.data?.profileImage ?? '';
           apiImage = profileResponse.data?.profileImage ?? '';
