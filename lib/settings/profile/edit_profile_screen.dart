@@ -240,7 +240,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
       keyboardType: TextInputType.phone,
       textEditingController: controller.phoneNoController,
-      isTextFieldEnabled: true,
+      isTextFieldEnabled: false,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       validator: ValidationHelper.validatePhone,
     );
