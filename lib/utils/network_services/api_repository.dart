@@ -132,9 +132,10 @@ class ApiRepository {
         default:
           throw ArgumentError('${AppStrings.invalidHttpMethod}: $method');
       }
+      log("API Response::: ${response.body}");
 
       final responseData = _returnResponse(response);
-      // log("API Response::: ${jsonEncode(responseData)}");
+      log("API Response::: ${jsonEncode(responseData)}");
       // if (showDefaultLoader) {
       //   hideLoader();
       // }
@@ -164,6 +165,7 @@ class ApiRepository {
         rethrow;
       }
       if (showRunTimeError) {
+        print("Value of e is $e");
         String message = AppStrings.somethingWentWrong;
         if (e is FetchDataException) {
           message = e.message;
@@ -176,6 +178,7 @@ class ApiRepository {
         } else if (e is ConflictException) {
           message = e.message;
         }
+        print("Value of message is $message");
         BaseSnackBar.show(title: AppStrings.exception, message: message);
       }
       return null;
@@ -241,6 +244,7 @@ class ApiRepository {
       final body = jsonDecode(response.body);
       debugPrint("response:::$body");
       message = body['message'];
+      print("value of mesage" + message!);
     } catch (_) {}
 
     switch (response.statusCode) {
