@@ -5,8 +5,7 @@ import '../../utils/constants/api_keys.dart';
 UpdateProfileModel updateProfileModelFromJson(String str) =>
     UpdateProfileModel.fromJson(json.decode(str));
 
-String updateProfileModelToJson(UpdateProfileModel data) =>
-    json.encode(data.toJson());
+String updateProfileModelToJson(UpdateProfileModel data) => json.encode(data.toJson());
 
 class UpdateProfileModel {
   String? profileImage;
@@ -71,7 +70,9 @@ class UpdateProfileModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['profileImage'] = profileImage;
+    if (profileImage != null) {
+      map['profileImage'] = profileImage;
+    }
     // map['dateOfBirth'] = dateOfBirth;
     // map['gender'] = gender;
     // map['bio'] = bio;
@@ -104,9 +105,7 @@ class UpdateProfilePictureModel {
     String? name,
     String? email,
     String? phoneNo,
-  }) => UpdateProfilePictureModel(
-    profileImage: profileImage ?? this.profileImage,
-  );
+  }) => UpdateProfilePictureModel(profileImage: profileImage ?? this.profileImage);
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

@@ -379,11 +379,7 @@ class SettingsViewModel extends GetxController {
     }
 
     UpdateProfileModel? updateProfileResponse = UpdateProfileModel()
-      ..profileImage = base64String != null
-          ? "data:image/png;base64,$base64String"
-          : profileImage.value.isNotEmpty
-          ? profileImage.value
-          : ''
+      ..profileImage = base64String != null ? "data:image/png;base64,$base64String" : null
       ..dateOfBirth = ""
       ..gender = ""
       ..bio = ""
