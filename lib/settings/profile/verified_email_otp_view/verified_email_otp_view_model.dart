@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/professional_profile_model.dart';
@@ -41,11 +42,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
     focusNode = FocusNode();
     parsingArgument.value =
         Get.arguments ??
-        VerifiedEmailLocalParsingModel(
-          email: '',
-          fromLoginFlow: true,
-          userType: 'user',
-        );
+        VerifiedEmailLocalParsingModel(email: '', fromLoginFlow: true, userType: 'user');
 
     final bool isSuccess = parsingArgument.value?.requestSussessFull ?? false;
     startTimer(isSuccess ? 60 : 60);
@@ -77,10 +74,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
   Future<void> reSendVerificationTime() async {
     final String mail = parsingArgument.value?.email ?? ''.trim();
     if (mail.isEmpty || !GetUtils.isEmail(mail)) {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Please enter a valid email address.",
-      );
+      BaseSnackBar.show(title: "Error", message: "Please enter a valid email address.");
       return;
     }
 
@@ -115,27 +109,18 @@ class VerifiedEmailOtpViewModel extends GetxController {
           );
         }
       } else {
-        BaseSnackBar.show(
-          title: "Error",
-          message: "Could not connect to verification service.",
-        );
+        BaseSnackBar.show(title: "Error", message: "Could not connect to verification service.");
       }
     } catch (e) {
       ApiRepository.instance.hideLoader();
       debugPrint("sendEmailVerification exception: $e");
-      BaseSnackBar.show(
-        title: "Error",
-        message: "An error occurred during verification process.",
-      );
+      BaseSnackBar.show(title: "Error", message: "An error occurred during verification process.");
     }
   }
 
   Future<void> verifyEmailOtp(String otp) async {
     if (otp.length < 4) {
-      BaseSnackBar.show(
-        title: "Error",
-        message: "Please enter a valid 4-digit OTP.",
-      );
+      BaseSnackBar.show(title: "Error", message: "Please enter a valid 4-digit OTP.");
       return;
     }
 
@@ -150,10 +135,7 @@ class VerifiedEmailOtpViewModel extends GetxController {
         if (body['statusCode'] == 200 || body['success'] == true) {
           final String? newToken = body['data'];
           if (newToken != null && newToken.isNotEmpty) {
-            await SharedPrefsService.instance.setString(
-              AppKeys.idToken,
-              newToken,
-            );
+            await SharedPrefsService.instance.setString(AppKeys.idToken, newToken);
           }
           parsingArgument.value?.requestSussessFull = true;
           Get.back(result: parsingArgument.value);
@@ -168,18 +150,12 @@ class VerifiedEmailOtpViewModel extends GetxController {
           );
         }
       } else {
-        BaseSnackBar.show(
-          title: "Error",
-          message: "Failed to verify OTP. Please try again.",
-        );
+        BaseSnackBar.show(title: "Error", message: "Failed to verify OTP. Please try again.");
       }
     } catch (e) {
       ApiRepository.instance.hideLoader();
       debugPrint("verifyEmailOtp exception: $e");
-      BaseSnackBar.show(
-        title: "Error",
-        message: "An error occurred while verifying the code.",
-      );
+      BaseSnackBar.show(title: "Error", message: "An error occurred while verifying the code.");
     }
   }
 }

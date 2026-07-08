@@ -523,7 +523,7 @@ class SettingsViewModel extends GetxController {
   void callDeleteAccountApi() async {
     var response = await profileRepository.deleteAccount();
     if (response != null) {
-      await ReminderPushNotificationService.instance.onUserLogout();
+      // await ReminderPushNotificationService.instance.onUserLogout();
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
       SharedPrefsService.instance.clear();
       // Get.offAllNamed(Routes.chooseAccountType);
@@ -585,7 +585,7 @@ class SettingsViewModel extends GetxController {
           );
         }
       } else {
-        BaseSnackBar.show(title: "Error", message: "Could not connect to verification service.");
+        //  BaseSnackBar.show(title: "Error", message: "Could not connect to verification service.");
       }
     } catch (e) {
       ApiRepository.instance.hideLoader();
