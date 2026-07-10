@@ -10,6 +10,7 @@ class MainActivity : FlutterActivity() {
         super.configureFlutterEngine(flutterEngine)
         GardenovaPushPlugin.register(flutterEngine.dartExecutor.binaryMessenger, this)
         GardenovaPushBridge.register(flutterEngine.dartExecutor.binaryMessenger)
+        GardenovaAlternateBillingPlugin.register(flutterEngine.dartExecutor.binaryMessenger, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

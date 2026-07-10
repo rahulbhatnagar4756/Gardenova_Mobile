@@ -240,12 +240,15 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
                                           icon = Icons.qr_code_scanner;
                                           break;
                                         case 'landscape_gen':
+                                        case 'landscape_gens':
                                           icon = Icons.landscape_outlined;
                                           break;
                                         case 'max_plants':
+                                        case 'saved_plants':
                                           icon = Icons.eco_outlined;
                                           break;
                                         case 'ai_assistant':
+                                        case 'ai_care_assistant':
                                           icon = Icons.assistant_outlined;
                                           break;
                                         case 'hd_renders':
@@ -255,6 +258,7 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
                                           icon = Icons.picture_as_pdf_outlined;
                                           break;
                                         case 'premium_styles':
+                                        case 'premium_themes':
                                           icon = Icons.style_outlined;
                                           break;
                                         case 'before_after_download':
@@ -262,6 +266,15 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
                                           break;
                                         case 'basic_reminders':
                                           icon = Icons.notifications_active_outlined;
+                                          break;
+                                        case 'priority_generation':
+                                          icon = Icons.bolt_outlined;
+                                          break;
+                                        case 'priority_support':
+                                          icon = Icons.headset_mic_outlined;
+                                          break;
+                                        case 'ad_free':
+                                          icon = Icons.block_outlined;
                                           break;
                                       }
                                       return _buildFeatureRow(

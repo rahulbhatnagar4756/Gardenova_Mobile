@@ -44,8 +44,12 @@
 -dontwarn com.facebook.**
 
 #########################################
-# Google Play / Feature Delivery
+# Google Play Billing (alternate billing)
 #########################################
+
+-keep class com.android.billingclient.** { *; }
+-dontwarn com.android.billingclient.**
+
 
 -keep class com.google.android.play.** { *; }
 -dontwarn com.google.android.play.**

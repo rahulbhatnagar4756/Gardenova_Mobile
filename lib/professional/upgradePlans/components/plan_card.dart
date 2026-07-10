@@ -132,8 +132,12 @@ class PlanCard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             fontFamily: AppKeys.inter,
                             fontSize: fontSize12,
-                            text: plan.features?.firstWhereOrNull((f) => f.key == 'max_plants')?.label ??
-                                (plan.maxPlants == -1 ? "Unlimited Plants" : "${plan.maxPlants ?? 0} Plants"),
+                            text: plan.features?.firstWhereOrNull(
+                                  (f) => f.key == 'saved_plants' || f.key == 'max_plants',
+                                )?.label ??
+                                (plan.maxPlants == -1
+                                    ? "Unlimited Plants"
+                                    : "${plan.maxPlants ?? 0} Plants"),
                           ),
                         ],
                       ),

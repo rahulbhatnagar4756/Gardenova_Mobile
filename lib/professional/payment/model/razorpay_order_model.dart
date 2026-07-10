@@ -17,32 +17,17 @@ class RazorpayOrderResponse {
 }
 
 class RazorpayOrderData {
-  final String? orderId;
-  final int? amount;
-  final String? currency;
+  final String? subscriptionId;
   final String? keyId;
 
-  RazorpayOrderData({
-    this.orderId,
-    this.amount,
-    this.currency,
-    this.keyId,
-  });
+  RazorpayOrderData({this.subscriptionId, this.keyId});
 
   factory RazorpayOrderData.fromJson(Map<String, dynamic> json) {
     return RazorpayOrderData(
-      orderId: json['order_id']?.toString() ?? json['orderId']?.toString(),
-      amount: _parseAmount(json['amount']),
-      currency: json['currency']?.toString() ?? 'INR',
+      subscriptionId: json['subscriptionId']?.toString() ??
+          json['subscription_id']?.toString(),
       keyId: json['key_id']?.toString() ?? json['keyId']?.toString(),
     );
-  }
-
-  static int? _parseAmount(dynamic value) {
-    if (value == null) return null;
-    if (value is int) return value;
-    if (value is double) return value.toInt();
-    return int.tryParse(value.toString());
   }
 }
 
@@ -54,9 +39,7 @@ class RazorpayVerifyResponse {
 
   factory RazorpayVerifyResponse.fromJson(Map<String, dynamic> json) {
     return RazorpayVerifyResponse(
-      success: json['success'] == true ||
-          json['statusCode'] == 200 ||
-          json['statusCode'] == 201,
+      success: json['success'] == true || json['statusCode'] == 200 || json['statusCode'] == 201,
       message: json['message']?.toString(),
     );
   }

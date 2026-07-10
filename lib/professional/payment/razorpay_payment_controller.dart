@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../services/alternate_billing_service.dart';
 import '../../services/razorpay_payment_service.dart';
 import '../../settings/model/subscription_local_status_ui_model.dart';
 import '../../settings/settings_view_model.dart';
@@ -28,7 +29,7 @@ class RazorpayPaymentController extends GetxController {
   final RxBool isProcessingPayment = false.obs;
   final RxString selectedMethod = 'upi'.obs;
 
-  String? _activeOrderId;
+  String? _activeSubscriptionId;
 
   @override
   void onInit() {
@@ -48,15 +49,13 @@ class RazorpayPaymentController extends GetxController {
     hasAdditionalCoverage = args['hasAdditionalCoverage'] as bool? ?? false;
     isOneTimeCoverage = args['isOneTimeCoverage'] as bool? ?? true;
     totalAmount = (args['totalAmount'] as num?)?.toDouble() ?? 0;
-    currentSubscription =
-        args['currentSubscription'] as SubscriptionStatusUiModel?;
+    currentSubscription = args['currentSubscription'] as SubscriptionStatusUiModel?;
     isUserPayment = args['isUser'] as bool? ?? false;
   }
 
   String get billingLabel => isMonthly ? 'Monthly' : 'Annually';
 
-  String get planId =>
-      isMonthly ? (plan.monthlyId ?? plan.id ?? '') : (plan.yearlyId ?? plan.id ?? '');
+  String get planCode => plan.resolvePlanCode(isMonthly: isMonthly);
 
   String get formattedAmount {
     final symbol = _currencySymbol(plan.currency);
@@ -90,35 +89,31 @@ class RazorpayPaymentController extends GetxController {
   Future<void> startPayment() async {
     if (isLoading.value || isProcessingPayment.value) return;
 
-    if (planId.isEmpty) {
-      BaseSnackBar.show(
-        title: 'Plan',
-        message: 'Unable to identify the selected plan.',
-      );
+    if (planCode.isEmpty || planCode == 'free') {
+      BaseSnackBar.show(title: 'Plan', message: 'Please select a paid plan to continue.');
       return;
     }
 
     isLoading.value = true;
     try {
-      final orderResponse = await _repository.createOrder(_buildCreateOrderBody());
-      if (orderResponse?.success != true || orderResponse?.data?.orderId == null) {
+      await AlternateBillingService.prepareIfAvailable();
+      final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
+
+      final orderResponse = await _repository.createOrder(planCode);
+      if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
         BaseSnackBar.show(
           title: 'Payment',
-          message: orderResponse?.message ?? 'Failed to create payment order.',
+          message: orderResponse?.message ?? 'Failed to create subscription.',
         );
         return;
       }
 
       final order = orderResponse!.data!;
-      _activeOrderId = order.orderId;
-      final amount = order.amount ?? (totalAmount * 100).round();
-      final currency = order.currency ?? plan.currency ?? 'INR';
+      _activeSubscriptionId = order.subscriptionId;
 
       isProcessingPayment.value = true;
-      RazorpayPaymentService.instance.openCheckout(
-        orderId: order.orderId!,
-        amount: amount,
-        currency: currency,
+      RazorpayPaymentService.instance.openSubscriptionCheckout(
+        subscriptionId: order.subscriptionId!,
         keyIdOverride: order.keyId,
         name: _userName(),
         email: _userEmail(),
@@ -136,17 +131,14 @@ class RazorpayPaymentController extends GetxController {
     }
   }
 
-  Map<String, dynamic> _buildCreateOrderBody() {
-    return {
-      'plan_id': planId,
-      'billing_period': isMonthly ? 'monthly' : 'yearly',
-      'amount': totalAmount,
-      'currency': plan.currency ?? 'INR',
-      'additional_coverage': hasAdditionalCoverage,
-      if (hasAdditionalCoverage)
-        'coverage_type': isOneTimeCoverage ? 'one_time' : 'annual',
-      if (currentSubscription?.id != null) 'current_plan_id': currentSubscription!.id,
-    };
+  String? _subscriptionIdFromResponse(PaymentSuccessResponse response) {
+    final data = response.data;
+    final fromData = data?['razorpay_subscription_id']?.toString();
+    if (fromData != null && fromData.isNotEmpty) return fromData;
+    if (response.orderId != null && response.orderId!.isNotEmpty) {
+      return response.orderId;
+    }
+    return _activeSubscriptionId;
   }
 
   Future<void> _onPaymentSuccess(PaymentSuccessResponse response) async {
@@ -154,13 +146,14 @@ class RazorpayPaymentController extends GetxController {
     isLoading.value = true;
 
     try {
+      final subscriptionId = _subscriptionIdFromResponse(response);
       final verifyResponse = await _repository.verifyPayment({
-        'razorpay_order_id': response.orderId ?? _activeOrderId,
+        if (subscriptionId != null) 'razorpay_subscription_id': subscriptionId,
         'razorpay_payment_id': response.paymentId,
-        'razorpay_signature': response.signature,
-        'plan_id': planId,
+        if (response.signature != null) 'razorpay_signature': response.signature,
+        'planCode': planCode,
+        'billing_provider': 'alternate',
         'billing_period': isMonthly ? 'monthly' : 'yearly',
-        'additional_coverage': hasAdditionalCoverage,
       });
 
       if (verifyResponse?.success == true) {
@@ -183,8 +176,7 @@ class RazorpayPaymentController extends GetxController {
 
       BaseSnackBar.show(
         title: 'Verification Pending',
-        message: verifyResponse?.message ??
-            'Payment received. Verification is pending.',
+        message: verifyResponse?.message ?? 'Payment received. Verification is pending.',
       );
     } catch (e) {
       log('Razorpay verify error: $e');

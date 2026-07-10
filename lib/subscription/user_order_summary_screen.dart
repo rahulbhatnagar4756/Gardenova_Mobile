@@ -65,28 +65,30 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
                 vertical: spacerSize16,
               ),
               child: Obx(
-                () => SizedBox(
-                  width: double.infinity,
-                  child: BaseButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : () {
-                            if (Platform.isAndroid) {
-                              controller.goToRazorpayPayment();
-                            } else {
-                              controller.startPurchaseFlow();
-                            }
-                          },
-                    backgroundColor: controller.isLoading.value
-                        ? AppColors.liteGreyColor
-                        : AppColors.greenColor,
-                    buttonLabel: controller.isLoading.value
-                        ? 'Processing...'
-                        : l10n.fullPayment,
-                    fontSize: fontSize15,
-                    textColor: Colors.white,
-                  ),
-                ),
+                () {
+                  final isBusy = controller.isLoading.value ||
+                      controller.isProcessingPayment.value;
+                  return SizedBox(
+                    width: double.infinity,
+                    child: BaseButton(
+                      onPressed: isBusy
+                          ? null
+                          : () {
+                              if (Platform.isAndroid) {
+                                controller.startRazorpayPayment();
+                              } else {
+                                controller.startPurchaseFlow();
+                              }
+                            },
+                      backgroundColor: isBusy
+                          ? AppColors.liteGreyColor
+                          : AppColors.greenColor,
+                      buttonLabel: isBusy ? 'Processing...' : l10n.fullPayment,
+                      fontSize: fontSize15,
+                      textColor: Colors.white,
+                    ),
+                  );
+                },
               ),
             ),
           ],

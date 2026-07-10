@@ -122,7 +122,8 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
           ? SubscriptionStatusViewWidget(
               controller.currentSubscriptionStatusModel.value!,
               onUpgradeRefresh: () {
-                // controller.getProfessionalProfileDetail();
+                controller.getSubcriptionDetail();
+                controller.getProfileDetail();
               },
             ).paddingSymmetric(horizontal: 16.w)
           : Container(),

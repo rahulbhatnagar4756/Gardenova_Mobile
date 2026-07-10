@@ -61,6 +61,7 @@ class PlanModel {
   bool? _premiumStyles;
   bool? _beforeAfterDownload;
   bool? _basicReminders;
+  bool? _priorityCustomerSupport;
 
   // UI / legacy fields
   bool? isSelect = false;
@@ -81,6 +82,10 @@ class PlanModel {
   String? yearlyProductId;
   String? monthlyId;
   String? yearlyId;
+  String? monthlyRazorpayPlanId;
+  String? yearlyRazorpayPlanId;
+  String? code;
+  String? razorpayPlanId;
   List<PlanFeature>? features;
 
   PlanModel({
@@ -117,6 +122,10 @@ class PlanModel {
     this.yearlyProductId,
     this.monthlyId,
     this.yearlyId,
+    this.monthlyRazorpayPlanId,
+    this.yearlyRazorpayPlanId,
+    this.code,
+    this.razorpayPlanId,
     this.features,
   }) {
     if (id != null) {
@@ -202,8 +211,7 @@ class PlanModel {
   bool? get premiumStyles => _premiumStyles;
   set premiumStyles(bool? premiumStyles) => _premiumStyles = premiumStyles;
   bool? get beforeAfterDownload => _beforeAfterDownload;
-  set beforeAfterDownload(bool? beforeAfterDownload) =>
-      _beforeAfterDownload = beforeAfterDownload;
+  set beforeAfterDownload(bool? beforeAfterDownload) => _beforeAfterDownload = beforeAfterDownload;
   bool? get basicReminders => _basicReminders;
   set basicReminders(bool? basicReminders) => _basicReminders = basicReminders;
 
@@ -212,79 +220,204 @@ class PlanModel {
   }
 
   PlanModel.fromJson(Map<String, dynamic> json) {
-    _id = json['id'];
-    _name = json['name'];
-    _tier = json['tier'];
-    _billingPeriod = json['billing_period'];
-    _productId = json['product_id'];
-    _price = json['price'];
-    _currency = json['currency'];
-    _diagnosisScans = json['diagnosis_scans'];
-    _landscapeGen = json['landscape_gen'];
-    _maxPlants = json['max_plants'];
-    _aiAssistant = json['ai_assistant'];
-    _hdRenders = json['hd_renders'];
-    _pdfExport = json['pdf_export'];
-    _premiumStyles = json['premium_styles'];
-    _beforeAfterDownload = json['before_after_download'];
-    _basicReminders = json['basic_reminders'];
+    _id = json['id']?.toString();
+    code = json['code']?.toString();
+    _name =
+        json['name']?.toString() ??
+        _displayNameFromCode(code) ??
+        _displayNameFromTier(json['tier']);
+    _tier = json['tier']?.toString();
+    _billingPeriod = _normalizeBillingPeriod(json['billing_cycle'] ?? json['billing_period']);
+    _productId = json['product_id']?.toString();
+    razorpayPlanId = json['razorpay_plan_id']?.toString();
+    _price = _parsePrice(json);
+    _currency = json['currency']?.toString() ?? 'INR';
 
     if (json['features'] != null) {
       features = <PlanFeature>[];
-      json['features'].forEach((v) {
-        features!.add(PlanFeature.fromJson(v));
-      });
-      json['features'].forEach((f) {
-        final key = f['key'];
-        final label = f['label'];
-        final enabled = f['enabled'] == true;
-
-        switch (key) {
-          case 'diagnosis_scans':
-            final match = RegExp(r'\d+').firstMatch(label ?? '');
-            if (match != null) {
-              _diagnosisScans = int.tryParse(match.group(0)!);
-            }
-            break;
-          case 'landscape_gen':
-            final match = RegExp(r'\d+').firstMatch(label ?? '');
-            if (match != null) {
-              _landscapeGen = int.tryParse(match.group(0)!);
-            }
-            break;
-          case 'max_plants':
-            if (label != null && label.toLowerCase().contains('unlimited')) {
-              _maxPlants = -1;
-            } else {
-              final match = RegExp(r'\d+').firstMatch(label ?? '');
-              if (match != null) {
-                _maxPlants = int.tryParse(match.group(0)!);
-              }
-            }
-            break;
-          case 'ai_assistant':
-            _aiAssistant = enabled;
-            break;
-          case 'hd_renders':
-            _hdRenders = enabled;
-            break;
-          case 'pdf_export':
-            _pdfExport = enabled;
-            break;
-          case 'premium_styles':
-            _premiumStyles = enabled;
-            break;
-          case 'before_after_download':
-            _beforeAfterDownload = enabled;
-            break;
-          case 'basic_reminders':
-            _basicReminders = enabled;
-            break;
-        }
-      });
+      for (final feature in json['features']) {
+        features!.add(PlanFeature.fromJson(feature));
+        _applyFeature(feature);
+      }
     }
 
     isSelect = false;
+  }
+
+  static String? _displayNameFromCode(String? value) {
+    if (value == null || value.isEmpty) return null;
+    if (value == 'free') return 'Free';
+    final tier = value.split('_').first;
+    if (tier.isEmpty) return null;
+    return tier[0].toUpperCase() + tier.substring(1);
+  }
+
+  static String? _displayNameFromTier(dynamic tier) {
+    final value = tier?.toString();
+    if (value == null || value.isEmpty) return null;
+    return value[0].toUpperCase() + value.substring(1);
+  }
+
+  static String? _normalizeBillingPeriod(dynamic value) {
+    final period = value?.toString().toLowerCase();
+    if (period == null || period.isEmpty) return null;
+    if (period == 'annual') return 'yearly';
+    return period;
+  }
+
+  static String? _parsePrice(Map<String, dynamic> json) {
+    final priceInr = json['price_inr'];
+    if (priceInr != null) return priceInr.toString();
+    final price = json['price'];
+    if (price != null) return price.toString();
+    return null;
+  }
+
+  void _applyFeature(dynamic feature) {
+    final key = feature['key']?.toString();
+    final label = feature['label']?.toString();
+    final enabled = feature['enabled'] == true;
+
+    switch (key) {
+      case 'diagnosis_scans':
+        final match = RegExp(r'\d+').firstMatch(label ?? '');
+        if (match != null) {
+          _diagnosisScans = int.tryParse(match.group(0)!);
+        }
+        break;
+      case 'landscape_gen':
+      case 'landscape_gens':
+        final match = RegExp(r'\d+').firstMatch(label ?? '');
+        if (match != null) {
+          _landscapeGen = int.tryParse(match.group(0)!);
+        }
+        break;
+      case 'max_plants':
+      case 'saved_plants':
+        if (label != null && label.toLowerCase().contains('unlimited')) {
+          _maxPlants = -1;
+        } else {
+          final match = RegExp(r'\d+').firstMatch(label ?? '');
+          if (match != null) {
+            _maxPlants = int.tryParse(match.group(0)!);
+          }
+        }
+        break;
+      case 'ai_assistant':
+      case 'ai_care_assistant':
+        _aiAssistant = enabled;
+        break;
+      case 'hd_renders':
+        _hdRenders = enabled;
+        break;
+      case 'pdf_export':
+        _pdfExport = enabled;
+        break;
+      case 'premium_styles':
+      case 'premium_themes':
+        _premiumStyles = enabled;
+        break;
+      case 'before_after_download':
+        _beforeAfterDownload = enabled;
+        break;
+      case 'basic_reminders':
+        _basicReminders = enabled;
+        break;
+      case 'priority_support':
+        _priorityCustomerSupport = enabled;
+        break;
+      case 'priority_generation':
+      case 'ad_free':
+        break;
+    }
+  }
+
+  static String _formatPrice(String? priceStr) {
+    if (priceStr == null) return '0';
+    final value = double.tryParse(priceStr);
+    if (value == null) return priceStr;
+    return value.toStringAsFixed(0);
+  }
+
+  static List<PlanModel> consolidateByTier(
+    List<PlanModel> apiPlans, {
+    bool includeProfessionalFields = false,
+  }) {
+    const tiers = ['free', 'starter', 'plus', 'pro'];
+    final consolidatedPlans = <PlanModel>[];
+
+    for (final tier in tiers) {
+      final tierPlans = apiPlans.where((plan) => plan.tier == tier).toList();
+      if (tierPlans.isEmpty) continue;
+
+      final monthlyPlan = tierPlans.firstWhere(
+        (plan) => plan.billingPeriod == 'monthly' || plan.billingPeriod == null,
+        orElse: () => tierPlans.first,
+      );
+      PlanModel? yearlyPlan;
+      for (final plan in tierPlans) {
+        if (plan.billingPeriod == 'yearly') {
+          yearlyPlan = plan;
+          break;
+        }
+      }
+
+      final template = monthlyPlan;
+      final priceMonthly = _formatPrice(monthlyPlan.price ?? '0');
+      final priceAnnual = _formatPrice(yearlyPlan?.price ?? priceMonthly);
+
+      final plan = PlanModel(
+        id: template.id,
+        planName: _displayNameFromTier(tier),
+        tier: tier,
+        currency: template.currency ?? 'INR',
+        status: 'active',
+        isSelect: false,
+        code: template.code,
+        diagnosisScans: template.diagnosisScans,
+        landscapeGen: template.landscapeGen,
+        maxPlants: template.maxPlants,
+        aiAssistant: template.aiAssistant,
+        hdRenders: template.hdRenders,
+        pdfExport: template.pdfExport,
+        premiumStyles: template.premiumStyles,
+        beforeAfterDownload: template.beforeAfterDownload,
+        basicReminders: template.basicReminders,
+        priorityCustomerSupport: template.priorityCustomerSupport,
+        priceMonthly: priceMonthly,
+        priceAnnual: priceAnnual,
+        monthlyProductId: monthlyPlan.productId,
+        yearlyProductId: yearlyPlan?.productId,
+        monthlyId: monthlyPlan.id,
+        yearlyId: yearlyPlan?.id,
+        monthlyRazorpayPlanId: monthlyPlan.razorpayPlanId,
+        yearlyRazorpayPlanId: yearlyPlan?.razorpayPlanId,
+        features: template.features,
+      );
+
+      if (includeProfessionalFields) {
+        plan.citiesCoverage = switch (tier) {
+          'free' => 5,
+          'starter' => 25,
+          'plus' => 100,
+          _ => 500,
+        };
+        plan.appearInSearch = tier != 'free';
+        plan.leadsLimit = tier == 'starter' ? 15 : 0;
+        plan.premiumProfileBadge = tier == 'plus' || tier == 'pro';
+        plan.priorityCustomerSupport = tier == 'pro';
+      }
+
+      consolidatedPlans.add(plan);
+    }
+
+    return consolidatedPlans;
+  }
+
+  String resolvePlanCode({required bool isMonthly}) {
+    final tierValue = tier ?? '';
+    if (tierValue == 'free') return 'free';
+    return '${tierValue}_${isMonthly ? 'monthly' : 'yearly'}';
   }
 
   Map<String, dynamic> toJson() {
@@ -294,6 +427,7 @@ class PlanModel {
     data['tier'] = this._tier;
     data['billing_period'] = this._billingPeriod;
     data['product_id'] = this._productId;
+    data['razorpay_plan_id'] = this.razorpayPlanId;
     data['price'] = this._price;
     data['currency'] = this._currency;
     data['diagnosis_scans'] = this._diagnosisScans;

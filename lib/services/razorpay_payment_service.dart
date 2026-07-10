@@ -49,29 +49,92 @@ class RazorpayPaymentService {
     String? contact,
     String? description,
   }) {
+    _openRazorpayCheckout(
+      keyIdOverride: keyIdOverride,
+      name: name,
+      email: email,
+      contact: contact,
+      description: description,
+      options:
+          _baseCheckoutOptions(
+              keyIdOverride: keyIdOverride,
+              currency: currency,
+              name: name,
+              email: email,
+              contact: contact,
+              description: description,
+            )
+            ..['order_id'] = orderId
+            ..['amount'] = amount,
+    );
+  }
+
+  void openSubscriptionCheckout({
+    required String subscriptionId,
+    String? keyIdOverride,
+    String? name,
+    String? email,
+    String? contact,
+    String? description,
+  }) {
+    _openRazorpayCheckout(
+      keyIdOverride: keyIdOverride,
+      name: name,
+      email: email,
+      contact: contact,
+      description: description,
+      options: _baseCheckoutOptions(
+        keyIdOverride: keyIdOverride,
+        currency: 'INR',
+        name: name,
+        subscriptionId: subscriptionId,
+        email: email,
+        contact: contact,
+        description: description,
+      ),
+    );
+  }
+
+  Map<String, dynamic> _baseCheckoutOptions({
+    String? keyIdOverride,
+    required String currency,
+    String? name,
+    String? email,
+    String? contact,
+    String? description,
+    String? subscriptionId,
+  }) {
     final resolvedKeyId = keyIdOverride?.trim().isNotEmpty == true ? keyIdOverride!.trim() : keyId;
 
     if (resolvedKeyId.isEmpty) {
       throw StateError(AppStrings.razorpayKeyNotConfigured);
     }
 
-    final options = <String, dynamic>{
+    return <String, dynamic>{
       'key': resolvedKeyId,
-      'amount': amount,
       'currency': currency,
       'name': appName,
-      'order_id': orderId,
       'description': description ?? AppStrings.subscriptionPayment,
       'theme': {'color': '#2E7D4F'},
       'retry': {'enabled': true, 'max_count': 1},
+      'subscription_id': subscriptionId,
       'prefill': {
         if (name != null && name.isNotEmpty) 'name': name,
         if (email != null && email.isNotEmpty) 'email': email,
         if (contact != null && contact.isNotEmpty) 'contact': contact,
       },
     };
+  }
 
-    log('Opening Razorpay checkout for order: $orderId');
+  void _openRazorpayCheckout({
+    required Map<String, dynamic> options,
+    String? keyIdOverride,
+    String? name,
+    String? email,
+    String? contact,
+    String? description,
+  }) {
+    log('Opening Razorpay checkout: $options');
     _razorpay?.open(options);
   }
 

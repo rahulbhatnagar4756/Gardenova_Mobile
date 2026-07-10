@@ -44,10 +44,7 @@ class PlantsRepository {
   }
 
   addPlant({Map? addPlantReq}) async {
-    var addPlantsResponse = await ApiRepository.instance.post(
-      addPlantUrl,
-      body: addPlantReq,
-    );
+    var addPlantsResponse = await ApiRepository.instance.post(addPlantUrl, body: addPlantReq);
     return addPlantsResponse;
   }
 
@@ -77,9 +74,7 @@ class PlantsRepository {
   }
 
   deletePlant({required int userPlantId}) async {
-    var deleteResponse = await ApiRepository.instance.delete(
-      "$deletePlantUrl$userPlantId",
-    );
+    var deleteResponse = await ApiRepository.instance.delete("$deletePlantUrl$userPlantId");
     return deleteResponse;
   }
 }

@@ -1,27 +1,40 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
 import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_repository.dart';
+import 'package:kasagardem/services/alternate_billing_service.dart';
+import 'package:kasagardem/services/razorpay_payment_service.dart';
 import 'package:kasagardem/services/subscription_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
+import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class UserSubscriptionController extends GetxController {
   RxBool isTabMonthly = true.obs;
   RxString selectedPrice = ''.obs;
   RxString remainingDays = ''.obs;
   final UpgradePlanRepository _repository = UpgradePlanRepository();
+  final RazorpayPaymentRepository _razorpayRepository =
+      RazorpayPaymentRepository();
   RxList<PlanModel> planList = <PlanModel>[].obs;
   PlanModel? selectedPlanData;
   RxBool isLoading = false.obs;
+  RxBool isProcessingPayment = false.obs;
   SubscriptionStatusUiModel? currentModel;
+  String? _activeSubscriptionId;
 
   @override
   void onInit() {
+    if (Platform.isAndroid) {
+      AlternateBillingService.prepareIfAvailable();
+    }
     initIAP();
     _readArguments();
     callGetAllPlanListApi();
@@ -112,25 +125,163 @@ class UserSubscriptionController extends GetxController {
         0.0;
   }
 
-  void goToRazorpayPayment() {
+  Future<void> startRazorpayPayment() async {
     final plan = selectedPlanData;
     if (plan == null) {
       BaseSnackBar.show(title: 'Plan', message: 'Please select a plan');
       return;
     }
 
-    Get.toNamed(
-      Routes.razorpayPayment,
-      arguments: {
-        'plan': plan,
-        'isMonthly': isTabMonthly.value,
-        'hasAdditionalCoverage': false,
-        'isOneTimeCoverage': false,
-        'totalAmount': getOrderTotalAmount(),
-        'currentSubscription': currentModel,
-        'isUser': true,
-      },
+    if (isLoading.value || isProcessingPayment.value) return;
+
+    final planCode = plan.resolvePlanCode(isMonthly: isTabMonthly.value);
+    if (planCode.isEmpty || planCode == 'free') {
+      BaseSnackBar.show(
+        title: 'Plan',
+        message: 'Please select a paid plan to continue.',
+      );
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      await AlternateBillingService.prepareIfAvailable();
+      final externalTransactionToken =
+          await AlternateBillingService.getExternalTransactionToken();
+
+      RazorpayPaymentService.instance.initialize(
+        onSuccess: _onRazorpayPaymentSuccess,
+        onFailure: _onRazorpayPaymentFailure,
+      );
+
+      final orderResponse = await _razorpayRepository.createOrder(
+        planCode,
+        externalTransactionToken: externalTransactionToken,
+      );
+      if (orderResponse?.success != true ||
+          orderResponse?.data?.subscriptionId == null) {
+        BaseSnackBar.show(
+          title: 'Payment',
+          message: orderResponse?.message ?? 'Failed to create subscription.',
+        );
+        return;
+      }
+
+      final order = orderResponse!.data!;
+      _activeSubscriptionId = order.subscriptionId;
+      isProcessingPayment.value = true;
+
+      RazorpayPaymentService.instance.openSubscriptionCheckout(
+        subscriptionId: order.subscriptionId!,
+        keyIdOverride: order.keyId,
+        name: _userName(),
+        email: _userEmail(),
+        contact: _userContact(),
+        description:
+            '${plan.planName ?? 'Plan'} - ${isTabMonthly.value ? 'Monthly' : 'Annually'}',
+      );
+    } catch (e) {
+      log('Razorpay startPayment error: $e');
+      BaseSnackBar.show(
+        title: 'Payment',
+        message: e is StateError ? e.message : 'Unable to start payment.',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _onRazorpayPaymentSuccess(
+    PaymentSuccessResponse response,
+  ) async {
+    isProcessingPayment.value = false;
+    isLoading.value = true;
+
+    try {
+      final plan = selectedPlanData;
+      final planCode =
+          plan?.resolvePlanCode(isMonthly: isTabMonthly.value) ?? '';
+      final subscriptionId = _subscriptionIdFromResponse(response);
+
+      final verifyResponse = await _razorpayRepository.verifyPayment({
+        if (subscriptionId != null) 'razorpay_subscription_id': subscriptionId,
+        'razorpay_payment_id': response.paymentId,
+        if (response.signature != null) 'razorpay_signature': response.signature,
+        'planCode': planCode,
+        'billing_provider': 'alternate',
+        'billing_period': isTabMonthly.value ? 'monthly' : 'yearly',
+      });
+
+      if (verifyResponse?.success == true) {
+        if (Get.isRegistered<SettingsViewModel>()) {
+          final settingsViewModel = Get.find<SettingsViewModel>();
+          settingsViewModel.getProfileDetail();
+          settingsViewModel.getSubcriptionDetail();
+        }
+        BaseSnackBar.show(
+          title: 'Success',
+          message: verifyResponse?.message ?? 'Payment completed successfully.',
+        );
+        Get.until((route) => route.settings.name == Routes.dashboard);
+        return;
+      }
+
+      BaseSnackBar.show(
+        title: 'Verification Pending',
+        message: verifyResponse?.message ??
+            'Payment received. Verification is pending.',
+      );
+    } catch (e) {
+      log('Razorpay verify error: $e');
+      BaseSnackBar.show(
+        title: 'Verification',
+        message: 'Payment completed, but verification failed.',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _onRazorpayPaymentFailure(PaymentFailureResponse response) {
+    isProcessingPayment.value = false;
+    isLoading.value = false;
+
+    if (response.code == Razorpay.PAYMENT_CANCELLED) {
+      BaseSnackBar.show(title: 'Payment', message: 'Payment was cancelled.');
+      return;
+    }
+
+    BaseSnackBar.show(
+      title: 'Payment Failed',
+      message: response.message ?? 'Something went wrong. Please try again.',
     );
+  }
+
+  String? _subscriptionIdFromResponse(PaymentSuccessResponse response) {
+    final fromData = response.data?['razorpay_subscription_id']?.toString();
+    if (fromData != null && fromData.isNotEmpty) return fromData;
+    if (response.orderId != null && response.orderId!.isNotEmpty) {
+      return response.orderId;
+    }
+    return _activeSubscriptionId;
+  }
+
+  String? _userName() {
+    final name = SharedPrefsService.instance.getString(AppKeys.name);
+    return name?.trim().isNotEmpty == true ? name : null;
+  }
+
+  String? _userEmail() {
+    final email = SharedPrefsService.instance.getString(AppKeys.email);
+    return email?.trim().isNotEmpty == true ? email : null;
+  }
+
+  String? _userContact() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      final phone = Get.find<SettingsViewModel>().phoneNoController.text.trim();
+      if (phone.isNotEmpty) return phone;
+    }
+    return null;
   }
 
   Future<void> callGetAllPlanListApi() async {
@@ -139,68 +290,13 @@ class UserSubscriptionController extends GetxController {
 
     if (response != null) {
       final planResponse = PlansResponseModel.fromJson(response);
-      planList.clear();
-
-      final apiPlans = planResponse.data ?? [];
-      final tiers = ['free', 'starter', 'plus', 'pro'];
-
-      for (final tier in tiers) {
-        final tierPlans = apiPlans.where((p) => p.tier == tier).toList();
-        if (tierPlans.isEmpty) continue;
-
-        final monthlyPlan =
-            tierPlans.firstWhereOrNull((p) => p.billingPeriod == 'monthly');
-        final yearlyPlan =
-            tierPlans.firstWhereOrNull((p) => p.billingPeriod == 'yearly');
-        final template = monthlyPlan ?? yearlyPlan ?? tierPlans.first;
-
-        final name = switch (tier) {
-          'free' => 'Free',
-          'starter' => 'Starter',
-          'plus' => 'Plus',
-          _ => 'Pro',
-        };
-
-        planList.add(
-          PlanModel(
-            id: template.id,
-            planName: name,
-            tier: tier,
-            priceMonthly: _cleanPrice(monthlyPlan?.price ?? '0'),
-            priceAnnual: _cleanPrice(
-              yearlyPlan?.price ?? _cleanPrice(monthlyPlan?.price ?? '0'),
-            ),
-            currency: template.currency,
-            status: 'active',
-            isSelect: false,
-            diagnosisScans: template.diagnosisScans,
-            landscapeGen: template.landscapeGen,
-            maxPlants: template.maxPlants,
-            aiAssistant: template.aiAssistant,
-            hdRenders: template.hdRenders,
-            pdfExport: template.pdfExport,
-            premiumStyles: template.premiumStyles,
-            beforeAfterDownload: template.beforeAfterDownload,
-            basicReminders: template.basicReminders,
-            monthlyProductId: monthlyPlan?.productId,
-            yearlyProductId: yearlyPlan?.productId,
-            monthlyId: monthlyPlan?.id,
-            yearlyId: yearlyPlan?.id,
-            features: template.features,
-          ),
-        );
-      }
+      planList
+        ..clear()
+        ..addAll(PlanModel.consolidateByTier(planResponse.data ?? []));
     }
 
     updateStorePrices();
     isLoading.value = false;
-  }
-
-  String _cleanPrice(String? priceStr) {
-    if (priceStr == null) return '0';
-    final value = double.tryParse(priceStr);
-    if (value == null) return priceStr;
-    return value.toStringAsFixed(0);
   }
 
   Future<void> initIAP() async {
@@ -252,7 +348,7 @@ class UserSubscriptionController extends GetxController {
     }
 
     if (Platform.isAndroid) {
-      goToRazorpayPayment();
+      await startRazorpayPayment();
       return;
     }
 
@@ -267,5 +363,11 @@ class UserSubscriptionController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    RazorpayPaymentService.instance.dispose();
+    super.onClose();
   }
 }

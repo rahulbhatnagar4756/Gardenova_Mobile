@@ -137,84 +137,14 @@ class UpgradePlanController extends GetxController {
 
     if (response != null) {
       PlansResponseModel planResponse = PlansResponseModel.fromJson(response);
-      planList.clear();
-
-      final apiPlans = planResponse.data ?? [];
-      final tiers = ['free', 'starter', 'plus', 'pro'];
-
-      for (var t in tiers) {
-        final tierPlans = apiPlans.where((p) => p.tier == t).toList();
-        if (tierPlans.isEmpty) continue;
-
-        final monthlyPlan = tierPlans.firstWhereOrNull(
-          (p) => p.billingPeriod == 'monthly',
-        );
-        final yearlyPlan = tierPlans.firstWhereOrNull(
-          (p) => p.billingPeriod == 'yearly',
-        );
-        final template = monthlyPlan ?? yearlyPlan ?? tierPlans.first;
-
-        final cities = t == 'free'
-            ? 5
-            : t == 'starter'
-            ? 25
-            : t == 'plus'
-            ? 100
-            : 500;
-        final name = t == 'free'
-            ? 'Free'
-            : t == 'starter'
-            ? 'Starter'
-            : t == 'plus'
-            ? 'Plus'
-            : 'Pro';
-
-        String cleanPrice(String? priceStr) {
-          if (priceStr == null) return "0";
-          final d = double.tryParse(priceStr);
-          if (d == null) return priceStr;
-          return d.toStringAsFixed(0);
-        }
-
-        final consolidatedPlan = PlanModel(
-          id: template.id,
-          planName: name,
-          tier: t,
-          citiesCoverage: cities,
-          priceMonthly: cleanPrice(monthlyPlan?.price ?? "0"),
-          priceAnnual: cleanPrice(
-            yearlyPlan?.price ?? cleanPrice(monthlyPlan?.price ?? "0"),
+      planList
+        ..clear()
+        ..addAll(
+          PlanModel.consolidateByTier(
+            planResponse.data ?? [],
+            includeProfessionalFields: true,
           ),
-          appearInSearch: t != 'free',
-          leadsLimit: t == 'free'
-              ? 0
-              : t == 'starter'
-              ? 15
-              : 0,
-          premiumProfileBadge: t == 'plus' || t == 'pro',
-          priorityCustomerSupport: t == 'pro',
-          status: 'active',
-          isSelect: false,
-
-          diagnosisScans: template.diagnosisScans,
-          landscapeGen: template.landscapeGen,
-          maxPlants: template.maxPlants,
-          aiAssistant: template.aiAssistant,
-          hdRenders: template.hdRenders,
-          pdfExport: template.pdfExport,
-          premiumStyles: template.premiumStyles,
-          beforeAfterDownload: template.beforeAfterDownload,
-          basicReminders: template.basicReminders,
-
-          monthlyProductId: monthlyPlan?.productId,
-          yearlyProductId: yearlyPlan?.productId,
-          monthlyId: monthlyPlan?.id,
-          yearlyId: yearlyPlan?.id,
-          features: template.features,
         );
-
-        planList.add(consolidatedPlan);
-      }
     }
     updateStorePrices();
     isLoading.value = false;
