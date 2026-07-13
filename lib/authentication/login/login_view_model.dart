@@ -343,7 +343,12 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       );
       SharedPrefsService.instance.setString(AppKeys.createdAt, data["startDate"] ?? "");
 
-      BaseCalculateRemainingDays().calculateRemainingDays(data["startDate"] ?? "");
+      final endDate = data["endDate"]?.toString();
+      if (endDate != null && endDate.isNotEmpty) {
+        BaseCalculateRemainingDays.persistFromEndDate(endDate);
+      } else {
+        BaseCalculateRemainingDays().calculateRemainingDays(data["startDate"] ?? "");
+      }
 
       if (profileResponse.data?.profileImage != null) {
         SharedPrefsService.instance.setString(

@@ -7,6 +7,7 @@ import '../../utils/shared_prefs_service.dart';
 class BaseCalculateRemainingDays {
   RxInt remainingDays = 0.obs;
 
+  /// Legacy trial calculation from account start date (90-day trial window).
   calculateRemainingDays(String createdAt) {
     const int trialDays = 90;
     try {
@@ -35,5 +36,31 @@ class BaseCalculateRemainingDays {
     } catch (_) {
       remainingDays.value = 0;
     }
+  }
+
+  /// Preferred: remaining days until subscription [endDate].
+  static int daysUntilEndDate(String? endDate) {
+    if (endDate == null || endDate.trim().isEmpty) return 0;
+    try {
+      final expirationDate = DateTime.parse(endDate).toLocal();
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final exp = DateTime(
+        expirationDate.year,
+        expirationDate.month,
+        expirationDate.day,
+      );
+      return exp.difference(today).inDays.clamp(0, 365);
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  static void persistFromEndDate(String? endDate) {
+    final remaining = daysUntilEndDate(endDate);
+    SharedPrefsService.instance.setString(
+      AppKeys.remainingDays,
+      remaining.toString(),
+    );
   }
 }

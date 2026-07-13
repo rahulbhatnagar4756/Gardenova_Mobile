@@ -214,6 +214,16 @@ class SettingsViewModel extends GetxController {
           profileImage.value = profileResponse.data?.profileImage ?? '';
           apiImage = profileResponse.data?.profileImage ?? '';
         }
+        if (profileResponse.data?.endDate != null ||
+            profileResponse.data?.subscriptionPlan != null ||
+            profileResponse.data?.accountStatus != null) {
+          _applySubscriptionFromFields(
+            planName: profileResponse.data?.subscriptionPlan,
+            accountStatus: profileResponse.data?.accountStatus,
+            startDate: profileResponse.data?.startDate,
+            endDate: profileResponse.data?.endDate,
+          );
+        }
       }
     }
     name.refresh();
@@ -222,7 +232,7 @@ class SettingsViewModel extends GetxController {
     screenType.refresh();
   }
 
-  void getProfessionalProfileDetail() async {
+  Future<void> getProfessionalProfileDetail() async {
     var response = await profileRepository.fetchProfessionalProfile();
     if (response != null) {
       ProfessionalProfileModel profileResponse = ProfessionalProfileModel.fromJson(response);
@@ -244,7 +254,16 @@ class SettingsViewModel extends GetxController {
           AppKeys.createdAt,
           profileResponse.data!.startDate ?? "",
         );
-        BaseCalculateRemainingDays().calculateRemainingDays(profileResponse.data!.startDate ?? "");
+        SharedPrefsService.instance.setString(
+          AppKeys.accountStatus,
+          profileResponse.data!.accountStatus ?? "",
+        );
+        _applySubscriptionFromFields(
+          planName: profileResponse.data!.subscriptionPlan,
+          accountStatus: profileResponse.data!.accountStatus,
+          startDate: profileResponse.data!.startDate,
+          endDate: profileResponse.data!.endDate,
+        );
 
         if (profileResponse.data?.imageUrl != null) {
           profileImage.value = profileResponse.data?.imageUrl ?? '';
@@ -256,78 +275,199 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> getSubcriptionDetail() async {
-    // var realDetialModel = SubscriptionStatusUiModel(
-    //   name: profileResponse.data!.subscriptionPlan,
-    //   status: profileResponse.data!.accountStatus,
-    //   isActive: profileResponse.data!.accountStatus?.toLowerCase() == "active",
-    //   isTrialActive: profileResponse.data!.subscriptionPlan?.toLowerCase() == "trial",
-    //   createdAt: profileResponse.data!.startDate,
-    //   updatedAt: profileResponse.data!.endDate,
-    // );
-    // Trial Subscription
-    // final trialSubscription = SubscriptionStatusUiModel(
-    //   name: "Trial",
-    //   status: "Active",
-    //   isActive: true,
-    //   isTrialActive: true,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2026-06-15",
-    // );
+    final isProfessional = screenType.value == AppKeys.professional;
 
-    // Active Subscription
-    final activeSubscription = SubscriptionStatusUiModel(
-      name: "Premium",
-      status: "Active",
-      isActive: true,
-      isTrialActive: false,
-      createdAt: "2026-05-01",
-      updatedAt: "2026-07-01",
-    );
-
-    // Cancelled Subscription
-    // final cancelledSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Cancelled",
-    //   isActive: false,
-    //   isTrialActive: false,
-    //   createdAt: "2026-04-01",
-    //   updatedAt: "2026-05-15",
-    // );
-
-    // Renewed Subscription
-    // final renewedSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Renewed",
-    //   isActive: true,
-    //   isTrialActive: false,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2027-06-01",
-    // );
-    // need change
-    // currentSubscriptionStatusModel.value = trialSubscription;
-    currentSubscriptionStatusModel.value = activeSubscription;
-    // currentSubscriptionStatusModel.value = cancelledSubscription;
-    // currentSubscriptionStatusModel.value = renewedSubscription;
-    // currentSubscriptionStatusModel.value = realDetialModel;
-
-    if (currentSubscriptionStatusModel.value != null) {
-      final model = currentSubscriptionStatusModel.value!;
-      if (model.updatedAt != null) {
-        try {
-          final expirationDate = DateTime.parse(model.updatedAt!).toLocal();
-          final now = DateTime.now();
-          final today = DateTime(now.year, now.month, now.day);
-          final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
-          final remaining = exp.difference(today).inDays;
-          SharedPrefsService.instance.setString(
-            AppKeys.remainingDays,
-            remaining.clamp(0, 365).toString(),
+    if (isProfessional) {
+      final response = await profileRepository.fetchProfessionalProfile();
+      if (response != null) {
+        final profileResponse = ProfessionalProfileModel.fromJson(response);
+        professionalProfileData.value = profileResponse;
+        final data = profileResponse.data;
+        if (data != null &&
+            _hasSubscriptionPayload(
+              planName: data.subscriptionPlan,
+              accountStatus: data.accountStatus,
+              endDate: data.endDate,
+            )) {
+          _applySubscriptionFromFields(
+            planName: data.subscriptionPlan,
+            accountStatus: data.accountStatus,
+            startDate: data.startDate,
+            endDate: data.endDate,
           );
-        } catch (_) {
-          SharedPrefsService.instance.setString(AppKeys.remainingDays, "0");
+          return;
+        }
+      }
+    } else {
+      final response = await profileRepository.fetchProfile();
+      if (response != null) {
+        final profileResponse = ProfileResponseModel.fromJson(response);
+        final data = profileResponse.data;
+        if (data != null &&
+            _hasSubscriptionPayload(
+              planName: data.subscriptionPlan,
+              accountStatus: data.accountStatus,
+              endDate: data.endDate,
+            )) {
+          _applySubscriptionFromFields(
+            planName: data.subscriptionPlan,
+            accountStatus: data.accountStatus,
+            startDate: data.startDate,
+            endDate: data.endDate,
+          );
+          return;
         }
       }
     }
+
+    // Keep existing status if profile fetch fails / lags; do not overwrite with mocks.
+    if (currentSubscriptionStatusModel.value?.updatedAt != null) {
+      BaseCalculateRemainingDays.persistFromEndDate(
+        currentSubscriptionStatusModel.value!.updatedAt,
+      );
+    }
+    currentSubscriptionStatusModel.refresh();
+  }
+
+  bool _hasSubscriptionPayload({
+    String? planName,
+    String? accountStatus,
+    String? endDate,
+  }) {
+    return (planName != null && planName.trim().isNotEmpty) ||
+        (accountStatus != null && accountStatus.trim().isNotEmpty) ||
+        (endDate != null && endDate.trim().isNotEmpty);
+  }
+
+  void activateSubscriptionLocally({
+    required String planName,
+    required bool isMonthly,
+    String? endDateOverride,
+  }) {
+    final endDate =
+        endDateOverride ??
+        DateTime.now()
+            .add(Duration(days: isMonthly ? 30 : 365))
+            .toIso8601String();
+    _applySubscriptionFromFields(
+      planName: planName,
+      accountStatus: 'Active',
+      startDate: DateTime.now().toIso8601String(),
+      endDate: endDate,
+      force: true,
+    );
+  }
+
+  /// Rebuilds the profile subscription card from prefs when API data is stale/missing.
+  void hydrateSubscriptionFromPrefsIfNeeded() {
+    final prefsDays =
+        int.tryParse(
+          SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? '0',
+        ) ??
+        0;
+    final currentRemaining = BaseCalculateRemainingDays.daysUntilEndDate(
+      currentSubscriptionStatusModel.value?.updatedAt,
+    );
+
+    if (prefsDays <= 0 || currentRemaining > 0) return;
+
+    final planName =
+        SharedPrefsService.instance.getString(AppKeys.subscriptionPlan) ??
+        'Premium';
+    final endDate = DateTime.now().add(Duration(days: prefsDays)).toIso8601String();
+    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+      name: planName,
+      status: 'Active',
+      isActive: true,
+      isTrialActive: planName.toLowerCase() == 'trial',
+      createdAt: SharedPrefsService.instance.getString(AppKeys.createdAt),
+      updatedAt: endDate,
+    );
+    currentSubscriptionStatusModel.refresh();
+  }
+
+  Future<void> refreshProfileSubscription() async {
+    hydrateSubscriptionFromPrefsIfNeeded();
+    await Future.wait([getProfileDetail(), getSubcriptionDetail()]);
+    hydrateSubscriptionFromPrefsIfNeeded();
+  }
+
+  void _applySubscriptionFromFields({
+    String? planName,
+    String? accountStatus,
+    String? startDate,
+    String? endDate,
+    bool force = false,
+  }) {
+    final normalizedStatus = (accountStatus ?? '').trim();
+    final normalizedPlan = (planName ?? '').trim();
+    final statusLower = normalizedStatus.toLowerCase();
+    final explicitlyInactive =
+        statusLower == 'expired' ||
+        statusLower == 'cancelled' ||
+        statusLower == 'canceled' ||
+        statusLower == 'inactive';
+
+    final incomingRemaining = BaseCalculateRemainingDays.daysUntilEndDate(endDate);
+    final currentRemaining = BaseCalculateRemainingDays.daysUntilEndDate(
+      currentSubscriptionStatusModel.value?.updatedAt,
+    );
+    final prefsDays =
+        int.tryParse(
+          SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? '0',
+        ) ??
+        0;
+
+    // Keep a fresher local/post-payment activation instead of stale API expiry.
+    if (!force &&
+        !explicitlyInactive &&
+        incomingRemaining == 0 &&
+        (currentRemaining > 0 || prefsDays > 0)) {
+      hydrateSubscriptionFromPrefsIfNeeded();
+      return;
+    }
+
+    final isTrial = normalizedPlan.toLowerCase() == 'trial';
+    final isActive =
+        statusLower == 'active' ||
+        statusLower == 'renewed' ||
+        (normalizedStatus.isEmpty && incomingRemaining > 0);
+
+    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+      name: normalizedPlan.isNotEmpty ? normalizedPlan : 'Free',
+      status: normalizedStatus.isNotEmpty
+          ? normalizedStatus
+          : (isActive ? 'Active' : 'Expired'),
+      isActive: isActive,
+      isTrialActive: isTrial && isActive,
+      createdAt: startDate,
+      updatedAt: endDate,
+    );
+
+    if (endDate != null && endDate.trim().isNotEmpty) {
+      BaseCalculateRemainingDays.persistFromEndDate(endDate);
+    } else if (isTrial && startDate != null && startDate.trim().isNotEmpty) {
+      BaseCalculateRemainingDays().calculateRemainingDays(startDate);
+    } else if (!isActive) {
+      SharedPrefsService.instance.setString(AppKeys.remainingDays, '0');
+    }
+
+    if (normalizedPlan.isNotEmpty) {
+      SharedPrefsService.instance.setString(
+        AppKeys.subscriptionPlan,
+        normalizedPlan,
+      );
+    }
+    if (normalizedStatus.isNotEmpty) {
+      SharedPrefsService.instance.setString(
+        AppKeys.accountStatus,
+        normalizedStatus,
+      );
+    }
+    if (startDate != null && startDate.trim().isNotEmpty) {
+      SharedPrefsService.instance.setString(AppKeys.createdAt, startDate);
+    }
+
     currentSubscriptionStatusModel.refresh();
   }
 

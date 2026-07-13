@@ -34,13 +34,39 @@ class RazorpayOrderData {
 class RazorpayVerifyResponse {
   final bool? success;
   final String? message;
+  final String? endDate;
+  final String? subscriptionPlan;
+  final String? accountStatus;
 
-  RazorpayVerifyResponse({this.success, this.message});
+  RazorpayVerifyResponse({
+    this.success,
+    this.message,
+    this.endDate,
+    this.subscriptionPlan,
+    this.accountStatus,
+  });
 
   factory RazorpayVerifyResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
+    final Map<String, dynamic>? dataMap =
+        data is Map<String, dynamic> ? data : null;
+
     return RazorpayVerifyResponse(
-      success: json['success'] == true || json['statusCode'] == 200 || json['statusCode'] == 201,
+      success: json['success'] == true ||
+          json['statusCode'] == 200 ||
+          json['statusCode'] == 201,
       message: json['message']?.toString(),
+      endDate: dataMap?['endDate']?.toString() ??
+          dataMap?['end_date']?.toString() ??
+          json['endDate']?.toString() ??
+          json['end_date']?.toString(),
+      subscriptionPlan: dataMap?['subscriptionPlan']?.toString() ??
+          dataMap?['subscription_plan']?.toString() ??
+          dataMap?['planCode']?.toString() ??
+          json['subscriptionPlan']?.toString(),
+      accountStatus: dataMap?['accountStatus']?.toString() ??
+          dataMap?['account_status']?.toString() ??
+          json['accountStatus']?.toString(),
     );
   }
 }

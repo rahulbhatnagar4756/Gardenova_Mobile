@@ -30,6 +30,7 @@ class RazorpayPaymentController extends GetxController {
   final RxString selectedMethod = 'upi'.obs;
 
   String? _activeSubscriptionId;
+  String? _externalTransactionToken;
 
   @override
   void onInit() {
@@ -97,9 +98,13 @@ class RazorpayPaymentController extends GetxController {
     isLoading.value = true;
     try {
       await AlternateBillingService.prepareIfAvailable();
-      final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
+      _externalTransactionToken =
+          await AlternateBillingService.getExternalTransactionToken();
 
-      final orderResponse = await _repository.createOrder(planCode);
+      final orderResponse = await _repository.createOrder(
+        planCode,
+        externalTransactionToken: _externalTransactionToken,
+      );
       if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
         BaseSnackBar.show(
           title: 'Payment',
@@ -154,16 +159,41 @@ class RazorpayPaymentController extends GetxController {
         'planCode': planCode,
         'billing_provider': 'alternate',
         'billing_period': isMonthly ? 'monthly' : 'yearly',
+        if (_externalTransactionToken != null &&
+            _externalTransactionToken!.isNotEmpty)
+          'external_transaction_token': _externalTransactionToken,
       });
 
       if (verifyResponse?.success == true) {
+        _externalTransactionToken = null;
+        _activeSubscriptionId = null;
         if (Get.isRegistered<SettingsViewModel>()) {
           final settingsViewModel = Get.find<SettingsViewModel>();
+          settingsViewModel.activateSubscriptionLocally(
+            planName: plan.planName ?? planCode,
+            isMonthly: isMonthly,
+            endDateOverride: verifyResponse?.endDate,
+          );
           if (isUserPayment) {
-            settingsViewModel.getProfileDetail();
-            settingsViewModel.getSubcriptionDetail();
+            await Future.wait([
+              settingsViewModel.getProfileDetail(),
+              settingsViewModel.getSubcriptionDetail(),
+            ]);
           } else {
-            settingsViewModel.getProfessionalProfileDetail();
+            await Future.wait([
+              settingsViewModel.getProfessionalProfileDetail(),
+              settingsViewModel.getSubcriptionDetail(),
+            ]);
+          }
+
+          final refreshedDays =
+              SharedPrefsService.instance.getString(AppKeys.remainingDays) ??
+              '0';
+          if (refreshedDays == '0' && verifyResponse?.endDate == null) {
+            settingsViewModel.activateSubscriptionLocally(
+              planName: plan.planName ?? planCode,
+              isMonthly: isMonthly,
+            );
           }
         }
         BaseSnackBar.show(
@@ -192,6 +222,7 @@ class RazorpayPaymentController extends GetxController {
   void _onPaymentFailure(PaymentFailureResponse response) {
     isProcessingPayment.value = false;
     isLoading.value = false;
+    _externalTransactionToken = null;
 
     final code = response.code;
     if (code == Razorpay.PAYMENT_CANCELLED) {

@@ -60,6 +60,10 @@ class Data {
     dynamic occupation,
     dynamic company,
     String? responseId,
+    String? subscriptionPlan,
+    String? startDate,
+    String? endDate,
+    String? accountStatus,
   }) {
     _name = name;
     _email = email;
@@ -76,6 +80,10 @@ class Data {
     _occupation = occupation;
     _company = company;
     _responseId = responseId;
+    _subscriptionPlan = subscriptionPlan;
+    _startDate = startDate;
+    _endDate = endDate;
+    _accountStatus = accountStatus;
   }
 
   Data.fromJson(dynamic json) {
@@ -98,6 +106,16 @@ class Data {
     _occupation = json[ApiKeys.occupation];
     _company = json[ApiKeys.company];
     _responseId = json[ApiKeys.responseId];
+    _subscriptionPlan =
+        json['subscriptionPlan']?.toString() ??
+        json['subscription_plan']?.toString();
+    _startDate =
+        json['startDate']?.toString() ?? json['start_date']?.toString();
+    _endDate = json['endDate']?.toString() ?? json['end_date']?.toString();
+    _accountStatus =
+        json['accountStatus']?.toString() ??
+        json['account_status']?.toString() ??
+        json['AccountStatus']?.toString();
   }
 
   String? _name;
@@ -115,6 +133,10 @@ class Data {
   dynamic _occupation;
   dynamic _company;
   String? _responseId;
+  String? _subscriptionPlan;
+  String? _startDate;
+  String? _endDate;
+  String? _accountStatus;
 
   Data copyWith({
     String? name,
@@ -132,6 +154,10 @@ class Data {
     dynamic occupation,
     dynamic company,
     String? responseId,
+    String? subscriptionPlan,
+    String? startDate,
+    String? endDate,
+    String? accountStatus,
   }) => Data(
     name: name ?? _name,
     email: email ?? _email,
@@ -148,6 +174,10 @@ class Data {
     occupation: occupation ?? _occupation,
     company: company ?? _company,
     responseId: responseId ?? _responseId,
+    subscriptionPlan: subscriptionPlan ?? _subscriptionPlan,
+    startDate: startDate ?? _startDate,
+    endDate: endDate ?? _endDate,
+    accountStatus: accountStatus ?? _accountStatus,
   );
 
   String? get name => _name;
@@ -180,6 +210,14 @@ class Data {
 
   String? get responseId => _responseId;
 
+  String? get subscriptionPlan => _subscriptionPlan;
+
+  String? get startDate => _startDate;
+
+  String? get endDate => _endDate;
+
+  String? get accountStatus => _accountStatus;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map[ApiKeys.name] = _name;
@@ -203,6 +241,10 @@ class Data {
     map[ApiKeys.occupation] = _occupation;
     map[ApiKeys.company] = _company;
     map[ApiKeys.responseId] = _responseId;
+    map['subscriptionPlan'] = _subscriptionPlan;
+    map['startDate'] = _startDate;
+    map['endDate'] = _endDate;
+    map['accountStatus'] = _accountStatus;
     return map;
   }
 }

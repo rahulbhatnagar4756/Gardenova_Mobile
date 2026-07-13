@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:kasagardem/base/widgets/base_calculate_remaining_days.dart';
 import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
 import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_repository.dart';
@@ -29,6 +30,7 @@ class UserSubscriptionController extends GetxController {
   RxBool isProcessingPayment = false.obs;
   SubscriptionStatusUiModel? currentModel;
   String? _activeSubscriptionId;
+  String? _externalTransactionToken;
 
   @override
   void onInit() {
@@ -146,7 +148,7 @@ class UserSubscriptionController extends GetxController {
     isLoading.value = true;
     try {
       await AlternateBillingService.prepareIfAvailable();
-      final externalTransactionToken =
+      _externalTransactionToken =
           await AlternateBillingService.getExternalTransactionToken();
 
       RazorpayPaymentService.instance.initialize(
@@ -156,7 +158,7 @@ class UserSubscriptionController extends GetxController {
 
       final orderResponse = await _razorpayRepository.createOrder(
         planCode,
-        externalTransactionToken: externalTransactionToken,
+        externalTransactionToken: _externalTransactionToken,
       );
       if (orderResponse?.success != true ||
           orderResponse?.data?.subscriptionId == null) {
@@ -210,14 +212,55 @@ class UserSubscriptionController extends GetxController {
         'planCode': planCode,
         'billing_provider': 'alternate',
         'billing_period': isTabMonthly.value ? 'monthly' : 'yearly',
+        if (_externalTransactionToken != null &&
+            _externalTransactionToken!.isNotEmpty)
+          'external_transaction_token': _externalTransactionToken,
       });
 
       if (verifyResponse?.success == true) {
+        _externalTransactionToken = null;
+        _activeSubscriptionId = null;
+
         if (Get.isRegistered<SettingsViewModel>()) {
           final settingsViewModel = Get.find<SettingsViewModel>();
-          settingsViewModel.getProfileDetail();
-          settingsViewModel.getSubcriptionDetail();
+          settingsViewModel.activateSubscriptionLocally(
+            planName: plan?.planName ?? planCode,
+            isMonthly: isTabMonthly.value,
+            endDateOverride: verifyResponse?.endDate,
+          );
+          await Future.wait([
+            settingsViewModel.getProfileDetail(),
+            settingsViewModel.getSubcriptionDetail(),
+          ]);
+
+          final refreshedDays =
+              SharedPrefsService.instance.getString(AppKeys.remainingDays) ??
+              '0';
+          if (refreshedDays == '0' && verifyResponse?.endDate == null) {
+            settingsViewModel.activateSubscriptionLocally(
+              planName: plan?.planName ?? planCode,
+              isMonthly: isTabMonthly.value,
+            );
+          }
+
+          remainingDays.value =
+              SharedPrefsService.instance.getString(AppKeys.remainingDays) ??
+              remainingDays.value;
+        } else {
+          final endDate =
+              verifyResponse?.endDate ??
+              DateTime.now()
+                  .add(Duration(days: isTabMonthly.value ? 30 : 365))
+                  .toIso8601String();
+          remainingDays.value = BaseCalculateRemainingDays.daysUntilEndDate(
+            endDate,
+          ).toString();
+          SharedPrefsService.instance.setString(
+            AppKeys.remainingDays,
+            remainingDays.value,
+          );
         }
+
         BaseSnackBar.show(
           title: 'Success',
           message: verifyResponse?.message ?? 'Payment completed successfully.',
@@ -245,6 +288,7 @@ class UserSubscriptionController extends GetxController {
   void _onRazorpayPaymentFailure(PaymentFailureResponse response) {
     isProcessingPayment.value = false;
     isLoading.value = false;
+    _externalTransactionToken = null;
 
     if (response.code == Razorpay.PAYMENT_CANCELLED) {
       BaseSnackBar.show(title: 'Payment', message: 'Payment was cancelled.');

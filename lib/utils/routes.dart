@@ -218,7 +218,11 @@ class Routes {
       GetPage(
         name: Routes.settings,
         page: () => SettingsScreen(),
-        binding: BindingsBuilder.put(() => SettingsViewModel()),
+        binding: BindingsBuilder(() {
+          if (!Get.isRegistered<SettingsViewModel>()) {
+            Get.put(SettingsViewModel());
+          }
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
@@ -226,13 +230,22 @@ class Routes {
       GetPage(
         name: Routes.profile,
         page: () => const ProfileScreen(),
+        binding: BindingsBuilder(() {
+          if (!Get.isRegistered<SettingsViewModel>()) {
+            Get.put(SettingsViewModel());
+          }
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
       GetPage(
         name: Routes.editProfile,
         page: () => const EditProfileScreen(),
-        binding: BindingsBuilder.put(() => SettingsViewModel()),
+        binding: BindingsBuilder(() {
+          if (!Get.isRegistered<SettingsViewModel>()) {
+            Get.put(SettingsViewModel());
+          }
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
@@ -247,7 +260,11 @@ class Routes {
       GetPage(
         name: Routes.changePassword,
         page: () => ChangePassword(),
-        binding: BindingsBuilder.put(() => SettingsViewModel()),
+        binding: BindingsBuilder(() {
+          if (!Get.isRegistered<SettingsViewModel>()) {
+            Get.put(SettingsViewModel());
+          }
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

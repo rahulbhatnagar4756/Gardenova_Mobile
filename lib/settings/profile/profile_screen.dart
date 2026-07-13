@@ -14,8 +14,23 @@ import 'package:kasagardem/utils/routes.dart';
 
 import '../../base/widgets/subscription_status_view_widget.dart';
 
-class ProfileScreen extends GetWidget<SettingsViewModel> {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  SettingsViewModel get controller => Get.find<SettingsViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.refreshProfileSubscription();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,8 +137,7 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
           ? SubscriptionStatusViewWidget(
               controller.currentSubscriptionStatusModel.value!,
               onUpgradeRefresh: () {
-                controller.getSubcriptionDetail();
-                controller.getProfileDetail();
+                controller.refreshProfileSubscription();
               },
             ).paddingSymmetric(horizontal: 16.w)
           : Container(),

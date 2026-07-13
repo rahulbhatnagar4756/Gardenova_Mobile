@@ -118,8 +118,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               title: AppLocalizations.of(context)!.myProfile,
               subtitle: "View profile details and settings",
               onTap: () {
-                controller.getProfileDetail(showloader: true);
-                Utils.callSettingBasicApi();
                 Get.toNamed(Routes.profile);
               },
             ),
@@ -274,8 +272,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
           ? SubscriptionStatusViewWidget(
               controller.currentSubscriptionStatusModel.value!,
               onUpgradeRefresh: () {
-                controller.getSubcriptionDetail();
-                controller.getProfileDetail();
+                controller.refreshProfileSubscription();
               },
             )
           : Container(),

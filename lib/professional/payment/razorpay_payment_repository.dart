@@ -11,7 +11,13 @@ class RazorpayPaymentRepository {
   }) async {
     final response = await ApiRepository.instance.post(
       createOrderUrl,
-      body: {'planCode': planCode},
+      body: {
+        'planCode': planCode,
+        if (externalTransactionToken != null &&
+            externalTransactionToken.isNotEmpty)
+          'external_transaction_token': externalTransactionToken,
+        'billing_provider': 'alternate',
+      },
     );
     if (response == null) return null;
     return RazorpayOrderResponse.fromJson(response);
