@@ -24,7 +24,7 @@ class HeaderCard extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.topCenter,
-            child: Image.asset(AppAssets.appLogo, width: 60.w,height: 60.w,),
+            child: Image.asset(AppAssets.appLogo, width: 60.w, height: 60.w),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -34,18 +34,17 @@ class HeaderCard extends StatelessWidget {
                 fontWeight: FontWeight.w400,
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize15,
-                text: "${AppLocalizations.of(context)!.yourPlanEnds}\t\t",
+                text: "${AppLocalizations.of(context)!.yourPlanEnds}\tin\t",
               ),
               BaseText(
                 textAlign: TextAlign.center,
                 fontWeight: FontWeight.w700,
                 fontFamily: AppKeys.poppins,
                 fontSize: fontSize18,
-                text:
-                    "${controller.remainingDays.value}\t${AppLocalizations.of(context)!.days}",
+                text: "${controller.remainingDays.value}\t${AppLocalizations.of(context)!.days}",
               ),
             ],
-          ).marginOnly( bottom: spacerSize5),
+          ).marginOnly(bottom: spacerSize5),
           BaseText(
             textAlign: TextAlign.center,
             textColor: AppColors.liteGreyColor,

@@ -10,9 +10,7 @@ class ProfileResponseModel {
   ProfileResponseModel.fromJson(dynamic json) {
     _success = json[ApiKeys.success];
     _message = json[ApiKeys.message];
-    _data = json[ApiKeys.data] != null
-        ? Data.fromJson(json[ApiKeys.data])
-        : null;
+    _data = json[ApiKeys.data] != null ? Data.fromJson(json[ApiKeys.data]) : null;
   }
 
   bool? _success;
@@ -64,6 +62,7 @@ class Data {
     String? startDate,
     String? endDate,
     String? accountStatus,
+    Subscription? subscription,
   }) {
     _name = name;
     _email = email;
@@ -84,6 +83,7 @@ class Data {
     _startDate = startDate;
     _endDate = endDate;
     _accountStatus = accountStatus;
+    _subscription = subscription;
   }
 
   Data.fromJson(dynamic json) {
@@ -97,9 +97,7 @@ class Data {
     _dateOfBirth = json[ApiKeys.dateOfBirth];
     _gender = json[ApiKeys.gender];
     _bio = json[ApiKeys.bio];
-    _address = json[ApiKeys.address] != null
-        ? Address.fromJson(json[ApiKeys.address])
-        : null;
+    _address = json[ApiKeys.address] != null ? Address.fromJson(json[ApiKeys.address]) : null;
     _socialLinks = json[ApiKeys.socialLinks] != null
         ? SocialLinks.fromJson(json[ApiKeys.socialLinks])
         : null;
@@ -107,15 +105,16 @@ class Data {
     _company = json[ApiKeys.company];
     _responseId = json[ApiKeys.responseId];
     _subscriptionPlan =
-        json['subscriptionPlan']?.toString() ??
-        json['subscription_plan']?.toString();
-    _startDate =
-        json['startDate']?.toString() ?? json['start_date']?.toString();
+        json['subscriptionPlan']?.toString() ?? json['subscription_plan']?.toString();
+    _startDate = json['startDate']?.toString() ?? json['start_date']?.toString();
     _endDate = json['endDate']?.toString() ?? json['end_date']?.toString();
     _accountStatus =
         json['accountStatus']?.toString() ??
         json['account_status']?.toString() ??
         json['AccountStatus']?.toString();
+    _subscription = json['subscription'] != null
+        ? Subscription.fromJson(json['subscription'])
+        : null;
   }
 
   String? _name;
@@ -137,6 +136,7 @@ class Data {
   String? _startDate;
   String? _endDate;
   String? _accountStatus;
+  Subscription? _subscription;
 
   Data copyWith({
     String? name,
@@ -158,6 +158,7 @@ class Data {
     String? startDate,
     String? endDate,
     String? accountStatus,
+    Subscription? subscription,
   }) => Data(
     name: name ?? _name,
     email: email ?? _email,
@@ -178,6 +179,7 @@ class Data {
     startDate: startDate ?? _startDate,
     endDate: endDate ?? _endDate,
     accountStatus: accountStatus ?? _accountStatus,
+    subscription: subscription ?? _subscription,
   );
 
   String? get name => _name;
@@ -218,6 +220,8 @@ class Data {
 
   String? get accountStatus => _accountStatus;
 
+  Subscription? get subscription => _subscription;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map[ApiKeys.name] = _name;
@@ -245,17 +249,75 @@ class Data {
     map['startDate'] = _startDate;
     map['endDate'] = _endDate;
     map['accountStatus'] = _accountStatus;
+    if (_subscription != null) {
+      map['subscription'] = _subscription?.toJson();
+    }
+    return map;
+  }
+}
+
+class Subscription {
+  Subscription({
+    String? planId,
+    String? planName,
+    String? status,
+    String? startedAt,
+    String? expiresAt,
+  }) {
+    _planId = planId;
+    _planName = planName;
+    _status = status;
+    _startedAt = startedAt;
+    _expiresAt = expiresAt;
+  }
+
+  Subscription.fromJson(dynamic json) {
+    _planId = json['planId']?.toString();
+    _planName = json['planName']?.toString();
+    _status = json['status']?.toString();
+    _startedAt = json['startedAt']?.toString();
+    _expiresAt = json['expiresAt']?.toString();
+  }
+
+  String? _planId;
+  String? _planName;
+  String? _status;
+  String? _startedAt;
+  String? _expiresAt;
+
+  Subscription copyWith({
+    String? planId,
+    String? planName,
+    String? status,
+    String? startedAt,
+    String? expiresAt,
+  }) => Subscription(
+    planId: planId ?? _planId,
+    planName: planName ?? _planName,
+    status: status ?? _status,
+    startedAt: startedAt ?? _startedAt,
+    expiresAt: expiresAt ?? _expiresAt,
+  );
+
+  String? get planId => _planId;
+  String? get planName => _planName;
+  String? get status => _status;
+  String? get startedAt => _startedAt;
+  String? get expiresAt => _expiresAt;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['planId'] = _planId;
+    map['planName'] = _planName;
+    map['status'] = _status;
+    map['startedAt'] = _startedAt;
+    map['expiresAt'] = _expiresAt;
     return map;
   }
 }
 
 class SocialLinks {
-  SocialLinks({
-    dynamic facebook,
-    dynamic twitter,
-    dynamic linkedin,
-    dynamic instagram,
-  }) {
+  SocialLinks({dynamic facebook, dynamic twitter, dynamic linkedin, dynamic instagram}) {
     _facebook = facebook;
     _twitter = twitter;
     _linkedin = linkedin;
@@ -274,17 +336,13 @@ class SocialLinks {
   dynamic _linkedin;
   dynamic _instagram;
 
-  SocialLinks copyWith({
-    dynamic facebook,
-    dynamic twitter,
-    dynamic linkedin,
-    dynamic instagram,
-  }) => SocialLinks(
-    facebook: facebook ?? _facebook,
-    twitter: twitter ?? _twitter,
-    linkedin: linkedin ?? _linkedin,
-    instagram: instagram ?? _instagram,
-  );
+  SocialLinks copyWith({dynamic facebook, dynamic twitter, dynamic linkedin, dynamic instagram}) =>
+      SocialLinks(
+        facebook: facebook ?? _facebook,
+        twitter: twitter ?? _twitter,
+        linkedin: linkedin ?? _linkedin,
+        instagram: instagram ?? _instagram,
+      );
 
   dynamic get facebook => _facebook;
 
@@ -305,13 +363,7 @@ class SocialLinks {
 }
 
 class Address {
-  Address({
-    dynamic street,
-    dynamic city,
-    dynamic state,
-    dynamic country,
-    dynamic zipCode,
-  }) {
+  Address({dynamic street, dynamic city, dynamic state, dynamic country, dynamic zipCode}) {
     _street = street;
     _city = city;
     _state = state;

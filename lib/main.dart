@@ -193,7 +193,7 @@ class MyApp extends StatelessWidget {
               fallbackLocale: enUS,
               popGesture: true,
               locale: locale,
-              supportedLocales: [enUS, ptBR],
+              supportedLocales: [enUS],
               localizationsDelegates: [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,

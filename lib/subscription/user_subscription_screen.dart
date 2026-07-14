@@ -90,7 +90,7 @@ class _HeaderSection extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     BaseText(
-                      text: '${l10n.yourPlanEnds}\t\t',
+                      text: '${l10n.yourPlanEnds}\tin\t',
                       fontWeight: FontWeight.w400,
                       fontFamily: AppKeys.poppins,
                       fontSize: fontSize15,
