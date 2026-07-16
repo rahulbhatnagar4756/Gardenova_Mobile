@@ -70,3 +70,38 @@ class RazorpayVerifyResponse {
     );
   }
 }
+
+class RazorpayCancelResponse {
+  final bool? success;
+  final String? message;
+  final String? endDate;
+  final String? status;
+
+  RazorpayCancelResponse({
+    this.success,
+    this.message,
+    this.endDate,
+    this.status,
+  });
+
+  factory RazorpayCancelResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
+    final Map<String, dynamic>? dataMap =
+        data is Map<String, dynamic> ? data : null;
+
+    return RazorpayCancelResponse(
+      success: json['success'] == true ||
+          json['statusCode'] == 200 ||
+          json['statusCode'] == 201,
+      message: json['message']?.toString(),
+      endDate: dataMap?['endDate']?.toString() ??
+          dataMap?['end_date']?.toString() ??
+          json['endDate']?.toString() ??
+          json['end_date']?.toString(),
+      status: dataMap?['status']?.toString() ??
+          dataMap?['accountStatus']?.toString() ??
+          dataMap?['account_status']?.toString() ??
+          json['status']?.toString(),
+    );
+  }
+}

@@ -31,6 +31,7 @@ class AppKeys {
   static const accountStatus = 'AccountStatus';
   static const remainingDays = 'remainingDays';
   static const subscriptionPlan = 'subscriptionPlan';
+  static const razorpaySubscriptionId = 'razorpaySubscriptionId';
   static const currentLatKey = 'currentLat';
   static const currentLongKey = 'currentLongKey';
   static const fcmToken = 'fcm_token';

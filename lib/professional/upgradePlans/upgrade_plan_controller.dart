@@ -29,6 +29,7 @@ class UpgradePlanController extends GetxController {
       if (Get.arguments is SubscriptionStatusUiModel) {
         currentModel = Get.arguments as SubscriptionStatusUiModel;
         screenType.value = AppKeys.dashboard;
+        _applyBillingCycleFromSubscription();
 
         if (currentModel!.updatedAt != null) {
           try {
@@ -67,13 +68,32 @@ class UpgradePlanController extends GetxController {
   }
 
   void changeTab(bool value) {
+    if (isTabMonthly.value == value) return;
+
     isTabMonthly.value = value;
     isTabAdditionalCoverage.value = false;
     isSelectOneTime.value = true;
-    selectedPrice.value = "";
-    planList.where((plan) => plan.isSelect == true).forEach((plan) {
+
+    if (_hasActiveSubscription) {
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      selectedPlanData = null;
+      selectedPrice.value = "";
+
+      if (isTabMonthly.value == _isSubscribedToMonthly) {
+        setSelectedPlan(applyBillingCycle: false);
+      }
+      planList.refresh();
+      return;
+    }
+
+    for (final plan in planList) {
       plan.setSelect = false;
-    });
+    }
+    selectedPlanData = null;
+    selectedPrice.value = "";
+    planList.refresh();
   }
 
   void selectPlanType(bool value) {
@@ -85,16 +105,25 @@ class UpgradePlanController extends GetxController {
   }
 
   void selectPlan(PlanModel plan) {
+    if (plan.isSelect == true) {
+      _updateSelectedPrice(plan);
+      return;
+    }
+
     for (int i = 0; i < planList.length; i++) {
       planList[i].setSelect = planList[i] == plan;
     }
-    if (isTabMonthly.value) {
-      selectedPrice.value = "${plan.priceMonthly!}/mo";
-    } else {
-      selectedPrice.value = "${plan.priceAnnual!}/an";
-    }
+    _updateSelectedPrice(plan);
     planList.refresh();
     selectedPlanData = null;
+  }
+
+  void _updateSelectedPrice(PlanModel plan) {
+    if (isTabMonthly.value) {
+      selectedPrice.value = "${plan.priceMonthly ?? '0'}/mo";
+    } else {
+      selectedPrice.value = "${plan.priceAnnual ?? '0'}/an";
+    }
   }
 
   void goToOrderSummary() {
@@ -146,8 +175,96 @@ class UpgradePlanController extends GetxController {
           ),
         );
     }
+    setSelectedPlan();
     updateStorePrices();
     isLoading.value = false;
+  }
+
+  void _applyBillingCycleFromSubscription() {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return;
+    isTabMonthly.value =
+        cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+  }
+
+  void setSelectedPlan({bool applyBillingCycle = true}) {
+    if (!_hasActiveSubscription) return;
+    if (applyBillingCycle) {
+      _applyBillingCycleFromSubscription();
+    }
+
+    final planName = (currentModel?.name ?? '').trim().toLowerCase();
+    final planId = currentModel?.id?.trim();
+
+    PlanModel? subscribedPlan;
+    if (planId != null && planId.isNotEmpty) {
+      subscribedPlan = planList.firstWhereOrNull(
+        (plan) =>
+            plan.id == planId ||
+            plan.monthlyId == planId ||
+            plan.yearlyId == planId,
+      );
+    }
+    if (subscribedPlan == null &&
+        planName.isNotEmpty &&
+        planName != 'free' &&
+        planName != 'trial') {
+      subscribedPlan = planList.firstWhereOrNull((plan) {
+        final tier = (plan.tier ?? '').trim().toLowerCase();
+        final name = (plan.planName ?? '').trim().toLowerCase();
+        return tier == planName || name == planName;
+      });
+    }
+    if (subscribedPlan == null) return;
+
+    for (final plan in planList) {
+      plan.setSelect = false;
+    }
+    subscribedPlan.setSelect = true;
+    selectedPlanData = subscribedPlan;
+    _updateSelectedPrice(subscribedPlan);
+    planList.refresh();
+  }
+
+  bool get _hasActiveSubscription {
+    final model = currentModel;
+    if (model == null) return false;
+    if (model.isActive == true) return true;
+    final status = (model.status ?? '').trim().toLowerCase();
+    return status == 'active' ||
+        status == 'renewed' ||
+        status == 'cancelled' ||
+        status == 'canceled';
+  }
+
+  bool get _isSubscribedToMonthly {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return true;
+    return cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+  }
+
+  bool isCurrentSubscribedPlan(PlanModel plan) {
+    if (!_hasActiveSubscription) return false;
+    if (isTabMonthly.value != _isSubscribedToMonthly) return false;
+
+    final planName = (currentModel?.name ?? '').trim().toLowerCase();
+    final planId = currentModel?.id?.trim();
+
+    if (planId != null && planId.isNotEmpty) {
+      if (plan.id == planId ||
+          plan.monthlyId == planId ||
+          plan.yearlyId == planId) {
+        return true;
+      }
+    }
+
+    if (planName.isEmpty || planName == 'free' || planName == 'trial') {
+      return false;
+    }
+
+    final tier = (plan.tier ?? '').trim().toLowerCase();
+    final name = (plan.planName ?? '').trim().toLowerCase();
+    return tier == planName || name == planName;
   }
 
   Future<void> initIAP() async {

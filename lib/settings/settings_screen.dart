@@ -273,6 +273,9 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       () => controller.currentSubscriptionStatusModel.value != null
           ? SubscriptionStatusViewWidget(
               controller.currentSubscriptionStatusModel.value!,
+              showCancelAction: controller.canCancelSubscription,
+              isCancellingSubscription: controller.isCancellingSubscription.value,
+              onCancelSubscription: controller.showCancelSubscriptionDialog,
               onUpgradeRefresh: () {
                 controller.getSubcriptionDetail();
                 controller.getProfileDetail();

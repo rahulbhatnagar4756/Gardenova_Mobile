@@ -141,6 +141,14 @@ class RazorpayPaymentController extends GetxController {
     return _activeSubscriptionId;
   }
 
+  void _persistSubscriptionId(String? subscriptionId) {
+    if (subscriptionId == null || subscriptionId.isEmpty) return;
+    SharedPrefsService.instance.setString(
+      AppKeys.razorpaySubscriptionId,
+      subscriptionId,
+    );
+  }
+
   Future<void> _onPaymentSuccess(PaymentSuccessResponse response) async {
     isProcessingPayment.value = false;
     isLoading.value = true;
@@ -157,8 +165,10 @@ class RazorpayPaymentController extends GetxController {
       });
 
       if (verifyResponse?.success == true) {
+        _persistSubscriptionId(subscriptionId);
         if (Get.isRegistered<SettingsViewModel>()) {
           final settingsViewModel = Get.find<SettingsViewModel>();
+          settingsViewModel.persistRazorpaySubscriptionId(subscriptionId);
           if (isUserPayment) {
             settingsViewModel.getProfileDetail();
             settingsViewModel.getSubcriptionDetail();

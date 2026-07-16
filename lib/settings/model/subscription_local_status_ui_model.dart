@@ -1,3 +1,5 @@
+import '../../base/widgets/base_calculate_remaining_days.dart';
+
 class SubscriptionStatusUiModel {
   String? id;
   String? name;
@@ -11,6 +13,8 @@ class SubscriptionStatusUiModel {
   bool? isAutoRenew;
   bool? isTrialActive;
   bool? isActive;
+  String? billingCycle;
+  bool? cancelAtPeriodEnd;
 
   SubscriptionStatusUiModel({
     this.id,
@@ -25,21 +29,58 @@ class SubscriptionStatusUiModel {
     this.isAutoRenew,
     this.isTrialActive,
     this.isActive,
+    this.billingCycle,
+    this.cancelAtPeriodEnd,
   });
 
+  factory SubscriptionStatusUiModel.fromProfileSubscription(
+    dynamic subscription,
+  ) {
+    final planId = subscription.planId?.toString();
+    final planName = subscription.planName?.toString().trim() ?? '';
+    final rawStatus = subscription.status?.toString().trim() ?? '';
+    final normalizedStatus = rawStatus.toLowerCase();
+    final billingCycle = subscription.billingCycle?.toString();
+    final cancelAtPeriodEnd = subscription.cancelAtPeriodEnd == true;
+    final startedAt = subscription.startedAt?.toString();
+    final expiresAt = subscription.expiresAt?.toString();
+    final isTrial = planName.toLowerCase() == 'trial';
+    final isActive =
+        normalizedStatus == 'active' || normalizedStatus == 'renewed';
+    final hasRemainingAccess =
+        expiresAt == null ||
+        expiresAt.isEmpty ||
+        BaseCalculateRemainingDays.daysUntilEndDate(expiresAt) > 0;
+
+    return SubscriptionStatusUiModel(
+      id: planId,
+      name: planName.isNotEmpty ? planName : 'Free',
+      status: cancelAtPeriodEnd && isActive ? 'Cancelled' : rawStatus,
+      createdAt: startedAt,
+      updatedAt: expiresAt,
+      isActive: isActive && hasRemainingAccess,
+      isTrialActive: isTrial && isActive,
+      isAutoRenew: !cancelAtPeriodEnd,
+      billingCycle: billingCycle,
+      cancelAtPeriodEnd: cancelAtPeriodEnd,
+    );
+  }
+
   SubscriptionStatusUiModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
+    id = json['id'] ?? json['planId']?.toString();
+    name = json['name'] ?? json['planName']?.toString();
     price = json['price'];
     currency = json['currency'];
     description = json['description'];
     status = json['status'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    createdAt = json['createdAt'] ?? json['startedAt']?.toString();
+    updatedAt = json['updatedAt'] ?? json['expiresAt']?.toString();
     trialDays = json['trialDays'];
     isAutoRenew = json['isAutoRenew'];
     isTrialActive = json['isTrialActive'];
     isActive = json['isActive'];
+    billingCycle = json['billingCycle']?.toString();
+    cancelAtPeriodEnd = json['cancelAtPeriodEnd'] == true;
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +97,8 @@ class SubscriptionStatusUiModel {
     data['isAutoRenew'] = isAutoRenew;
     data['isTrialActive'] = isTrialActive;
     data['isActive'] = isActive;
+    data['billingCycle'] = billingCycle;
+    data['cancelAtPeriodEnd'] = cancelAtPeriodEnd;
 
     return data;
   }

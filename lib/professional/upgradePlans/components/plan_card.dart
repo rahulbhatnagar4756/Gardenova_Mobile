@@ -6,6 +6,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../../utils/constants/app_strings.dart';
 import '../model/plan_model.dart';
 import '../upgrade_plan_controller.dart';
 
@@ -49,8 +50,10 @@ class PlanCard extends StatelessWidget {
     });
   }
 
-  //
   Widget planCardItem(BuildContext context, PlanModel plan) {
+    final isSelected = plan.isSelect == true;
+    final isSubscribed = controller.isCurrentSubscribedPlan(plan);
+
     return GestureDetector(
       onTap: () {
         controller.selectPlan(plan);
@@ -61,7 +64,7 @@ class PlanCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize12),
           border: Border.all(
-            color: plan.isSelect!
+            color: isSelected || isSubscribed
                 ? AppColors.greenColor
                 : AppColors.borderLiteGreyColor,
           ),
@@ -70,25 +73,56 @@ class PlanCard extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: spacerSize6 - 1),
+              padding: EdgeInsets.symmetric(
+                vertical: spacerSize6 - 1,
+                horizontal: spacerSize12,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(spacerSize12),
                   topRight: Radius.circular(spacerSize12),
                 ),
-                color: (plan.isSelect ?? false)
+                color: isSelected || isSubscribed
                     ? AppColors.greenColor
                     : AppColors.borderLiteGreyColor,
               ),
-              child: BaseText(
-                textColor: (plan.isSelect ?? false)
-                    ? AppColors.whiteColor
-                    : AppColors.blackColor,
-                textAlign: TextAlign.center,
-                fontWeight: FontWeight.w500,
-                fontFamily: AppKeys.inter,
-                fontSize: fontSize12,
-                text: plan.planName ?? "",
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: BaseText(
+                      textColor: isSelected || isSubscribed
+                          ? AppColors.whiteColor
+                          : AppColors.blackColor,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: AppKeys.inter,
+                      fontSize: fontSize12,
+                      text: plan.planName ?? "",
+                    ),
+                  ),
+                  if (isSubscribed) ...[
+                    SizedBox(width: spacerSize8),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: spacerSize8,
+                        vertical: spacerSize2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(spacerSize12),
+                        border: Border.all(color: Colors.white, width: 0.8),
+                      ),
+                      child: BaseText(
+                        text: AppStrings.subscribed,
+                        textColor: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: fontSize10,
+                        fontFamily: AppKeys.inter,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             SizedBox(height: spacerSize15),
@@ -100,13 +134,6 @@ class PlanCard extends StatelessWidget {
                     spacing: spacerSize4,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // BaseText(
-                      //   textAlign: TextAlign.center,
-                      //   fontWeight: FontWeight.w500,
-                      //   fontFamily: AppKeys.inter,
-                      //   fontSize: fontSize12,
-                      //   text: plan.planName ?? "",
-                      // ),
                       Row(
                         spacing: spacerSize4,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -133,7 +160,9 @@ class PlanCard extends StatelessWidget {
                             fontFamily: AppKeys.inter,
                             fontSize: fontSize12,
                             text: plan.features?.firstWhereOrNull(
-                                  (f) => f.key == 'saved_plants' || f.key == 'max_plants',
+                                  (f) =>
+                                      f.key == 'saved_plants' ||
+                                      f.key == 'max_plants',
                                 )?.label ??
                                 (plan.maxPlants == -1
                                     ? "Unlimited Plants"
@@ -149,7 +178,7 @@ class PlanCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(spacerSize12),
                     border: Border.all(
-                      color: plan.isSelect!
+                      color: isSelected || isSubscribed
                           ? AppColors.greenColor
                           : AppColors.blackColor,
                       width: 2,
@@ -157,7 +186,7 @@ class PlanCard extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     radius: spacerSize6,
-                    backgroundColor: plan.isSelect!
+                    backgroundColor: isSelected || isSubscribed
                         ? AppColors.greenColor
                         : AppColors.appColor,
                   ),

@@ -189,6 +189,14 @@ class AppStrings {
       "The store is currently on hold. We’ll be back soon with updates.";
   static const String subscriptionPayment = "Subscription payment";
   static const String razorpayKeyNotConfigured = "Razorpay key is not configured.";
+  static const String cancelSubscription = "Cancel Subscription";
+  static const String cancelSubscriptionDesc =
+      "Your plan will remain active until the end of the current billing period. After that, premium features will no longer be available.";
+  static const String confirmCancel = "Yes, Cancel";
+  static const String subscriptionCancelled = "Subscription cancelled";
+  static const String subscriptionCancelledNote = "Auto-renewal is off";
+  static const String subscribed = "Subscribed";
+  static const String subscriptionCancelFailed = "Unable to cancel subscription. Please try again.";
   static const String wallet = "Wallet";
   static const String externalWallet = "external wallet";
   static const String redirectedTo = "Redirected to";

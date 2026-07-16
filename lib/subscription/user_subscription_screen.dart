@@ -12,6 +12,7 @@ import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class UserSubscriptionScreen extends GetWidget<UserSubscriptionController> {
   const UserSubscriptionScreen({super.key});
@@ -200,6 +201,7 @@ class _PlanList extends StatelessWidget {
               (plan) => _UserPlanCard(
                 plan: plan,
                 isMonthly: controller.isTabMonthly.value,
+                isSubscribed: controller.isCurrentSubscribedPlan(plan),
                 l10n: l10n,
                 onTap: () => controller.selectPlan(plan),
               ),
@@ -215,12 +217,14 @@ class _UserPlanCard extends StatelessWidget {
   const _UserPlanCard({
     required this.plan,
     required this.isMonthly,
+    required this.isSubscribed,
     required this.l10n,
     required this.onTap,
   });
 
   final PlanModel plan;
   final bool isMonthly;
+  final bool isSubscribed;
   final AppLocalizations l10n;
   final VoidCallback onTap;
 
@@ -238,8 +242,10 @@ class _UserPlanCard extends StatelessWidget {
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(spacerSize16),
           border: Border.all(
-            color: isSelected ? AppColors.greenColor : AppColors.borderLiteGreyColor,
-            width: isSelected ? 1.5 : 1,
+            color: isSelected || isSubscribed
+                ? AppColors.greenColor
+                : AppColors.borderLiteGreyColor,
+            width: isSelected || isSubscribed ? 1.5 : 1,
           ),
         ),
         child: Column(
@@ -249,7 +255,7 @@ class _UserPlanCard extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: spacerSize16, vertical: spacerSize10),
               decoration: BoxDecoration(
-                color: isSelected
+                color: isSelected || isSubscribed
                     ? AppColors.greenColor
                     : AppColors.borderLiteGreyColor.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.only(
@@ -260,15 +266,49 @@ class _UserPlanCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BaseText(
-                    text: plan.planName ?? '',
-                    textColor: isSelected ? Colors.white : AppColors.blackColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: fontSize14,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: BaseText(
+                            text: plan.planName ?? '',
+                            textColor: isSelected || isSubscribed
+                                ? Colors.white
+                                : AppColors.blackColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: fontSize14,
+                          ),
+                        ),
+                        if (isSubscribed) ...[
+                          SizedBox(width: spacerSize8),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: spacerSize8,
+                              vertical: spacerSize2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(spacerSize12),
+                              border: Border.all(color: Colors.white, width: 0.8),
+                            ),
+                            child: BaseText(
+                              text: AppStrings.subscribed,
+                              textColor: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: fontSize10,
+                              fontFamily: AppKeys.inter,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
+                  SizedBox(width: spacerSize8),
                   BaseText(
                     text: '₹$price/$period',
-                    textColor: isSelected ? Colors.white : AppColors.greenColor,
+                    textColor: isSelected || isSubscribed
+                        ? Colors.white
+                        : AppColors.greenColor,
                     fontWeight: FontWeight.w700,
                     fontSize: fontSize13,
                   ),

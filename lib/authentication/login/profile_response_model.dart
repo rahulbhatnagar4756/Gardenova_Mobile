@@ -261,27 +261,39 @@ class Subscription {
     String? planId,
     String? planName,
     String? status,
+    String? billingCycle,
+    bool? cancelAtPeriodEnd,
     String? startedAt,
     String? expiresAt,
   }) {
     _planId = planId;
     _planName = planName;
     _status = status;
+    _billingCycle = billingCycle;
+    _cancelAtPeriodEnd = cancelAtPeriodEnd;
     _startedAt = startedAt;
     _expiresAt = expiresAt;
   }
 
   Subscription.fromJson(dynamic json) {
-    _planId = json['planId']?.toString();
-    _planName = json['planName']?.toString();
+    _planId = json['planId']?.toString() ?? json['plan_id']?.toString();
+    _planName = json['planName']?.toString() ?? json['plan_name']?.toString();
     _status = json['status']?.toString();
-    _startedAt = json['startedAt']?.toString();
-    _expiresAt = json['expiresAt']?.toString();
+    _billingCycle =
+        json['billingCycle']?.toString() ?? json['billing_cycle']?.toString();
+    _cancelAtPeriodEnd =
+        json['cancelAtPeriodEnd'] == true || json['cancel_at_period_end'] == true;
+    _startedAt =
+        json['startedAt']?.toString() ?? json['started_at']?.toString();
+    _expiresAt =
+        json['expiresAt']?.toString() ?? json['expires_at']?.toString();
   }
 
   String? _planId;
   String? _planName;
   String? _status;
+  String? _billingCycle;
+  bool? _cancelAtPeriodEnd;
   String? _startedAt;
   String? _expiresAt;
 
@@ -289,12 +301,16 @@ class Subscription {
     String? planId,
     String? planName,
     String? status,
+    String? billingCycle,
+    bool? cancelAtPeriodEnd,
     String? startedAt,
     String? expiresAt,
   }) => Subscription(
     planId: planId ?? _planId,
     planName: planName ?? _planName,
     status: status ?? _status,
+    billingCycle: billingCycle ?? _billingCycle,
+    cancelAtPeriodEnd: cancelAtPeriodEnd ?? _cancelAtPeriodEnd,
     startedAt: startedAt ?? _startedAt,
     expiresAt: expiresAt ?? _expiresAt,
   );
@@ -302,6 +318,8 @@ class Subscription {
   String? get planId => _planId;
   String? get planName => _planName;
   String? get status => _status;
+  String? get billingCycle => _billingCycle;
+  bool? get cancelAtPeriodEnd => _cancelAtPeriodEnd;
   String? get startedAt => _startedAt;
   String? get expiresAt => _expiresAt;
 
@@ -310,6 +328,8 @@ class Subscription {
     map['planId'] = _planId;
     map['planName'] = _planName;
     map['status'] = _status;
+    map['billingCycle'] = _billingCycle;
+    map['cancelAtPeriodEnd'] = _cancelAtPeriodEnd;
     map['startedAt'] = _startedAt;
     map['expiresAt'] = _expiresAt;
     return map;

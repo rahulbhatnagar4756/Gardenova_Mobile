@@ -45,7 +45,18 @@ class UserSubscriptionController extends GetxController {
     if (Get.arguments is SubscriptionStatusUiModel) {
       currentModel = Get.arguments as SubscriptionStatusUiModel;
       _setRemainingDaysFromModel(currentModel);
+      _applyBillingCycleFromSubscription();
       return;
+    }
+
+    if (Get.isRegistered<SettingsViewModel>()) {
+      currentModel =
+          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value;
+      if (currentModel != null) {
+        _setRemainingDaysFromModel(currentModel);
+        _applyBillingCycleFromSubscription();
+        return;
+      }
     }
 
     if (Get.arguments is Map) {
@@ -54,6 +65,15 @@ class UserSubscriptionController extends GetxController {
     }
 
     _setRemainingDaysFromPrefs();
+  }
+
+  void _applyBillingCycleFromSubscription() {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return;
+
+    final isMonthly =
+        cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+    isTabMonthly.value = isMonthly;
   }
 
   void _setRemainingDaysFromModel(SubscriptionStatusUiModel? model) {
@@ -78,23 +98,58 @@ class UserSubscriptionController extends GetxController {
   }
 
   void changeTab(bool value) {
+    if (isTabMonthly.value == value) return;
+
     isTabMonthly.value = value;
-    selectedPrice.value = '';
+
+    // Subscribed users: only keep the subscribed plan selected, and only on
+    // the billing period they are actually subscribed to.
+    if (_hasActiveSubscription) {
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      selectedPlanData = null;
+      selectedPrice.value = '';
+
+      if (isTabMonthly.value == _isSubscribedToMonthly) {
+        final subscribedPlan = _findSubscribedPlan();
+        if (subscribedPlan != null) {
+          subscribedPlan.setSelect = true;
+          selectedPlanData = subscribedPlan;
+          _updateSelectedPrice(subscribedPlan);
+        }
+      }
+      planList.refresh();
+      return;
+    }
+
     for (final plan in planList) {
       plan.setSelect = false;
     }
+    selectedPlanData = null;
+    selectedPrice.value = '';
     planList.refresh();
   }
 
   void selectPlan(PlanModel plan) {
+    // Tapping the already-selected plan should not change selection.
+    if (plan.isSelect == true) {
+      _updateSelectedPrice(plan);
+      return;
+    }
+
     for (final item in planList) {
       item.setSelect = item == plan;
     }
-    selectedPrice.value = isTabMonthly.value
-        ? '${plan.priceMonthly!}/mo'
-        : '${plan.priceAnnual!}/an';
+    _updateSelectedPrice(plan);
     planList.refresh();
     selectedPlanData = null;
+  }
+
+  void _updateSelectedPrice(PlanModel plan) {
+    selectedPrice.value = isTabMonthly.value
+        ? '${plan.priceMonthly ?? '0'}/mo'
+        : '${plan.priceAnnual ?? '0'}/an';
   }
 
   void goToOrderSummary() {
@@ -195,8 +250,10 @@ class UserSubscriptionController extends GetxController {
       });
 
       if (verifyResponse?.success == true) {
+        _persistSubscriptionId(subscriptionId);
         if (Get.isRegistered<SettingsViewModel>()) {
           final settingsViewModel = Get.find<SettingsViewModel>();
+          settingsViewModel.persistRazorpaySubscriptionId(subscriptionId);
           settingsViewModel.getProfileDetail();
           settingsViewModel.getSubcriptionDetail();
         }
@@ -245,6 +302,14 @@ class UserSubscriptionController extends GetxController {
       return response.orderId;
     }
     return _activeSubscriptionId;
+  }
+
+  void _persistSubscriptionId(String? subscriptionId) {
+    if (subscriptionId == null || subscriptionId.isEmpty) return;
+    SharedPrefsService.instance.setString(
+      AppKeys.razorpaySubscriptionId,
+      subscriptionId,
+    );
   }
 
   String? _userName() {
@@ -339,14 +404,79 @@ class UserSubscriptionController extends GetxController {
   }
 
   void setSelectedPlan() {
-    if (currentModel?.id != null) {
-      var plan = planList.firstWhereOrNull((p0) => p0.id == currentModel!.id);
-      var selectedIndex = planList.indexOf(plan);
-      if (selectedIndex != -1) {
-        planList[selectedIndex].setSelect = true;
-        selectPlan(plan!);
-      }
+    if (!_hasActiveSubscription) return;
+
+    _applyBillingCycleFromSubscription();
+
+    final subscribedPlan = _findSubscribedPlan();
+    if (subscribedPlan == null) return;
+
+    for (final plan in planList) {
+      plan.setSelect = false;
     }
+    subscribedPlan.setSelect = true;
+    selectedPlanData = subscribedPlan;
+    _updateSelectedPrice(subscribedPlan);
+    planList.refresh();
+  }
+
+  bool get _hasActiveSubscription {
+    final model = currentModel;
+    if (model == null) return false;
+    if (model.isActive == true) return true;
+
+    final status = (model.status ?? '').trim().toLowerCase();
+    return status == 'active' ||
+        status == 'renewed' ||
+        status == 'cancelled' ||
+        status == 'canceled';
+  }
+
+  bool get _isSubscribedToMonthly {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return true;
+    return cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+  }
+
+  /// True when [plan] is the user's active subscription on the current billing tab.
+  bool isCurrentSubscribedPlan(PlanModel plan) {
+    if (!_hasActiveSubscription) return false;
+    if (isTabMonthly.value != _isSubscribedToMonthly) return false;
+
+    final subscribedPlan = _findSubscribedPlan();
+    if (subscribedPlan == null) return false;
+
+    return identical(plan, subscribedPlan) ||
+        plan.id == subscribedPlan.id ||
+        ((plan.tier ?? '').toLowerCase() ==
+            (subscribedPlan.tier ?? '').toLowerCase());
+  }
+
+  PlanModel? _findSubscribedPlan() {
+    final model = currentModel;
+    if (model == null) return null;
+
+    final planId = model.id?.trim();
+    if (planId != null && planId.isNotEmpty) {
+      final byId = planList.firstWhereOrNull(
+        (plan) =>
+            plan.id == planId ||
+            plan.monthlyId == planId ||
+            plan.yearlyId == planId,
+      );
+      if (byId != null) return byId;
+    }
+
+    final planName = (model.name ?? '').trim().toLowerCase();
+    if (planName.isEmpty || planName == 'free' || planName == 'trial') {
+      return null;
+    }
+
+    return planList.firstWhereOrNull((plan) {
+      final tier = (plan.tier ?? '').trim().toLowerCase();
+      final name = (plan.planName ?? '').trim().toLowerCase();
+      return tier == planName || name == planName;
+    });
   }
 
   @override

@@ -10,6 +10,8 @@ import 'package:kasagardem/authentication/login/professional_profile_model.dart'
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/professional/payment/model/razorpay_order_model.dart';
+import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
 import 'package:kasagardem/services/notification_service.dart';
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
@@ -55,9 +57,11 @@ class SettingsViewModel extends GetxController {
   String apiImage = '';
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
+  final RazorpayPaymentRepository _subscriptionRepository = RazorpayPaymentRepository();
   RxString appVersion = '1.0.0'.obs;
   RxInt countdownTimer = 0.obs;
   Timer? _timer;
+  RxBool isCancellingSubscription = false.obs;
 
   late final FocusNode focusNode;
   var isEmailLogedInUser = true.obs;
@@ -211,17 +215,9 @@ class SettingsViewModel extends GetxController {
         }
         phoneNoController.text = phone;
 
-        // Update subscription status from profile response
-        if (profileResponse.data?.subscription != null) {
-          currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
-            name: profileResponse.data?.subscription?.planName ?? '',
-            status: profileResponse.data?.subscription?.status ?? '',
-            id: profileResponse.data?.subscription?.planId ?? '',
-            isActive: profileResponse.data?.subscription?.status!.toLowerCase() == "active",
-            isTrialActive: profileResponse.data?.subscriptionPlan?.toLowerCase() == "trial",
-            createdAt: profileResponse.data?.subscription?.startedAt,
-            updatedAt: profileResponse.data?.subscription?.expiresAt,
-          );
+        final subscription = profileResponse.data?.subscription;
+        if (subscription != null) {
+          applySubscriptionFromProfile(subscription);
         }
 
         if (profileResponse.data?.profileImage != null) {
@@ -270,77 +266,184 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> getSubcriptionDetail() async {
-    // var realDetialModel = SubscriptionStatusUiModel(
-    //   name: profileResponse.data!.subscriptionPlan,
-    //   status: profileResponse.data!.accountStatus,
-    //   isActive: profileResponse.data!.accountStatus?.toLowerCase() == "active",
-    //   isTrialActive: profileResponse.data!.subscriptionPlan?.toLowerCase() == "trial",
-    //   createdAt: profileResponse.data!.startDate,
-    //   updatedAt: profileResponse.data!.endDate,
-    // );
-    // Trial Subscription
-    // final trialSubscription = SubscriptionStatusUiModel(
-    //   name: "Trial",
-    //   status: "Active",
-    //   isActive: true,
-    //   isTrialActive: true,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2026-06-15",
-    // );
-
-    // Active Subscription
-    final activeSubscription = SubscriptionStatusUiModel(
-      name: "Free",
-      status: "Active",
-      isActive: true,
-      isTrialActive: false,
-      /*  createdAt: "2026-05-01",
-      updatedAt: "2026-07-01",*/
-    );
-
-    // Cancelled Subscription
-    // final cancelledSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Cancelled",
-    //   isActive: false,
-    //   isTrialActive: false,
-    //   createdAt: "2026-04-01",
-    //   updatedAt: "2026-05-15",
-    // );
-
-    // Renewed Subscription
-    // final renewedSubscription = SubscriptionStatusUiModel(
-    //   name: "Premium",
-    //   status: "Renewed",
-    //   isActive: true,
-    //   isTrialActive: false,
-    //   createdAt: "2026-06-01",
-    //   updatedAt: "2027-06-01",
-    // );
-    // need change
-    // currentSubscriptionStatusModel.value = trialSubscription;
-    currentSubscriptionStatusModel.value = activeSubscription;
-    // currentSubscriptionStatusModel.value = cancelledSubscription;
-    // currentSubscriptionStatusModel.value = renewedSubscription;
-    // currentSubscriptionStatusModel.value = realDetialModel;
+    final response = await profileRepository.fetchProfile();
+    if (response != null) {
+      final profileResponse = ProfileResponseModel.fromJson(response);
+      final subscription = profileResponse.data?.subscription;
+      if (subscription != null) {
+        applySubscriptionFromProfile(subscription);
+        return;
+      }
+    }
 
     if (currentSubscriptionStatusModel.value != null) {
       final model = currentSubscriptionStatusModel.value!;
       if (model.updatedAt != null) {
-        try {
-          final expirationDate = DateTime.parse(model.updatedAt!).toLocal();
-          final now = DateTime.now();
-          final today = DateTime(now.year, now.month, now.day);
-          final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
-          final remaining = exp.difference(today).inDays;
-          SharedPrefsService.instance.setString(
-            AppKeys.remainingDays,
-            remaining.clamp(0, 365).toString(),
-          );
-        } catch (_) {
-          SharedPrefsService.instance.setString(AppKeys.remainingDays, "0");
-        }
+        BaseCalculateRemainingDays.persistFromEndDate(model.updatedAt);
       }
+    }
+    currentSubscriptionStatusModel.refresh();
+  }
+
+  void applySubscriptionFromProfile(Subscription subscription) {
+    final uiModel = SubscriptionStatusUiModel.fromProfileSubscription(subscription);
+    currentSubscriptionStatusModel.value = uiModel;
+
+    if (uiModel.updatedAt != null && uiModel.updatedAt!.isNotEmpty) {
+      BaseCalculateRemainingDays.persistFromEndDate(uiModel.updatedAt);
+    } else {
+      SharedPrefsService.instance.setString(AppKeys.remainingDays, '0');
+    }
+
+    if (uiModel.name != null && uiModel.name!.isNotEmpty) {
+      SharedPrefsService.instance.setString(
+        AppKeys.subscriptionPlan,
+        uiModel.name!,
+      );
+    }
+    if (uiModel.status != null && uiModel.status!.isNotEmpty) {
+      SharedPrefsService.instance.setString(
+        AppKeys.accountStatus,
+        uiModel.status!,
+      );
+    }
+    if (uiModel.createdAt != null && uiModel.createdAt!.isNotEmpty) {
+      SharedPrefsService.instance.setString(
+        AppKeys.createdAt,
+        uiModel.createdAt!,
+      );
+    }
+
+    currentSubscriptionStatusModel.refresh();
+  }
+
+  bool get canCancelSubscription {
+    final model = currentSubscriptionStatusModel.value;
+    if (model == null || model.isActive != true) return false;
+    if (model.cancelAtPeriodEnd == true) return false;
+
+    final plan = (model.name ?? '').trim().toLowerCase();
+    if (plan.isEmpty || plan == 'free' || plan == 'trial') return false;
+
+    final status = (model.status ?? '').trim().toLowerCase();
+    if (status == 'cancelled' ||
+        status == 'canceled' ||
+        status == 'expired' ||
+        status == 'inactive') {
+      return false;
+    }
+
+    return true;
+  }
+
+  void showCancelSubscriptionDialog() {
+    if (!canCancelSubscription || isCancellingSubscription.value) return;
+
+    BaseDialog.showAlertDialog(
+      context: Get.context!,
+      title: AppStrings.cancelSubscription,
+      description: AppStrings.cancelSubscriptionDesc,
+      buttonLabel: AppStrings.confirmCancel,
+      onButtonPressed: () {
+        Get.back();
+        cancelSubscription();
+      },
+    );
+  }
+
+  Future<void> cancelSubscription() async {
+    if (!canCancelSubscription || isCancellingSubscription.value) return;
+
+    isCancellingSubscription.value = true;
+    try {
+      final subscriptionId =
+          currentSubscriptionStatusModel.value?.id ??
+          SharedPrefsService.instance.getString(AppKeys.razorpaySubscriptionId);
+
+      final response = await _subscriptionRepository.cancelSubscription(
+        razorpaySubscriptionId: subscriptionId,
+      );
+
+      if (response?.success == true) {
+        _applyCancelledSubscriptionLocally(response!);
+        if (screenType.value == AppKeys.professional) {
+          await getProfileDetail();
+        } else {
+          await Future.wait([getProfileDetail(), getSubcriptionDetail()]);
+        }
+        BaseSnackBar.show(
+          title: AppStrings.subscriptionCancelled,
+          message:
+              response?.message ?? 'Your subscription will end after the current billing period.',
+        );
+        return;
+      }
+
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: response?.message ?? AppStrings.subscriptionCancelFailed,
+      );
+    } catch (e) {
+      log('Cancel subscription error: $e');
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: AppStrings.subscriptionCancelFailed,
+      );
+    } finally {
+      isCancellingSubscription.value = false;
+    }
+  }
+
+  void persistRazorpaySubscriptionId(String? subscriptionId) {
+    if (subscriptionId == null || subscriptionId.trim().isEmpty) return;
+
+    SharedPrefsService.instance.setString(AppKeys.razorpaySubscriptionId, subscriptionId.trim());
+
+    final current = currentSubscriptionStatusModel.value;
+    if (current == null) return;
+
+    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+      id: subscriptionId.trim(),
+      name: current.name,
+      price: current.price,
+      currency: current.currency,
+      description: current.description,
+      status: current.status,
+      createdAt: current.createdAt,
+      updatedAt: current.updatedAt,
+      trialDays: current.trialDays,
+      isAutoRenew: current.isAutoRenew,
+      isTrialActive: current.isTrialActive,
+      isActive: current.isActive,
+    );
+    currentSubscriptionStatusModel.refresh();
+  }
+
+  void _applyCancelledSubscriptionLocally(RazorpayCancelResponse response) {
+    final current = currentSubscriptionStatusModel.value;
+    if (current == null) return;
+
+    final endDate = response.endDate ?? current.updatedAt;
+    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+      id: current.id,
+      name: current.name,
+      price: current.price,
+      currency: current.currency,
+      description: current.description,
+      status: response.status ?? 'Cancelled',
+      createdAt: current.createdAt,
+      updatedAt: endDate,
+      trialDays: current.trialDays,
+      isAutoRenew: false,
+      isTrialActive: false,
+      isActive: true,
+      billingCycle: current.billingCycle,
+      cancelAtPeriodEnd: true,
+    );
+
+    SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
+    if (endDate != null && endDate.isNotEmpty) {
+      BaseCalculateRemainingDays.persistFromEndDate(endDate);
     }
     currentSubscriptionStatusModel.refresh();
   }

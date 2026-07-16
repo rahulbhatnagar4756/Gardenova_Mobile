@@ -12,13 +12,24 @@ import '../../settings/model/subscription_local_status_ui_model.dart';
 import '../../subscription/subscription_navigation.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_constants.dart';
+import '../../utils/constants/app_strings.dart';
 import '../../utils/utils.dart';
 
 class SubscriptionStatusViewWidget extends StatelessWidget {
   final SubscriptionStatusUiModel currentModel;
   final VoidCallback? onUpgradeRefresh;
+  final VoidCallback? onCancelSubscription;
+  final bool isCancellingSubscription;
+  final bool showCancelAction;
 
-  const SubscriptionStatusViewWidget(this.currentModel, {this.onUpgradeRefresh, super.key});
+  const SubscriptionStatusViewWidget(
+    this.currentModel, {
+    this.onUpgradeRefresh,
+    this.onCancelSubscription,
+    this.isCancellingSubscription = false,
+    this.showCancelAction = false,
+    super.key,
+  });
 
   int get _remainingDays {
     if (currentModel.updatedAt == null) return 0;
@@ -34,10 +45,16 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
     }
   }
 
+  bool get _isCancelledStatus {
+    final status = (currentModel.status ?? '').toLowerCase();
+    return status == 'cancelled' || status == 'canceled' || currentModel.cancelAtPeriodEnd == true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isExpired = _remainingDays == 0;
+    final isCancelled = _isCancelledStatus;
 
     return Stack(
       children: [
@@ -122,7 +139,8 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: spacerSize8),
-                      if (isExpired == false)
+                      if (isExpired == false &&
+                          currentModel.name?.toLowerCase() == 'trial')
                         Align(
                           alignment: Alignment.centerRight,
                           child: CommonClickWidget(
@@ -141,9 +159,7 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                                 Icon(Icons.sync, size: 11.w, color: AppColors.whiteColor),
                                 SizedBox(width: spacerSize4),
                                 BaseText(
-                                  text: currentModel.name?.toLowerCase() == "trial"
-                                      ? AppLocalizations.of(Get.context!)!.upgradeNow
-                                      : AppLocalizations.of(Get.context!)!.renewPlan,
+                                  text: AppLocalizations.of(Get.context!)!.upgradeNow,
                                   fontFamily: AppKeys.inter,
                                   fontSize: fontSize10,
                                   fontWeight: FontWeight.w600,
@@ -248,6 +264,35 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         ],
                       ),
                     ],
+                  ),
+                ),
+              if (showCancelAction && !isExpired)
+                Padding(
+                  padding: EdgeInsets.only(top: spacerSize10),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: CommonClickWidget(
+                      onTap: isCancellingSubscription ? null : onCancelSubscription,
+                      child: isCancellingSubscription
+                          ? SizedBox(
+                              width: 16.w,
+                              height: 16.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.whiteColor,
+                              ),
+                            )
+                          : Text(
+                              AppStrings.cancelSubscription,
+                              style: TextStyle(
+                                fontFamily: AppKeys.inter,
+                                fontSize: fontSize10,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.whiteColor.withValues(alpha: 0.9),
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                    ),
                   ),
                 ),
             ],
