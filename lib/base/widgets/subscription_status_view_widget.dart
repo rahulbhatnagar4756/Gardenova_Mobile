@@ -89,7 +89,7 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                           Row(
                             children: [
                               BaseText(
-                                text: Utils.capitalize(currentModel.status ?? ""),
+                                text: Utils.capitalize(currentModel.status ?? "Active"),
                                 fontFamily: AppKeys.inter,
                                 textColor: AppColors.whiteColor,
                                 fontSize: fontSize16,
@@ -125,10 +125,12 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              Image.asset(AppAssets.crownIc, width: 11.w, height: 11.w),
+                              if (currentModel.name != null)
+                                Image.asset(AppAssets.crownIc, width: 11.w, height: 11.w),
                               SizedBox(width: spacerSize6),
                               BaseText(
-                                text: '${(currentModel.name!.capitalizeFirst ?? "")} Plan',
+                                text:
+                                    '${currentModel.name == null ? "Free" : (currentModel.name!.capitalizeFirst ?? "")} Plan',
                                 fontSize: fontSize12,
                                 fontFamily: AppKeys.inter,
                                 fontWeight: FontWeight.w600,
@@ -139,8 +141,8 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: spacerSize8),
-                      if (isExpired == false &&
-                          currentModel.name?.toLowerCase() == 'trial')
+                      if (currentModel.name == null ||
+                          (isExpired == false && currentModel.name?.toLowerCase() == 'trial'))
                         Align(
                           alignment: Alignment.centerRight,
                           child: CommonClickWidget(

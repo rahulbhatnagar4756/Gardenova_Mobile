@@ -100,6 +100,8 @@ class RazorpayPaymentController extends GetxController {
       final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
 
       final orderResponse = await _repository.createOrder(planCode);
+
+      print("orderResponse:::$orderResponse");
       if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
         BaseSnackBar.show(
           title: 'Payment',
@@ -112,14 +114,19 @@ class RazorpayPaymentController extends GetxController {
       _activeSubscriptionId = order.subscriptionId;
 
       isProcessingPayment.value = true;
-      RazorpayPaymentService.instance.openSubscriptionCheckout(
-        subscriptionId: order.subscriptionId!,
-        keyIdOverride: order.keyId,
-        name: _userName(),
-        email: _userEmail(),
-        contact: _userContact(),
-        description: '${plan.planName ?? 'Plan'} - $billingLabel',
-      );
+      if (order.scheduled == true) {
+        BaseSnackBar.show(title: 'Payment', message: 'Subscription verified successfully.');
+        Get.until((route) => route.settings.name == Routes.dashboard);
+      } else {
+        RazorpayPaymentService.instance.openSubscriptionCheckout(
+          subscriptionId: order.subscriptionId!,
+          keyIdOverride: order.keyId,
+          name: _userName(),
+          email: _userEmail(),
+          contact: _userContact(),
+          description: '${plan.planName ?? 'Plan'} - $billingLabel',
+        );
+      }
     } catch (e) {
       log('Razorpay startPayment error: $e');
       BaseSnackBar.show(
@@ -143,10 +150,7 @@ class RazorpayPaymentController extends GetxController {
 
   void _persistSubscriptionId(String? subscriptionId) {
     if (subscriptionId == null || subscriptionId.isEmpty) return;
-    SharedPrefsService.instance.setString(
-      AppKeys.razorpaySubscriptionId,
-      subscriptionId,
-    );
+    SharedPrefsService.instance.setString(AppKeys.razorpaySubscriptionId, subscriptionId);
   }
 
   Future<void> _onPaymentSuccess(PaymentSuccessResponse response) async {

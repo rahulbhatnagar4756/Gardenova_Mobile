@@ -50,8 +50,7 @@ class UserSubscriptionController extends GetxController {
     }
 
     if (Get.isRegistered<SettingsViewModel>()) {
-      currentModel =
-          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value;
+      currentModel = Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value;
       if (currentModel != null) {
         _setRemainingDaysFromModel(currentModel);
         _applyBillingCycleFromSubscription();
@@ -71,8 +70,7 @@ class UserSubscriptionController extends GetxController {
     final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
     if (cycle.isEmpty) return;
 
-    final isMonthly =
-        cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+    final isMonthly = cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
     isTabMonthly.value = isMonthly;
   }
 
@@ -211,15 +209,20 @@ class UserSubscriptionController extends GetxController {
       final order = orderResponse!.data!;
       _activeSubscriptionId = order.subscriptionId;
       isProcessingPayment.value = true;
-
-      RazorpayPaymentService.instance.openSubscriptionCheckout(
-        subscriptionId: order.subscriptionId!,
-        keyIdOverride: order.keyId,
-        name: _userName(),
-        email: _userEmail(),
-        contact: _userContact(),
-        description: '${plan.planName ?? 'Plan'} - ${isTabMonthly.value ? 'Monthly' : 'Annually'}',
-      );
+      if (order.scheduled == true) {
+        BaseSnackBar.show(title: 'Payment', message: 'Subscription verified successfully.');
+        Get.until((route) => route.settings.name == Routes.dashboard);
+      } else {
+        RazorpayPaymentService.instance.openSubscriptionCheckout(
+          subscriptionId: order.subscriptionId!,
+          keyIdOverride: order.keyId,
+          name: _userName(),
+          email: _userEmail(),
+          contact: _userContact(),
+          description:
+              '${plan.planName ?? 'Plan'} - ${isTabMonthly.value ? 'Monthly' : 'Annually'}',
+        );
+      }
     } catch (e) {
       log('Razorpay startPayment error: $e');
       BaseSnackBar.show(
@@ -306,10 +309,7 @@ class UserSubscriptionController extends GetxController {
 
   void _persistSubscriptionId(String? subscriptionId) {
     if (subscriptionId == null || subscriptionId.isEmpty) return;
-    SharedPrefsService.instance.setString(
-      AppKeys.razorpaySubscriptionId,
-      subscriptionId,
-    );
+    SharedPrefsService.instance.setString(AppKeys.razorpaySubscriptionId, subscriptionId);
   }
 
   String? _userName() {
@@ -448,8 +448,7 @@ class UserSubscriptionController extends GetxController {
 
     return identical(plan, subscribedPlan) ||
         plan.id == subscribedPlan.id ||
-        ((plan.tier ?? '').toLowerCase() ==
-            (subscribedPlan.tier ?? '').toLowerCase());
+        ((plan.tier ?? '').toLowerCase() == (subscribedPlan.tier ?? '').toLowerCase());
   }
 
   PlanModel? _findSubscribedPlan() {
@@ -459,10 +458,7 @@ class UserSubscriptionController extends GetxController {
     final planId = model.id?.trim();
     if (planId != null && planId.isNotEmpty) {
       final byId = planList.firstWhereOrNull(
-        (plan) =>
-            plan.id == planId ||
-            plan.monthlyId == planId ||
-            plan.yearlyId == planId,
+        (plan) => plan.id == planId || plan.monthlyId == planId || plan.yearlyId == planId,
       );
       if (byId != null) return byId;
     }

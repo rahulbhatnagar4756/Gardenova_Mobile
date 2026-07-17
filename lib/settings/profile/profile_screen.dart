@@ -6,6 +6,7 @@ import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
 import 'package:kasagardem/settings/components/settings_item_layout.dart';
+import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -118,18 +119,16 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
 
   Widget subscriptionPlanCard() {
     return Obx(
-      () => controller.currentSubscriptionStatusModel.value != null
-          ? SubscriptionStatusViewWidget(
-              controller.currentSubscriptionStatusModel.value!,
-              showCancelAction: controller.canCancelSubscription,
-              isCancellingSubscription: controller.isCancellingSubscription.value,
-              onCancelSubscription: controller.showCancelSubscriptionDialog,
-              onUpgradeRefresh: () {
-                controller.getSubcriptionDetail();
-                controller.getProfileDetail();
-              },
-            ).paddingSymmetric(horizontal: 16.w)
-          : Container(),
+      () => SubscriptionStatusViewWidget(
+        controller.currentSubscriptionStatusModel.value ?? SubscriptionStatusUiModel(),
+        showCancelAction: controller.canCancelSubscription,
+        isCancellingSubscription: controller.isCancellingSubscription.value,
+        onCancelSubscription: controller.showCancelSubscriptionDialog,
+        onUpgradeRefresh: () {
+          controller.getSubcriptionDetail();
+          controller.getProfileDetail();
+        },
+      ).paddingSymmetric(horizontal: 16.w),
     );
   }
 }
