@@ -233,6 +233,12 @@ class _UserPlanCard extends StatelessWidget {
     final isSelected = plan.isSelect == true;
     final price = isMonthly ? plan.priceMonthly : plan.priceAnnual;
     final period = isMonthly ? l10n.mu : l10n.an;
+    final headerActive = isSelected;
+    final borderColor = isSelected
+        ? AppColors.greenColor
+        : isSubscribed
+            ? AppColors.greenColor.withValues(alpha: 0.45)
+            : AppColors.borderLiteGreyColor;
 
     return GestureDetector(
       onTap: onTap,
@@ -242,9 +248,7 @@ class _UserPlanCard extends StatelessWidget {
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(spacerSize16),
           border: Border.all(
-            color: isSelected || isSubscribed
-                ? AppColors.greenColor
-                : AppColors.borderLiteGreyColor,
+            color: borderColor,
             width: isSelected || isSubscribed ? 1.5 : 1,
           ),
         ),
@@ -255,7 +259,7 @@ class _UserPlanCard extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: spacerSize16, vertical: spacerSize10),
               decoration: BoxDecoration(
-                color: isSelected || isSubscribed
+                color: headerActive
                     ? AppColors.greenColor
                     : AppColors.borderLiteGreyColor.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.only(
@@ -272,7 +276,7 @@ class _UserPlanCard extends StatelessWidget {
                         Flexible(
                           child: BaseText(
                             text: plan.planName ?? '',
-                            textColor: isSelected || isSubscribed
+                            textColor: headerActive
                                 ? Colors.white
                                 : AppColors.blackColor,
                             fontWeight: FontWeight.w600,
@@ -287,13 +291,22 @@ class _UserPlanCard extends StatelessWidget {
                               vertical: spacerSize2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: headerActive
+                                  ? Colors.white.withValues(alpha: 0.2)
+                                  : AppColors.greenColor.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(spacerSize12),
-                              border: Border.all(color: Colors.white, width: 0.8),
+                              border: Border.all(
+                                color: headerActive
+                                    ? Colors.white
+                                    : AppColors.greenColor,
+                                width: 0.8,
+                              ),
                             ),
                             child: BaseText(
                               text: AppStrings.subscribed,
-                              textColor: Colors.white,
+                              textColor: headerActive
+                                  ? Colors.white
+                                  : AppColors.greenColor,
                               fontWeight: FontWeight.w600,
                               fontSize: fontSize10,
                               fontFamily: AppKeys.inter,
@@ -306,7 +319,7 @@ class _UserPlanCard extends StatelessWidget {
                   SizedBox(width: spacerSize8),
                   BaseText(
                     text: '₹$price/$period',
-                    textColor: isSelected || isSubscribed
+                    textColor: headerActive
                         ? Colors.white
                         : AppColors.greenColor,
                     fontWeight: FontWeight.w700,

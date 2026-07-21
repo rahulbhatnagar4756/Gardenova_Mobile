@@ -181,7 +181,7 @@ class ApiRepository {
         print("Value of message is $message");
         BaseSnackBar.show(title: AppStrings.exception, message: message);
       }
-      return null;
+      //  return null;
     } finally {
       log('---------------------------------finally');
 

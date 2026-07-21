@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
 import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
@@ -10,6 +11,7 @@ import 'package:kasagardem/services/razorpay_payment_service.dart';
 import 'package:kasagardem/services/subscription_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
@@ -44,6 +46,8 @@ class UserSubscriptionController extends GetxController {
   void _readArguments() {
     if (Get.arguments is SubscriptionStatusUiModel) {
       currentModel = Get.arguments as SubscriptionStatusUiModel;
+
+      print(currentModel!.toJson());
       _setRemainingDaysFromModel(currentModel);
       _applyBillingCycleFromSubscription();
       return;
@@ -130,8 +134,9 @@ class UserSubscriptionController extends GetxController {
   }
 
   void selectPlan(PlanModel plan) {
-    // Tapping the already-selected plan should not change selection.
+    // Keep current selection until the user taps a different plan.
     if (plan.isSelect == true) {
+      selectedPlanData = plan;
       _updateSelectedPrice(plan);
       return;
     }
@@ -139,9 +144,9 @@ class UserSubscriptionController extends GetxController {
     for (final item in planList) {
       item.setSelect = item == plan;
     }
+    selectedPlanData = plan;
     _updateSelectedPrice(plan);
     planList.refresh();
-    selectedPlanData = null;
   }
 
   void _updateSelectedPrice(PlanModel plan) {
@@ -180,14 +185,21 @@ class UserSubscriptionController extends GetxController {
 
     final planCode = plan.resolvePlanCode(isMonthly: isTabMonthly.value);
     if (planCode.isEmpty || planCode == 'free') {
-      BaseSnackBar.show(title: 'Plan', message: 'Please select a paid plan to continue.');
+      BaseSnackBar.show(
+        title: 'Plan',
+        message: 'Please select a paid plan to continue.',
+      );
       return;
     }
+
+    final accepted = await _showAlternateBillingDisclosure();
+    if (!accepted) return;
 
     isLoading.value = true;
     try {
       await AlternateBillingService.prepareIfAvailable();
-      final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
+      final externalTransactionToken =
+          await AlternateBillingService.getExternalTransactionToken();
 
       RazorpayPaymentService.instance.initialize(
         onSuccess: _onRazorpayPaymentSuccess,
@@ -198,11 +210,8 @@ class UserSubscriptionController extends GetxController {
         planCode,
         externalTransactionToken: externalTransactionToken,
       );
-      if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
-        BaseSnackBar.show(
-          title: 'Payment',
-          message: orderResponse?.message ?? 'Failed to create subscription.',
-        );
+      if (orderResponse?.success != true ||
+          orderResponse?.data?.subscriptionId == null) {
         return;
       }
 
@@ -210,7 +219,10 @@ class UserSubscriptionController extends GetxController {
       _activeSubscriptionId = order.subscriptionId;
       isProcessingPayment.value = true;
       if (order.scheduled == true) {
-        BaseSnackBar.show(title: 'Payment', message: 'Subscription verified successfully.');
+        BaseSnackBar.show(
+          title: 'Payment',
+          message: 'Subscription verified successfully.',
+        );
         Get.until((route) => route.settings.name == Routes.dashboard);
       } else {
         RazorpayPaymentService.instance.openSubscriptionCheckout(
@@ -232,6 +244,57 @@ class UserSubscriptionController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<bool> _showAlternateBillingDisclosure() async {
+    final result = await Get.dialog<bool>(
+      AlertDialog(
+        backgroundColor: AppColors.whiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text(
+          'External payment',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
+        content: const Text(
+          'Payments are processed securely via Razorpay. This purchase is not managed by Google Play.',
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontSize: 14,
+            color: Color(0xFF6B7280),
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF6B7280),
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: Text(
+              'Continue',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                color: AppColors.greenColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+    return result == true;
   }
 
   Future<void> _onRazorpayPaymentSuccess(PaymentSuccessResponse response) async {
@@ -258,7 +321,7 @@ class UserSubscriptionController extends GetxController {
           final settingsViewModel = Get.find<SettingsViewModel>();
           settingsViewModel.persistRazorpaySubscriptionId(subscriptionId);
           settingsViewModel.getProfileDetail();
-          settingsViewModel.getSubcriptionDetail();
+          settingsViewModel.getSubscriptionDetail();
         }
         BaseSnackBar.show(
           title: 'Success',

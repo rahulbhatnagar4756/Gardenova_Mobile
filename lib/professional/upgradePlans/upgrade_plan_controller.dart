@@ -105,7 +105,9 @@ class UpgradePlanController extends GetxController {
   }
 
   void selectPlan(PlanModel plan) {
+    // Keep current selection until the user taps a different plan.
     if (plan.isSelect == true) {
+      selectedPlanData = plan;
       _updateSelectedPrice(plan);
       return;
     }
@@ -113,9 +115,9 @@ class UpgradePlanController extends GetxController {
     for (int i = 0; i < planList.length; i++) {
       planList[i].setSelect = planList[i] == plan;
     }
+    selectedPlanData = plan;
     _updateSelectedPrice(plan);
     planList.refresh();
-    selectedPlanData = null;
   }
 
   void _updateSelectedPrice(PlanModel plan) {

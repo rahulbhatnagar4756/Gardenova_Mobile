@@ -53,6 +53,12 @@ class PlanCard extends StatelessWidget {
   Widget planCardItem(BuildContext context, PlanModel plan) {
     final isSelected = plan.isSelect == true;
     final isSubscribed = controller.isCurrentSubscribedPlan(plan);
+    final headerActive = isSelected;
+    final borderColor = isSelected
+        ? AppColors.greenColor
+        : isSubscribed
+            ? AppColors.greenColor.withValues(alpha: 0.45)
+            : AppColors.borderLiteGreyColor;
 
     return GestureDetector(
       onTap: () {
@@ -63,11 +69,7 @@ class PlanCard extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: spacerSize15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(spacerSize12),
-          border: Border.all(
-            color: isSelected || isSubscribed
-                ? AppColors.greenColor
-                : AppColors.borderLiteGreyColor,
-          ),
+          border: Border.all(color: borderColor),
         ),
         child: Column(
           children: [
@@ -82,7 +84,7 @@ class PlanCard extends StatelessWidget {
                   topLeft: Radius.circular(spacerSize12),
                   topRight: Radius.circular(spacerSize12),
                 ),
-                color: isSelected || isSubscribed
+                color: headerActive
                     ? AppColors.greenColor
                     : AppColors.borderLiteGreyColor,
               ),
@@ -91,7 +93,7 @@ class PlanCard extends StatelessWidget {
                 children: [
                   Flexible(
                     child: BaseText(
-                      textColor: isSelected || isSubscribed
+                      textColor: headerActive
                           ? AppColors.whiteColor
                           : AppColors.blackColor,
                       textAlign: TextAlign.center,
@@ -109,13 +111,22 @@ class PlanCard extends StatelessWidget {
                         vertical: spacerSize2,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: headerActive
+                            ? Colors.white.withValues(alpha: 0.2)
+                            : AppColors.greenColor.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(spacerSize12),
-                        border: Border.all(color: Colors.white, width: 0.8),
+                        border: Border.all(
+                          color: headerActive
+                              ? Colors.white
+                              : AppColors.greenColor,
+                          width: 0.8,
+                        ),
                       ),
                       child: BaseText(
                         text: AppStrings.subscribed,
-                        textColor: Colors.white,
+                        textColor: headerActive
+                            ? Colors.white
+                            : AppColors.greenColor,
                         fontWeight: FontWeight.w600,
                         fontSize: fontSize10,
                         fontFamily: AppKeys.inter,
@@ -178,7 +189,7 @@ class PlanCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(spacerSize12),
                     border: Border.all(
-                      color: isSelected || isSubscribed
+                      color: isSelected
                           ? AppColors.greenColor
                           : AppColors.blackColor,
                       width: 2,
@@ -186,7 +197,7 @@ class PlanCard extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     radius: spacerSize6,
-                    backgroundColor: isSelected || isSubscribed
+                    backgroundColor: isSelected
                         ? AppColors.greenColor
                         : AppColors.appColor,
                   ),

@@ -34,16 +34,7 @@ class RazorpayPaymentRepository {
     String? razorpaySubscriptionId,
     bool cancelAtCycleEnd = true,
   }) async {
-    final response = await ApiRepository.instance.post(
-      cancelSubscriptionUrl,
-      body: {
-        'billing_provider': 'alternate',
-        'cancel_at_cycle_end': cancelAtCycleEnd,
-        if (razorpaySubscriptionId != null &&
-            razorpaySubscriptionId.isNotEmpty)
-          'razorpay_subscription_id': razorpaySubscriptionId,
-      },
-    );
+    final response = await ApiRepository.instance.post(cancelSubscriptionUrl);
     if (response == null) return null;
     return RazorpayCancelResponse.fromJson(response);
   }

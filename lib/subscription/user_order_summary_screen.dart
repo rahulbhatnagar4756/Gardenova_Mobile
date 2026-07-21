@@ -270,7 +270,8 @@ class _RazorpayBanner extends StatelessWidget {
                 ),
                 SizedBox(height: spacerSize2),
                 BaseText(
-                  text: 'UPI, cards, net banking and wallets supported.',
+                  text:
+                      'Payments are processed securely via Razorpay. This purchase is not managed by Google Play.',
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize11,
                   textColor: AppColors.liteGreyColor,

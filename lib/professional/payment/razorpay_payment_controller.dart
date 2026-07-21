@@ -175,7 +175,7 @@ class RazorpayPaymentController extends GetxController {
           settingsViewModel.persistRazorpaySubscriptionId(subscriptionId);
           if (isUserPayment) {
             settingsViewModel.getProfileDetail();
-            settingsViewModel.getSubcriptionDetail();
+            settingsViewModel.getSubscriptionDetail();
           } else {
             settingsViewModel.getProfessionalProfileDetail();
           }

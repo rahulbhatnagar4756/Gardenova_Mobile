@@ -117,7 +117,7 @@ class SettingsViewModel extends GetxController {
   Future<void> initFunctions() async {
     bool isUserLoggedIn = SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     if (isUserLoggedIn) {
-      await Future.wait([getSubcriptionDetail(), getProfileDetail()]);
+      await Future.wait([getSubscriptionDetail(), getProfileDetail()]);
     }
   }
 
@@ -218,6 +218,8 @@ class SettingsViewModel extends GetxController {
         final subscription = profileResponse.data?.subscription;
         if (subscription != null) {
           applySubscriptionFromProfile(subscription);
+        } else {
+          applySubscriptionFromProfile(Subscription(status: "Active"));
         }
 
         if (profileResponse.data?.profileImage != null) {
@@ -265,7 +267,7 @@ class SettingsViewModel extends GetxController {
     screenType.refresh();
   }
 
-  Future<void> getSubcriptionDetail() async {
+  Future<void> getSubscriptionDetail() async {
     final response = await profileRepository.fetchProfile();
     if (response != null) {
       final profileResponse = ProfileResponseModel.fromJson(response);
@@ -296,22 +298,13 @@ class SettingsViewModel extends GetxController {
     }
 
     if (uiModel.name != null && uiModel.name!.isNotEmpty) {
-      SharedPrefsService.instance.setString(
-        AppKeys.subscriptionPlan,
-        uiModel.name!,
-      );
+      SharedPrefsService.instance.setString(AppKeys.subscriptionPlan, uiModel.name!);
     }
     if (uiModel.status != null && uiModel.status!.isNotEmpty) {
-      SharedPrefsService.instance.setString(
-        AppKeys.accountStatus,
-        uiModel.status!,
-      );
+      SharedPrefsService.instance.setString(AppKeys.accountStatus, uiModel.status!);
     }
     if (uiModel.createdAt != null && uiModel.createdAt!.isNotEmpty) {
-      SharedPrefsService.instance.setString(
-        AppKeys.createdAt,
-        uiModel.createdAt!,
-      );
+      SharedPrefsService.instance.setString(AppKeys.createdAt, uiModel.createdAt!);
     }
 
     currentSubscriptionStatusModel.refresh();
@@ -369,12 +362,12 @@ class SettingsViewModel extends GetxController {
         if (screenType.value == AppKeys.professional) {
           await getProfileDetail();
         } else {
-          await Future.wait([getProfileDetail(), getSubcriptionDetail()]);
+          await Future.wait([getProfileDetail(), getSubscriptionDetail()]);
         }
         BaseSnackBar.show(
           title: AppStrings.subscriptionCancelled,
           message:
-              response?.message ?? 'Your subscription will end after the current billing period.',
+              response.message ?? 'Your subscription will end after the current billing period.',
         );
         return;
       }
