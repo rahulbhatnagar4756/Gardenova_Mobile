@@ -268,6 +268,48 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                     ],
                   ),
                 ),
+              if (currentModel.hasPendingPlan) ...[
+                SizedBox(height: spacerSize10),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(spacerSize12),
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(spacerSize14),
+                    border: Border.all(color: AppColors.whiteColor.withValues(alpha: 0.25)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.schedule, size: 16, color: AppColors.whiteColor),
+                      SizedBox(width: spacerSize8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BaseText(
+                              text: 'UPCOMING PLAN',
+                              fontFamily: AppKeys.inter,
+                              textColor: AppColors.offWhite70,
+                              fontSize: fontSize10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            SizedBox(height: spacerSize4),
+                            BaseText(
+                              text:
+                                  '${currentModel.pendingPlanDisplayLabel} starts on ${BaseDateTimeFormat.format(dateTime: currentModel.pendingEffectiveAt ?? currentModel.updatedAt ?? "", format: "MMM dd, yyyy")}',
+                              fontFamily: AppKeys.inter,
+                              textColor: AppColors.whiteColor,
+                              fontSize: fontSize12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               if (showCancelAction && !isExpired)
                 Padding(
                   padding: EdgeInsets.only(top: spacerSize10),

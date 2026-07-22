@@ -15,6 +15,7 @@ import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart
 import 'package:kasagardem/services/notification_service.dart';
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
+import 'package:kasagardem/settings/model/user_subscription_me_model.dart';
 import 'package:kasagardem/settings/profile/update_profile_model.dart';
 import 'package:kasagardem/settings/profile/verified_email_otp_view/verified_email_local_parsing_model.dart';
 import 'package:kasagardem/settings/settings_repository.dart';
@@ -117,7 +118,7 @@ class SettingsViewModel extends GetxController {
   Future<void> initFunctions() async {
     bool isUserLoggedIn = SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     if (isUserLoggedIn) {
-      await Future.wait([getSubscriptionDetail(), getProfileDetail()]);
+      await getProfileDetail();
     }
   }
 
@@ -215,13 +216,6 @@ class SettingsViewModel extends GetxController {
         }
         phoneNoController.text = phone;
 
-        final subscription = profileResponse.data?.subscription;
-        if (subscription != null) {
-          applySubscriptionFromProfile(subscription);
-        } else {
-          applySubscriptionFromProfile(Subscription(status: "Active"));
-        }
-
         if (profileResponse.data?.profileImage != null) {
           profileImage.value = profileResponse.data?.profileImage ?? '';
           apiImage = profileResponse.data?.profileImage ?? '';
@@ -232,6 +226,11 @@ class SettingsViewModel extends GetxController {
     email.refresh();
     profileImage.refresh();
     screenType.refresh();
+
+    // Always refresh subscription from /plans/subscriptions/me with profile.
+    if (screenType.value != AppKeys.professional) {
+      await getSubscriptionDetail();
+    }
   }
 
   void getProfessionalProfileDetail() async {
@@ -268,6 +267,15 @@ class SettingsViewModel extends GetxController {
   }
 
   Future<void> getSubscriptionDetail() async {
+    final meResponse = await profileRepository.fetchUserSubscriptionMe();
+    if (meResponse != null) {
+      final parsed = UserSubscriptionMeResponse.fromJson(meResponse);
+      if (parsed.success == true && parsed.data != null) {
+        applySubscriptionFromMeApi(parsed.data!);
+        return;
+      }
+    }
+
     final response = await profileRepository.fetchProfile();
     if (response != null) {
       final profileResponse = ProfileResponseModel.fromJson(response);
@@ -287,8 +295,17 @@ class SettingsViewModel extends GetxController {
     currentSubscriptionStatusModel.refresh();
   }
 
+  void applySubscriptionFromMeApi(UserSubscriptionMeData data) {
+    final uiModel = SubscriptionStatusUiModel.fromMeApi(data);
+    _persistSubscriptionUiModel(uiModel);
+  }
+
   void applySubscriptionFromProfile(Subscription subscription) {
     final uiModel = SubscriptionStatusUiModel.fromProfileSubscription(subscription);
+    _persistSubscriptionUiModel(uiModel);
+  }
+
+  void _persistSubscriptionUiModel(SubscriptionStatusUiModel uiModel) {
     currentSubscriptionStatusModel.value = uiModel;
 
     if (uiModel.updatedAt != null && uiModel.updatedAt!.isNotEmpty) {
@@ -359,11 +376,7 @@ class SettingsViewModel extends GetxController {
 
       if (response?.success == true) {
         _applyCancelledSubscriptionLocally(response!);
-        if (screenType.value == AppKeys.professional) {
-          await getProfileDetail();
-        } else {
-          await Future.wait([getProfileDetail(), getSubscriptionDetail()]);
-        }
+        await getProfileDetail();
         BaseSnackBar.show(
           title: AppStrings.subscriptionCancelled,
           message:
@@ -408,6 +421,13 @@ class SettingsViewModel extends GetxController {
       isAutoRenew: current.isAutoRenew,
       isTrialActive: current.isTrialActive,
       isActive: current.isActive,
+      billingCycle: current.billingCycle,
+      cancelAtPeriodEnd: current.cancelAtPeriodEnd,
+      planCode: current.planCode,
+      pendingPlanCode: current.pendingPlanCode,
+      pendingPlanName: current.pendingPlanName,
+      pendingBillingCycle: current.pendingBillingCycle,
+      pendingEffectiveAt: current.pendingEffectiveAt,
     );
     currentSubscriptionStatusModel.refresh();
   }
@@ -432,6 +452,11 @@ class SettingsViewModel extends GetxController {
       isActive: true,
       billingCycle: current.billingCycle,
       cancelAtPeriodEnd: true,
+      planCode: current.planCode,
+      pendingPlanCode: current.pendingPlanCode,
+      pendingPlanName: current.pendingPlanName,
+      pendingBillingCycle: current.pendingBillingCycle,
+      pendingEffectiveAt: current.pendingEffectiveAt ?? endDate,
     );
 
     SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');

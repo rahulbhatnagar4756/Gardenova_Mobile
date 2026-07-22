@@ -11,6 +11,7 @@ class SettingsRepository {
   final String setPasswordEndPoint = 'api/v1/userProfile/addPasswordforsso';
   final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
   final String _deleteAccountUrl = 'api/v1/userProfile/soft-delete';
+  final String userSubscriptionMeEndPoint = 'api/v1/plans/subscriptions/me';
 
   fetchProfile({bool showloader = false}) async {
     var profileResponse = await ApiRepository.instance.get(
@@ -18,6 +19,13 @@ class SettingsRepository {
       showDefaultLoader: showloader,
     );
     return profileResponse;
+  }
+
+  Future<dynamic> fetchUserSubscriptionMe({bool showloader = false}) async {
+    return ApiRepository.instance.get(
+      userSubscriptionMeEndPoint,
+      showDefaultLoader: showloader,
+    );
   }
 
   updateProfile({UpdateProfileModel? updateProfileReq}) async {

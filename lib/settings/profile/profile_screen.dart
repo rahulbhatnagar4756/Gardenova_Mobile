@@ -125,7 +125,6 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
         isCancellingSubscription: controller.isCancellingSubscription.value,
         onCancelSubscription: controller.showCancelSubscriptionDialog,
         onUpgradeRefresh: () {
-          controller.getSubscriptionDetail();
           controller.getProfileDetail();
         },
       ).paddingSymmetric(horizontal: 16.w),

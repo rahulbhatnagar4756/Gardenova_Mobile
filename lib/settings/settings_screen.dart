@@ -277,7 +277,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
               isCancellingSubscription: controller.isCancellingSubscription.value,
               onCancelSubscription: controller.showCancelSubscriptionDialog,
               onUpgradeRefresh: () {
-                controller.getSubscriptionDetail();
                 controller.getProfileDetail();
               },
             )

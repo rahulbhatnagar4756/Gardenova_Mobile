@@ -48,10 +48,7 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
                     ),
                     SizedBox(height: spacerSize20),
                     _IncludedFeaturesCard(plan: plan),
-                    if (Platform.isAndroid) ...[
-                      SizedBox(height: spacerSize20),
-                      _RazorpayBanner(),
-                    ],
+                    if (Platform.isAndroid) ...[SizedBox(height: spacerSize20), _RazorpayBanner()],
                     SizedBox(height: spacerSize20),
                     _PaymentBreakdownCard(total: total),
                     SizedBox(height: spacerSize30),
@@ -60,36 +57,28 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.w,
-                vertical: spacerSize16,
-              ),
-              child: Obx(
-                () {
-                  final isBusy = controller.isLoading.value ||
-                      controller.isProcessingPayment.value;
-                  return SizedBox(
-                    width: double.infinity,
-                    child: BaseButton(
-                      onPressed: isBusy
-                          ? null
-                          : () {
-                              if (Platform.isAndroid) {
-                                controller.startRazorpayPayment();
-                              } else {
-                                controller.startPurchaseFlow();
-                              }
-                            },
-                      backgroundColor: isBusy
-                          ? AppColors.liteGreyColor
-                          : AppColors.greenColor,
-                      buttonLabel: isBusy ? 'Processing...' : l10n.fullPayment,
-                      fontSize: fontSize15,
-                      textColor: Colors.white,
-                    ),
-                  );
-                },
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: spacerSize16),
+              child: Obx(() {
+                final isBusy = controller.isLoading.value || controller.isProcessingPayment.value;
+                return SizedBox(
+                  width: double.infinity,
+                  child: BaseButton(
+                    onPressed: isBusy
+                        ? null
+                        : () {
+                            if (Platform.isAndroid) {
+                              controller.startRazorpayPayment();
+                            } else {
+                              controller.startPurchaseFlow();
+                            }
+                          },
+                    backgroundColor: isBusy ? AppColors.liteGreyColor : AppColors.greenColor,
+                    buttonLabel: isBusy ? 'Processing...' : l10n.fullPayment,
+                    fontSize: fontSize15,
+                    textColor: Colors.white,
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -99,11 +88,7 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
 }
 
 class _PlanHeaderCard extends StatelessWidget {
-  const _PlanHeaderCard({
-    required this.planName,
-    required this.billingLabel,
-    required this.amount,
-  });
+  const _PlanHeaderCard({required this.planName, required this.billingLabel, required this.amount});
 
   final String planName;
   final String billingLabel;
@@ -123,12 +108,7 @@ class _PlanHeaderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Image.asset(
-                AppAssets.crownIc,
-                width: 14.w,
-                height: 14.w,
-                color: Colors.white,
-              ),
+              Image.asset(AppAssets.crownIc, width: 14.w, height: 14.w, color: Colors.white),
               SizedBox(width: spacerSize6),
               BaseText(
                 text: 'PREMIUM PLAN',
@@ -182,7 +162,8 @@ class _IncludedFeaturesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final features = plan?.features as List?;
-    final enabledFeatures = features
+    final enabledFeatures =
+        features
             ?.where((feature) => feature.enabled == true)
             .map((feature) => feature.label?.toString() ?? '')
             .where((label) => label.isNotEmpty)

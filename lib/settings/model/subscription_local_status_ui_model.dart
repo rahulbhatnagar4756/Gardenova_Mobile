@@ -1,5 +1,7 @@
 import '../../base/widgets/base_calculate_remaining_days.dart';
 
+import 'user_subscription_me_model.dart';
+
 class SubscriptionStatusUiModel {
   String? id;
   String? name;
@@ -15,6 +17,11 @@ class SubscriptionStatusUiModel {
   bool? isActive;
   String? billingCycle;
   bool? cancelAtPeriodEnd;
+  String? planCode;
+  String? pendingPlanCode;
+  String? pendingPlanName;
+  String? pendingBillingCycle;
+  String? pendingEffectiveAt;
 
   SubscriptionStatusUiModel({
     this.id,
@@ -31,7 +38,62 @@ class SubscriptionStatusUiModel {
     this.isActive,
     this.billingCycle,
     this.cancelAtPeriodEnd,
+    this.planCode,
+    this.pendingPlanCode,
+    this.pendingPlanName,
+    this.pendingBillingCycle,
+    this.pendingEffectiveAt,
   });
+
+  bool get hasPendingPlan {
+    final code = (pendingPlanCode ?? '').trim();
+    final planName = (pendingPlanName ?? '').trim();
+    return code.isNotEmpty || planName.isNotEmpty;
+  }
+
+  String get pendingPlanDisplayLabel {
+    final planName = (pendingPlanName ?? '').trim();
+    final cycle = (pendingBillingCycle ?? '').trim();
+    if (planName.isEmpty) return 'Plan';
+    if (cycle.isEmpty) return '$planName Plan';
+    return '$planName ($cycle)';
+  }
+
+  factory SubscriptionStatusUiModel.fromMeApi(UserSubscriptionMeData data) {
+    final plan = data.plan;
+    final pending = data.pendingPlan;
+    final planName = plan?.displayName ?? 'Free';
+    final rawStatus = data.status?.toString().trim() ?? '';
+    final normalizedStatus = rawStatus.toLowerCase();
+    final cancelAtPeriodEnd = data.cancelAtPeriodEnd == true;
+    final expiresAt = data.currentPeriodEnd;
+    final isTrial = planName.toLowerCase() == 'trial';
+    final isActive =
+        normalizedStatus == 'active' || normalizedStatus == 'renewed';
+    final hasRemainingAccess =
+        expiresAt == null ||
+        expiresAt.isEmpty ||
+        BaseCalculateRemainingDays.daysUntilEndDate(expiresAt) > 0;
+
+    return SubscriptionStatusUiModel(
+      id: plan?.code,
+      name: planName,
+      planCode: plan?.code,
+      status: cancelAtPeriodEnd && isActive && pending == null
+          ? 'Cancelled'
+          : rawStatus,
+      updatedAt: expiresAt,
+      isActive: isActive && hasRemainingAccess,
+      isTrialActive: isTrial && isActive,
+      isAutoRenew: !cancelAtPeriodEnd,
+      billingCycle: plan?.billingCycle,
+      cancelAtPeriodEnd: cancelAtPeriodEnd,
+      pendingPlanCode: pending?.code,
+      pendingPlanName: pending?.displayName,
+      pendingBillingCycle: pending?.billingLabel,
+      pendingEffectiveAt: data.pendingEffectiveAt,
+    );
+  }
 
   factory SubscriptionStatusUiModel.fromProfileSubscription(
     dynamic subscription,
@@ -81,6 +143,11 @@ class SubscriptionStatusUiModel {
     isActive = json['isActive'];
     billingCycle = json['billingCycle']?.toString();
     cancelAtPeriodEnd = json['cancelAtPeriodEnd'] == true;
+    planCode = json['planCode']?.toString();
+    pendingPlanCode = json['pendingPlanCode']?.toString();
+    pendingPlanName = json['pendingPlanName']?.toString();
+    pendingBillingCycle = json['pendingBillingCycle']?.toString();
+    pendingEffectiveAt = json['pendingEffectiveAt']?.toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -99,6 +166,11 @@ class SubscriptionStatusUiModel {
     data['isActive'] = isActive;
     data['billingCycle'] = billingCycle;
     data['cancelAtPeriodEnd'] = cancelAtPeriodEnd;
+    data['planCode'] = planCode;
+    data['pendingPlanCode'] = pendingPlanCode;
+    data['pendingPlanName'] = pendingPlanName;
+    data['pendingBillingCycle'] = pendingBillingCycle;
+    data['pendingEffectiveAt'] = pendingEffectiveAt;
 
     return data;
   }
