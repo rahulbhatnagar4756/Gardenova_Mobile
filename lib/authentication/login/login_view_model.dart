@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/authentication/social_sign_in_mixin.dart';
-import 'package:kasagardem/l10n/app_localizations.dart';
+// import 'package:kasagardem/l10n/app_localizations.dart'; // OTP login disabled
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -82,10 +82,51 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   void toggleLoginMode() {
-    isMobileOtpLoginMode.value = !isMobileOtpLoginMode.value;
-    passwordController.clear();
-    pinController.clear();
+    // Login with OTP disabled.
+    // isMobileOtpLoginMode.value = !isMobileOtpLoginMode.value;
+    // passwordController.clear();
+    // pinController.clear();
   }
+
+  // Login with OTP / verify mobile number disabled.
+  // String get formattedPhoneNumber {
+  //   final phone = phoneController.text.trim().replaceAll(' ', '');
+  //   if (phone.startsWith('+91')) return phone;
+  //   if (phone.startsWith('91')) return '+$phone';
+  //   return '+91$phone';
+  // }
+  //
+  // void startResendTimer() { ... }
+  // void startOtpExpiryTimer() { ... }
+  //
+  // Future<void> sendLoginOtp({bool isResend = false}) async {
+  //   resendTimer?.cancel();
+  //   final response = await authRepository.sendLoginOtp(phoneNumber: formattedPhoneNumber);
+  //   if (response != null) {
+  //     pinController.clear();
+  //     startResendTimer();
+  //     startOtpExpiryTimer();
+  //     if (isResend) {
+  //       BaseSnackBar.show(
+  //         title: AppLocalizations.of(Get.context!)!.success,
+  //         message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
+  //       );
+  //     } else {
+  //       Get.toNamed(Routes.loginVerifyOtp);
+  //     }
+  //   }
+  // }
+  //
+  // Future<void> verifyLoginOtp() async {
+  //   final response = await authRepository.verifyLoginOtp(
+  //     phoneNumber: formattedPhoneNumber,
+  //     otp: pinController.text.trim(),
+  //     reqType: 'login',
+  //   );
+  //   ...
+  // }
+  //
+  // void _openEditProfileForNewOtpUser({required String responseId}) { ... }
 
   String get formattedPhoneNumber {
     final phone = phoneController.text.trim().replaceAll(' ', '');
@@ -94,6 +135,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     return '+91$phone';
   }
 
+  // Keep timers for potential future re-enable; unused while OTP login is disabled.
   void startResendTimer() {
     resendTimer?.cancel();
     canResendOtp.value = false;
@@ -120,67 +162,68 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     });
   }
 
+  // Login with OTP / verify mobile number disabled.
   Future<void> sendLoginOtp({bool isResend = false}) async {
-    resendTimer?.cancel();
-    final response = await authRepository.sendLoginOtp(phoneNumber: formattedPhoneNumber);
-    if (response != null) {
-      pinController.clear();
-      startResendTimer();
-      startOtpExpiryTimer();
-      if (isResend) {
-        BaseSnackBar.show(
-          title: AppLocalizations.of(Get.context!)!.success,
-          message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
-        );
-      } else {
-        Get.toNamed(Routes.loginVerifyOtp);
-      }
-    }
+    // final response = await authRepository.sendLoginOtp(phoneNumber: formattedPhoneNumber);
+    // if (response != null) {
+    //   pinController.clear();
+    //   startResendTimer();
+    //   startOtpExpiryTimer();
+    //   if (isResend) {
+    //     BaseSnackBar.show(
+    //       title: AppLocalizations.of(Get.context!)!.success,
+    //       message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
+    //     );
+    //   } else {
+    //     Get.toNamed(Routes.loginVerifyOtp);
+    //   }
+    // }
   }
 
   Future<void> verifyLoginOtp() async {
-    final response = await authRepository.verifyLoginOtp(
-      phoneNumber: formattedPhoneNumber,
-      otp: pinController.text.trim(),
-      reqType: 'login',
-    );
-    print('verifyLoginOtp response $response');
-    if (response != null) {
-      final data = response[ApiKeys.data] ?? {};
-      final isNewUser = data[ApiKeys.isNewUser] == true;
-
-      SharedPrefsService.instance.setString(AppKeys.idToken, data[ApiKeys.token]);
-      String responseId = data[ApiKeys.responseId]?.toString() ?? '';
-      SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
-      SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
-
-      if (isNewUser) {
-        _openEditProfileForNewOtpUser(responseId: responseId);
-        return;
-      }
-
-      if (accountType.value == AppKeys.professional) {
-        getProfessionalProfileDetail();
-      } else {
-        getProfileDetail(responseId: responseId);
-      }
-    }
+    // final response = await authRepository.verifyLoginOtp(
+    //   phoneNumber: formattedPhoneNumber,
+    //   otp: pinController.text.trim(),
+    //   reqType: 'login',
+    // );
+    // print('verifyLoginOtp response $response');
+    // if (response != null) {
+    //   final data = response[ApiKeys.data] ?? {};
+    //   final isNewUser = data[ApiKeys.isNewUser] == true;
+    //
+    //   SharedPrefsService.instance.setString(AppKeys.idToken, data[ApiKeys.token]);
+    //   String responseId = data[ApiKeys.responseId]?.toString() ?? '';
+    //   SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
+    //   SharedPrefsService.instance.setString(AppKeys.role, accountType.value);
+    //
+    //   if (isNewUser) {
+    //     _openEditProfileForNewOtpUser(responseId: responseId);
+    //     return;
+    //   }
+    //
+    //   if (accountType.value == AppKeys.professional) {
+    //     getProfessionalProfileDetail();
+    //   } else {
+    //     getProfileDetail(responseId: responseId);
+    //   }
+    // }
   }
 
   void _openEditProfileForNewOtpUser({required String responseId}) {
-    SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, false);
-    final phone = formattedPhoneNumber.startsWith('+91')
-        ? formattedPhoneNumber.substring(3)
-        : formattedPhoneNumber.replaceAll(RegExp(r'\D'), '');
-
-    Get.offAllNamed(
-      Routes.editProfile,
-      arguments: {
-        AppKeys.isNewUserOtpLogin: true,
-        ApiKeys.phoneNumber: phone,
-        ApiKeys.responseId: responseId,
-      },
-    );
+    // Login with OTP disabled.
+    // SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, false);
+    // final phone = formattedPhoneNumber.startsWith('+91')
+    //     ? formattedPhoneNumber.substring(3)
+    //     : formattedPhoneNumber.replaceAll(RegExp(r'\D'), '');
+    //
+    // Get.offAllNamed(
+    //   Routes.editProfile,
+    //   arguments: {
+    //     AppKeys.isNewUserOtpLogin: true,
+    //     ApiKeys.phoneNumber: phone,
+    //     ApiKeys.responseId: responseId,
+    //   },
+    // );
   }
 
   Future<void> login() async {

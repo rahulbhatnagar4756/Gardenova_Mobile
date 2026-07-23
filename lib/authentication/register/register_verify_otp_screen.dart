@@ -30,9 +30,9 @@ class RegisterVerifyOtpScreen extends GetWidget<RegisterViewModel> {
             children: [
               HeaderLogoLayout(
                 title: AppLocalizations.of(context)!.enterYourOtp,
-                subTitle: AppLocalizations.of(
-                  context,
-                )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
+                subTitle: AppLocalizations.of(context)?.localeName == 'pt'
+                    ? 'Verifique seu e-mail para o OTP e digite-o abaixo'
+                    : 'Check your email for the OTP and enter it below',
               ),
               OtpLayout(
                 lengthOtp: 6,

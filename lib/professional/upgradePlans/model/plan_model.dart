@@ -339,6 +339,143 @@ class PlanModel {
     return value.toStringAsFixed(0);
   }
 
+  /// Build paid plans from Google Play / App Store product IDs.
+  ///
+  /// Expected SKUs: `starter_monthly`, `starter_annual`, `plus_*`, `pro_*`.
+  static List<PlanModel> fromStoreProducts({
+    required Map<String, ({String price, double rawPrice})> storeProducts,
+    bool includeProfessionalFields = false,
+  }) {
+    const tiers = ['starter', 'plus', 'pro'];
+    final plans = <PlanModel>[];
+
+    for (final tier in tiers) {
+      final monthlyId = '${tier}_monthly';
+      final annualId = '${tier}_annual';
+      final yearlyAltId = '${tier}_yearly';
+
+      final monthly = storeProducts[monthlyId];
+      final annual = storeProducts[annualId] ?? storeProducts[yearlyAltId];
+
+      // Only include tiers that exist as real store products.
+      if (monthly == null && annual == null) continue;
+
+      final priceMonthly = monthly != null
+          ? _formatPrice(monthly.rawPrice.toString())
+          : '0';
+      final priceAnnual = annual != null
+          ? _formatPrice(annual.rawPrice.toString())
+          : '0';
+
+      final resolvedAnnualId = annual == null
+          ? null
+          : (storeProducts.containsKey(annualId) ? annualId : yearlyAltId);
+
+      final plan = PlanModel(
+        id: monthly != null ? monthlyId : resolvedAnnualId,
+        planName: _displayNameFromTier(tier),
+        tier: tier,
+        currency: 'INR',
+        status: 'active',
+        isSelect: false,
+        code: monthly != null ? monthlyId : resolvedAnnualId,
+        priceMonthly: priceMonthly,
+        priceAnnual: priceAnnual,
+        monthlyProductId: monthly != null ? monthlyId : null,
+        yearlyProductId: resolvedAnnualId,
+        monthlyId: monthly != null ? monthlyId : null,
+        yearlyId: resolvedAnnualId,
+        features: _defaultFeaturesForTier(tier),
+      );
+
+      _applyDefaultLimits(plan, tier);
+
+      if (includeProfessionalFields) {
+        plan.citiesCoverage = switch (tier) {
+          'starter' => 25,
+          'plus' => 100,
+          _ => 500,
+        };
+        plan.appearInSearch = true;
+        plan.leadsLimit = tier == 'starter' ? 15 : 0;
+        plan.premiumProfileBadge = tier == 'plus' || tier == 'pro';
+        plan.priorityCustomerSupport = tier == 'pro';
+      }
+
+      plans.add(plan);
+    }
+
+    return plans;
+  }
+
+  static void _applyDefaultLimits(PlanModel plan, String tier) {
+    switch (tier) {
+      case 'starter':
+        plan.diagnosisScans = 10;
+        plan.landscapeGen = 5;
+        plan.maxPlants = 25;
+        plan.aiAssistant = true;
+        plan.basicReminders = true;
+        break;
+      case 'plus':
+        plan.diagnosisScans = 30;
+        plan.landscapeGen = 20;
+        plan.maxPlants = 100;
+        plan.aiAssistant = true;
+        plan.hdRenders = true;
+        plan.pdfExport = true;
+        plan.basicReminders = true;
+        break;
+      case 'pro':
+        plan.diagnosisScans = 100;
+        plan.landscapeGen = 50;
+        plan.maxPlants = 500;
+        plan.aiAssistant = true;
+        plan.hdRenders = true;
+        plan.pdfExport = true;
+        plan.premiumStyles = true;
+        plan.beforeAfterDownload = true;
+        plan.basicReminders = true;
+        plan.priorityCustomerSupport = true;
+        break;
+    }
+  }
+
+  static List<PlanFeature> _defaultFeaturesForTier(String tier) {
+    switch (tier) {
+      case 'starter':
+        return [
+          PlanFeature(key: 'diagnosis_scans', label: '10 diagnosis scans', enabled: true),
+          PlanFeature(key: 'landscape_gens', label: '5 landscape generations', enabled: true),
+          PlanFeature(key: 'saved_plants', label: '25 saved plants', enabled: true),
+          PlanFeature(key: 'ai_assistant', label: 'AI assistant', enabled: true),
+          PlanFeature(key: 'basic_reminders', label: 'Basic reminders', enabled: true),
+        ];
+      case 'plus':
+        return [
+          PlanFeature(key: 'diagnosis_scans', label: '30 diagnosis scans', enabled: true),
+          PlanFeature(key: 'landscape_gens', label: '20 landscape generations', enabled: true),
+          PlanFeature(key: 'saved_plants', label: '100 saved plants', enabled: true),
+          PlanFeature(key: 'ai_assistant', label: 'AI assistant', enabled: true),
+          PlanFeature(key: 'hd_renders', label: 'HD renders', enabled: true),
+          PlanFeature(key: 'pdf_export', label: 'PDF export', enabled: true),
+        ];
+      case 'pro':
+        return [
+          PlanFeature(key: 'diagnosis_scans', label: '100 diagnosis scans', enabled: true),
+          PlanFeature(key: 'landscape_gens', label: '50 landscape generations', enabled: true),
+          PlanFeature(key: 'saved_plants', label: '500 saved plants', enabled: true),
+          PlanFeature(key: 'ai_assistant', label: 'AI assistant', enabled: true),
+          PlanFeature(key: 'hd_renders', label: 'HD renders', enabled: true),
+          PlanFeature(key: 'pdf_export', label: 'PDF export', enabled: true),
+          PlanFeature(key: 'premium_styles', label: 'Premium styles', enabled: true),
+          PlanFeature(key: 'priority_support', label: 'Priority support', enabled: true),
+        ];
+      default:
+        return [];
+    }
+  }
+
   static List<PlanModel> consolidateByTier(
     List<PlanModel> apiPlans, {
     bool includeProfessionalFields = false,

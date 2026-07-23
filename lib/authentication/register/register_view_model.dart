@@ -75,11 +75,19 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     await sendRegisterOtp();
   }
 
+  /// Send email OTP before completing registration.
   Future<void> sendRegisterOtp({bool isResend = false}) async {
     resendTimer?.cancel();
-    final response = await authRepository.sendLoginOtp(
-      phoneNumber: formattedPhoneNumber,
-    );
+    final email = emailController.text.trim();
+    if (email.isEmpty) {
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: AppLocalizations.of(Get.context!)!.pleaseEnterValidEmailId,
+      );
+      return;
+    }
+
+    final response = await authRepository.sendOtp(email: email);
     if (response != null) {
       pinController.clear();
       startResendTimer();
@@ -95,11 +103,11 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     }
   }
 
+  /// Verify email OTP, then create the account.
   Future<void> verifyRegisterOtp() async {
-    final response = await authRepository.verifyLoginOtp(
-      phoneNumber: formattedPhoneNumber,
+    final response = await authRepository.verifyOtp(
+      email: emailController.text.trim(),
       otp: pinController.text.trim(),
-      reqType: 'register',
     );
     if (response != null) {
       await _submitRegistration();

@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import '../../services/alternate_billing_service.dart';
 import '../../services/razorpay_payment_service.dart';
+// import '../../services/alternate_billing_service.dart'; // Razorpay alternate billing disabled
 import '../../settings/model/subscription_local_status_ui_model.dart';
 import '../../settings/settings_view_model.dart';
 import '../../utils/constants/app_constants.dart';
@@ -87,55 +87,63 @@ class RazorpayPaymentController extends GetxController {
   }
 
   Future<void> startPayment() async {
-    if (isLoading.value || isProcessingPayment.value) return;
+    // Razorpay subscription disabled — Google Play Billing only.
+    BaseSnackBar.show(
+      title: 'Payment',
+      message:
+          'Razorpay subscriptions are disabled. Please use Google Play Billing.',
+    );
+    return;
 
-    if (planCode.isEmpty || planCode == 'free') {
-      BaseSnackBar.show(title: 'Plan', message: 'Please select a paid plan to continue.');
-      return;
-    }
-
-    isLoading.value = true;
-    try {
-      await AlternateBillingService.prepareIfAvailable();
-      final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
-
-      final orderResponse = await _repository.createOrder(planCode);
-
-      print("orderResponse:::$orderResponse");
-      if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
-        BaseSnackBar.show(
-          title: 'Payment',
-          message: orderResponse?.message ?? 'Failed to create subscription.',
-        );
-        return;
-      }
-
-      final order = orderResponse!.data!;
-      _activeSubscriptionId = order.subscriptionId;
-
-      isProcessingPayment.value = true;
-      if (order.scheduled == true) {
-        BaseSnackBar.show(title: 'Payment', message: 'Subscription verified successfully.');
-        Get.until((route) => route.settings.name == Routes.dashboard);
-      } else {
-        RazorpayPaymentService.instance.openSubscriptionCheckout(
-          subscriptionId: order.subscriptionId!,
-          keyIdOverride: order.keyId,
-          name: _userName(),
-          email: _userEmail(),
-          contact: _userContact(),
-          description: '${plan.planName ?? 'Plan'} - $billingLabel',
-        );
-      }
-    } catch (e) {
-      log('Razorpay startPayment error: $e');
-      BaseSnackBar.show(
-        title: 'Payment',
-        message: e is StateError ? e.message : 'Unable to start payment.',
-      );
-    } finally {
-      isLoading.value = false;
-    }
+    // if (isLoading.value || isProcessingPayment.value) return;
+    //
+    // if (planCode.isEmpty || planCode == 'free') {
+    //   BaseSnackBar.show(title: 'Plan', message: 'Please select a paid plan to continue.');
+    //   return;
+    // }
+    //
+    // isLoading.value = true;
+    // try {
+    //   await AlternateBillingService.prepareIfAvailable();
+    //   final externalTransactionToken = await AlternateBillingService.getExternalTransactionToken();
+    //
+    //   final orderResponse = await _repository.createOrder(planCode);
+    //
+    //   print("orderResponse:::$orderResponse");
+    //   if (orderResponse?.success != true || orderResponse?.data?.subscriptionId == null) {
+    //     BaseSnackBar.show(
+    //       title: 'Payment',
+    //       message: orderResponse?.message ?? 'Failed to create subscription.',
+    //     );
+    //     return;
+    //   }
+    //
+    //   final order = orderResponse!.data!;
+    //   _activeSubscriptionId = order.subscriptionId;
+    //
+    //   isProcessingPayment.value = true;
+    //   if (order.scheduled == true) {
+    //     BaseSnackBar.show(title: 'Payment', message: 'Subscription verified successfully.');
+    //     Get.until((route) => route.settings.name == Routes.dashboard);
+    //   } else {
+    //     RazorpayPaymentService.instance.openSubscriptionCheckout(
+    //       subscriptionId: order.subscriptionId!,
+    //       keyIdOverride: order.keyId,
+    //       name: _userName(),
+    //       email: _userEmail(),
+    //       contact: _userContact(),
+    //       description: '${plan.planName ?? 'Plan'} - $billingLabel',
+    //     );
+    //   }
+    // } catch (e) {
+    //   log('Razorpay startPayment error: $e');
+    //   BaseSnackBar.show(
+    //     title: 'Payment',
+    //     message: e is StateError ? e.message : 'Unable to start payment.',
+    //   );
+    // } finally {
+    //   isLoading.value = false;
+    // }
   }
 
   String? _subscriptionIdFromResponse(PaymentSuccessResponse response) {

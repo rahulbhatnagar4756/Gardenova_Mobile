@@ -48,7 +48,15 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
                     ),
                     SizedBox(height: spacerSize20),
                     _IncludedFeaturesCard(plan: plan),
-                    if (Platform.isAndroid) ...[SizedBox(height: spacerSize20), _RazorpayBanner()],
+                    // Razorpay banner disabled — Google Play Billing only.
+                    // if (Platform.isAndroid) ...[
+                    //   SizedBox(height: spacerSize20),
+                    //   _RazorpayBanner(),
+                    // ],
+                    if (Platform.isAndroid) ...[
+                      SizedBox(height: spacerSize20),
+                      _GooglePlayBanner(),
+                    ],
                     SizedBox(height: spacerSize20),
                     _PaymentBreakdownCard(total: total),
                     SizedBox(height: spacerSize30),
@@ -63,17 +71,23 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
                 return SizedBox(
                   width: double.infinity,
                   child: BaseButton(
-                    onPressed: isBusy
-                        ? null
-                        : () {
-                            if (Platform.isAndroid) {
-                              controller.startRazorpayPayment();
-                            } else {
-                              controller.startPurchaseFlow();
-                            }
-                          },
+                    onPressed: isBusy ? null : controller.startPurchaseFlow,
+                    // Razorpay path disabled:
+                    // onPressed: isBusy
+                    //     ? null
+                    //     : () {
+                    //         if (Platform.isAndroid) {
+                    //           controller.startRazorpayPayment();
+                    //         } else {
+                    //           controller.startPurchaseFlow();
+                    //         }
+                    //       },
                     backgroundColor: isBusy ? AppColors.liteGreyColor : AppColors.greenColor,
-                    buttonLabel: isBusy ? 'Processing...' : l10n.fullPayment,
+                    buttonLabel: isBusy
+                        ? 'Processing...'
+                        : Platform.isAndroid
+                            ? 'Pay with Google Play'
+                            : l10n.fullPayment,
                     fontSize: fontSize15,
                     textColor: Colors.white,
                   ),
@@ -224,7 +238,7 @@ class _IncludedFeaturesCard extends StatelessWidget {
   }
 }
 
-class _RazorpayBanner extends StatelessWidget {
+class _GooglePlayBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -237,14 +251,14 @@ class _RazorpayBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.payments_outlined, color: AppColors.greenColor, size: 20.w),
+          Icon(Icons.shop_outlined, color: AppColors.greenColor, size: 20.w),
           SizedBox(width: spacerSize12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BaseText(
-                  text: 'Pay with Razorpay',
+                  text: 'Pay with Google Play',
                   fontWeight: FontWeight.w600,
                   fontSize: fontSize13,
                   textColor: AppColors.blackColor,
@@ -252,7 +266,7 @@ class _RazorpayBanner extends StatelessWidget {
                 SizedBox(height: spacerSize2),
                 BaseText(
                   text:
-                      'Payments are processed securely via Razorpay. This purchase is not managed by Google Play.',
+                      'Subscriptions are billed and managed securely through Google Play.',
                   fontWeight: FontWeight.w400,
                   fontSize: fontSize11,
                   textColor: AppColors.liteGreyColor,
@@ -266,6 +280,50 @@ class _RazorpayBanner extends StatelessWidget {
     );
   }
 }
+
+// Razorpay banner disabled — Google Play Billing only.
+// class _RazorpayBanner extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: double.infinity,
+//       padding: EdgeInsets.all(spacerSize16),
+//       decoration: BoxDecoration(
+//         color: const Color(0xFFF4FAF6),
+//         borderRadius: BorderRadius.circular(spacerSize14),
+//         border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.2)),
+//       ),
+//       child: Row(
+//         children: [
+//           Icon(Icons.payments_outlined, color: AppColors.greenColor, size: 20.w),
+//           SizedBox(width: spacerSize12),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 BaseText(
+//                   text: 'Pay with Razorpay',
+//                   fontWeight: FontWeight.w600,
+//                   fontSize: fontSize13,
+//                   textColor: AppColors.blackColor,
+//                 ),
+//                 SizedBox(height: spacerSize2),
+//                 BaseText(
+//                   text:
+//                       'Payments are processed securely via Razorpay. This purchase is not managed by Google Play.',
+//                   fontWeight: FontWeight.w400,
+//                   fontSize: fontSize11,
+//                   textColor: AppColors.liteGreyColor,
+//                   fontFamily: AppKeys.inter,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _PaymentBreakdownCard extends StatelessWidget {
   const _PaymentBreakdownCard({required this.total});

@@ -10,8 +10,9 @@ import 'package:kasagardem/authentication/login/professional_profile_model.dart'
 import 'package:kasagardem/authentication/login/profile_response_model.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/professional/payment/model/razorpay_order_model.dart';
-import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
+// Razorpay subscription cancel (disabled — Google Play Billing only)
+// import 'package:kasagardem/professional/payment/model/razorpay_order_model.dart';
+// import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
 import 'package:kasagardem/services/notification_service.dart';
 import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
@@ -22,6 +23,7 @@ import 'package:kasagardem/settings/settings_repository.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
 import 'package:kasagardem/utils/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../base/widgets/base_calculate_remaining_days.dart';
 import '../utils/constants/api_keys.dart';
@@ -58,7 +60,8 @@ class SettingsViewModel extends GetxController {
   String apiImage = '';
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
-  final RazorpayPaymentRepository _subscriptionRepository = RazorpayPaymentRepository();
+  // Razorpay subscription cancel repository (disabled — Google Play Billing only)
+  // final RazorpayPaymentRepository _subscriptionRepository = RazorpayPaymentRepository();
   RxString appVersion = '1.0.0'.obs;
   RxInt countdownTimer = 0.obs;
   Timer? _timer;
@@ -349,11 +352,24 @@ class SettingsViewModel extends GetxController {
   void showCancelSubscriptionDialog() {
     if (!canCancelSubscription || isCancellingSubscription.value) return;
 
+    // Google Play Billing only — manage/cancel in Play Store.
+    // Razorpay cancel dialog (disabled):
+    // BaseDialog.showAlertDialog(
+    //   context: Get.context!,
+    //   title: AppStrings.cancelSubscription,
+    //   description: AppStrings.cancelSubscriptionDesc,
+    //   buttonLabel: AppStrings.confirmCancel,
+    //   onButtonPressed: () {
+    //     Get.back();
+    //     cancelSubscription();
+    //   },
+    // );
+
     BaseDialog.showAlertDialog(
       context: Get.context!,
       title: AppStrings.cancelSubscription,
-      description: AppStrings.cancelSubscriptionDesc,
-      buttonLabel: AppStrings.confirmCancel,
+      description: AppStrings.cancelPlaySubscriptionDesc,
+      buttonLabel: AppStrings.manageInPlayStore,
       onButtonPressed: () {
         Get.back();
         cancelSubscription();
@@ -364,42 +380,80 @@ class SettingsViewModel extends GetxController {
   Future<void> cancelSubscription() async {
     if (!canCancelSubscription || isCancellingSubscription.value) return;
 
-    isCancellingSubscription.value = true;
+    // Google Play Billing only — open Play Store subscriptions.
+    await _openGooglePlaySubscriptions();
+
+    // Razorpay cancel API (disabled):
+    // isCancellingSubscription.value = true;
+    // try {
+    //   final subscriptionId =
+    //       currentSubscriptionStatusModel.value?.id ??
+    //       SharedPrefsService.instance.getString(AppKeys.razorpaySubscriptionId);
+    //
+    //   final response = await _subscriptionRepository.cancelSubscription(
+    //     razorpaySubscriptionId: subscriptionId,
+    //   );
+    //
+    //   if (response?.success == true) {
+    //     _applyCancelledSubscriptionLocally(response!);
+    //     await getProfileDetail();
+    //     BaseSnackBar.show(
+    //       title: AppStrings.subscriptionCancelled,
+    //       message:
+    //           response.message ?? 'Your subscription will end after the current billing period.',
+    //     );
+    //     return;
+    //   }
+    //
+    //   BaseSnackBar.show(
+    //     title: AppLocalizations.of(Get.context!)!.error,
+    //     message: response?.message ?? AppStrings.subscriptionCancelFailed,
+    //   );
+    // } catch (e) {
+    //   log('Cancel subscription error: $e');
+    //   BaseSnackBar.show(
+    //     title: AppLocalizations.of(Get.context!)!.error,
+    //     message: AppStrings.subscriptionCancelFailed,
+    //   );
+    // } finally {
+    //   isCancellingSubscription.value = false;
+    // }
+  }
+
+  Future<void> _openGooglePlaySubscriptions() async {
     try {
-      final subscriptionId =
-          currentSubscriptionStatusModel.value?.id ??
-          SharedPrefsService.instance.getString(AppKeys.razorpaySubscriptionId);
+      const packageName = 'com.gardenova.digisoft';
+      final planCode = currentSubscriptionStatusModel.value?.planCode ??
+          currentSubscriptionStatusModel.value?.id;
+      final sku = (planCode ?? '')
+          .trim()
+          .toLowerCase()
+          .replaceFirst('_yearly', '_annual');
+      final uri = sku.isNotEmpty
+          ? Uri.parse(
+              'https://play.google.com/store/account/subscriptions?sku=$sku&package=$packageName',
+            )
+          : Uri.parse(
+              'https://play.google.com/store/account/subscriptions?package=$packageName',
+            );
 
-      final response = await _subscriptionRepository.cancelSubscription(
-        razorpaySubscriptionId: subscriptionId,
-      );
-
-      if (response?.success == true) {
-        _applyCancelledSubscriptionLocally(response!);
-        await getProfileDetail();
+      final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!launched) {
         BaseSnackBar.show(
-          title: AppStrings.subscriptionCancelled,
-          message:
-              response.message ?? 'Your subscription will end after the current billing period.',
+          title: AppLocalizations.of(Get.context!)!.error,
+          message: 'Unable to open Google Play subscriptions.',
         );
-        return;
       }
-
-      BaseSnackBar.show(
-        title: AppLocalizations.of(Get.context!)!.error,
-        message: response?.message ?? AppStrings.subscriptionCancelFailed,
-      );
     } catch (e) {
-      log('Cancel subscription error: $e');
+      log('Open Play subscriptions error: $e');
       BaseSnackBar.show(
         title: AppLocalizations.of(Get.context!)!.error,
-        message: AppStrings.subscriptionCancelFailed,
+        message: 'Unable to open Google Play subscriptions.',
       );
-    } finally {
-      isCancellingSubscription.value = false;
     }
   }
 
+  // Razorpay persist helper kept for legacy data, but purchase flow is disabled.
   void persistRazorpaySubscriptionId(String? subscriptionId) {
     if (subscriptionId == null || subscriptionId.trim().isEmpty) return;
 
@@ -432,39 +486,40 @@ class SettingsViewModel extends GetxController {
     currentSubscriptionStatusModel.refresh();
   }
 
-  void _applyCancelledSubscriptionLocally(RazorpayCancelResponse response) {
-    final current = currentSubscriptionStatusModel.value;
-    if (current == null) return;
-
-    final endDate = response.endDate ?? current.updatedAt;
-    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
-      id: current.id,
-      name: current.name,
-      price: current.price,
-      currency: current.currency,
-      description: current.description,
-      status: response.status ?? 'Cancelled',
-      createdAt: current.createdAt,
-      updatedAt: endDate,
-      trialDays: current.trialDays,
-      isAutoRenew: false,
-      isTrialActive: false,
-      isActive: true,
-      billingCycle: current.billingCycle,
-      cancelAtPeriodEnd: true,
-      planCode: current.planCode,
-      pendingPlanCode: current.pendingPlanCode,
-      pendingPlanName: current.pendingPlanName,
-      pendingBillingCycle: current.pendingBillingCycle,
-      pendingEffectiveAt: current.pendingEffectiveAt ?? endDate,
-    );
-
-    SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
-    if (endDate != null && endDate.isNotEmpty) {
-      BaseCalculateRemainingDays.persistFromEndDate(endDate);
-    }
-    currentSubscriptionStatusModel.refresh();
-  }
+  // Razorpay cancel local apply (disabled — Google Play Billing only)
+  // void _applyCancelledSubscriptionLocally(RazorpayCancelResponse response) {
+  //   final current = currentSubscriptionStatusModel.value;
+  //   if (current == null) return;
+  //
+  //   final endDate = response.endDate ?? current.updatedAt;
+  //   currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+  //     id: current.id,
+  //     name: current.name,
+  //     price: current.price,
+  //     currency: current.currency,
+  //     description: current.description,
+  //     status: response.status ?? 'Cancelled',
+  //     createdAt: current.createdAt,
+  //     updatedAt: endDate,
+  //     trialDays: current.trialDays,
+  //     isAutoRenew: false,
+  //     isTrialActive: false,
+  //     isActive: true,
+  //     billingCycle: current.billingCycle,
+  //     cancelAtPeriodEnd: true,
+  //     planCode: current.planCode,
+  //     pendingPlanCode: current.pendingPlanCode,
+  //     pendingPlanName: current.pendingPlanName,
+  //     pendingBillingCycle: current.pendingBillingCycle,
+  //     pendingEffectiveAt: current.pendingEffectiveAt ?? endDate,
+  //   );
+  //
+  //   SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
+  //   if (endDate != null && endDate.isNotEmpty) {
+  //     BaseCalculateRemainingDays.persistFromEndDate(endDate);
+  //   }
+  //   currentSubscriptionStatusModel.refresh();
+  // }
 
   void updateProfilePictureOnly() async {
     String? base64String;

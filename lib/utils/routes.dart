@@ -5,7 +5,8 @@ import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_mo
 import 'package:kasagardem/authentication/forgotPassword/reset_password.dart';
 import 'package:kasagardem/authentication/forgotPassword/verify_otp.dart';
 import 'package:kasagardem/authentication/login/login_screen.dart';
-import 'package:kasagardem/authentication/login/login_verify_otp_screen.dart';
+// Login with OTP / verify mobile disabled.
+// import 'package:kasagardem/authentication/login/login_verify_otp_screen.dart';
 import 'package:kasagardem/authentication/login/login_view_model.dart';
 import 'package:kasagardem/authentication/register/register_screen.dart';
 import 'package:kasagardem/authentication/register/register_verify_otp_screen.dart';
@@ -60,8 +61,9 @@ import '../plants/myPlants/myPlantsList/my_plants_controller.dart';
 import '../plants/myPlants/myPlantsList/my_plants_screen.dart';
 import '../professional/professionalDashBoard/components/create_professional_lead_request_screen.dart';
 import '../professional/professionalDashBoard/components/professional_dashbord_success_quote.dart';
-import '../professional/payment/razorpay_payment_controller.dart';
-import '../professional/payment/razorpay_payment_screen.dart';
+// Razorpay payment (disabled — Google Play Billing only)
+// import '../professional/payment/razorpay_payment_controller.dart';
+// import '../professional/payment/razorpay_payment_screen.dart';
 import '../professional/upgradePlans/upgrade_plan_controller.dart';
 import '../professional/upgradePlans/upgrade_plan_screen.dart';
 import '../subscription/user_order_summary_screen.dart';
@@ -145,12 +147,13 @@ class Routes {
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
 
-      GetPage(
-        name: Routes.loginVerifyOtp,
-        page: () => const LoginVerifyOtpScreen(),
-        transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
-      ),
+      // Login with OTP / verify mobile number screens disabled.
+      // GetPage(
+      //   name: Routes.loginVerifyOtp,
+      //   page: () => const LoginVerifyOtpScreen(),
+      //   transition: Utils.transition,
+      //   transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      // ),
 
       GetPage(
         name: Routes.dashboard,
@@ -171,6 +174,7 @@ class Routes {
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
 
+      // Register email OTP verification.
       GetPage(
         name: Routes.registerVerifyOtp,
         page: () => const RegisterVerifyOtpScreen(),
@@ -405,13 +409,14 @@ class Routes {
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),
 
-      GetPage(
-        name: Routes.razorpayPayment,
-        page: () => const RazorpayPaymentScreen(),
-        binding: BindingsBuilder.put(() => RazorpayPaymentController()),
-        transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
-      ),
+      // Razorpay payment route disabled — Google Play Billing only.
+      // GetPage(
+      //   name: Routes.razorpayPayment,
+      //   page: () => const RazorpayPaymentScreen(),
+      //   binding: BindingsBuilder.put(() => RazorpayPaymentController()),
+      //   transition: Utils.transition,
+      //   transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      // ),
 
       GetPage(
         name: Routes.professionalDashboard,

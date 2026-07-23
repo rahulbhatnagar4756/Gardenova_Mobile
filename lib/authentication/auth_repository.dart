@@ -16,8 +16,9 @@ class AuthRepository {
   final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
   final String _refreshTokenUrl = 'api/v1/auth/refresh';
   final String _sentEmailVerificationUrl = 'api/v1/userProfile/sentemailvarification';
-  final String _sendPhoneLoginOtpUrl = 'api/v1/auth/phone/send-otp';
-  final String _verifyLoginOtpUrl = 'api/v1/auth/phone/verify-otp';
+  // Login with OTP / verify mobile number disabled.
+  // final String _sendPhoneLoginOtpUrl = 'api/v1/auth/phone/send-otp';
+  // final String _verifyLoginOtpUrl = 'api/v1/auth/phone/verify-otp';
 
   registerUser({RegisterRequestModel? registerReq}) async {
     var registerResponse = await ApiRepository.instance.post(_registerUrl, body: registerReq);
@@ -107,27 +108,28 @@ class AuthRepository {
     return response;
   }
 
-  sendLoginOtp({required String? phoneNumber}) async {
-    var response = await ApiRepository.instance.post(
-      _sendPhoneLoginOtpUrl,
-      body: {ApiKeys.phoneNumber: phoneNumber},
-    );
-    return response;
-  }
-
-  verifyLoginOtp({
-    required String? phoneNumber,
-    required String? otp,
-    required String reqType,
-  }) async {
-    var response = await ApiRepository.instance.post(
-      _verifyLoginOtpUrl,
-      body: {
-        ApiKeys.phoneNumber: phoneNumber,
-        ApiKeys.otp: otp,
-        if (reqType != "login") ApiKeys.reqType: reqType,
-      },
-    );
-    return response;
-  }
+  // Login with OTP / verify mobile number disabled.
+  // sendLoginOtp({required String? phoneNumber}) async {
+  //   var response = await ApiRepository.instance.post(
+  //     _sendPhoneLoginOtpUrl,
+  //     body: {ApiKeys.phoneNumber: phoneNumber},
+  //   );
+  //   return response;
+  // }
+  //
+  // verifyLoginOtp({
+  //   required String? phoneNumber,
+  //   required String? otp,
+  //   required String reqType,
+  // }) async {
+  //   var response = await ApiRepository.instance.post(
+  //     _verifyLoginOtpUrl,
+  //     body: {
+  //       ApiKeys.phoneNumber: phoneNumber,
+  //       ApiKeys.otp: otp,
+  //       if (reqType != "login") ApiKeys.reqType: reqType,
+  //     },
+  //   );
+  //   return response;
+  // }
 }

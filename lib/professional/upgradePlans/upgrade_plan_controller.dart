@@ -164,19 +164,30 @@ class UpgradePlanController extends GetxController {
 
   void callGetAllPlanListApi() async {
     isLoading.value = true;
-    var response = await upgradePlanRepository.getPlanList();
 
-    if (response != null) {
-      PlansResponseModel planResponse = PlansResponseModel.fromJson(response);
-      planList
-        ..clear()
-        ..addAll(
-          PlanModel.consolidateByTier(
-            planResponse.data ?? [],
-            includeProfessionalFields: true,
-          ),
-        );
-    }
+    // Commented getplans API — plans come from Google Play Billing / App Store.
+    // var response = await upgradePlanRepository.getPlanList();
+    // if (response != null) {
+    //   PlansResponseModel planResponse = PlansResponseModel.fromJson(response);
+    //   planList
+    //     ..clear()
+    //     ..addAll(
+    //       PlanModel.consolidateByTier(
+    //         planResponse.data ?? [],
+    //         includeProfessionalFields: true,
+    //       ),
+    //     );
+    // }
+
+    await SubscriptionService.instance.setupInAppPurchase();
+    planList
+      ..clear()
+      ..addAll(
+        SubscriptionService.instance.buildPlansFromStore(
+          includeProfessionalFields: true,
+        ),
+      );
+
     setSelectedPlan();
     updateStorePrices();
     isLoading.value = false;
