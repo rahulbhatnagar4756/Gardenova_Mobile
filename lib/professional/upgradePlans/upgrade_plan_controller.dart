@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:kasagardem/professional/professionalDashBoard/components/plant_expire_dialog.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_repository.dart';
+import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import '../../utils/routes.dart';
@@ -60,11 +63,40 @@ class UpgradePlanController extends GetxController {
       remainingDays.value =
           SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? "0";
     }
+    _refreshSubscriptionStatusThenLoadPlans();
+    super.onInit();
+  }
+
+  /// Refresh status from GET api/v1/plans/subscriptions/me, then load plans.
+  Future<void> _refreshSubscriptionStatusThenLoadPlans() async {
+    try {
+      if (Get.isRegistered<SettingsViewModel>()) {
+        await Get.find<SettingsViewModel>().getSubscriptionDetail();
+        currentModel =
+            Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ??
+            currentModel;
+        _applyBillingCycleFromSubscription();
+        if (currentModel?.updatedAt != null) {
+          try {
+            final expirationDate = DateTime.parse(currentModel!.updatedAt!).toLocal();
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            final exp = DateTime(
+              expirationDate.year,
+              expirationDate.month,
+              expirationDate.day,
+            );
+            remainingDays.value =
+                exp.difference(today).inDays.clamp(0, 365).toString();
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+
     callGetAllPlanListApi();
     if (remainingDays.value == "0") {
       PlanExpireDialog();
     }
-    super.onInit();
   }
 
   void changeTab(bool value) {
@@ -74,7 +106,8 @@ class UpgradePlanController extends GetxController {
     isTabAdditionalCoverage.value = false;
     isSelectOneTime.value = true;
 
-    if (_hasActiveSubscription) {
+    // Paid subscribers: only keep the subscribed plan on their billing period.
+    if (_hasPaidSubscription) {
       for (final plan in planList) {
         plan.setSelect = false;
       }
@@ -88,11 +121,26 @@ class UpgradePlanController extends GetxController {
       return;
     }
 
+    // No paid subscription — Free is monthly-only.
     for (final plan in planList) {
       plan.setSelect = false;
     }
-    selectedPlanData = null;
-    selectedPrice.value = "";
+    if (isTabMonthly.value) {
+      final freePlan = planList.firstWhereOrNull(
+        (plan) => (plan.tier ?? '').toLowerCase() == 'free',
+      );
+      if (freePlan != null) {
+        freePlan.setSelect = true;
+        selectedPlanData = freePlan;
+        _updateSelectedPrice(freePlan);
+      } else {
+        selectedPlanData = null;
+        selectedPrice.value = "";
+      }
+    } else {
+      selectedPlanData = null;
+      selectedPrice.value = "";
+    }
     planList.refresh();
   }
 
@@ -134,6 +182,14 @@ class UpgradePlanController extends GetxController {
     );
     if (selectedPlan != null) {
       selectedPlanData = selectedPlan;
+      final tier = (selectedPlan.tier ?? selectedPlan.planName ?? '').toLowerCase();
+      if (tier == 'free') {
+        BaseSnackBar.show(
+          title: 'Free Plan',
+          message: 'You are already on the Free plan. Choose a paid plan to upgrade.',
+        );
+        return;
+      }
       Get.toNamed(Routes.orderSummary);
     } else {
       BaseSnackBar.show(title: "Plan", message: "Please select a plan");
@@ -180,13 +236,16 @@ class UpgradePlanController extends GetxController {
     // }
 
     await SubscriptionService.instance.setupInAppPurchase();
+    final plans = SubscriptionService.instance.buildPlansFromStore(
+      includeProfessionalFields: true,
+    );
+    // Free is only for users without a paid subscription.
+    if (_hasPaidSubscription) {
+      plans.removeWhere((plan) => (plan.tier ?? '').toLowerCase() == 'free');
+    }
     planList
       ..clear()
-      ..addAll(
-        SubscriptionService.instance.buildPlansFromStore(
-          includeProfessionalFields: true,
-        ),
-      );
+      ..addAll(plans);
 
     setSelectedPlan();
     updateStorePrices();
@@ -201,41 +260,56 @@ class UpgradePlanController extends GetxController {
   }
 
   void setSelectedPlan({bool applyBillingCycle = true}) {
-    if (!_hasActiveSubscription) return;
-    if (applyBillingCycle) {
-      _applyBillingCycleFromSubscription();
+    if (_hasPaidSubscription) {
+      if (applyBillingCycle) {
+        _applyBillingCycleFromSubscription();
+      }
+
+      final planName = (currentModel?.name ?? '').trim().toLowerCase();
+      final planId = currentModel?.id?.trim();
+
+      PlanModel? subscribedPlan;
+      if (planId != null && planId.isNotEmpty) {
+        subscribedPlan = planList.firstWhereOrNull(
+          (plan) =>
+              plan.id == planId ||
+              plan.monthlyId == planId ||
+              plan.yearlyId == planId,
+        );
+      }
+      if (subscribedPlan == null &&
+          planName.isNotEmpty &&
+          planName != 'free' &&
+          planName != 'trial') {
+        subscribedPlan = planList.firstWhereOrNull((plan) {
+          final tier = (plan.tier ?? '').trim().toLowerCase();
+          final name = (plan.planName ?? '').trim().toLowerCase();
+          return tier == planName || name == planName;
+        });
+      }
+      if (subscribedPlan == null) return;
+
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      subscribedPlan.setSelect = true;
+      selectedPlanData = subscribedPlan;
+      _updateSelectedPrice(subscribedPlan);
+      planList.refresh();
+      return;
     }
 
-    final planName = (currentModel?.name ?? '').trim().toLowerCase();
-    final planId = currentModel?.id?.trim();
-
-    PlanModel? subscribedPlan;
-    if (planId != null && planId.isNotEmpty) {
-      subscribedPlan = planList.firstWhereOrNull(
-        (plan) =>
-            plan.id == planId ||
-            plan.monthlyId == planId ||
-            plan.yearlyId == planId,
-      );
-    }
-    if (subscribedPlan == null &&
-        planName.isNotEmpty &&
-        planName != 'free' &&
-        planName != 'trial') {
-      subscribedPlan = planList.firstWhereOrNull((plan) {
-        final tier = (plan.tier ?? '').trim().toLowerCase();
-        final name = (plan.planName ?? '').trim().toLowerCase();
-        return tier == planName || name == planName;
-      });
-    }
-    if (subscribedPlan == null) return;
+    final freePlan = planList.firstWhereOrNull(
+      (plan) => (plan.tier ?? '').toLowerCase() == 'free',
+    );
+    if (freePlan == null) return;
 
     for (final plan in planList) {
       plan.setSelect = false;
     }
-    subscribedPlan.setSelect = true;
-    selectedPlanData = subscribedPlan;
-    _updateSelectedPrice(subscribedPlan);
+    freePlan.setSelect = true;
+    selectedPlanData = freePlan;
+    _updateSelectedPrice(freePlan);
     planList.refresh();
   }
 
@@ -250,6 +324,13 @@ class UpgradePlanController extends GetxController {
         status == 'canceled';
   }
 
+  bool get _hasPaidSubscription {
+    if (!_hasActiveSubscription) return false;
+    final name = (currentModel?.name ?? '').trim().toLowerCase();
+    if (name.isEmpty || name == 'free' || name == 'trial') return false;
+    return true;
+  }
+
   bool get _isSubscribedToMonthly {
     final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
     if (cycle.isEmpty) return true;
@@ -257,7 +338,10 @@ class UpgradePlanController extends GetxController {
   }
 
   bool isCurrentSubscribedPlan(PlanModel plan) {
-    if (!_hasActiveSubscription) return false;
+    if (!_hasPaidSubscription) {
+      // Free is monthly-only.
+      return isTabMonthly.value && (plan.tier ?? '').toLowerCase() == 'free';
+    }
     if (isTabMonthly.value != _isSubscribedToMonthly) return false;
 
     final planName = (currentModel?.name ?? '').trim().toLowerCase();
@@ -289,28 +373,23 @@ class UpgradePlanController extends GetxController {
     if (SubscriptionService.instance.isAvailable &&
         SubscriptionService.instance.products.isNotEmpty) {
       for (var plan in planList) {
-        final monthlyProdId = SubscriptionService.instance.getProductId(
-          plan.planName ?? "",
-          true,
+        final tier = plan.tier ?? plan.planName ?? '';
+        final monthlyOffer = SubscriptionService.instance.findOfferForTier(
+          tier,
+          isMonthly: true,
         );
-        final annualProdId = SubscriptionService.instance.getProductId(
-          plan.planName ?? "",
-          false,
+        final annualOffer = SubscriptionService.instance.findOfferForTier(
+          tier,
+          isMonthly: false,
         );
 
-        if (monthlyProdId.isNotEmpty) {
-          final monthlyProduct = SubscriptionService.instance.products
-              .firstWhereOrNull((p) => p.id == monthlyProdId);
-          if (monthlyProduct != null) {
-            plan.priceMonthly = monthlyProduct.rawPrice.toInt().toString();
-          }
+        if (monthlyOffer != null) {
+          plan.priceMonthly = monthlyOffer.rawPrice.toInt().toString();
+          plan.monthlyProductId = monthlyOffer.id;
         }
-        if (annualProdId.isNotEmpty) {
-          final annualProduct = SubscriptionService.instance.products
-              .firstWhereOrNull((p) => p.id == annualProdId);
-          if (annualProduct != null) {
-            plan.priceAnnual = annualProduct.rawPrice.toInt().toString();
-          }
+        if (annualOffer != null) {
+          plan.priceAnnual = annualOffer.rawPrice.toInt().toString();
+          plan.yearlyProductId = annualOffer.id;
         }
       }
       planList.refresh();
@@ -324,6 +403,40 @@ class UpgradePlanController extends GetxController {
       return;
     }
 
+    final tier = (plan.tier ?? plan.planName ?? '').toLowerCase();
+    if (tier == 'free') {
+      BaseSnackBar.show(
+        title: 'Free Plan',
+        message: 'You are already on the Free plan. Choose a paid plan to upgrade.',
+      );
+      return;
+    }
+
+    if (!Platform.isAndroid) {
+      BaseSnackBar.show(
+        title: 'Google Play',
+        message: 'Subscriptions are available on Android via Google Play only.',
+      );
+      return;
+    }
+
+    if (!SubscriptionService.instance.isAvailable) {
+      BaseSnackBar.show(
+        title: 'Google Play',
+        message:
+            'Play Store billing is not available on this device. Please try again on a device with Google Play.',
+      );
+      return;
+    }
+
+    if (Get.isRegistered<SettingsViewModel>()) {
+      currentModel =
+          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ??
+          currentModel;
+    }
+
+    if (isLoading.value) return;
+
     isLoading.value = true;
     try {
       await SubscriptionService.instance.buyPlan(
@@ -331,7 +444,11 @@ class UpgradePlanController extends GetxController {
         isTabMonthly.value,
         currentModel,
       );
-    } catch (_) {
+    } catch (e) {
+      BaseSnackBar.show(
+        title: 'Payment',
+        message: 'Unable to start Google Play subscription.',
+      );
     } finally {
       isLoading.value = false;
     }

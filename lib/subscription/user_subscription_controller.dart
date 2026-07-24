@@ -40,9 +40,24 @@ class UserSubscriptionController extends GetxController {
     // }
     initIAP();
     _readArguments();
-    callGetAllPlanListApi();
+    _refreshSubscriptionStatusThenLoadPlans();
 
     super.onInit();
+  }
+
+  /// Refresh status from GET api/v1/plans/subscriptions/me, then load plans.
+  Future<void> _refreshSubscriptionStatusThenLoadPlans() async {
+    try {
+      if (Get.isRegistered<SettingsViewModel>()) {
+        await Get.find<SettingsViewModel>().getSubscriptionDetail();
+        currentModel =
+            Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ??
+            currentModel;
+        _setRemainingDaysFromModel(currentModel);
+        _applyBillingCycleFromSubscription();
+      }
+    } catch (_) {}
+    await callGetAllPlanListApi();
   }
 
   void _readArguments() {
@@ -106,9 +121,8 @@ class UserSubscriptionController extends GetxController {
 
     isTabMonthly.value = value;
 
-    // Subscribed users: only keep the subscribed plan selected, and only on
-    // the billing period they are actually subscribed to.
-    if (_hasActiveSubscription) {
+    // Paid subscribers: only keep the subscribed plan selected on their billing period.
+    if (_hasPaidSubscription) {
       for (final plan in planList) {
         plan.setSelect = false;
       }
@@ -127,11 +141,26 @@ class UserSubscriptionController extends GetxController {
       return;
     }
 
+    // No paid subscription — Free is monthly-only.
     for (final plan in planList) {
       plan.setSelect = false;
     }
-    selectedPlanData = null;
-    selectedPrice.value = '';
+    if (isTabMonthly.value) {
+      final freePlan = planList.firstWhereOrNull(
+        (plan) => (plan.tier ?? '').toLowerCase() == 'free',
+      );
+      if (freePlan != null) {
+        freePlan.setSelect = true;
+        selectedPlanData = freePlan;
+        _updateSelectedPrice(freePlan);
+      } else {
+        selectedPlanData = null;
+        selectedPrice.value = '';
+      }
+    } else {
+      selectedPlanData = null;
+      selectedPrice.value = '';
+    }
     planList.refresh();
   }
 
@@ -165,6 +194,16 @@ class UserSubscriptionController extends GetxController {
     }
 
     selectedPlanData = selectedPlan;
+
+    final tier = (selectedPlan.tier ?? selectedPlan.planName ?? '').toLowerCase();
+    if (tier == 'free') {
+      BaseSnackBar.show(
+        title: 'Free Plan',
+        message: 'You are already on the Free plan. Choose a paid plan to upgrade.',
+      );
+      return;
+    }
+
     Get.toNamed(Routes.userOrderSummary);
   }
 
@@ -273,9 +312,14 @@ class UserSubscriptionController extends GetxController {
     // }
 
     await SubscriptionService.instance.setupInAppPurchase();
+    final plans = SubscriptionService.instance.buildPlansFromStore();
+    // Free is only for users without a paid subscription.
+    if (_hasPaidSubscription) {
+      plans.removeWhere((plan) => (plan.tier ?? '').toLowerCase() == 'free');
+    }
     planList
       ..clear()
-      ..addAll(SubscriptionService.instance.buildPlansFromStore());
+      ..addAll(plans);
 
     if (planList.isEmpty) {
       BaseSnackBar.show(
@@ -301,25 +345,23 @@ class UserSubscriptionController extends GetxController {
     }
 
     for (final plan in planList) {
-      final monthlyProdId = SubscriptionService.instance.getProductId(plan.planName ?? '', true);
-      final annualProdId = SubscriptionService.instance.getProductId(plan.planName ?? '', false);
+      final tier = plan.tier ?? plan.planName ?? '';
+      final monthlyOffer = SubscriptionService.instance.findOfferForTier(
+        tier,
+        isMonthly: true,
+      );
+      final annualOffer = SubscriptionService.instance.findOfferForTier(
+        tier,
+        isMonthly: false,
+      );
 
-      if (monthlyProdId.isNotEmpty) {
-        final monthlyProduct = SubscriptionService.instance.products.firstWhereOrNull(
-          (p) => p.id == monthlyProdId,
-        );
-        if (monthlyProduct != null) {
-          plan.priceMonthly = monthlyProduct.rawPrice.toInt().toString();
-        }
+      if (monthlyOffer != null) {
+        plan.priceMonthly = monthlyOffer.rawPrice.toInt().toString();
+        plan.monthlyProductId = monthlyOffer.id;
       }
-
-      if (annualProdId.isNotEmpty) {
-        final annualProduct = SubscriptionService.instance.products.firstWhereOrNull(
-          (p) => p.id == annualProdId,
-        );
-        if (annualProduct != null) {
-          plan.priceAnnual = annualProduct.rawPrice.toInt().toString();
-        }
+      if (annualOffer != null) {
+        plan.priceAnnual = annualOffer.rawPrice.toInt().toString();
+        plan.yearlyProductId = annualOffer.id;
       }
     }
 
@@ -329,6 +371,7 @@ class UserSubscriptionController extends GetxController {
   /// Google Play Billing subscription purchase (Android only).
   Future<void> startPurchaseFlow() async {
     final plan = selectedPlanData;
+    print(selectedPlanData);
     if (plan == null) {
       BaseSnackBar.show(title: 'Plan', message: 'Please select a plan');
       return;
@@ -381,19 +424,34 @@ class UserSubscriptionController extends GetxController {
   }
 
   void setSelectedPlan() {
-    if (!_hasActiveSubscription) return;
+    if (_hasPaidSubscription) {
+      _applyBillingCycleFromSubscription();
 
-    _applyBillingCycleFromSubscription();
+      final subscribedPlan = _findSubscribedPlan();
+      if (subscribedPlan == null) return;
 
-    final subscribedPlan = _findSubscribedPlan();
-    if (subscribedPlan == null) return;
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      subscribedPlan.setSelect = true;
+      selectedPlanData = subscribedPlan;
+      _updateSelectedPrice(subscribedPlan);
+      planList.refresh();
+      return;
+    }
+
+    // No paid subscription — select Free by default.
+    final freePlan = planList.firstWhereOrNull(
+      (plan) => (plan.tier ?? '').toLowerCase() == 'free',
+    );
+    if (freePlan == null) return;
 
     for (final plan in planList) {
       plan.setSelect = false;
     }
-    subscribedPlan.setSelect = true;
-    selectedPlanData = subscribedPlan;
-    _updateSelectedPrice(subscribedPlan);
+    freePlan.setSelect = true;
+    selectedPlanData = freePlan;
+    _updateSelectedPrice(freePlan);
     planList.refresh();
   }
 
@@ -409,6 +467,13 @@ class UserSubscriptionController extends GetxController {
         status == 'canceled';
   }
 
+  bool get _hasPaidSubscription {
+    if (!_hasActiveSubscription) return false;
+    final name = (currentModel?.name ?? '').trim().toLowerCase();
+    if (name.isEmpty || name == 'free' || name == 'trial') return false;
+    return true;
+  }
+
   bool get _isSubscribedToMonthly {
     final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
     if (cycle.isEmpty) return true;
@@ -417,7 +482,10 @@ class UserSubscriptionController extends GetxController {
 
   /// True when [plan] is the user's active subscription on the current billing tab.
   bool isCurrentSubscribedPlan(PlanModel plan) {
-    if (!_hasActiveSubscription) return false;
+    if (!_hasPaidSubscription) {
+      // Free is monthly-only.
+      return isTabMonthly.value && (plan.tier ?? '').toLowerCase() == 'free';
+    }
     if (isTabMonthly.value != _isSubscribedToMonthly) return false;
 
     final subscribedPlan = _findSubscribedPlan();

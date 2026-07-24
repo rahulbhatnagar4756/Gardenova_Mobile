@@ -93,7 +93,8 @@ dependencies {
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     implementation("com.google.android.gms:play-services-ads:25.3.0")
 
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
+    // Align with in_app_purchase_android (Billing Library 8.x).
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
     implementation("androidx.window:window:1.0.0")
     implementation("androidx.window:window-java:1.0.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")

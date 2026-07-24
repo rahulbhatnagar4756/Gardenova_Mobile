@@ -231,12 +231,10 @@ class SettingsViewModel extends GetxController {
     screenType.refresh();
 
     // Always refresh subscription from /plans/subscriptions/me with profile.
-    if (screenType.value != AppKeys.professional) {
-      await getSubscriptionDetail();
-    }
+    await getSubscriptionDetail();
   }
 
-  void getProfessionalProfileDetail() async {
+  Future<void> getProfessionalProfileDetail() async {
     var response = await profileRepository.fetchProfessionalProfile();
     if (response != null) {
       ProfessionalProfileModel profileResponse = ProfessionalProfileModel.fromJson(response);
@@ -267,18 +265,29 @@ class SettingsViewModel extends GetxController {
       }
     }
     screenType.refresh();
+    // Professionals also need /me for plan status, remaining days, and Play SKU.
+    await getSubscriptionDetail();
   }
 
+  /// GET api/v1/plans/subscriptions/me — current subscription status.
   Future<void> getSubscriptionDetail() async {
     final meResponse = await profileRepository.fetchUserSubscriptionMe();
     if (meResponse != null) {
       final parsed = UserSubscriptionMeResponse.fromJson(meResponse);
-      if (parsed.success == true && parsed.data != null) {
+      if (parsed.data != null) {
         applySubscriptionFromMeApi(parsed.data!);
+        return;
+      }
+      // Explicit empty/free response with success flag.
+      if (parsed.success == true) {
+        applySubscriptionFromMeApi(
+          UserSubscriptionMeData(status: 'inactive'),
+        );
         return;
       }
     }
 
+    // Fallback only if /me is unavailable.
     final response = await profileRepository.fetchProfile();
     if (response != null) {
       final profileResponse = ProfileResponseModel.fromJson(response);
@@ -352,19 +361,6 @@ class SettingsViewModel extends GetxController {
   void showCancelSubscriptionDialog() {
     if (!canCancelSubscription || isCancellingSubscription.value) return;
 
-    // Google Play Billing only — manage/cancel in Play Store.
-    // Razorpay cancel dialog (disabled):
-    // BaseDialog.showAlertDialog(
-    //   context: Get.context!,
-    //   title: AppStrings.cancelSubscription,
-    //   description: AppStrings.cancelSubscriptionDesc,
-    //   buttonLabel: AppStrings.confirmCancel,
-    //   onButtonPressed: () {
-    //     Get.back();
-    //     cancelSubscription();
-    //   },
-    // );
-
     BaseDialog.showAlertDialog(
       context: Get.context!,
       title: AppStrings.cancelSubscription,
@@ -377,61 +373,117 @@ class SettingsViewModel extends GetxController {
     );
   }
 
+  /// POST api/v1/plans/subscriptions/cancel — set cancel_at_period_end locally,
+  /// then open Google Play so the user can turn off auto-renew.
   Future<void> cancelSubscription() async {
     if (!canCancelSubscription || isCancellingSubscription.value) return;
 
-    // Google Play Billing only — open Play Store subscriptions.
-    await _openGooglePlaySubscriptions();
+    isCancellingSubscription.value = true;
+    try {
+      final response = await profileRepository.cancelSubscription();
+      final success = response != null &&
+          (response['success'] == true ||
+              response['statusCode'] == 200 ||
+              response['statusCode'] == 201);
 
-    // Razorpay cancel API (disabled):
-    // isCancellingSubscription.value = true;
-    // try {
-    //   final subscriptionId =
-    //       currentSubscriptionStatusModel.value?.id ??
-    //       SharedPrefsService.instance.getString(AppKeys.razorpaySubscriptionId);
-    //
-    //   final response = await _subscriptionRepository.cancelSubscription(
-    //     razorpaySubscriptionId: subscriptionId,
-    //   );
-    //
-    //   if (response?.success == true) {
-    //     _applyCancelledSubscriptionLocally(response!);
-    //     await getProfileDetail();
-    //     BaseSnackBar.show(
-    //       title: AppStrings.subscriptionCancelled,
-    //       message:
-    //           response.message ?? 'Your subscription will end after the current billing period.',
-    //     );
-    //     return;
-    //   }
-    //
-    //   BaseSnackBar.show(
-    //     title: AppLocalizations.of(Get.context!)!.error,
-    //     message: response?.message ?? AppStrings.subscriptionCancelFailed,
-    //   );
-    // } catch (e) {
-    //   log('Cancel subscription error: $e');
-    //   BaseSnackBar.show(
-    //     title: AppLocalizations.of(Get.context!)!.error,
-    //     message: AppStrings.subscriptionCancelFailed,
-    //   );
-    // } finally {
-    //   isCancellingSubscription.value = false;
-    // }
+      if (!success) {
+        BaseSnackBar.show(
+          title: AppLocalizations.of(Get.context!)!.error,
+          message:
+              response?['message']?.toString() ?? AppStrings.subscriptionCancelFailed,
+        );
+        return;
+      }
+
+      _applyCancelledSubscriptionLocally(
+        message: response['message']?.toString(),
+        endDate: response['data']?['current_period_end']?.toString() ??
+            response['data']?['currentPeriodEnd']?.toString() ??
+            response['data']?['endDate']?.toString() ??
+            response['endDate']?.toString(),
+        status: response['data']?['status']?.toString() ??
+            response['status']?.toString(),
+      );
+
+      // Refresh canonical status from GET /plans/subscriptions/me
+      await getSubscriptionDetail();
+
+      BaseSnackBar.show(
+        title: AppStrings.subscriptionCancelled,
+        message: response['message']?.toString() ??
+            AppStrings.subscriptionCancelPlayHint,
+      );
+
+      // User must also disable auto-renew in Google Play (RTDN syncs final status).
+      await _openGooglePlaySubscriptions();
+    } catch (e) {
+      log('Cancel subscription error: $e');
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: AppStrings.subscriptionCancelFailed,
+      );
+    } finally {
+      isCancellingSubscription.value = false;
+    }
+  }
+
+  void _applyCancelledSubscriptionLocally({
+    String? message,
+    String? endDate,
+    String? status,
+  }) {
+    final current = currentSubscriptionStatusModel.value;
+    if (current == null) return;
+
+    final resolvedEndDate = (endDate != null && endDate.trim().isNotEmpty)
+        ? endDate
+        : current.updatedAt;
+
+    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
+      id: current.id,
+      name: current.name,
+      price: current.price,
+      currency: current.currency,
+      description: current.description,
+      status: (status != null && status.trim().isNotEmpty) ? status : 'Cancelled',
+      createdAt: current.createdAt,
+      updatedAt: resolvedEndDate,
+      trialDays: current.trialDays,
+      isAutoRenew: false,
+      isTrialActive: false,
+      isActive: true,
+      billingCycle: current.billingCycle,
+      cancelAtPeriodEnd: true,
+      planCode: current.planCode,
+      productId: current.productId,
+      pendingPlanCode: current.pendingPlanCode,
+      pendingPlanName: current.pendingPlanName,
+      pendingBillingCycle: current.pendingBillingCycle,
+      pendingEffectiveAt: current.pendingEffectiveAt ?? resolvedEndDate,
+    );
+
+    SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
+    if (resolvedEndDate != null && resolvedEndDate.isNotEmpty) {
+      BaseCalculateRemainingDays.persistFromEndDate(resolvedEndDate);
+    }
+    currentSubscriptionStatusModel.refresh();
   }
 
   Future<void> _openGooglePlaySubscriptions() async {
     try {
       const packageName = 'com.gardenova.digisoft';
-      final planCode = currentSubscriptionStatusModel.value?.planCode ??
-          currentSubscriptionStatusModel.value?.id;
-      final sku = (planCode ?? '')
+      final current = currentSubscriptionStatusModel.value;
+      // Prefer Google Play product id for the subscriptions deep link.
+      final playSku = (current?.productId ??
+              current?.planCode ??
+              current?.id ??
+              '')
           .trim()
           .toLowerCase()
           .replaceFirst('_yearly', '_annual');
-      final uri = sku.isNotEmpty
+      final uri = playSku.isNotEmpty
           ? Uri.parse(
-              'https://play.google.com/store/account/subscriptions?sku=$sku&package=$packageName',
+              'https://play.google.com/store/account/subscriptions?sku=$playSku&package=$packageName',
             )
           : Uri.parse(
               'https://play.google.com/store/account/subscriptions?package=$packageName',
@@ -485,41 +537,6 @@ class SettingsViewModel extends GetxController {
     );
     currentSubscriptionStatusModel.refresh();
   }
-
-  // Razorpay cancel local apply (disabled — Google Play Billing only)
-  // void _applyCancelledSubscriptionLocally(RazorpayCancelResponse response) {
-  //   final current = currentSubscriptionStatusModel.value;
-  //   if (current == null) return;
-  //
-  //   final endDate = response.endDate ?? current.updatedAt;
-  //   currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
-  //     id: current.id,
-  //     name: current.name,
-  //     price: current.price,
-  //     currency: current.currency,
-  //     description: current.description,
-  //     status: response.status ?? 'Cancelled',
-  //     createdAt: current.createdAt,
-  //     updatedAt: endDate,
-  //     trialDays: current.trialDays,
-  //     isAutoRenew: false,
-  //     isTrialActive: false,
-  //     isActive: true,
-  //     billingCycle: current.billingCycle,
-  //     cancelAtPeriodEnd: true,
-  //     planCode: current.planCode,
-  //     pendingPlanCode: current.pendingPlanCode,
-  //     pendingPlanName: current.pendingPlanName,
-  //     pendingBillingCycle: current.pendingBillingCycle,
-  //     pendingEffectiveAt: current.pendingEffectiveAt ?? endDate,
-  //   );
-  //
-  //   SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
-  //   if (endDate != null && endDate.isNotEmpty) {
-  //     BaseCalculateRemainingDays.persistFromEndDate(endDate);
-  //   }
-  //   currentSubscriptionStatusModel.refresh();
-  // }
 
   void updateProfilePictureOnly() async {
     String? base64String;

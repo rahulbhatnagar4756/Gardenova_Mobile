@@ -16,10 +16,14 @@ class UpgradePlanRepository {
   //   return planResponse;
   // }
 
+  /// POST api/v1/plans/subscriptions/verify
+  /// Body: purchaseToken, productId, basePlanId, orderId
   verifyPurchase(Map<String, dynamic> body) async {
     var verifyResponse = await ApiRepository.instance.post(
-      'api/v1/subscription/verify',
+      'api/v1/plans/subscriptions/verify',
       body: body,
+      showDefaultLoader: false,
+      showRunTimeError: false,
     );
     return verifyResponse;
   }

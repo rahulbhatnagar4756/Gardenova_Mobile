@@ -18,6 +18,8 @@ class SubscriptionStatusUiModel {
   String? billingCycle;
   bool? cancelAtPeriodEnd;
   String? planCode;
+  /// Google Play product id when billing_provider is google_play.
+  String? productId;
   String? pendingPlanCode;
   String? pendingPlanName;
   String? pendingBillingCycle;
@@ -39,6 +41,7 @@ class SubscriptionStatusUiModel {
     this.billingCycle,
     this.cancelAtPeriodEnd,
     this.planCode,
+    this.productId,
     this.pendingPlanCode,
     this.pendingPlanName,
     this.pendingBillingCycle,
@@ -68,24 +71,38 @@ class SubscriptionStatusUiModel {
     final cancelAtPeriodEnd = data.cancelAtPeriodEnd == true;
     final expiresAt = data.currentPeriodEnd;
     final isTrial = planName.toLowerCase() == 'trial';
-    final isActive =
+    // Treat Play/backend entitlement-preserving states as active access.
+    final isEntitledStatus = normalizedStatus == 'active' ||
+        normalizedStatus == 'renewed' ||
+        normalizedStatus == 'grace' ||
+        normalizedStatus == 'grace_period' ||
+        normalizedStatus == 'on_hold' ||
+        normalizedStatus == 'onhold' ||
+        normalizedStatus == 'paused' ||
+        normalizedStatus == 'cancelled' ||
+        normalizedStatus == 'canceled';
+    final isRenewingStatus =
         normalizedStatus == 'active' || normalizedStatus == 'renewed';
     final hasRemainingAccess =
         expiresAt == null ||
         expiresAt.isEmpty ||
         BaseCalculateRemainingDays.daysUntilEndDate(expiresAt) > 0;
 
+    String displayStatus = rawStatus;
+    if (cancelAtPeriodEnd && isRenewingStatus && pending == null) {
+      displayStatus = 'Cancelled';
+    }
+
     return SubscriptionStatusUiModel(
       id: plan?.code,
       name: planName,
       planCode: plan?.code,
-      status: cancelAtPeriodEnd && isActive && pending == null
-          ? 'Cancelled'
-          : rawStatus,
+      productId: data.productId,
+      status: displayStatus,
       updatedAt: expiresAt,
-      isActive: isActive && hasRemainingAccess,
-      isTrialActive: isTrial && isActive,
-      isAutoRenew: !cancelAtPeriodEnd,
+      isActive: isEntitledStatus && hasRemainingAccess,
+      isTrialActive: isTrial && isRenewingStatus,
+      isAutoRenew: !cancelAtPeriodEnd && isRenewingStatus,
       billingCycle: plan?.billingCycle,
       cancelAtPeriodEnd: cancelAtPeriodEnd,
       pendingPlanCode: pending?.code,
@@ -144,6 +161,7 @@ class SubscriptionStatusUiModel {
     billingCycle = json['billingCycle']?.toString();
     cancelAtPeriodEnd = json['cancelAtPeriodEnd'] == true;
     planCode = json['planCode']?.toString();
+    productId = json['productId']?.toString();
     pendingPlanCode = json['pendingPlanCode']?.toString();
     pendingPlanName = json['pendingPlanName']?.toString();
     pendingBillingCycle = json['pendingBillingCycle']?.toString();
@@ -167,6 +185,7 @@ class SubscriptionStatusUiModel {
     data['billingCycle'] = billingCycle;
     data['cancelAtPeriodEnd'] = cancelAtPeriodEnd;
     data['planCode'] = planCode;
+    data['productId'] = productId;
     data['pendingPlanCode'] = pendingPlanCode;
     data['pendingPlanName'] = pendingPlanName;
     data['pendingBillingCycle'] = pendingBillingCycle;

@@ -9,8 +9,10 @@ class AuthRepository {
   final String _facebookLoginUrl = 'api/v1/auth/facebook';
   final String _appleLoginUrl = 'api/v1/auth/apple';
   final String _sendVerificationCode = 'api/v1/userProfile/sentemailvarification';
+  final String _reSendVerificationCode = 'api/v1/auth/email/send-otp';
   final String _passwordResetCode = 'api/v1/auth/passwordResetToken';
   final String _verifyCode = 'api/v1/auth/verifyToken';
+  final String _verifyOtp = 'api/v1/auth/email/verify-otp';
   final String _resetPassword = 'api/v1/auth/resetPassword';
   final String _profileDetail = 'api/v1/userProfile';
   final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
@@ -59,6 +61,14 @@ class AuthRepository {
     return loginResponse;
   }
 
+  resedOtp({required String? email}) async {
+    var loginResponse = await ApiRepository.instance.post(
+      _reSendVerificationCode,
+      body: {"email": email},
+    );
+    return loginResponse;
+  }
+
   sendPasswordResetCode({required String? email, bool? isResend = false}) async {
     var loginResponse = await ApiRepository.instance.post(
       _passwordResetCode,
@@ -71,6 +81,14 @@ class AuthRepository {
     var verifyOtpResponse = await ApiRepository.instance.post(
       _verifyCode,
       body: {ApiKeys.email: email, ApiKeys.token: otp},
+    );
+    return verifyOtpResponse;
+  }
+
+  verifyOtpOnRegister({required String? email, required String? otp}) async {
+    var verifyOtpResponse = await ApiRepository.instance.post(
+      _verifyOtp,
+      body: {ApiKeys.email: email, ApiKeys.otp: otp},
     );
     return verifyOtpResponse;
   }

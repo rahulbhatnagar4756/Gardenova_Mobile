@@ -12,6 +12,7 @@ class SettingsRepository {
   final String _professionalProfileDetail = 'api/v1/professional/ProfessionalsProfile';
   final String _deleteAccountUrl = 'api/v1/userProfile/soft-delete';
   final String userSubscriptionMeEndPoint = 'api/v1/plans/subscriptions/me';
+  final String cancelSubscriptionEndPoint = 'api/v1/plans/subscriptions/cancel';
 
   fetchProfile({bool showloader = false}) async {
     var profileResponse = await ApiRepository.instance.get(
@@ -24,6 +25,16 @@ class SettingsRepository {
   Future<dynamic> fetchUserSubscriptionMe({bool showloader = false}) async {
     return ApiRepository.instance.get(
       userSubscriptionMeEndPoint,
+      showDefaultLoader: showloader,
+    );
+  }
+
+  /// POST api/v1/plans/subscriptions/cancel
+  /// Marks cancel_at_period_end locally; user should also turn off Play auto-renew.
+  Future<dynamic> cancelSubscription({bool showloader = true}) async {
+    return ApiRepository.instance.post(
+      cancelSubscriptionEndPoint,
+      body: <String, dynamic>{},
       showDefaultLoader: showloader,
     );
   }

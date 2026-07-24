@@ -239,7 +239,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
-              // Send email OTP, then verify before creating account.
+              // Register API first, then email OTP verification screen.
               controller.registerUser();
             } else {
               BaseSnackBar.show(

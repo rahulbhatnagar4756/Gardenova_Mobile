@@ -179,10 +179,12 @@ class _PlanList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final filteredPlans = controller.planList.where((plan) {
+        final isFree = (plan.tier ?? '').toLowerCase() == 'free';
         if (controller.isTabMonthly.value) {
-          return plan.monthlyId != null || plan.tier == 'free';
+          return plan.monthlyId != null || isFree;
         }
-        return plan.yearlyId != null;
+        // Free is not offered on Annual.
+        return !isFree && plan.yearlyId != null;
       }).toList();
 
       return Padding(
@@ -342,14 +344,33 @@ class _UserPlanCard extends StatelessWidget {
     if (plan.features != null && plan.features!.isNotEmpty) {
       return plan.features!
           .where((feature) => feature.enabled == true)
-          .map((feature) => _FeatureRow(label: feature.label ?? ''))
+          .map(
+            (feature) => _FeatureRow(
+              label: feature.displayLabel(isMonthly: isMonthly),
+            ),
+          )
           .toList();
     }
 
     return [
-      if (plan.diagnosisScans != null) _FeatureRow(label: '${plan.diagnosisScans} diagnosis scans'),
+      if (plan.diagnosisScans != null)
+        _FeatureRow(
+          label: PlanFeature.formatQuotaLabel(
+            '${plan.diagnosisScans} diagnosis scans',
+            key: 'diagnosis_scans',
+            isMonthly: isMonthly,
+          ),
+        ),
       if (plan.maxPlants != null)
-        _FeatureRow(label: plan.maxPlants == -1 ? 'Unlimited plants' : '${plan.maxPlants} plants'),
+        _FeatureRow(
+          label: plan.maxPlants == -1
+              ? 'Unlimited plants'
+              : PlanFeature.formatQuotaLabel(
+                  '${plan.maxPlants} plants',
+                  key: 'saved_plants',
+                  isMonthly: isMonthly,
+                ),
+        ),
       if (plan.aiAssistant == true) const _FeatureRow(label: 'AI assistant'),
       if (plan.hdRenders == true) const _FeatureRow(label: 'HD renders'),
       if (plan.pdfExport == true) const _FeatureRow(label: 'PDF export'),

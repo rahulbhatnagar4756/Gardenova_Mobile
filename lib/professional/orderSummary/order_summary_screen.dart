@@ -279,7 +279,9 @@ class OrderSummaryScreen extends GetWidget<UpgradePlanController> {
                                       }
                                       return _buildFeatureRow(
                                         icon: icon,
-                                        title: feature.label ?? "",
+                                        title: feature.displayLabel(
+                                          isMonthly: controller.isTabMonthly.value,
+                                        ),
                                       );
                                     }).toList()
                                   : [

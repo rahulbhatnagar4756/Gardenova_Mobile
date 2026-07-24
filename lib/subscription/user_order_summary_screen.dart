@@ -7,6 +7,7 @@ import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
 import 'package:kasagardem/subscription/user_subscription_controller.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -47,7 +48,10 @@ class UserOrderSummaryScreen extends GetWidget<UserSubscriptionController> {
                       amount: total,
                     ),
                     SizedBox(height: spacerSize20),
-                    _IncludedFeaturesCard(plan: plan),
+                    _IncludedFeaturesCard(
+                      plan: plan,
+                      isMonthly: isMonthly,
+                    ),
                     // Razorpay banner disabled — Google Play Billing only.
                     // if (Platform.isAndroid) ...[
                     //   SizedBox(height: spacerSize20),
@@ -169,9 +173,13 @@ class _PlanHeaderCard extends StatelessWidget {
 }
 
 class _IncludedFeaturesCard extends StatelessWidget {
-  const _IncludedFeaturesCard({required this.plan});
+  const _IncludedFeaturesCard({
+    required this.plan,
+    required this.isMonthly,
+  });
 
   final dynamic plan;
+  final bool isMonthly;
 
   @override
   Widget build(BuildContext context) {
@@ -179,16 +187,35 @@ class _IncludedFeaturesCard extends StatelessWidget {
     final enabledFeatures =
         features
             ?.where((feature) => feature.enabled == true)
-            .map((feature) => feature.label?.toString() ?? '')
+            .map(
+              (feature) => feature is PlanFeature
+                  ? feature.displayLabel(isMonthly: isMonthly)
+                  : PlanFeature.formatQuotaLabel(
+                      feature.label?.toString() ?? '',
+                      key: feature.key?.toString(),
+                      isMonthly: isMonthly,
+                    ),
+            )
             .where((label) => label.isNotEmpty)
             .toList() ??
         <String>[];
 
     if (enabledFeatures.isEmpty) {
       enabledFeatures.addAll([
-        if (plan?.diagnosisScans != null) '${plan.diagnosisScans} diagnosis scans',
+        if (plan?.diagnosisScans != null)
+          PlanFeature.formatQuotaLabel(
+            '${plan.diagnosisScans} diagnosis scans',
+            key: 'diagnosis_scans',
+            isMonthly: isMonthly,
+          ),
         if (plan?.maxPlants != null)
-          plan.maxPlants == -1 ? 'Unlimited plants' : '${plan.maxPlants} plants',
+          plan.maxPlants == -1
+              ? 'Unlimited plants'
+              : PlanFeature.formatQuotaLabel(
+                  '${plan.maxPlants} plants',
+                  key: 'saved_plants',
+                  isMonthly: isMonthly,
+                ),
         if (plan?.aiAssistant == true) 'AI assistant',
         if (plan?.hdRenders == true) 'HD renders',
       ]);

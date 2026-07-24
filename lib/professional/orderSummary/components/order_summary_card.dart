@@ -87,7 +87,9 @@ class OrderSummaryCard extends StatelessWidget {
                 .where((f) => f.enabled == true)
                 .map((feature) {
               return FeatureItemCard(
-                title: feature.label ?? "",
+                title: feature.displayLabel(
+                  isMonthly: controller.isTabMonthly.value,
+                ),
               );
             })
           else ...[

@@ -339,52 +339,48 @@ class PlanModel {
     return value.toStringAsFixed(0);
   }
 
-  /// Build paid plans from Google Play / App Store product IDs.
+  /// Build paid plans from Google Play subscription base-plan offers.
   ///
-  /// Expected SKUs: `starter_monthly`, `starter_annual`, `plus_*`, `pro_*`.
+  /// Always includes a Free plan first. [storeProducts] keys are normalized as
+  /// `{tier}_monthly` / `{tier}_annual` after mapping Play base plans.
   static List<PlanModel> fromStoreProducts({
-    required Map<String, ({String price, double rawPrice})> storeProducts,
+    required Map<String, ({String price, double rawPrice, String productId})> storeProducts,
     bool includeProfessionalFields = false,
   }) {
     const tiers = ['starter', 'plus', 'pro'];
-    final plans = <PlanModel>[];
+    final plans = <PlanModel>[
+      _buildFreePlan(includeProfessionalFields: includeProfessionalFields),
+    ];
 
     for (final tier in tiers) {
-      final monthlyId = '${tier}_monthly';
-      final annualId = '${tier}_annual';
-      final yearlyAltId = '${tier}_yearly';
+      final monthlyKey = '${tier}_monthly';
+      final annualKey = '${tier}_annual';
 
-      final monthly = storeProducts[monthlyId];
-      final annual = storeProducts[annualId] ?? storeProducts[yearlyAltId];
+      final monthly = storeProducts[monthlyKey];
+      final annual = storeProducts[annualKey];
 
       // Only include tiers that exist as real store products.
       if (monthly == null && annual == null) continue;
 
-      final priceMonthly = monthly != null
-          ? _formatPrice(monthly.rawPrice.toString())
-          : '0';
-      final priceAnnual = annual != null
-          ? _formatPrice(annual.rawPrice.toString())
-          : '0';
+      final playProductId = monthly?.productId ?? annual?.productId ?? _playProductIdForTier(tier);
 
-      final resolvedAnnualId = annual == null
-          ? null
-          : (storeProducts.containsKey(annualId) ? annualId : yearlyAltId);
+      final priceMonthly = monthly != null ? _formatPrice(monthly.rawPrice.toString()) : '0';
+      final priceAnnual = annual != null ? _formatPrice(annual.rawPrice.toString()) : '0';
 
       final plan = PlanModel(
-        id: monthly != null ? monthlyId : resolvedAnnualId,
+        id: playProductId,
         planName: _displayNameFromTier(tier),
         tier: tier,
         currency: 'INR',
         status: 'active',
         isSelect: false,
-        code: monthly != null ? monthlyId : resolvedAnnualId,
+        code: '${tier}-monthly',
         priceMonthly: priceMonthly,
         priceAnnual: priceAnnual,
-        monthlyProductId: monthly != null ? monthlyId : null,
-        yearlyProductId: resolvedAnnualId,
-        monthlyId: monthly != null ? monthlyId : null,
-        yearlyId: resolvedAnnualId,
+        monthlyProductId: monthly != null ? playProductId : null,
+        yearlyProductId: annual != null ? playProductId : null,
+        monthlyId: monthly != null ? monthlyKey : null,
+        yearlyId: annual != null ? annualKey : null,
         features: _defaultFeaturesForTier(tier),
       );
 
@@ -408,8 +404,57 @@ class PlanModel {
     return plans;
   }
 
+  static PlanModel _buildFreePlan({bool includeProfessionalFields = false}) {
+    final plan = PlanModel(
+      id: 'free',
+      planName: 'Free',
+      tier: 'free',
+      currency: 'INR',
+      status: 'active',
+      isSelect: false,
+      code: 'free',
+      priceMonthly: '0',
+      priceAnnual: '0',
+      monthlyId: 'free',
+      // Free is monthly-only — omit yearlyId so it never appears on Annual.
+      yearlyId: null,
+      features: _defaultFeaturesForTier('free'),
+    );
+    _applyDefaultLimits(plan, 'free');
+
+    if (includeProfessionalFields) {
+      plan.citiesCoverage = 5;
+      plan.appearInSearch = false;
+      plan.leadsLimit = 0;
+      plan.premiumProfileBadge = false;
+      plan.priorityCustomerSupport = false;
+    }
+
+    return plan;
+  }
+
+  static String _playProductIdForTier(String tier) {
+    switch (tier.toLowerCase()) {
+      case 'starter':
+        return 'starter_monthly';
+      case 'plus':
+        return 'plus';
+      case 'pro':
+        return 'pro';
+      default:
+        return tier;
+    }
+  }
+
   static void _applyDefaultLimits(PlanModel plan, String tier) {
     switch (tier) {
+      case 'free':
+        plan.diagnosisScans = 3;
+        plan.landscapeGen = 1;
+        plan.maxPlants = 5;
+        plan.aiAssistant = false;
+        plan.basicReminders = true;
+        break;
       case 'starter':
         plan.diagnosisScans = 10;
         plan.landscapeGen = 5;
@@ -443,6 +488,13 @@ class PlanModel {
 
   static List<PlanFeature> _defaultFeaturesForTier(String tier) {
     switch (tier) {
+      case 'free':
+        return [
+          PlanFeature(key: 'diagnosis_scans', label: '3 diagnosis scans', enabled: true),
+          PlanFeature(key: 'landscape_gens', label: '1 landscape generation', enabled: true),
+          PlanFeature(key: 'saved_plants', label: '5 saved plants', enabled: true),
+          PlanFeature(key: 'basic_reminders', label: 'Basic reminders', enabled: true),
+        ];
       case 'starter':
         return [
           PlanFeature(key: 'diagnosis_scans', label: '10 diagnosis scans', enabled: true),
@@ -594,6 +646,42 @@ class PlanFeature {
     key = json['key'];
     label = json['label'];
     enabled = json['enabled'] == true;
+  }
+
+  /// Quota limits are monthly even on annual plans — show that when annual.
+  String displayLabel({required bool isMonthly}) {
+    return formatQuotaLabel(label ?? '', key: key, isMonthly: isMonthly);
+  }
+
+  static const _monthlyQuotaKeys = {
+    'diagnosis_scans',
+    'landscape_gen',
+    'landscape_gens',
+    'saved_plants',
+    'max_plants',
+  };
+
+  static String formatQuotaLabel(String label, {String? key, required bool isMonthly}) {
+    final text = label.trim();
+    if (text.isEmpty || isMonthly) return text;
+
+    final normalized = text.toLowerCase();
+    if (normalized.contains('/ month') ||
+        normalized.contains('per month') ||
+        normalized.contains('monthly')) {
+      return text;
+    }
+
+    final isQuotaKey = key != null && _monthlyQuotaKeys.contains(key);
+    final looksLikeQuota = RegExp(
+      r'\d+\s+(diagnosis|landscape|plant|scan|generation)',
+      caseSensitive: false,
+    ).hasMatch(text);
+
+    if (isQuotaKey || looksLikeQuota) {
+      return '$text monthly';
+    }
+    return text;
   }
 
   Map<String, dynamic> toJson() {

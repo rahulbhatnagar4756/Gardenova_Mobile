@@ -19,11 +19,12 @@ class PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final filteredPlans = controller.planList.where((plan) {
+        final isFree = (plan.tier ?? '').toLowerCase() == 'free';
         if (controller.isTabMonthly.value) {
-          return plan.monthlyId != null || plan.tier == 'free';
-        } else {
-          return plan.yearlyId != null;
+          return plan.monthlyId != null || isFree;
         }
+        // Free is not offered on Annual.
+        return !isFree && plan.yearlyId != null;
       }).toList();
 
       return Padding(
@@ -170,14 +171,18 @@ class PlanCard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             fontFamily: AppKeys.inter,
                             fontSize: fontSize12,
-                            text: plan.features?.firstWhereOrNull(
-                                  (f) =>
-                                      f.key == 'saved_plants' ||
-                                      f.key == 'max_plants',
-                                )?.label ??
-                                (plan.maxPlants == -1
-                                    ? "Unlimited Plants"
-                                    : "${plan.maxPlants ?? 0} Plants"),
+                            text: PlanFeature.formatQuotaLabel(
+                              plan.features?.firstWhereOrNull(
+                                    (f) =>
+                                        f.key == 'saved_plants' ||
+                                        f.key == 'max_plants',
+                                  )?.label ??
+                                  (plan.maxPlants == -1
+                                      ? "Unlimited Plants"
+                                      : "${plan.maxPlants ?? 0} Plants"),
+                              key: 'saved_plants',
+                              isMonthly: controller.isTabMonthly.value,
+                            ),
                           ),
                         ],
                       ),

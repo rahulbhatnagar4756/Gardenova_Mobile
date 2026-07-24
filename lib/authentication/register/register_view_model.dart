@@ -72,10 +72,10 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> registerUser() async {
-    await sendRegisterOtp();
+    await _submitRegistration();
   }
 
-  /// Send email OTP before completing registration.
+  /// Resend email OTP after registration.
   Future<void> sendRegisterOtp({bool isResend = false}) async {
     resendTimer?.cancel();
     final email = emailController.text.trim();
@@ -87,7 +87,7 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       return;
     }
 
-    final response = await authRepository.sendOtp(email: email);
+    final response = await authRepository.resedOtp(email: email);
     if (response != null) {
       pinController.clear();
       startResendTimer();
@@ -97,23 +97,22 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
           title: AppLocalizations.of(Get.context!)!.success,
           message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
         );
-      } else {
-        Get.toNamed(Routes.registerVerifyOtp);
       }
     }
   }
 
-  /// Verify email OTP, then create the account.
+  /// Verify email OTP after the register API has succeeded.
   Future<void> verifyRegisterOtp() async {
-    final response = await authRepository.verifyOtp(
+    final response = await authRepository.verifyOtpOnRegister(
       email: emailController.text.trim(),
       otp: pinController.text.trim(),
     );
     if (response != null) {
-      await _submitRegistration();
+      registerSuccessDialog();
     }
   }
 
+  /// Create account first, then open email OTP verification.
   Future<void> _submitRegistration() async {
     isShowLoader.value = true;
     final requestModel = RegisterRequestModel()
@@ -126,8 +125,10 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     final registerResponse = await authRepository.registerUser(registerReq: requestModel);
     isShowLoader.value = false;
     if (registerResponse != null) {
-      Get.back();
-      registerSuccessDialog();
+      pinController.clear();
+      startResendTimer();
+      startOtpExpiryTimer();
+      Get.toNamed(Routes.registerVerifyOtp);
     }
   }
 
