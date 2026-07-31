@@ -11,8 +11,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
+import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/firebase_options.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/app_config.dart';
@@ -123,7 +123,7 @@ Future<void> main() async {
 
     await initServices();
     try {
-      //await MobileAds.instance.initialize();
+      await AdMobService.instance.ensureInitialized();
     } catch (e, stack) {
       await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
     }

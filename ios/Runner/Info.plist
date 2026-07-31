@@ -54,6 +54,8 @@
 	<string>717938248293-qnmlvk2628anqiacplvpsvqe15ig5okt.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>
 	<string>717938248293-qnmlvk2628anqiacplvpsvqe15ig5okt.apps.googleusercontent.com</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-9167105189322595~4796206308</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>

@@ -5,6 +5,7 @@ xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
 
     <!-- Remove Advertising ID permission -->
@@ -24,6 +25,7 @@ xmlns:tools="http://schemas.android.com/tools">
     <meta-data
         android:name="com.google.android.gms.ads.APPLICATION_ID"
         android:value="ca-app-pub-9167105189322595~4796206308"/>
+<!--        android:value="ca-app-pub-9167105189322595~3127135447"/>-->
         <!-- Do not set default_notification_icon / channel — those enable a second
              system tray post alongside GardenovaPushNotifier for data-only messages. -->
         <meta-data
@@ -101,6 +103,18 @@ xmlns:tools="http://schemas.android.com/tools">
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="com.google.android.gms.ads.service.START" />
+        </intent>
+        <intent>
+            <action android:name="com.google.android.gms.ads.service.CACHE" />
+        </intent>
+        <package android:name="com.google.android.gms" />
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" />
         <!-- Razorpay UPI / wallet app visibility (Android 11+) -->

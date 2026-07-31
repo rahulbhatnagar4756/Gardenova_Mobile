@@ -159,6 +159,9 @@ class Routes {
         name: Routes.dashboard,
         page: () => DashboardScreen(),
         binding: BindingsBuilder(() {
+          if (Get.isRegistered<DashboardController>()) {
+            Get.delete<DashboardController>(force: true);
+          }
           Get.put(DashboardController());
           Get.put(SettingsViewModel());
         }),

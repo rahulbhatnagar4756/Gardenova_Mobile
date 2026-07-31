@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
@@ -16,6 +16,7 @@ import 'package:kasagardem/utils/shared_prefs_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../services/admob_service.dart';
 import '../services/subscription_service.dart';
+import '../settings/settings_view_model.dart';
 import '../utils/constants/app_color.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/location_helper/location_service.dart';
@@ -48,43 +49,60 @@ class DashboardController extends GetxController {
     ChartData('Clay', 1, AppColors.clayColor),
   ].obs;
 
-  //BannerAd? bannerAd;
+  BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
 
   @override
   void onInit() {
     SubscriptionService.instance.checkAndRecoverPendingPurchases();
-    // loadBannerAd();
     responseId = Get.arguments.toString();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupBannerAds();
       getPlantsRecommendations(responseId);
       isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     });
-    //    getCurrentLocation();
 
     super.onInit();
   }
 
-  void loadBannerAd() {
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      final settingsVm = Get.find<SettingsViewModel>();
+      ever(settingsVm.currentSubscriptionStatusModel, (_) => loadBannerAd());
+    }
+    loadBannerAd();
+  }
+
+  void loadBannerAd() async {
     if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
       isAdLoaded.value = false;
       return;
     }
-    // bannerAd = AdMobService.instance.loadBannerAd(
-    //   onAdLoaded: (ad) {
-    //     isAdLoaded.value = true;
-    //   },
-    //   onAdFailedToLoad: (ad, error) {
-    //     ad.dispose();
-    //     isAdLoaded.value = false;
-    //     debugPrint('BannerAd failed to load: $error');
-    //   },
-    // );
+
+    isAdLoaded.value = false;
+    final ad = await AdMobService.instance.loadBannerAd(
+      existingAd: bannerAd,
+      onAdLoaded: (ad) {
+        bannerAd = ad as BannerAd;
+        isAdLoaded.value = true;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        bannerAd = null;
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+    if (ad != null) {
+      bannerAd = ad;
+    }
   }
 
   @override
   void onClose() {
-    //  bannerAd?.dispose();
+    bannerAd?.dispose();
     super.onClose();
   }
 
@@ -270,10 +288,9 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-          goToPlantDiagnosis(result);
-          /*_showAdAndProceed(() {
+          _showAdAndProceed(() {
             goToPlantDiagnosis(result);
-          });*/
+          });
         }
         return;
       }
@@ -292,13 +309,13 @@ class DashboardController extends GetxController {
           Get.back();
         }
 
-        /*_showAdAndProceed(() {*/
-        if (source == ImagePickerSource.diagnosis) {
-          goToPlantDiagnosis(pickedFile);
-        } else {
-          goToLandscapeDesign(pickedFile, selectedStyle);
-        }
-        /* });*/
+        _showAdAndProceed(() {
+          if (source == ImagePickerSource.diagnosis) {
+            goToPlantDiagnosis(pickedFile);
+          } else {
+            goToLandscapeDesign(pickedFile, selectedStyle);
+          }
+        });
       }
     } catch (e) {
       debugPrint("Error::: $e");
