@@ -85,7 +85,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     unawaited(_registerPushAfterNavigation());
 
-    Future.delayed(const Duration(seconds: 2), () {
+    // Short brand beat only — token refresh already awaited when logged in.
+    Future.delayed(const Duration(milliseconds: 400), () {
       if (currentRole != AppKeys.professional) {
         if (isUserAlreadyLogedIn) {
           Get.offAllNamed(Routes.dashboard);
@@ -103,6 +104,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _registerPushAfterNavigation() async {
+    // Ensure deferred notification init from main() has finished.
+    await NotificationService.instance.initialize();
     final granted = await NotificationService.instance.requestNotificationPermission();
     if (granted) {
       await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();

@@ -1,8 +1,9 @@
-import 'dart:io' show Platform;
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide appFlavor;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,9 +13,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
-import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/firebase_options.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/utils/app_config.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -29,27 +30,24 @@ import 'services/notification_service.dart';
 import 'services/reminder_push_notification_service.dart';
 
 Future<void> main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   Locale selectedLocale = enUS;
   try {
-    await dotenv.load(fileName: "secret.env");
+    // Critical path only — keep icon-tap → first frame short.
+    await dotenv.load(fileName: 'secret.env');
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
-    // Pass all uncaught "fatal" errors from the framework to Crashlytics
     FlutterError.onError = (errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
-    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -58,78 +56,65 @@ Future<void> main() async {
       ),
     );
 
-    String flavorString = String.fromEnvironment('appFlavor', defaultValue: 'dev');
+    // Web/desktop Facebook SDK only — mobile uses the native Facebook SDK.
+    if (kIsWeb) {
+      await FacebookAuth.i.webAndDesktopInitialize(
+        appId: '1530353791540365',
+        cookie: true,
+        xfbml: true,
+        version: 'v19.0',
+      );
+    }
 
-    await FacebookAuth.i.webAndDesktopInitialize(
-      appId: "1530353791540365",
-      cookie: true,
-      xfbml: true,
-      version: "v19.0",
-    );
-
-    Flavor? currentFlavor;
-    String? baseUrl;
-    String? adMobId;
-    String? bannerId;
-    String? rewardId;
-
+    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'dev');
+    late final Flavor currentFlavor;
+    late final String baseUrl;
     switch (flavorString.toLowerCase()) {
-      case 'dev':
-        currentFlavor = Flavor.dev;
-        baseUrl = dotenv.env['dev_url'];
-        break;
-
       case 'prod':
         currentFlavor = Flavor.prod;
-        baseUrl = dotenv.env['prod_url'];
-
+        baseUrl = dotenv.env['prod_url']!;
+        break;
+      case 'dev':
+      default:
+        currentFlavor = Flavor.dev;
+        baseUrl = dotenv.env['dev_url']!;
         break;
     }
-    if (Platform.isIOS) {
-      adMobId = dotenv.env['android_admob_id'];
-      bannerId = dotenv.env['android_banner_id'];
-      rewardId = dotenv.env['android_reward_id'];
-    } else {
-      adMobId = dotenv.env['android_admob_id'];
-      bannerId = dotenv.env['android_banner_id'];
-      rewardId = dotenv.env['android_reward_id'];
-    }
+
     AppConfig.create(
       appName: appName,
-      baseUrl: baseUrl!,
-      flavor: currentFlavor!,
-      adMobId: adMobId,
-      bannerId: bannerId,
-      rewardId: rewardId,
+      baseUrl: baseUrl,
+      flavor: currentFlavor,
+      adMobId: dotenv.env['android_admob_id'],
+      bannerId: dotenv.env['android_banner_id'],
+      rewardId: dotenv.env['android_reward_id'],
     );
 
-    SharedPrefsService sharedPrefsService = SharedPrefsService();
+    final sharedPrefsService = SharedPrefsService();
     await sharedPrefsService.init();
-    String createdAt = sharedPrefsService.getString(AppKeys.createdAt) ?? "";
 
+    final createdAt = sharedPrefsService.getString(AppKeys.createdAt) ?? '';
     if (createdAt.isNotEmpty) {
       BaseCalculateRemainingDays().calculateRemainingDays(createdAt);
     }
 
-    var locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? "en";
-
-    selectedLocale = locale.isEmpty
-        // ? ptBR
-        ? enUS
-        : locale == ptBR.languageCode
-        ? ptBR
-        : enUS;
+    final locale = sharedPrefsService.getString(AppKeys.selectedLang) ?? 'en';
+    selectedLocale = locale == ptBR.languageCode ? ptBR : enUS;
     selectedLocale = enUS;
 
-    await initServices();
-    try {
-      await AdMobService.instance.ensureInitialized();
-    } catch (e, stack) {
-      await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
-    }
+    Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
 
-    SharedPrefsService.instance.setString(AppKeys.selectedLang, Get.locale?.languageCode ?? 'en');
+    SharedPrefsService.instance.setString(
+      AppKeys.selectedLang,
+      Get.locale?.languageCode ?? 'en',
+    );
+
     runApp(MyApp(locale: selectedLocale));
+
+    // Heavy SDKs after first frame — ads + push are not required to paint UI.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_initDeferredServices());
+    });
   } catch (error, stack) {
     try {
       await FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
@@ -144,13 +129,26 @@ Future<void> main() async {
   }
 }
 
-Future<void> initServices() async {
-  Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
+Future<void> _initDeferredServices() async {
   try {
     await NotificationService.instance.initialize();
     ReminderPushNotificationService.instance.configure();
   } catch (e, stack) {
-    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
+    await FirebaseCrashlytics.instance.recordError(
+      e,
+      stack,
+      reason: 'Notification init failed',
+    );
+  }
+
+  try {
+    await AdMobService.instance.ensureInitialized();
+  } catch (e, stack) {
+    await FirebaseCrashlytics.instance.recordError(
+      e,
+      stack,
+      reason: 'MobileAds init failed',
+    );
   }
 }
 

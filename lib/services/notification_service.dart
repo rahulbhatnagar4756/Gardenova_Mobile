@@ -138,6 +138,7 @@ class NotificationService with WidgetsBindingObserver {
   StreamSubscription<RemoteMessage>? _onMessageOpenedAppSubscription;
 
   Map<String, dynamic>? _pendingNotificationData;
+  Future<void>? _initializationFuture;
 
   void Function(Map<String, dynamic>)? onNotificationClick;
   void Function(RemoteMessage, Map<String, dynamic>)? onForegroundMessage;
@@ -150,7 +151,12 @@ class NotificationService with WidgetsBindingObserver {
   static bool areNotificationsEnabledInPrefs() =>
       SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
 
-  Future<void> initialize() async {
+  Future<void> initialize() {
+    _initializationFuture ??= _initializeInternal();
+    return _initializationFuture!;
+  }
+
+  Future<void> _initializeInternal() async {
     try {
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
       WidgetsBinding.instance.addObserver(this);

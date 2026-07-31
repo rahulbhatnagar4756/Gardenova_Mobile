@@ -27,12 +27,6 @@ class AdMobService {
     try {
       final status = await MobileAds.instance.initialize();
       debugPrint('MobileAds initialized: $status');
-
-      // Give the Android platform view time to finish setup before first ad load.
-      if (Platform.isAndroid) {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-      }
-
       _isInitialized = true;
     } catch (e, stack) {
       debugPrint('MobileAds initialization failed: $e\n$stack');

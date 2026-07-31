@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/authentication/login/professional_profile_model.dart';
@@ -34,7 +35,7 @@ import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
 
-class SettingsViewModel extends GetxController {
+class SettingsViewModel extends GetxController with WidgetsBindingObserver {
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -66,6 +67,8 @@ class SettingsViewModel extends GetxController {
   RxInt countdownTimer = 0.obs;
   Timer? _timer;
   RxBool isCancellingSubscription = false.obs;
+  /// True after opening Play Store for cancel — refresh /me on resume.
+  bool _awaitingPlayCancelReturn = false;
 
   late final FocusNode focusNode;
   var isEmailLogedInUser = true.obs;
@@ -75,6 +78,7 @@ class SettingsViewModel extends GetxController {
 
   @override
   onInit() {
+    WidgetsBinding.instance.addObserver(this);
     isEmailLogedInUser.value =
         SharedPrefsService.instance.getBool(AppKeys.emailLogedInUser) ?? true;
     notificationsEnabled.value =
@@ -159,7 +163,15 @@ class SettingsViewModel extends GetxController {
   }
 
   @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    super.onClose();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
     oldPasswordController.dispose();
@@ -168,6 +180,32 @@ class SettingsViewModel extends GetxController {
     nameController.dispose();
     emailController.dispose();
     focusNode.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !_awaitingPlayCancelReturn) return;
+    _awaitingPlayCancelReturn = false;
+    unawaited(_refreshSubscriptionAfterPlayReturn());
+  }
+
+  Future<void> _refreshSubscriptionAfterPlayReturn() async {
+    try {
+      await getSubscriptionDetail();
+      final model = currentSubscriptionStatusModel.value;
+      final cancelled =
+          model?.cancelAtPeriodEnd == true ||
+          (model?.status ?? '').toLowerCase() == 'cancelled' ||
+          (model?.status ?? '').toLowerCase() == 'canceled';
+      if (cancelled) {
+        BaseSnackBar.show(
+          title: AppStrings.subscriptionCancelled,
+          message: AppStrings.subscriptionCancelledNote,
+        );
+      }
+    } catch (e) {
+      log('Refresh subscription after Play return error: $e');
+    }
   }
 
   Future<void> pickImage({required bool isCamera, required bool directApiCall}) async {
@@ -371,49 +409,23 @@ class SettingsViewModel extends GetxController {
     );
   }
 
-  /// POST api/v1/plans/subscriptions/cancel — set cancel_at_period_end locally,
-  /// then open Google Play so the user can turn off auto-renew.
+  /// Open Google Play to cancel auto-renew. Do not mark cancelled locally until
+  /// /me confirms after the user returns (they may abandon Play without cancelling).
   Future<void> cancelSubscription() async {
     if (!canCancelSubscription || isCancellingSubscription.value) return;
 
     isCancellingSubscription.value = true;
     try {
-      final response = await profileRepository.cancelSubscription();
-      final success =
-          response != null &&
-          (response['success'] == true ||
-              response['statusCode'] == 200 ||
-              response['statusCode'] == 201);
-
-      if (!success) {
+      final opened = await _openGooglePlaySubscriptions();
+      _awaitingPlayCancelReturn = opened;
+      if (!opened) {
         BaseSnackBar.show(
           title: AppLocalizations.of(Get.context!)!.error,
-          message: response?['message']?.toString() ?? AppStrings.subscriptionCancelFailed,
+          message: AppStrings.subscriptionCancelFailed,
         );
-        return;
       }
-
-      _applyCancelledSubscriptionLocally(
-        message: response['message']?.toString(),
-        endDate:
-            response['data']?['current_period_end']?.toString() ??
-            response['data']?['currentPeriodEnd']?.toString() ??
-            response['data']?['endDate']?.toString() ??
-            response['endDate']?.toString(),
-        status: response['data']?['status']?.toString() ?? response['status']?.toString(),
-      );
-
-      // Refresh canonical status from GET /plans/subscriptions/me
-      await getSubscriptionDetail();
-
-      BaseSnackBar.show(
-        title: AppStrings.subscriptionCancelled,
-        message: response['message']?.toString() ?? AppStrings.subscriptionCancelPlayHint,
-      );
-
-      // User must also disable auto-renew in Google Play (RTDN syncs final status).
-      await _openGooglePlaySubscriptions();
     } catch (e) {
+      _awaitingPlayCancelReturn = false;
       log('Cancel subscription error: $e');
       BaseSnackBar.show(
         title: AppLocalizations.of(Get.context!)!.error,
@@ -424,46 +436,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  void _applyCancelledSubscriptionLocally({String? message, String? endDate, String? status}) {
-    final current = currentSubscriptionStatusModel.value;
-    if (current == null) return;
-
-    final resolvedEndDate = (endDate != null && endDate.trim().isNotEmpty)
-        ? endDate
-        : current.updatedAt;
-
-    currentSubscriptionStatusModel.value = SubscriptionStatusUiModel(
-      id: current.id,
-      name: current.name,
-      price: current.price,
-      currency: current.currency,
-      description: current.description,
-      status: (status != null && status.trim().isNotEmpty) ? status : 'Cancelled',
-      createdAt: current.createdAt,
-      updatedAt: resolvedEndDate,
-      trialDays: current.trialDays,
-      isAutoRenew: false,
-      isTrialActive: false,
-      isActive: true,
-      billingCycle: current.billingCycle,
-      cancelAtPeriodEnd: true,
-      planCode: current.planCode,
-      productId: current.productId,
-      pendingPlanCode: current.pendingPlanCode,
-      pendingPlanName: current.pendingPlanName,
-      pendingBillingCycle: current.pendingBillingCycle,
-      pendingEffectiveAt: current.pendingEffectiveAt ?? resolvedEndDate,
-      adFree: current.adFree,
-    );
-
-    SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
-    if (resolvedEndDate != null && resolvedEndDate.isNotEmpty) {
-      BaseCalculateRemainingDays.persistFromEndDate(resolvedEndDate);
-    }
-    currentSubscriptionStatusModel.refresh();
-  }
-
-  Future<void> _openGooglePlaySubscriptions() async {
+  Future<bool> _openGooglePlaySubscriptions() async {
     try {
       const packageName = 'com.gardenova.digisoft';
       final current = currentSubscriptionStatusModel.value;
@@ -484,13 +457,16 @@ class SettingsViewModel extends GetxController {
           title: AppLocalizations.of(Get.context!)!.error,
           message: 'Unable to open Google Play subscriptions.',
         );
+        return false;
       }
+      return true;
     } catch (e) {
       log('Open Play subscriptions error: $e');
       BaseSnackBar.show(
         title: AppLocalizations.of(Get.context!)!.error,
         message: 'Unable to open Google Play subscriptions.',
       );
+      return false;
     }
   }
 

@@ -193,8 +193,8 @@ class AppStrings {
   static const String cancelSubscriptionDesc =
       "Your plan will remain active until the end of the current billing period. After that, premium features will no longer be available.";
   static const String cancelPlaySubscriptionDesc =
-      "Your plan will stay active until the current period ends. We'll mark it cancelled in the app, then open Google Play so you can turn off auto-renew.";
-  static const String manageInPlayStore = "Cancel & Open Play Store";
+      "Your plan will stay active until the current billing period ends. Open Google Play to turn off auto-renew. If you leave without cancelling, your subscription stays active.";
+  static const String manageInPlayStore = "Open Play Store";
   static const String confirmCancel = "Yes, Cancel";
   static const String subscriptionCancelled = "Subscription cancelled";
   static const String subscriptionCancelledNote = "Auto-renewal is off";
