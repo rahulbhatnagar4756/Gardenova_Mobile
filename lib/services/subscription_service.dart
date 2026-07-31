@@ -31,6 +31,9 @@ class SubscriptionService {
   bool _iapSetup = false;
   bool acceptEvents = false;
   bool userInitiatedPurchase = false;
+  /// True while a deferred (next-renewal) downgrade was just launched in Play.
+  bool _awaitingDeferredDowngrade = false;
+  Timer? _purchaseUiTimeout;
   String? intendedPurchaseProductId;
 
   /// Play / API product_id for the selected offer (e.g. starter_monthly, plus, pro).
@@ -362,6 +365,7 @@ class SubscriptionService {
 
     userInitiatedPurchase = true;
     acceptEvents = true;
+    _awaitingDeferredDowngrade = false;
     intendedPurchaseProductId = productId;
     // Always verify with the mapped product_id + plan_id for this selection.
     intendedApiProductId = selectedIds.productId;
@@ -379,6 +383,9 @@ class SubscriptionService {
       final existingAndroidPurchase = await _findExistingAndroidSubscription(currentSubscription);
 
       if (existingAndroidPurchase != null) {
+        // Prefer the live Play SKU for matching purchase-stream events.
+        currentProductId = existingAndroidPurchase.productID;
+
         if (existingAndroidPurchase.pendingCompletePurchase) {
           log('Old subscription pending completion. Acknowledging...');
           await _acknowledgePurchase(existingAndroidPurchase);
@@ -393,6 +400,7 @@ class SubscriptionService {
         final replacementMode = isDowngrade
             ? iapandroidbillingkit.ReplacementMode.deferred
             : iapandroidbillingkit.ReplacementMode.chargeFullPrice;
+        _awaitingDeferredDowngrade = isDowngrade;
 
         log(
           'Google Play subscription change: '
@@ -410,7 +418,18 @@ class SubscriptionService {
           ),
         );
         // Plugin API name is buyNonConsumable; product type is Subscription.
-        await _iapConnection.buyNonConsumable(purchaseParam: param);
+        // Returns true when the Play billing sheet was launched — result arrives
+        // on purchaseStream (including deferred downgrade acceptance).
+        final launched = await _iapConnection.buyNonConsumable(purchaseParam: param);
+        if (!launched) {
+          log('buyNonConsumable returned false (user cancelled or store rejected)');
+          _clearPurchaseUiTimeout();
+          _awaitingDeferredDowngrade = false;
+          _hideLoading();
+          _resetPurchaseState();
+          return;
+        }
+        _startPurchaseUiTimeout();
       } else {
         log(
           'Google Play new subscription: $productId '
@@ -420,10 +439,20 @@ class SubscriptionService {
           productDetails: googleProduct,
           offerToken: offerToken,
         );
-        await _iapConnection.buyNonConsumable(purchaseParam: param);
+        final launched = await _iapConnection.buyNonConsumable(purchaseParam: param);
+        if (!launched) {
+          log('buyNonConsumable returned false (user cancelled or store rejected)');
+          _clearPurchaseUiTimeout();
+          _hideLoading();
+          _resetPurchaseState();
+          return;
+        }
+        _startPurchaseUiTimeout();
       }
     } catch (e) {
       log('Google Play subscription purchase error: $e');
+      _clearPurchaseUiTimeout();
+      _awaitingDeferredDowngrade = false;
       _resetPurchaseState();
       _hideLoading();
       BaseSnackBar.show(
@@ -603,6 +632,70 @@ class SubscriptionService {
     intendedApiProductId = null;
     intendedPlanId = null;
     acceptEvents = false;
+    _awaitingDeferredDowngrade = false;
+    _clearPurchaseUiTimeout();
+  }
+
+  void _startPurchaseUiTimeout() {
+    _clearPurchaseUiTimeout();
+    // Safety net: deferred downgrades / missed stream events must not spin forever.
+    _purchaseUiTimeout = Timer(const Duration(seconds: 60), () async {
+      if (!_awaitingDeferredDowngrade && !userInitiatedPurchase && !acceptEvents) {
+        return;
+      }
+      log('Purchase UI timeout — clearing loader (deferred=$_awaitingDeferredDowngrade)');
+      if (_awaitingDeferredDowngrade) {
+        await _completeDeferredDowngradeFlow(
+          message:
+              'If you confirmed the plan change in Google Play, it will apply at your next renewal.',
+        );
+        return;
+      }
+      _hideLoading();
+      _resetPurchaseState();
+    });
+  }
+
+  void _clearPurchaseUiTimeout() {
+    _purchaseUiTimeout?.cancel();
+    _purchaseUiTimeout = null;
+  }
+
+  /// Deferred downgrades often re-emit the current SKU (not the new one).
+  Future<void> _completeDeferredDowngradeFlow({String? message}) async {
+    if (!_awaitingDeferredDowngrade) return;
+
+    log('Completing deferred downgrade UI flow');
+    _awaitingDeferredDowngrade = false;
+    _clearPurchaseUiTimeout();
+    _hideLoading();
+    _resetPurchaseState();
+
+    await _refreshSubscriptionStatusAfterPurchase();
+
+    BaseSnackBar.show(
+      title: 'Plan change scheduled',
+      message: message ??
+          'Your downgrade will take effect at the end of your current billing period.',
+    );
+    _navigateAfterSuccessfulPurchase();
+  }
+
+  bool _isCurrentPlayProduct(String playProductId) {
+    final play = playProductId.toLowerCase().trim();
+    if (play.isEmpty) return false;
+
+    final current = currentProductId?.toLowerCase().trim();
+    if (current != null && current.isNotEmpty) {
+      if (current == play) return true;
+      if (current.contains(play) || play.contains(current)) return true;
+    }
+
+    final playTier = _extractTier(play);
+    final currentTierName = _extractTier(currentProductId ?? '');
+    return playTier != null &&
+        currentTierName != null &&
+        playTier == currentTierName;
   }
 
   /// Resolve product_id + plan_id from a Play purchase / SKU.
@@ -841,13 +934,15 @@ class SubscriptionService {
           case PurchaseStatus.canceled:
           case PurchaseStatus.error:
             await _acknowledgePurchase(purchaseDetails);
-            if (acceptEvents) {
+            if (acceptEvents || userInitiatedPurchase || _awaitingDeferredDowngrade) {
+              _clearPurchaseUiTimeout();
               _hideLoading();
               _resetPurchaseState();
             }
             break;
 
           case PurchaseStatus.pending:
+            // Keep loader; timeout safety net will clear if it never resolves.
             break;
 
           case PurchaseStatus.purchased:
@@ -872,13 +967,30 @@ class SubscriptionService {
   }) async {
     try {
       if (userInitiatedPurchase && intendedPurchaseProductId != null) {
-        if (purchaseDetails.productID != intendedPurchaseProductId) {
-          final bool isAndroidDowngrade =
-              currentProductId != null &&
-              (purchaseDetails.productID == currentProductId ||
-                  purchaseDetails.productID.toLowerCase() == currentProductId!.toLowerCase());
-          if (!isAndroidDowngrade) {
-            log('Ignoring older product: ${purchaseDetails.productID}');
+        final purchasedId = purchaseDetails.productID;
+        final isIntendedProduct =
+            purchasedId == intendedPurchaseProductId ||
+            purchasedId.toLowerCase() == intendedPurchaseProductId!.toLowerCase();
+
+        if (!isIntendedProduct) {
+          final isCurrentProduct = _isCurrentPlayProduct(purchasedId);
+
+          // Deferred downgrade: Play often re-emits the current (old) SKU.
+          if (_awaitingDeferredDowngrade && isCurrentProduct) {
+            await _acknowledgePurchase(purchaseDetails);
+            await _completeDeferredDowngradeFlow();
+            return;
+          }
+
+          if (!isCurrentProduct) {
+            log('Ignoring older product: $purchasedId');
+            await _acknowledgePurchase(purchaseDetails);
+            return;
+          }
+
+          // Upgrade path can re-emit current SKU before the new one — keep waiting.
+          if (!_awaitingDeferredDowngrade) {
+            log('Waiting for intended product; got current SKU: $purchasedId');
             await _acknowledgePurchase(purchaseDetails);
             return;
           }

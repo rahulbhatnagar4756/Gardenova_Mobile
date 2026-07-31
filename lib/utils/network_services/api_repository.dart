@@ -29,6 +29,7 @@ class ApiRepository {
 
   factory ApiRepository() => instance;
   Timer? _loaderTimer;
+  bool _isLoaderVisible = false;
 
   Map<String, String> _buildDefaultHeaders() {
     final token = SharedPrefsService.instance.getToken();
@@ -287,6 +288,8 @@ class ApiRepository {
 
   void showLoader() {
     Future.delayed(Duration.zero, () {
+      if (_isLoaderVisible) return;
+
       if (Get.isSnackbarOpen) {
         Get.closeAllSnackbars();
       }
@@ -295,13 +298,22 @@ class ApiRepository {
       _loaderTimer?.cancel();
       _loaderTimer = null;
 
+      final context = Get.context;
+      if (context == null) return;
+
+      _isLoaderVisible = true;
       showDialog(
-        context: Get.context!,
+        context: context,
         barrierDismissible: false,
+        useRootNavigator: true,
         builder: (BuildContext context) {
           return const Center(child: SpinKitSpinningLines(color: AppColors.greenColor));
         },
-      );
+      ).whenComplete(() {
+        _isLoaderVisible = false;
+        _loaderTimer?.cancel();
+        _loaderTimer = null;
+      });
 
       // Auto-close spinner after 20 seconds if the API never finishes.
       _loaderTimer = Timer(const Duration(seconds: 20), () {
@@ -313,10 +325,18 @@ class ApiRepository {
   void hideLoader() {
     _loaderTimer?.cancel();
     _loaderTimer = null;
+    if (!_isLoaderVisible) return;
+
     final context = Get.context;
-    if (context == null) return;
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    if (context == null) {
+      _isLoaderVisible = false;
+      return;
     }
+
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) {
+      navigator.pop();
+    }
+    _isLoaderVisible = false;
   }
 }
