@@ -4,6 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/plants/myPlants/myPlantDetails/model/my_plant_detail_model.dart';
 
 import '../../../services/admob_service.dart';
+import '../../../settings/settings_view_model.dart';
 import '../../plant_repository.dart';
 import '../myPlantsList/my_plants_controller.dart';
 
@@ -24,11 +25,27 @@ class MyPlantDetailsController extends GetxController {
       plantId.value = Get.arguments.toString();
     }
     callGetMyPlantDetailsApi();
-    loadBannerAd();
+    _setupBannerAds();
     super.onInit();
   }
 
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+        loadBannerAd();
+      });
+    }
+    loadBannerAd();
+  }
+
   void loadBannerAd() async {
+    if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
+      isAdLoaded.value = false;
+      return;
+    }
+
     isAdLoaded.value = false;
     final ad = await AdMobService.instance.loadBannerAd(
       existingAd: bannerAd,

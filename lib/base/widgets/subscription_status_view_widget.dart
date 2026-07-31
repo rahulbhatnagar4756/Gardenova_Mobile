@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/base/widgets/base_calculate_remaining_days.dart';
 import 'package:kasagardem/base/widgets/base_date_format.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
@@ -31,30 +32,24 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
     super.key,
   });
 
-  int get _remainingDays {
-    if (currentModel.updatedAt == null) return 0;
-    try {
-      final expirationDate = DateTime.parse(currentModel.updatedAt!).toLocal();
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
-      final difference = exp.difference(today).inDays;
-      return difference.clamp(0, 365);
-    } catch (_) {
-      return 0;
-    }
-  }
+  int get _remainingDays =>
+      BaseCalculateRemainingDays.daysUntilEndDate(currentModel.updatedAt);
 
-  bool get _isCancelledStatus {
-    final status = (currentModel.status ?? '').toLowerCase();
-    return status == 'cancelled' || status == 'canceled' || currentModel.cancelAtPeriodEnd == true;
-  }
+  bool get _isExpired =>
+      BaseCalculateRemainingDays.isExpired(currentModel.updatedAt);
+
+  bool get _isExpiringToday =>
+      BaseCalculateRemainingDays.isExpiringToday(currentModel.updatedAt);
+
+  bool get _isFreePlan => currentModel.isFreePlan;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isExpired = _remainingDays == 0;
-    final isCancelled = _isCancelledStatus;
+    // Free has no paid entitlement — always present as expired + upgrade CTA.
+    final isExpired = _isFreePlan || _isExpired;
+    final isExpiringToday =
+        !_isFreePlan && (_isExpiringToday || _remainingDays == 0);
 
     return Stack(
       children: [
@@ -141,8 +136,9 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: spacerSize8),
-                      if (currentModel.name == null ||
-                          (isExpired == false && currentModel.name?.toLowerCase() == 'trial'))
+                      if (_isFreePlan ||
+                          isExpired ||
+                          currentModel.name?.toLowerCase() == 'trial')
                         Align(
                           alignment: Alignment.centerRight,
                           child: CommonClickWidget(
@@ -177,8 +173,8 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
               ),
               SizedBox(height: spacerSize8),
               Divider(color: AppColors.whiteColor.withValues(alpha: 0.6), thickness: 0.8),
-              if (isExpired == false) SizedBox(height: spacerSize8),
-              if (isExpired == false)
+              if (!isExpired) SizedBox(height: spacerSize8),
+              if (!isExpired)
                 Container(
                   padding: EdgeInsets.all(spacerSize14),
                   decoration: BoxDecoration(
@@ -192,10 +188,9 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                         children: [
                           Icon(Icons.access_time, size: 14, color: AppColors.whiteColor),
                           SizedBox(width: spacerSize6),
-
                           BaseText(
-                            text: isExpired
-                                ? l10n.planExpired.toUpperCase()
+                            text: isExpiringToday
+                                ? l10n.planExpiringToday.toUpperCase()
                                 : l10n.subscriptionRemaining.toUpperCase(),
                             fontFamily: AppKeys.inter,
                             textColor: AppColors.whiteColor,
@@ -208,9 +203,9 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          isExpired
+                          isExpiringToday
                               ? BaseText(
-                                  text: l10n.planExpired,
+                                  text: l10n.planExpiringToday,
                                   fontSize: fontSize22,
                                   fontWeight: FontWeight.w700,
                                   textColor: AppColors.whiteColor,
@@ -220,7 +215,7 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: _remainingDays.toString(),
+                                        text: _remainingDays.clamp(0, 365).toString(),
                                         style: TextStyle(
                                           fontSize: 26,
                                           fontWeight: FontWeight.w700,
@@ -268,6 +263,16 @@ class SubscriptionStatusViewWidget extends StatelessWidget {
                     ],
                   ),
                 ),
+              if (isExpired) ...[
+                SizedBox(height: spacerSize8),
+                BaseText(
+                  text: l10n.planExpired,
+                  fontSize: fontSize18,
+                  fontWeight: FontWeight.w700,
+                  textColor: AppColors.whiteColor,
+                  fontFamily: AppKeys.inter,
+                ),
+              ],
               if (currentModel.hasPendingPlan) ...[
                 SizedBox(height: spacerSize10),
                 Container(

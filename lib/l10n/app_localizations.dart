@@ -2147,6 +2147,18 @@ abstract class AppLocalizations {
   /// **'Your subscription has ended. Choose a plan to continue using premium features.'**
   String get planExpiredDesc;
 
+  /// No description provided for @planExpiringToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring Today'**
+  String get planExpiringToday;
+
+  /// No description provided for @planExpiringTodayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription ends today. Renew to keep premium features.'**
+  String get planExpiringTodayDesc;
+
   /// No description provided for @selectYourPlan.
   ///
   /// In en, this message translates to:

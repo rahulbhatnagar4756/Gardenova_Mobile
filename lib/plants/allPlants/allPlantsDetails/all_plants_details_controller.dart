@@ -12,6 +12,7 @@ import '../../../base/widgets/base_date_format.dart';
 import '../../../dashboard/dashboard_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../services/admob_service.dart';
+import '../../../settings/settings_view_model.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/routes.dart';
 import '../../model/plant_details_model.dart';
@@ -71,11 +72,27 @@ class AllPlantsDetailsController extends GetxController {
     } else {
       callGetMyPlantDetailsApi();
     }
-    loadBannerAd();
+    _setupBannerAds();
     super.onInit();
   }
 
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+        loadBannerAd();
+      });
+    }
+    loadBannerAd();
+  }
+
   void loadBannerAd() async {
+    if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
+      isAdLoaded.value = false;
+      return;
+    }
+
     isAdLoaded.value = false;
     final ad = await AdMobService.instance.loadBannerAd(
       existingAd: bannerAd,

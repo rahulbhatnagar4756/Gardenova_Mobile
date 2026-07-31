@@ -6,6 +6,7 @@ import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/model/my_plants_listing_model.dart';
 
 import '../../../services/admob_service.dart';
+import '../../../settings/settings_view_model.dart';
 import '../../../utils/constants/app_keys.dart';
 import '../../../utils/routes.dart';
 import '../../../utils/shared_prefs_service.dart';
@@ -49,11 +50,27 @@ class MyPlantsController extends GetxController {
     });
 
     callGetMyPlantListApi();
-    loadBannerAd();
+    _setupBannerAds();
     super.onInit();
   }
 
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+        loadBannerAd();
+      });
+    }
+    loadBannerAd();
+  }
+
   void loadBannerAd() async {
+    if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
+      isAdLoaded.value = false;
+      return;
+    }
+
     isAdLoaded.value = false;
     final ad = await AdMobService.instance.loadBannerAd(
       existingAd: bannerAd,

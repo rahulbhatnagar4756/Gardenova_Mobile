@@ -814,7 +814,7 @@ class SubscriptionService {
         return false;
       }
     } catch (e) {
-      // log('Backend verification error: $e');
+      log('Backend verification error: $e');
       return false;
     }
   }

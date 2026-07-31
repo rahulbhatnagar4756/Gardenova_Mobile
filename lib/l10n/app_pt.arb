@@ -343,6 +343,8 @@
   "yourPlanEndsDesc": "After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.",
   "planExpired": "Plan Expired",
   "planExpiredDesc": "Your subscription has ended. Choose a plan to continue using premium features.",
+  "planExpiringToday": "Expiring Today",
+  "planExpiringTodayDesc": "Your subscription ends today. Renew to keep premium features.",
   "selectYourPlan": "Select Your Plan",
   "howWouldYouLikeToContinue": "How would you like to continue?",
   "client": "Client",

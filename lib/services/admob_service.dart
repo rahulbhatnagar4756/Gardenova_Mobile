@@ -40,17 +40,14 @@ class AdMobService {
     }
   }
 
-  /// Determine if we should show ads based on subscription status
+  /// Hide ads/banners when plan feature `ad_free` is true; otherwise show.
   bool get shouldShowAds {
     if (Get.isRegistered<SettingsViewModel>()) {
       final settingsVm = Get.find<SettingsViewModel>();
       final sub = settingsVm.currentSubscriptionStatusModel.value;
-      if (sub != null && sub.isActive == true) {
-        final planName = sub.name?.toLowerCase().trim() ?? '';
-        if (planName.isNotEmpty && planName != 'free' && planName != 'trial') {
-          debugPrint('Ads hidden for active plan: $planName');
-          return false;
-        }
+      if (sub?.isAdFree == true) {
+        debugPrint('Ads hidden: ad_free=true');
+        return false;
       }
     }
     return true;

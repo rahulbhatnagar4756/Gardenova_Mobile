@@ -8,7 +8,7 @@ class BaseCalculateRemainingDays {
   RxInt remainingDays = 0.obs;
 
   /// Legacy trial calculation from account start date (90-day trial window).
-  calculateRemainingDays(String createdAt) {
+  void calculateRemainingDays(String createdAt) {
     const int trialDays = 90;
     try {
       final DateTime created = DateTime.parse(createdAt).toLocal();
@@ -38,7 +38,9 @@ class BaseCalculateRemainingDays {
     }
   }
 
-  /// Preferred: remaining days until subscription [endDate].
+  /// Remaining calendar days until subscription [endDate].
+  ///
+  /// `0` = expires today, negative = already past, positive = days left.
   static int daysUntilEndDate(String? endDate) {
     if (endDate == null || endDate.trim().isEmpty) return 0;
     try {
@@ -50,14 +52,38 @@ class BaseCalculateRemainingDays {
         expirationDate.month,
         expirationDate.day,
       );
-      return exp.difference(today).inDays.clamp(0, 365);
+      return exp.difference(today).inDays;
     } catch (_) {
       return 0;
     }
   }
 
+  /// True when expiry calendar day is today (still valid today).
+  static bool isExpiringToday(String? endDate) {
+    if (endDate == null || endDate.trim().isEmpty) return false;
+    return daysUntilEndDate(endDate) == 0;
+  }
+
+  /// True when a stored/display remaining-days value is zero (never show "0 days").
+  static bool isZeroRemainingDays(String? remainingDays) {
+    final parsed = int.tryParse((remainingDays ?? '').trim());
+    return parsed == null || parsed <= 0;
+  }
+
+  /// True when expiry calendar day is before today.
+  static bool isExpired(String? endDate) {
+    if (endDate == null || endDate.trim().isEmpty) return false;
+    return daysUntilEndDate(endDate) < 0;
+  }
+
+  /// True while expiry day is today or in the future.
+  static bool isEndDateStillValid(String? endDate) {
+    if (endDate == null || endDate.trim().isEmpty) return true;
+    return daysUntilEndDate(endDate) >= 0;
+  }
+
   static void persistFromEndDate(String? endDate) {
-    final remaining = daysUntilEndDate(endDate);
+    final remaining = daysUntilEndDate(endDate).clamp(0, 365);
     SharedPrefsService.instance.setString(
       AppKeys.remainingDays,
       remaining.toString(),

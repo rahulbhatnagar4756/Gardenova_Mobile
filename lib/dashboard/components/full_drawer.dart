@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../base/dialogs/base_dialog.dart';
+import '../../base/widgets/base_calculate_remaining_days.dart';
 import '../../base/widgets/base_text.dart';
 import '../../base/widgets/circular_bottom_app_bar.dart';
 import '../../base/widgets/clickable_image.dart';
@@ -139,8 +140,18 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                                             borderRadius: BorderRadius.circular(spacerSize20),
                                           ),
                                           child: BaseText(
-                                            text:
-                                                "${SharedPrefsService.instance.getString(AppKeys.remainingDays)}\t${AppLocalizations.of(Get.context!)!.days}\t${AppLocalizations.of(Get.context!)!.left}",
+                                            text: () {
+                                              final l10n =
+                                                  AppLocalizations.of(Get.context!)!;
+                                              final remaining =
+                                                  SharedPrefsService.instance
+                                                      .getString(AppKeys.remainingDays);
+                                              if (BaseCalculateRemainingDays
+                                                  .isZeroRemainingDays(remaining)) {
+                                                return l10n.planExpiringToday;
+                                              }
+                                              return "$remaining\t${l10n.days}\t${l10n.left}";
+                                            }(),
                                             fontSize: fontSize10,
                                             fontFamily: AppKeys.inter,
                                             fontWeight: FontWeight.w400,

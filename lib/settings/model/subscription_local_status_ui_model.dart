@@ -24,6 +24,8 @@ class SubscriptionStatusUiModel {
   String? pendingPlanName;
   String? pendingBillingCycle;
   String? pendingEffectiveAt;
+  /// From plan features.ad_free — when true, hide ads/banners.
+  bool? adFree;
 
   SubscriptionStatusUiModel({
     this.id,
@@ -46,7 +48,16 @@ class SubscriptionStatusUiModel {
     this.pendingPlanName,
     this.pendingBillingCycle,
     this.pendingEffectiveAt,
+    this.adFree,
   });
+
+  bool get isFreePlan {
+    final planName = (name ?? '').trim().toLowerCase();
+    final code = (planCode ?? id ?? '').trim().toLowerCase();
+    return planName.isEmpty || planName == 'free' || code == 'free';
+  }
+
+  bool get isAdFree => adFree == true;
 
   bool get hasPendingPlan {
     final code = (pendingPlanCode ?? '').trim();
@@ -86,7 +97,7 @@ class SubscriptionStatusUiModel {
     final hasRemainingAccess =
         expiresAt == null ||
         expiresAt.isEmpty ||
-        BaseCalculateRemainingDays.daysUntilEndDate(expiresAt) > 0;
+        BaseCalculateRemainingDays.isEndDateStillValid(expiresAt);
 
     String displayStatus = rawStatus;
     if (cancelAtPeriodEnd && isRenewingStatus && pending == null) {
@@ -109,6 +120,7 @@ class SubscriptionStatusUiModel {
       pendingPlanName: pending?.displayName,
       pendingBillingCycle: pending?.billingLabel,
       pendingEffectiveAt: data.pendingEffectiveAt,
+      adFree: plan?.features?.adFree == true,
     );
   }
 
@@ -129,7 +141,7 @@ class SubscriptionStatusUiModel {
     final hasRemainingAccess =
         expiresAt == null ||
         expiresAt.isEmpty ||
-        BaseCalculateRemainingDays.daysUntilEndDate(expiresAt) > 0;
+        BaseCalculateRemainingDays.isEndDateStillValid(expiresAt);
 
     return SubscriptionStatusUiModel(
       id: planId,
@@ -166,6 +178,7 @@ class SubscriptionStatusUiModel {
     pendingPlanName = json['pendingPlanName']?.toString();
     pendingBillingCycle = json['pendingBillingCycle']?.toString();
     pendingEffectiveAt = json['pendingEffectiveAt']?.toString();
+    adFree = json['adFree'] == true || json['ad_free'] == true;
   }
 
   Map<String, dynamic> toJson() {
@@ -190,6 +203,7 @@ class SubscriptionStatusUiModel {
     data['pendingPlanName'] = pendingPlanName;
     data['pendingBillingCycle'] = pendingBillingCycle;
     data['pendingEffectiveAt'] = pendingEffectiveAt;
+    data['adFree'] = adFree;
 
     return data;
   }

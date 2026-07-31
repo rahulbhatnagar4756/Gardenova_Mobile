@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
+import 'package:kasagardem/base/widgets/base_calculate_remaining_days.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/professional/upgradePlans/components/toggle_button.dart';
@@ -72,56 +73,83 @@ class _HeaderSection extends StatelessWidget {
         children: [
           Image.asset(AppAssets.appLogo, width: 60.w, height: 60.w),
           SizedBox(height: spacerSize16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Obx(() {
-                final isExpired = controller.remainingDays.value == '0';
-                if (isExpired) {
-                  return BaseText(
-                    text: l10n.planExpired,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: AppKeys.poppins,
-                    fontSize: fontSize18,
-                    textColor: AppColors.red,
-                  );
-                }
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BaseText(
-                      text: '${l10n.yourPlanEnds}\tin\t',
-                      fontWeight: FontWeight.w400,
-                      fontFamily: AppKeys.poppins,
-                      fontSize: fontSize15,
-                    ),
-                    BaseText(
-                      text: '${controller.remainingDays.value}\t${l10n.days}',
-                      fontWeight: FontWeight.w700,
-                      fontFamily: AppKeys.poppins,
-                      fontSize: fontSize18,
-                    ),
-                  ],
-                );
-              }),
-            ],
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [planDescriptionUI()]),
           SizedBox(height: spacerSize8),
-          Obx(
-            () => BaseText(
-              text: controller.remainingDays.value == '0'
-                  ? l10n.planExpiredDesc
-                  : l10n.yourPlanEndsDesc,
-              textAlign: TextAlign.center,
-              textColor: AppColors.liteGreyColor,
-              fontWeight: FontWeight.w400,
-              fontFamily: AppKeys.inter,
-              fontSize: fontSize14,
-            ),
-          ),
+          descriptionUI(),
         ],
       ),
+    );
+  }
+
+  BaseText descriptionUI() {
+    final endDate = controller.currentModel?.updatedAt;
+    final isFree = controller.currentModel?.isFreePlan == true;
+    final isExpired = isFree || BaseCalculateRemainingDays.isExpired(endDate);
+    final isExpiringToday = !isFree &&
+        (BaseCalculateRemainingDays.isExpiringToday(endDate) ||
+            BaseCalculateRemainingDays.isZeroRemainingDays(
+              controller.remainingDays.value,
+            ));
+    return BaseText(
+      text: isExpired
+          ? l10n.planExpiredDesc
+          : isExpiringToday
+          ? l10n.planExpiringTodayDesc
+          : l10n.yourPlanEndsDesc,
+      textAlign: TextAlign.center,
+      textColor: AppColors.liteGreyColor,
+      fontWeight: FontWeight.w400,
+      fontFamily: AppKeys.inter,
+      fontSize: fontSize14,
+    );
+  }
+
+  Widget planDescriptionUI() {
+    final endDate = controller.currentModel?.updatedAt;
+    final isFree = controller.currentModel?.isFreePlan == true;
+    final isExpired = isFree || BaseCalculateRemainingDays.isExpired(endDate);
+    final isExpiringToday = !isFree &&
+        (BaseCalculateRemainingDays.isExpiringToday(endDate) ||
+            BaseCalculateRemainingDays.isZeroRemainingDays(
+              controller.remainingDays.value,
+            ));
+
+    if (isExpired) {
+      return BaseText(
+        text: l10n.planExpired,
+        fontWeight: FontWeight.w700,
+        fontFamily: AppKeys.poppins,
+        fontSize: fontSize18,
+        textColor: AppColors.red,
+      );
+    }
+
+    if (isExpiringToday) {
+      return BaseText(
+        text: l10n.planExpiringToday,
+        fontWeight: FontWeight.w700,
+        fontFamily: AppKeys.poppins,
+        fontSize: fontSize18,
+        textColor: AppColors.greenColor,
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        BaseText(
+          text: '${l10n.yourPlanEnds}\tin\t',
+          fontWeight: FontWeight.w400,
+          fontFamily: AppKeys.poppins,
+          fontSize: fontSize15,
+        ),
+        BaseText(
+          text: '${controller.remainingDays.value}\t${l10n.days}',
+          fontWeight: FontWeight.w700,
+          fontFamily: AppKeys.poppins,
+          fontSize: fontSize18,
+        ),
+      ],
     );
   }
 }
@@ -239,8 +267,8 @@ class _UserPlanCard extends StatelessWidget {
     final borderColor = isSelected
         ? AppColors.greenColor
         : isSubscribed
-            ? AppColors.greenColor.withValues(alpha: 0.45)
-            : AppColors.borderLiteGreyColor;
+        ? AppColors.greenColor.withValues(alpha: 0.45)
+        : AppColors.borderLiteGreyColor;
 
     return GestureDetector(
       onTap: onTap,
@@ -249,10 +277,7 @@ class _UserPlanCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(spacerSize16),
-          border: Border.all(
-            color: borderColor,
-            width: isSelected || isSubscribed ? 1.5 : 1,
-          ),
+          border: Border.all(color: borderColor, width: isSelected || isSubscribed ? 1.5 : 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,9 +303,7 @@ class _UserPlanCard extends StatelessWidget {
                         Flexible(
                           child: BaseText(
                             text: plan.planName ?? '',
-                            textColor: headerActive
-                                ? Colors.white
-                                : AppColors.blackColor,
+                            textColor: headerActive ? Colors.white : AppColors.blackColor,
                             fontWeight: FontWeight.w600,
                             fontSize: fontSize14,
                           ),
@@ -298,17 +321,13 @@ class _UserPlanCard extends StatelessWidget {
                                   : AppColors.greenColor.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(spacerSize12),
                               border: Border.all(
-                                color: headerActive
-                                    ? Colors.white
-                                    : AppColors.greenColor,
+                                color: headerActive ? Colors.white : AppColors.greenColor,
                                 width: 0.8,
                               ),
                             ),
                             child: BaseText(
                               text: AppStrings.subscribed,
-                              textColor: headerActive
-                                  ? Colors.white
-                                  : AppColors.greenColor,
+                              textColor: headerActive ? Colors.white : AppColors.greenColor,
                               fontWeight: FontWeight.w600,
                               fontSize: fontSize10,
                               fontFamily: AppKeys.inter,
@@ -321,9 +340,7 @@ class _UserPlanCard extends StatelessWidget {
                   SizedBox(width: spacerSize8),
                   BaseText(
                     text: '₹$price/$period',
-                    textColor: headerActive
-                        ? Colors.white
-                        : AppColors.greenColor,
+                    textColor: headerActive ? Colors.white : AppColors.greenColor,
                     fontWeight: FontWeight.w700,
                     fontSize: fontSize13,
                   ),
@@ -344,11 +361,7 @@ class _UserPlanCard extends StatelessWidget {
     if (plan.features != null && plan.features!.isNotEmpty) {
       return plan.features!
           .where((feature) => feature.enabled == true)
-          .map(
-            (feature) => _FeatureRow(
-              label: feature.displayLabel(isMonthly: isMonthly),
-            ),
-          )
+          .map((feature) => _FeatureRow(label: feature.displayLabel(isMonthly: isMonthly)))
           .toList();
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/base/widgets/base_calculate_remaining_days.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
@@ -141,8 +142,16 @@ class CircularBottomAppBar extends StatelessWidget implements PreferredSizeWidge
                                   borderRadius: BorderRadius.circular(spacerSize20),
                                 ),
                                 child: BaseText(
-                                  text:
-                                      "${SharedPrefsService.instance.getString(AppKeys.remainingDays)} ${AppLocalizations.of(Get.context!)!.days} ${AppLocalizations.of(Get.context!)!.left}",
+                                  text: () {
+                                    final l10n = AppLocalizations.of(Get.context!)!;
+                                    final remaining = SharedPrefsService.instance
+                                        .getString(AppKeys.remainingDays);
+                                    if (BaseCalculateRemainingDays
+                                        .isZeroRemainingDays(remaining)) {
+                                      return l10n.planExpiringToday;
+                                    }
+                                    return "$remaining ${l10n.days} ${l10n.left}";
+                                  }(),
                                   fontSize: fontSize10,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

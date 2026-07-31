@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:kasagardem/base/widgets/base_calculate_remaining_days.dart';
 import 'package:kasagardem/professional/professionalDashBoard/components/plant_expire_dialog.dart';
 import 'package:kasagardem/professional/upgradePlans/upgrade_plan_repository.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
@@ -94,7 +95,8 @@ class UpgradePlanController extends GetxController {
     } catch (_) {}
 
     callGetAllPlanListApi();
-    if (remainingDays.value == "0") {
+    // Only show expire dialog after the expiry day has passed — not on the day itself.
+    if (BaseCalculateRemainingDays.isExpired(currentModel?.updatedAt)) {
       PlanExpireDialog();
     }
   }

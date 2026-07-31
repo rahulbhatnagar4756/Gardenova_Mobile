@@ -280,9 +280,7 @@ class SettingsViewModel extends GetxController {
       }
       // Explicit empty/free response with success flag.
       if (parsed.success == true) {
-        applySubscriptionFromMeApi(
-          UserSubscriptionMeData(status: 'inactive'),
-        );
+        applySubscriptionFromMeApi(UserSubscriptionMeData(status: 'inactive'));
         return;
       }
     }
@@ -381,7 +379,8 @@ class SettingsViewModel extends GetxController {
     isCancellingSubscription.value = true;
     try {
       final response = await profileRepository.cancelSubscription();
-      final success = response != null &&
+      final success =
+          response != null &&
           (response['success'] == true ||
               response['statusCode'] == 200 ||
               response['statusCode'] == 201);
@@ -389,20 +388,19 @@ class SettingsViewModel extends GetxController {
       if (!success) {
         BaseSnackBar.show(
           title: AppLocalizations.of(Get.context!)!.error,
-          message:
-              response?['message']?.toString() ?? AppStrings.subscriptionCancelFailed,
+          message: response?['message']?.toString() ?? AppStrings.subscriptionCancelFailed,
         );
         return;
       }
 
       _applyCancelledSubscriptionLocally(
         message: response['message']?.toString(),
-        endDate: response['data']?['current_period_end']?.toString() ??
+        endDate:
+            response['data']?['current_period_end']?.toString() ??
             response['data']?['currentPeriodEnd']?.toString() ??
             response['data']?['endDate']?.toString() ??
             response['endDate']?.toString(),
-        status: response['data']?['status']?.toString() ??
-            response['status']?.toString(),
+        status: response['data']?['status']?.toString() ?? response['status']?.toString(),
       );
 
       // Refresh canonical status from GET /plans/subscriptions/me
@@ -410,8 +408,7 @@ class SettingsViewModel extends GetxController {
 
       BaseSnackBar.show(
         title: AppStrings.subscriptionCancelled,
-        message: response['message']?.toString() ??
-            AppStrings.subscriptionCancelPlayHint,
+        message: response['message']?.toString() ?? AppStrings.subscriptionCancelPlayHint,
       );
 
       // User must also disable auto-renew in Google Play (RTDN syncs final status).
@@ -427,11 +424,7 @@ class SettingsViewModel extends GetxController {
     }
   }
 
-  void _applyCancelledSubscriptionLocally({
-    String? message,
-    String? endDate,
-    String? status,
-  }) {
+  void _applyCancelledSubscriptionLocally({String? message, String? endDate, String? status}) {
     final current = currentSubscriptionStatusModel.value;
     if (current == null) return;
 
@@ -460,6 +453,7 @@ class SettingsViewModel extends GetxController {
       pendingPlanName: current.pendingPlanName,
       pendingBillingCycle: current.pendingBillingCycle,
       pendingEffectiveAt: current.pendingEffectiveAt ?? resolvedEndDate,
+      adFree: current.adFree,
     );
 
     SharedPrefsService.instance.setString(AppKeys.accountStatus, 'Cancelled');
@@ -474,10 +468,7 @@ class SettingsViewModel extends GetxController {
       const packageName = 'com.gardenova.digisoft';
       final current = currentSubscriptionStatusModel.value;
       // Prefer Google Play product id for the subscriptions deep link.
-      final playSku = (current?.productId ??
-              current?.planCode ??
-              current?.id ??
-              '')
+      final playSku = (current?.productId ?? current?.planCode ?? current?.id ?? '')
           .trim()
           .toLowerCase()
           .replaceFirst('_yearly', '_annual');
@@ -485,9 +476,7 @@ class SettingsViewModel extends GetxController {
           ? Uri.parse(
               'https://play.google.com/store/account/subscriptions?sku=$playSku&package=$packageName',
             )
-          : Uri.parse(
-              'https://play.google.com/store/account/subscriptions?package=$packageName',
-            );
+          : Uri.parse('https://play.google.com/store/account/subscriptions?package=$packageName');
 
       final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
       if (!launched) {
@@ -534,6 +523,7 @@ class SettingsViewModel extends GetxController {
       pendingPlanName: current.pendingPlanName,
       pendingBillingCycle: current.pendingBillingCycle,
       pendingEffectiveAt: current.pendingEffectiveAt,
+      adFree: current.adFree,
     );
     currentSubscriptionStatusModel.refresh();
   }

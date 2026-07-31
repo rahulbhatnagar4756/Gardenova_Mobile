@@ -1036,6 +1036,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get planExpiredDesc => 'Your subscription has ended. Choose a plan to continue using premium features.';
 
   @override
+  String get planExpiringToday => 'Expiring Today';
+
+  @override
+  String get planExpiringTodayDesc =>
+      'Your subscription ends today. Renew to keep premium features.';
+
+  @override
   String get selectYourPlan => 'Select Your Plan';
 
   @override
