@@ -22,6 +22,7 @@ class UserSubscriptionController extends GetxController {
   RxBool isTabMonthly = true.obs;
   RxString selectedPrice = ''.obs;
   RxString remainingDays = ''.obs;
+
   // getplans API disabled — plans load from Google Play Billing.
   // final UpgradePlanRepository _repository = UpgradePlanRepository();
   // final RazorpayPaymentRepository _razorpayRepository = RazorpayPaymentRepository();
@@ -30,6 +31,7 @@ class UserSubscriptionController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isProcessingPayment = false.obs;
   SubscriptionStatusUiModel? currentModel;
+
   // String? _activeSubscriptionId;
 
   @override
@@ -51,8 +53,7 @@ class UserSubscriptionController extends GetxController {
       if (Get.isRegistered<SettingsViewModel>()) {
         await Get.find<SettingsViewModel>().getSubscriptionDetail();
         currentModel =
-            Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ??
-            currentModel;
+            Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ?? currentModel;
         _setRemainingDaysFromModel(currentModel);
         _applyBillingCycleFromSubscription();
       }
@@ -215,90 +216,6 @@ class UserSubscriptionController extends GetxController {
     return double.tryParse(basePriceStr.replaceAll(',', '').replaceAll(' ', '')) ?? 0.0;
   }
 
-  // ---------------------------------------------------------------------------
-  // Razorpay subscription (disabled — Google Play Billing only)
-  // ---------------------------------------------------------------------------
-  // Future<void> startRazorpayPayment() async {
-  //   final plan = selectedPlanData;
-  //   if (plan == null) {
-  //     BaseSnackBar.show(title: 'Plan', message: 'Please select a plan');
-  //     return;
-  //   }
-  //
-  //   if (isLoading.value || isProcessingPayment.value) return;
-  //
-  //   final planCode = plan.resolvePlanCode(isMonthly: isTabMonthly.value);
-  //   if (planCode.isEmpty || planCode == 'free') {
-  //     BaseSnackBar.show(
-  //       title: 'Plan',
-  //       message: 'Please select a paid plan to continue.',
-  //     );
-  //     return;
-  //   }
-  //
-  //   final accepted = await _showAlternateBillingDisclosure();
-  //   if (!accepted) return;
-  //
-  //   isLoading.value = true;
-  //   try {
-  //     await AlternateBillingService.prepareIfAvailable();
-  //     final externalTransactionToken =
-  //         await AlternateBillingService.getExternalTransactionToken();
-  //
-  //     RazorpayPaymentService.instance.initialize(
-  //       onSuccess: _onRazorpayPaymentSuccess,
-  //       onFailure: _onRazorpayPaymentFailure,
-  //     );
-  //
-  //     final orderResponse = await _razorpayRepository.createOrder(
-  //       planCode,
-  //       externalTransactionToken: externalTransactionToken,
-  //     );
-  //     if (orderResponse?.success != true ||
-  //         orderResponse?.data?.subscriptionId == null) {
-  //       return;
-  //     }
-  //
-  //     final order = orderResponse!.data!;
-  //     _activeSubscriptionId = order.subscriptionId;
-  //     isProcessingPayment.value = true;
-  //     if (order.scheduled == true) {
-  //       BaseSnackBar.show(
-  //         title: 'Payment',
-  //         message: 'Subscription verified successfully.',
-  //       );
-  //       Get.until((route) => route.settings.name == Routes.dashboard);
-  //     } else {
-  //       RazorpayPaymentService.instance.openSubscriptionCheckout(
-  //         subscriptionId: order.subscriptionId!,
-  //         keyIdOverride: order.keyId,
-  //         name: _userName(),
-  //         email: _userEmail(),
-  //         contact: _userContact(),
-  //         description:
-  //             '${plan.planName ?? 'Plan'} - ${isTabMonthly.value ? 'Monthly' : 'Annually'}',
-  //       );
-  //     }
-  //   } catch (e) {
-  //     log('Razorpay startPayment error: $e');
-  //     BaseSnackBar.show(
-  //       title: 'Payment',
-  //       message: e is StateError ? e.message : 'Unable to start payment.',
-  //     );
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
-  //
-  // Future<bool> _showAlternateBillingDisclosure() async { ... }
-  // Future<void> _onRazorpayPaymentSuccess(PaymentSuccessResponse response) async { ... }
-  // void _onRazorpayPaymentFailure(PaymentFailureResponse response) { ... }
-  // String? _subscriptionIdFromResponse(PaymentSuccessResponse response) { ... }
-  // void _persistSubscriptionId(String? subscriptionId) { ... }
-  // String? _userName() { ... }
-  // String? _userEmail() { ... }
-  // String? _userContact() { ... }
-
   Future<void> callGetAllPlanListApi() async {
     isLoading.value = true;
 
@@ -346,14 +263,8 @@ class UserSubscriptionController extends GetxController {
 
     for (final plan in planList) {
       final tier = plan.tier ?? plan.planName ?? '';
-      final monthlyOffer = SubscriptionService.instance.findOfferForTier(
-        tier,
-        isMonthly: true,
-      );
-      final annualOffer = SubscriptionService.instance.findOfferForTier(
-        tier,
-        isMonthly: false,
-      );
+      final monthlyOffer = SubscriptionService.instance.findOfferForTier(tier, isMonthly: true);
+      final annualOffer = SubscriptionService.instance.findOfferForTier(tier, isMonthly: false);
 
       if (monthlyOffer != null) {
         plan.priceMonthly = monthlyOffer.rawPrice.toInt().toString();
@@ -399,24 +310,16 @@ class UserSubscriptionController extends GetxController {
     // Sync latest subscription before upgrade/downgrade matching.
     if (Get.isRegistered<SettingsViewModel>()) {
       currentModel =
-          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ??
-          currentModel;
+          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ?? currentModel;
     }
 
     isLoading.value = true;
     isProcessingPayment.value = true;
     try {
-      await SubscriptionService.instance.buyPlan(
-        plan,
-        isTabMonthly.value,
-        currentModel,
-      );
+      await SubscriptionService.instance.buyPlan(plan, isTabMonthly.value, currentModel);
     } catch (e) {
       log('Google Play subscription error: $e');
-      BaseSnackBar.show(
-        title: 'Payment',
-        message: 'Unable to start Google Play subscription.',
-      );
+      BaseSnackBar.show(title: 'Payment', message: 'Unable to start Google Play subscription.');
     } finally {
       isLoading.value = false;
       isProcessingPayment.value = false;
@@ -441,9 +344,7 @@ class UserSubscriptionController extends GetxController {
     }
 
     // No paid subscription — select Free by default.
-    final freePlan = planList.firstWhereOrNull(
-      (plan) => (plan.tier ?? '').toLowerCase() == 'free',
-    );
+    final freePlan = planList.firstWhereOrNull((plan) => (plan.tier ?? '').toLowerCase() == 'free');
     if (freePlan == null) return;
 
     for (final plan in planList) {

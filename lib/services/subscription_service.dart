@@ -32,10 +32,12 @@ class SubscriptionService {
   bool acceptEvents = false;
   bool userInitiatedPurchase = false;
   String? intendedPurchaseProductId;
-  /// API productId for verify: starter | plus | pro
+
+  /// Play / API product_id for the selected offer (e.g. starter_monthly, plus, pro).
   String? intendedApiProductId;
-  /// API basePlanId for verify: monthly | yearly
-  String? intendedBasePlanId;
+
+  /// API plan_id for the selected offer (e.g. stater-monthly, plus-yearly).
+  String? intendedPlanId;
   String? currentProductId;
   int? currentPlanTier;
 
@@ -46,11 +48,36 @@ class SubscriptionService {
 
   /// Play Console subscription product IDs (Subscription type, not one-time).
   ///
-  /// Each product has monthly + yearly base plans, e.g.:
-  /// - `starter_monthly` → starter-p1m / starter-yearly
-  /// - `plus` → plus-monthly / plus-yearly
-  /// - `pro` → pro-monthly / pro-yearly
-  static const Set<String> kProductIds = {'starter_monthly', 'pro', 'plus'};
+  /// Mapping (product_id → plan_id):
+  /// - starter_monthly → stater-monthly
+  /// - starter → stater-yearly
+  /// - plus → plus-monthly / plus-yearly
+  /// - pro → pro-monthly / pro-yearly
+  static const Set<String> kProductIds = {'starter_monthly', 'starter', 'plus', 'pro'};
+
+  /// product_id + plan_id for the user's selected tier and billing period.
+  static ({String productId, String planId}) idsForSelection({
+    required String tier,
+    required bool isMonthly,
+  }) {
+    switch (tier.toLowerCase().trim()) {
+      case 'starter':
+        return isMonthly
+            ? (productId: 'starter_monthly', planId: 'stater-monthly')
+            : (productId: 'starter', planId: 'stater-yearly');
+      case 'plus':
+        return isMonthly
+            ? (productId: 'plus', planId: 'plus-monthly')
+            : (productId: 'plus', planId: 'plus-yearly');
+      case 'pro':
+        return isMonthly
+            ? (productId: 'pro', planId: 'pro-monthly')
+            : (productId: 'pro', planId: 'pro-yearly');
+      default:
+        final fallback = tier.toLowerCase().trim();
+        return (productId: fallback, planId: isMonthly ? '$fallback-monthly' : '$fallback-yearly');
+    }
+  }
 
   /// Initialize and query Google Play subscription product details.
   Future<void> initStoreInfo() async {
@@ -187,10 +214,11 @@ class SubscriptionService {
         final txId = purchase.purchaseID;
         if (txId != null && _processedTransactionIds.contains(txId)) continue;
 
+        final ids = _idsFromPurchase(purchase);
         final verified = await verifyPurchaseWithBackend(
           purchaseToken: purchase.verificationData.serverVerificationData,
-          productId: _apiProductIdForPlaySku(purchase.productID),
-          basePlanId: _apiBasePlanIdForPurchase(purchase),
+          productId: ids.productId,
+          planId: ids.planId,
           orderId: _orderIdFromPurchase(purchase),
         );
         if (verified && txId != null) {
@@ -203,24 +231,17 @@ class SubscriptionService {
     }
   }
 
-  /// Actual Play Console product id for a plan tier.
+  /// Actual Play Console product id for a plan tier + period.
   String getProductId(String planName, bool isMonthly) {
     final tier = planName.toLowerCase().trim();
     if (tier == 'free' || tier == 'trial') return '';
-    return playProductIdForTier(tier);
+    return idsForSelection(tier: tier, isMonthly: isMonthly).productId;
   }
 
-  static String playProductIdForTier(String tier) {
-    switch (tier.toLowerCase()) {
-      case 'starter':
-        return 'starter_monthly';
-      case 'plus':
-        return 'plus';
-      case 'pro':
-        return 'pro';
-      default:
-        return tier;
-    }
+  static String playProductIdForTier(String tier, {bool isMonthly = true}) {
+    final normalized = tier.toLowerCase().trim();
+    if (normalized == 'free' || normalized == 'trial') return normalized;
+    return idsForSelection(tier: normalized, isMonthly: isMonthly).productId;
   }
 
   /// Find the Google Play offer for [tier] + monthly/yearly base plan.
@@ -312,10 +333,11 @@ class SubscriptionService {
       return;
     }
 
+    final selectedIds = idsForSelection(tier: tier, isMonthly: isMonthly);
     final googleProduct = _resolveAndroidSubscription(
       tierOrProductId: tier,
       isMonthly: isMonthly,
-      preferredProductId: isMonthly ? plan.monthlyProductId : plan.yearlyProductId,
+      preferredProductId: selectedIds.productId,
     );
     if (googleProduct == null) {
       log('Subscription offer not found for tier=$tier isMonthly=$isMonthly');
@@ -341,12 +363,11 @@ class SubscriptionService {
     userInitiatedPurchase = true;
     acceptEvents = true;
     intendedPurchaseProductId = productId;
-    intendedApiProductId = _apiProductIdForPlaySku(productId, fallbackTier: tier);
-    intendedBasePlanId = isMonthly ? 'monthly' : 'yearly';
+    // Always verify with the mapped product_id + plan_id for this selection.
+    intendedApiProductId = selectedIds.productId;
+    intendedPlanId = selectedIds.planId;
     currentProductId =
-        currentSubscription?.productId ??
-        currentSubscription?.planCode ??
-        currentSubscription?.id;
+        currentSubscription?.productId ?? currentSubscription?.planCode ?? currentSubscription?.id;
     currentPlanTier = getPlanTier(currentSubscription?.name);
 
     try {
@@ -422,16 +443,29 @@ class SubscriptionService {
         _extractTier(preferredProductId ?? '') ??
         tierOrProductId.toLowerCase().trim();
 
+    final preferred = preferredProductId?.trim().toLowerCase();
     final matches = products.whereType<iapandroidkit.GooglePlayProductDetails>().where((p) {
       final pTier = _extractTier(p.id) ?? _extractTier(_basePlanId(p) ?? '');
       if (pTier != tier) return false;
-      return _isMonthlyOffer(p) == isMonthly;
+      if (_isMonthlyOffer(p) != isMonthly) return false;
+      if (preferred != null && preferred.isNotEmpty) {
+        return p.id.toLowerCase() == preferred;
+      }
+      return true;
     }).toList();
 
-    if (matches.isEmpty) return null;
+    // Fallback if preferred SKU is missing but same tier/period exists.
+    final fallbackMatches = matches.isNotEmpty
+        ? matches
+        : products.whereType<iapandroidkit.GooglePlayProductDetails>().where((p) {
+            final pTier = _extractTier(p.id) ?? _extractTier(_basePlanId(p) ?? '');
+            return pTier == tier && _isMonthlyOffer(p) == isMonthly;
+          }).toList();
+
+    if (fallbackMatches.isEmpty) return null;
 
     // Prefer plain base-plan offer (no promo offerId).
-    return matches.firstWhereOrNull(_isBasePlanOffer) ?? matches.first;
+    return fallbackMatches.firstWhereOrNull(_isBasePlanOffer) ?? fallbackMatches.first;
   }
 
   String? _extractTier(String value) {
@@ -492,7 +526,8 @@ class SubscriptionService {
       final tier = _extractTier(id);
       if (tier != null) {
         candidates.add(tier);
-        candidates.add(playProductIdForTier(tier));
+        candidates.add(playProductIdForTier(tier, isMonthly: true));
+        candidates.add(playProductIdForTier(tier, isMonthly: false));
       }
     }
 
@@ -534,9 +569,7 @@ class SubscriptionService {
       // Fallback when backend subscription metadata is missing/stale.
       if (past.length == 1) return past.first;
       return past.firstWhereOrNull(
-            (p) =>
-                p.status == PurchaseStatus.purchased ||
-                p.status == PurchaseStatus.restored,
+            (p) => p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored,
           ) ??
           past.first;
     } catch (e) {
@@ -568,45 +601,38 @@ class SubscriptionService {
     userInitiatedPurchase = false;
     intendedPurchaseProductId = null;
     intendedApiProductId = null;
-    intendedBasePlanId = null;
+    intendedPlanId = null;
     acceptEvents = false;
   }
 
-  /// Backend verify productId: starter | plus | pro (not Play SKU).
-  String _apiProductIdForPlaySku(String playProductId, {String? fallbackTier}) {
-    final tier = _extractTier(playProductId) ??
-        _extractTier(fallbackTier ?? '') ??
-        fallbackTier?.trim().toLowerCase();
-    if (tier == 'starter' || tier == 'plus' || tier == 'pro') return tier!;
-    return playProductId;
-  }
-
-  /// Backend verify basePlanId: monthly | yearly.
-  String _apiBasePlanIdForPurchase(PurchaseDetails purchase) {
-    if (intendedBasePlanId != null &&
-        (intendedPurchaseProductId == null ||
-            purchase.productID == intendedPurchaseProductId)) {
-      return intendedBasePlanId!;
+  /// Resolve product_id + plan_id from a Play purchase / SKU.
+  ({String productId, String planId}) _idsFromPurchase(PurchaseDetails purchase) {
+    if (intendedApiProductId != null &&
+        intendedPlanId != null &&
+        (intendedPurchaseProductId == null || purchase.productID == intendedPurchaseProductId)) {
+      return (productId: intendedApiProductId!, planId: intendedPlanId!);
     }
 
-    // Prefer matching offer from the loaded Play catalog.
+    final playSku = purchase.productID;
+    final tier = _extractTier(playSku) ?? 'starter';
+    var isMonthly = true;
+
     final matches = products.whereType<iapandroidkit.GooglePlayProductDetails>().where(
-      (p) => p.id == purchase.productID,
+      (p) => p.id == playSku,
     );
     for (final product in matches) {
-      final basePlan = (_basePlanId(product) ?? '').toLowerCase();
-      if (basePlan.contains('year') || basePlan.contains('annual') || basePlan.contains('p1y')) {
-        return 'yearly';
-      }
-      if (basePlan.contains('month') || basePlan.contains('p1m')) {
-        return 'monthly';
-      }
-      return _isMonthlyOffer(product) ? 'monthly' : 'yearly';
+      isMonthly = _isMonthlyOffer(product);
+      break;
+    }
+    if (matches.isEmpty) {
+      final sku = playSku.toLowerCase();
+      isMonthly = !(sku.contains('year') || sku.contains('annual'));
+      // starter yearly uses product id `starter` (no monthly in id).
+      if (sku == 'starter') isMonthly = false;
+      if (sku == 'starter_monthly') isMonthly = true;
     }
 
-    final sku = purchase.productID.toLowerCase();
-    if (sku.contains('year') || sku.contains('annual')) return 'yearly';
-    return 'monthly';
+    return idsForSelection(tier: tier, isMonthly: isMonthly);
   }
 
   String? _orderIdFromPurchase(PurchaseDetails purchase) {
@@ -627,18 +653,19 @@ class SubscriptionService {
 
   Future<void> _cachePendingPurchase(PurchaseDetails details, {String? overrideProductId}) async {
     try {
-      final apiProductId = overrideProductId ??
-          intendedApiProductId ??
-          _apiProductIdForPlaySku(details.productID);
-      final basePlanId = intendedBasePlanId ?? _apiBasePlanIdForPurchase(details);
+      final ids = _idsFromPurchase(details);
+      final apiProductId = overrideProductId ?? ids.productId;
+      final planId = ids.planId;
       final orderId = _orderIdFromPurchase(details);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(
         _pendingPurchaseKey,
         jsonEncode({
           'productId': apiProductId,
+          'product_id': apiProductId,
+          'planId': planId,
+          'plan_id': planId,
           'playProductId': details.productID,
-          'basePlanId': basePlanId,
           'orderId': orderId,
           'purchaseId': details.purchaseID,
           'transactionDate': details.transactionDate,
@@ -647,7 +674,7 @@ class SubscriptionService {
           'timestamp': DateTime.now().toIso8601String(),
         }),
       );
-      log('Pending subscription cached for $apiProductId / $basePlanId');
+      log('Pending subscription cached for product_id=$apiProductId plan_id=$planId');
     } catch (e) {
       log('Failed to cache pending purchase: $e');
     }
@@ -675,15 +702,19 @@ class SubscriptionService {
 
       log('Found pending subscription — attempting recovery...');
       final data = jsonDecode(pendingJson) as Map<String, dynamic>;
-      final productId = (data['productId'] as String?) ?? '';
+      final productId = (data['product_id'] as String?) ?? (data['productId'] as String?) ?? '';
       final purchaseToken = data['serverVerificationData'] as String;
-      final basePlanId = (data['basePlanId'] as String?) ?? 'monthly';
+      final planId =
+          (data['plan_id'] as String?) ??
+          (data['planId'] as String?) ??
+          (data['basePlanId'] as String?) ??
+          '';
       final orderId = (data['orderId'] as String?) ?? (data['purchaseId'] as String?);
 
       final verified = await verifyPurchaseWithBackend(
         purchaseToken: purchaseToken,
         productId: productId,
-        basePlanId: basePlanId,
+        planId: planId,
         orderId: orderId,
       );
 
@@ -700,28 +731,70 @@ class SubscriptionService {
     }
   }
 
+  /// Builds the POST body for `api/v1/plans/subscriptions/verify`.
+  ///
+  /// Exposed for unit tests / request inspection.
+  static Map<String, dynamic>? buildVerifyRequestBody({
+    required String purchaseToken,
+    required String productId,
+    required String planId,
+    String? orderId,
+  }) {
+    final resolvedProductId = productId.trim();
+    final resolvedPlanId = planId.trim();
+    if (resolvedProductId.isEmpty || resolvedPlanId.isEmpty) {
+      return null;
+    }
+
+    return <String, dynamic>{
+      'purchaseToken': purchaseToken,
+      'productId': resolvedProductId,
+      'basePlanId': resolvedPlanId,
+      if (orderId != null && orderId.trim().isNotEmpty) 'orderId': orderId.trim(),
+    };
+  }
+
+  /// Builds verify request from UI selection (tier + monthly/yearly).
+  static Map<String, dynamic>? buildVerifyRequestForSelection({
+    required String tier,
+    required bool isMonthly,
+    required String purchaseToken,
+    String? orderId,
+  }) {
+    final ids = idsForSelection(tier: tier, isMonthly: isMonthly);
+    return buildVerifyRequestBody(
+      purchaseToken: purchaseToken,
+      productId: ids.productId,
+      planId: ids.planId,
+      orderId: orderId,
+    );
+  }
+
   /// Verify Google Play purchase with backend after payment.
   ///
   /// POST `api/v1/plans/subscriptions/verify`
-  /// Body: purchaseToken, productId (starter|plus|pro), basePlanId (monthly|yearly), orderId
+  /// Body always includes selected product_id + plan_id, e.g.:
+  /// - starter_monthly / stater-monthly
+  /// - starter / stater-yearly
+  /// - plus / plus-monthly | plus-yearly
+  /// - pro / pro-monthly | pro-yearly
   Future<bool> verifyPurchaseWithBackend({
     required String purchaseToken,
     required String productId,
-    required String basePlanId,
+    required String planId,
     String? orderId,
   }) async {
     try {
-      final normalizedProductId = _apiProductIdForPlaySku(productId);
-      final normalizedBasePlan = basePlanId.trim().toLowerCase().contains('year')
-          ? 'yearly'
-          : 'monthly';
-
-      final body = <String, dynamic>{
-        'purchaseToken': purchaseToken,
-        'productId': normalizedProductId,
-        'basePlanId': normalizedBasePlan,
-        if (orderId != null && orderId.trim().isNotEmpty) 'orderId': orderId.trim(),
-      };
+      final body = buildVerifyRequestBody(
+        purchaseToken: purchaseToken,
+        productId: productId,
+        planId: planId,
+        orderId: orderId,
+      );
+      if (body == null) {
+        log('Verify skipped — missing product_id/plan_id');
+        return false;
+      }
 
       log('Subscription verify body => $body');
       final response = await ApiRepository.instance.post(
@@ -735,16 +808,13 @@ class SubscriptionService {
           (response['success'] == true ||
               response['statusCode'] == 200 ||
               response['statusCode'] == 201)) {
-        log(
-          'Backend verification success for $normalizedProductId / $normalizedBasePlan',
-        );
         return true;
       } else {
-        log('Backend verification failed: $response');
+        // log('Backend verification failed: $response');
         return false;
       }
     } catch (e) {
-      log('Backend verification error: $e');
+      // log('Backend verification error: $e');
       return false;
     }
   }
@@ -806,8 +876,7 @@ class SubscriptionService {
           final bool isAndroidDowngrade =
               currentProductId != null &&
               (purchaseDetails.productID == currentProductId ||
-                  purchaseDetails.productID.toLowerCase() ==
-                      currentProductId!.toLowerCase());
+                  purchaseDetails.productID.toLowerCase() == currentProductId!.toLowerCase());
           if (!isAndroidDowngrade) {
             log('Ignoring older product: ${purchaseDetails.productID}');
             await _acknowledgePurchase(purchaseDetails);
@@ -819,12 +888,11 @@ class SubscriptionService {
       // Cache before ack so recovery can re-verify if the process dies.
       await _cachePendingPurchase(purchaseDetails);
 
+      final ids = _idsFromPurchase(purchaseDetails);
       final verified = await verifyPurchaseWithBackend(
         purchaseToken: purchaseDetails.verificationData.serverVerificationData,
-        productId: intendedApiProductId ??
-            _apiProductIdForPlaySku(purchaseDetails.productID),
-        basePlanId: intendedBasePlanId ??
-            _apiBasePlanIdForPurchase(purchaseDetails),
+        productId: ids.productId,
+        planId: ids.planId,
         orderId: _orderIdFromPurchase(purchaseDetails),
       );
 
@@ -879,10 +947,8 @@ class SubscriptionService {
       Get.until((route) => route.settings.name == Routes.dashboard);
       return;
     }
-    final isProfessional =
-        Get.find<SettingsViewModel>().screenType.value == AppKeys.professional;
-    final target =
-        isProfessional ? Routes.professionalDashboard : Routes.dashboard;
+    final isProfessional = Get.find<SettingsViewModel>().screenType.value == AppKeys.professional;
+    final target = isProfessional ? Routes.professionalDashboard : Routes.dashboard;
     if (Get.currentRoute == target) return;
     Get.until(
       (route) =>

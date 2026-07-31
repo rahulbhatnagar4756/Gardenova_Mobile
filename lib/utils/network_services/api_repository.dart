@@ -291,6 +291,10 @@ class ApiRepository {
         Get.closeAllSnackbars();
       }
 
+      // Reset any previous auto-close timer before showing a new loader.
+      _loaderTimer?.cancel();
+      _loaderTimer = null;
+
       showDialog(
         context: Get.context!,
         barrierDismissible: false,
@@ -299,10 +303,9 @@ class ApiRepository {
         },
       );
 
+      // Auto-close spinner after 20 seconds if the API never finishes.
       _loaderTimer = Timer(const Duration(seconds: 20), () {
-        if (_loaderTimer != null) {
-          _loaderTimer!.cancel();
-        }
+        hideLoader();
       });
     });
   }
@@ -310,8 +313,10 @@ class ApiRepository {
   void hideLoader() {
     _loaderTimer?.cancel();
     _loaderTimer = null;
-    if (Navigator.of(Get.context!).canPop()) {
-      Navigator.of(Get.context!).pop();
+    final context = Get.context;
+    if (context == null) return;
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
     }
   }
 }

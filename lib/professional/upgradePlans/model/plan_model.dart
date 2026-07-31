@@ -362,7 +362,9 @@ class PlanModel {
       // Only include tiers that exist as real store products.
       if (monthly == null && annual == null) continue;
 
-      final playProductId = monthly?.productId ?? annual?.productId ?? _playProductIdForTier(tier);
+      final playProductId = monthly?.productId ??
+          annual?.productId ??
+          _playProductIdForTier(tier, isMonthly: monthly != null || annual == null);
 
       final priceMonthly = monthly != null ? _formatPrice(monthly.rawPrice.toString()) : '0';
       final priceAnnual = annual != null ? _formatPrice(annual.rawPrice.toString()) : '0';
@@ -433,10 +435,10 @@ class PlanModel {
     return plan;
   }
 
-  static String _playProductIdForTier(String tier) {
+  static String _playProductIdForTier(String tier, {bool isMonthly = true}) {
     switch (tier.toLowerCase()) {
       case 'starter':
-        return 'starter_monthly';
+        return isMonthly ? 'starter_monthly' : 'starter';
       case 'plus':
         return 'plus';
       case 'pro':

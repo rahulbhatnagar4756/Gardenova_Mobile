@@ -1,7 +1,7 @@
 name: kasagardem
 description: "A plant and garden management app."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev Gardenova
-version: 1.0.1+5
+version: 1.0.1+7
 environment:
   sdk: ^3.8.1
 

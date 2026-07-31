@@ -17,7 +17,7 @@ class UpgradePlanRepository {
   // }
 
   /// POST api/v1/plans/subscriptions/verify
-  /// Body: purchaseToken, productId, basePlanId, orderId
+  /// Body: purchaseToken, productId/product_id, planId/plan_id, orderId
   verifyPurchase(Map<String, dynamic> body) async {
     var verifyResponse = await ApiRepository.instance.post(
       'api/v1/plans/subscriptions/verify',
