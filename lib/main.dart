@@ -35,8 +35,12 @@ Future<void> main() async {
 
   Locale selectedLocale = enUS;
   try {
-    // Critical path only — keep icon-tap → first frame short.
+    // Must load env before Firebase options / any dotenv.env access.
     await dotenv.load(fileName: 'secret.env');
+    if (!dotenv.isInitialized) {
+      throw StateError('secret.env failed to initialize');
+    }
+
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
     FlutterError.onError = (errorDetails) {
@@ -104,10 +108,7 @@ Future<void> main() async {
 
     Get.put<NetworkConnectivityService>(NetworkConnectivityService(), permanent: true);
 
-    SharedPrefsService.instance.setString(
-      AppKeys.selectedLang,
-      Get.locale?.languageCode ?? 'en',
-    );
+    SharedPrefsService.instance.setString(AppKeys.selectedLang, Get.locale?.languageCode ?? 'en');
 
     runApp(MyApp(locale: selectedLocale));
 
@@ -134,21 +135,13 @@ Future<void> _initDeferredServices() async {
     await NotificationService.instance.initialize();
     ReminderPushNotificationService.instance.configure();
   } catch (e, stack) {
-    await FirebaseCrashlytics.instance.recordError(
-      e,
-      stack,
-      reason: 'Notification init failed',
-    );
+    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
   }
 
   try {
     await AdMobService.instance.ensureInitialized();
   } catch (e, stack) {
-    await FirebaseCrashlytics.instance.recordError(
-      e,
-      stack,
-      reason: 'MobileAds init failed',
-    );
+    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
   }
 }
 

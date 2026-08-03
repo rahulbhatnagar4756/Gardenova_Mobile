@@ -65,10 +65,8 @@ class AdMobService {
   static const String _androidTestRewardId = 'ca-app-pub-3940256099942544/5224354917';
   static const String _iosTestRewardId = 'ca-app-pub-3940256099942544/1712485313';
 
-  /*  static const String _androidTestBannerId = 'ca-app-pub-9167105189322595/3663276357';
-  static const String _iosTestBannerId = 'ca-app-pub-3940256099942544/2934735716';
-  static const String _androidTestRewardId = 'ca-app-pub-9167105189322595/2316616659';
-  static const String _iosTestRewardId = 'ca-app-pub-3940256099942544/1712485313';*/
+  static const String _androidBannerId = 'ca-app-pub-2559590883817958/8347475449';
+  static const String _androidRewardId = 'ca-app-pub-2559590883817958/9324716434';
 
   /// Get the banner ad unit ID based on platform
   String get bannerAdUnitId {
@@ -80,7 +78,7 @@ class AdMobService {
     if (configuredId != null && configuredId.isNotEmpty) {
       return configuredId;
     }
-    return Platform.isAndroid ? _androidTestBannerId : _iosTestBannerId;
+    return Platform.isAndroid ? _androidBannerId : _iosTestBannerId;
   }
 
   /// Get the rewarded ad unit ID based on platform
@@ -93,7 +91,7 @@ class AdMobService {
     if (configuredId != null && configuredId.isNotEmpty) {
       return configuredId;
     }
-    return Platform.isAndroid ? _androidTestRewardId : _iosTestRewardId;
+    return Platform.isAndroid ? _androidRewardId : _iosTestRewardId;
   }
 
   /// Disposes any existing banner and loads a fresh one.

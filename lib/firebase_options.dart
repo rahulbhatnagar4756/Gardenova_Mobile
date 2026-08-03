@@ -38,22 +38,23 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static final FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['android_apiKey']!,
-    appId: dotenv.env['android_appId']!,
-    messagingSenderId: dotenv.env['messagingSenderId']!,
-    projectId: dotenv.env['projectId']!,
-    storageBucket: dotenv.env['storageBucket']!,
-    androidClientId: dotenv.env['androidClientId']!,
-  );
+  /// Getters (not static finals) so values are read only after [dotenv.load].
+  static FirebaseOptions get android => FirebaseOptions(
+        apiKey: dotenv.env['android_apiKey']!,
+        appId: dotenv.env['android_appId']!,
+        messagingSenderId: dotenv.env['messagingSenderId']!,
+        projectId: dotenv.env['projectId']!,
+        storageBucket: dotenv.env['storageBucket']!,
+        androidClientId: dotenv.env['androidClientId']!,
+      );
 
-  static final FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['ios_apiKey']!,
-    appId: dotenv.env['ios_appId']!,
-    messagingSenderId: dotenv.env['messagingSenderId']!,
-    projectId: dotenv.env['projectId']!,
-    storageBucket: dotenv.env['storageBucket']!,
-    iosClientId: dotenv.env['iosClientId']!,
-    iosBundleId: dotenv.env['iosBundleId'],
-  );
+  static FirebaseOptions get ios => FirebaseOptions(
+        apiKey: dotenv.env['ios_apiKey']!,
+        appId: dotenv.env['ios_appId']!,
+        messagingSenderId: dotenv.env['messagingSenderId']!,
+        projectId: dotenv.env['projectId']!,
+        storageBucket: dotenv.env['storageBucket']!,
+        iosClientId: dotenv.env['iosClientId']!,
+        iosBundleId: dotenv.env['iosBundleId'],
+      );
 }

@@ -20,7 +20,8 @@ class RazorpayPaymentService {
   RazorpayPaymentFailure? _onFailure;
   RazorpayExternalWallet? _onExternalWallet;
 
-  String get keyId => dotenv.env['razorpay_key_id'] ?? '';
+  String get keyId =>
+      dotenv.isInitialized ? (dotenv.env['razorpay_key_id'] ?? '') : '';
 
   void initialize({
     required RazorpayPaymentSuccess onSuccess,
