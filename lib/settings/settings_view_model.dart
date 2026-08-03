@@ -379,6 +379,8 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     final model = currentSubscriptionStatusModel.value;
     if (model == null || model.isActive != true) return false;
     if (model.cancelAtPeriodEnd == true) return false;
+    // Downgrade / plan change already scheduled — hide cancel.
+    if (model.hasPendingPlan) return false;
 
     final plan = (model.name ?? '').trim().toLowerCase();
     if (plan.isEmpty || plan == 'free' || plan == 'trial') return false;

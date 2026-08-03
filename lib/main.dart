@@ -70,7 +70,7 @@ Future<void> main() async {
       );
     }
 
-    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'dev');
+    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'prod');
     late final Flavor currentFlavor;
     late final String baseUrl;
     switch (flavorString.toLowerCase()) {
