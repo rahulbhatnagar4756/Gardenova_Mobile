@@ -3,7 +3,9 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 
 class IntroductionRepository {
-  fetchIntroductionList(AppLocalizations appLocalisation) {
+  List<IntroductionModel> fetchIntroductionList(
+    AppLocalizations appLocalisation,
+  ) {
     return [
       IntroductionModel(
         title: appLocalisation.smartAnalysis,
@@ -15,11 +17,11 @@ class IntroductionRepository {
         description: appLocalisation.productRecommendationsDesc,
         imagePath: AppAssets.cart,
       ),
-      IntroductionModel(
-        title: appLocalisation.professionalConnections,
-        description: appLocalisation.professionalConnectionsDesc,
-        imagePath: AppAssets.people,
-      ),
+      // IntroductionModel(
+      //   title: appLocalisation.professionalConnections,
+      //   description: appLocalisation.professionalConnectionsDesc,
+      //   imagePath: AppAssets.people,
+      // ),
     ];
   }
 }

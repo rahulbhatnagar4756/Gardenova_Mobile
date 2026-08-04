@@ -1,10 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
+import 'package:kasagardem/plants/model/plant_info_item.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
+
 import '../../../base/widgets/base_date_format.dart';
+import '../../../dashboard/dashboard_controller.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../services/admob_service.dart';
+import '../../../settings/settings_view_model.dart';
 import '../../../utils/constants/app_constants.dart';
+import '../../../utils/routes.dart';
 import '../../model/plant_details_model.dart';
+import '../../myPlants/myPlantsList/my_plants_controller.dart';
 import '../../plant_repository.dart';
 import 'components/plant_add_success_dialog.dart';
 
@@ -15,6 +27,9 @@ class AllPlantsDetailsController extends GetxController {
   RxBool isFertilizingOn = false.obs;
   RxBool isPruningOn = false.obs;
   RxBool isCriticalOn = false.obs;
+  RxBool isLoading = false.obs;
+  RxBool isAdLoaded = false.obs;
+  bool showMore = false;
   RxString plantId = "".obs;
   RxString screenType = "".obs;
   RxInt wateringFrequency = 0.obs;
@@ -23,111 +38,216 @@ class AllPlantsDetailsController extends GetxController {
   RxInt criticalCareFrequency = 0.obs;
   RxString wateringTime = "".obs;
   RxString fertilizingTime = "".obs;
+  RxString pruningTime = "".obs;
+  RxString criticalTime = "".obs;
   RxString userPlantId = "".obs;
+  RxString errorMessage = "".obs;
+  RxString wateringNote = "".obs;
+  RxString fertilizingNote = "".obs;
+  RxString pruningNote = "".obs;
+  RxString criticalNote = "".obs;
+
   PlantsRepository plantsRepository = PlantsRepository();
-  Rx<PlantDetailsResponseModel> plantDetailData =
-      PlantDetailsResponseModel().obs;
+  Rx<PlantDetailsResponseModel> plantDetailData = PlantDetailsResponseModel().obs;
   final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
+  RxList<PlantInfoItem> plantInfoList = <PlantInfoItem>[].obs;
+  BannerAd? bannerAd;
+
+  TextEditingController pruningController = TextEditingController();
+  TextEditingController fertilizeController = TextEditingController();
+  TextEditingController wateringController = TextEditingController();
+  TextEditingController criticalController = TextEditingController();
 
   @override
   void onInit() {
     if (Get.arguments != null) {
       plantId.value = Get.arguments['plant_id'].toString();
       screenType.value = Get.arguments['screen_type'].toString();
+
+      print("value screenType ${screenType.value}");
     }
+    debugPrint('AllPlantsDetailsController plantId $plantId and screenType $screenType');
     if (screenType.value == "add") {
       callGetPlantDetailsApi();
     } else {
       callGetMyPlantDetailsApi();
     }
+    _setupBannerAds();
     super.onInit();
+  }
+
+  void _setupBannerAds() {
+    if (Get.isRegistered<SettingsViewModel>()) {
+      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+        loadBannerAd();
+      });
+    }
+    loadBannerAd();
+  }
+
+  void loadBannerAd() async {
+    if (!AdMobService.instance.shouldShowBanners) {
+      bannerAd?.dispose();
+      bannerAd = null;
+      isAdLoaded.value = false;
+      return;
+    }
+
+    isAdLoaded.value = false;
+    final ad = await AdMobService.instance.loadBannerAd(
+      existingAd: bannerAd,
+      onAdLoaded: (ad) {
+        isAdLoaded.value = true;
+        bannerAd = ad as BannerAd;
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        bannerAd = null;
+        isAdLoaded.value = false;
+        debugPrint('BannerAd failed to load: $error');
+      },
+    );
+    if (ad != null) {
+      bannerAd = ad;
+    }
+  }
+
+  void setPlantInfoData(PlantModelDetails plantDetails) {
+    plantInfoList.add(
+      PlantInfoItem(icon: Icons.eco_outlined, label: 'Type', value: plantDetails.type ?? ''),
+    );
+
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.keyboard_arrow_down,
+        label: 'Height',
+        value: "${plantDetails.dimensionMinValue} - ${plantDetails.dimensionMaxValue} ft",
+      ),
+    );
+
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.wb_sunny_outlined,
+        label: 'Sunlight',
+        value: (plantDetails.sunlight?.toString() ?? "").capitalizeFirst ?? "",
+      ),
+    );
+    plantInfoList.add(
+      PlantInfoItem(
+        icon: Icons.thermostat,
+        label: 'Hardiness',
+        value: "USDA ${plantDetails.hardinessMin ?? ""} - ${plantDetails.hardinessMax ?? ""}",
+      ),
+    );
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 
   void toggleWatering(bool value) {
     isWateringOn.value = !isWateringOn.value;
     wateringFrequency.value = 0;
     wateringTime.value = "";
+    wateringController.clear();
+    wateringNote.value = "";
   }
 
   void toggleFertilizing(bool value) {
     isFertilizingOn.value = !isFertilizingOn.value;
     fertilizingFrequency.value = 0;
     fertilizingTime.value = "";
+    fertilizeController.clear();
+    fertilizingNote.value = "";
   }
 
   void togglePruning(bool value) {
     isPruningOn.value = !isPruningOn.value;
     pruningFrequency.value = 0;
+    pruningTime.value = "";
+    pruningController.clear();
+    pruningNote.value = "";
   }
 
   void toggleCritical(bool value) {
     isCriticalOn.value = !isCriticalOn.value;
     criticalCareFrequency.value = 0;
+    criticalTime.value = "";
+    criticalController.clear();
+    criticalNote.value = "";
   }
 
   void validateAndSubmit(BuildContext context) {
-    if (!isWateringOn.value &&
-        !isFertilizingOn.value &&
-        !isPruningOn.value &&
-        !isCriticalOn.value) {
-      BaseSnackBar.show(
-        title: appName,
-        message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
-      );
-      return;
-    }
+    if (screenType.value != "add") {
+      if (!isWateringOn.value &&
+          !isFertilizingOn.value &&
+          !isPruningOn.value &&
+          !isCriticalOn.value) {
+        if (Get.isSnackbarOpen == false) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectAtLeastOneReminder,
+          );
+        }
+        return;
+      }
 
-    if (isWateringOn.value) {
-      if (wateringFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectWateringFrequency,
-        );
-        return;
+      if (isWateringOn.value) {
+        if (wateringFrequency.value == 0) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectWateringFrequency,
+          );
+          return;
+        }
+        if (wateringTime.isEmpty) {
+          showSnackBar(title: appName, message: AppLocalizations.of(context)!.selectWateringTime);
+          return;
+        }
       }
-      if (wateringTime.isEmpty) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectWateringTime,
-        );
-        return;
-      }
-    }
 
-    if (isFertilizingOn.value) {
-      if (fertilizingFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectFertilizerFrequency,
-        );
-        return;
+      if (isFertilizingOn.value) {
+        if (fertilizingFrequency.value == 0) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectFertilizerFrequency,
+          );
+          return;
+        }
+        if (fertilizingTime.isEmpty) {
+          showSnackBar(title: appName, message: AppLocalizations.of(context)!.selectFertilizerTime);
+          return;
+        }
       }
-      if (fertilizingTime.isEmpty) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectFertilizerTime,
-        );
-        return;
-      }
-    }
 
-    if (isPruningOn.value) {
-      if (pruningFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectPruningFrequency,
-        );
-        return;
+      if (isPruningOn.value) {
+        if (pruningFrequency.value == 0) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectPruningFrequency,
+          );
+          return;
+        }
+        if (pruningTime.isEmpty) {
+          showSnackBar(title: appName, message: AppStrings.selectPruningTime);
+          return;
+        }
       }
-    }
 
-    if (isCriticalOn.value) {
-      if (criticalCareFrequency.value == 0) {
-        BaseSnackBar.show(
-          title: appName,
-          message: AppLocalizations.of(context)!.selectGeneralFrequency,
-        );
-        return;
+      if (isCriticalOn.value) {
+        if (criticalCareFrequency.value == 0) {
+          showSnackBar(
+            title: appName,
+            message: AppLocalizations.of(context)!.selectGeneralFrequency,
+          );
+          return;
+        }
+        if (criticalTime.isEmpty) {
+          showSnackBar(title: appName, message: AppStrings.selectCriticalCareTime);
+          return;
+        }
       }
     }
     if (screenType.value == "add") {
@@ -138,36 +258,48 @@ class AllPlantsDetailsController extends GetxController {
   }
 
   void setDataForUpdate() {
-    isWateringOn.value =
-        plantDetailData.value.data?.reminder?.wateringNotificationEnabled ??
-        false;
+    setPlantInfoData(plantDetailData.value.data!.plant!);
+    isWateringOn.value = plantDetailData.value.data?.reminder?.wateringNotificationEnabled ?? false;
     isFertilizingOn.value =
-        plantDetailData.value.data?.reminder?.fertilizerNotificationEnabled ??
-        false;
-    isPruningOn.value =
-        plantDetailData.value.data?.reminder?.pruningNotificationEnabled ??
-        false;
-    isCriticalOn.value =
-        plantDetailData.value.data?.reminder?.genericNotificationEnabled ??
-        false;
-    wateringFrequency.value =
-        plantDetailData.value.data?.reminder?.wateringReminderFrequency ?? 0;
+        plantDetailData.value.data?.reminder?.fertilizerNotificationEnabled ?? false;
+    isPruningOn.value = plantDetailData.value.data?.reminder?.pruningNotificationEnabled ?? false;
+    isCriticalOn.value = plantDetailData.value.data?.reminder?.genericNotificationEnabled ?? false;
+    wateringFrequency.value = plantDetailData.value.data?.reminder?.wateringReminderFrequency ?? 0;
+    wateringNote.value = plantDetailData.value.data?.reminder?.wateringNote ?? "";
+    fertilizingNote.value = plantDetailData.value.data?.reminder?.fertilizerNote ?? "";
+    pruningNote.value = plantDetailData.value.data?.reminder?.pruningNote ?? "";
+    wateringController.text = plantDetailData.value.data?.reminder?.wateringNote ?? "";
+    fertilizeController.text = plantDetailData.value.data?.reminder?.fertilizerNote ?? "";
+    pruningController.text = plantDetailData.value.data?.reminder?.pruningNote ?? "";
+
     fertilizingFrequency.value =
         plantDetailData.value.data?.reminder?.fertilizerReminderFrequency ?? 0;
-    pruningFrequency.value =
-        plantDetailData.value.data?.reminder?.pruningReminderFrequency ?? 0;
+    pruningFrequency.value = plantDetailData.value.data?.reminder?.pruningReminderFrequency ?? 0;
     criticalCareFrequency.value =
         plantDetailData.value.data?.reminder?.genericCareReminderFrequency ?? 0;
-    wateringTime.value =
-        plantDetailData.value.data?.reminder?.wateringPreferredTime ?? "";
-    fertilizingTime.value =
-        plantDetailData.value.data?.reminder?.fertilizerPreferredTime ?? "";
+    wateringTime.value = plantDetailData.value.data?.reminder?.wateringPreferredTime ?? "";
+    fertilizingTime.value = plantDetailData.value.data?.reminder?.fertilizerPreferredTime ?? "";
+    pruningTime.value = plantDetailData.value.data?.reminder?.pruningPreferredTime ?? "";
+    criticalTime.value = plantDetailData.value.data?.reminder?.genericPreferredTime ?? "";
+    criticalNote.value = plantDetailData.value.data?.reminder?.genericCareNote ?? "";
   }
 
-  Future<void> pickerTime(BuildContext context, CareType careType) async {
+  Future<void> pickerTime(BuildContext context, CareType careType, String preferredTime) async {
+    TimeOfDay initialTime = TimeOfDay.now();
+    if (preferredTime.isNotEmpty) {
+      final parts = preferredTime.split(':');
+      print(parts);
+      if (parts.length >= 2) {
+        initialTime = TimeOfDay(
+          hour: int.tryParse(parts[0]) ?? initialTime.hour,
+          minute: int.tryParse(parts[1]) ?? initialTime.minute,
+        );
+      }
+    }
+
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: initialTime,
 
       initialEntryMode: TimePickerEntryMode.dial,
       builder: (context, child) {
@@ -177,27 +309,29 @@ class AllPlantsDetailsController extends GetxController {
             data: Theme.of(context).copyWith(
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: Colors.white,
-                dialBackgroundColor: AppColors.darkGreen.withValues(
-                  alpha: 0.08,
-                ),
+                dialBackgroundColor: AppColors.darkGreen.withValues(alpha: 0.08),
                 dialHandColor: AppColors.darkGreen,
                 dialTextColor: WidgetStateColor.resolveWith((states) {
                   if (states.contains(WidgetState.selected)) {
                     return Colors.white;
                   }
-                  return Colors.black87;
+                  return Colors.green;
                 }),
-                hourMinuteColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                hourMinuteTextColor: Colors.black87,
+                hourMinuteColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return AppColors.greenColor;
+                  return AppColors.darkGreen.withValues(alpha: 0.1);
+                }),
+                hourMinuteTextColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) return Colors.white;
+                  return Colors.green;
+                }),
                 dayPeriodColor: AppColors.darkGreen.withValues(alpha: 0.12),
-                dayPeriodTextColor: Colors.black87,
+                dayPeriodTextColor: Colors.green,
                 confirmButtonStyle: TextButton.styleFrom(
                   foregroundColor: AppColors.darkGreen,
                   textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                cancelButtonStyle: TextButton.styleFrom(
-                  foregroundColor: Colors.grey.shade600,
-                ),
+                cancelButtonStyle: TextButton.styleFrom(foregroundColor: Colors.green.shade600),
               ),
               colorScheme: const ColorScheme.light(
                 primary: AppColors.darkGreen,
@@ -217,18 +351,11 @@ class AllPlantsDetailsController extends GetxController {
     );
 
     if (picked == null) return;
+
+    print(picked);
     final now = DateTime.now();
-    final dateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      picked.hour,
-      picked.minute,
-    );
-    final formatted = BaseDateTimeFormat.format(
-      dateTime: dateTime.toString(),
-      format: "hh:mm:ss",
-    );
+    final dateTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+    final formatted = BaseDateTimeFormat.format(dateTime: dateTime.toString(), format: "HH:mm");
 
     switch (careType) {
       case CareType.watering:
@@ -238,30 +365,70 @@ class AllPlantsDetailsController extends GetxController {
         fertilizingTime.value = formatted;
         break;
       case CareType.pruning:
+        pruningTime.value = formatted;
         break;
       case CareType.critical:
+        criticalTime.value = formatted;
         break;
     }
   }
 
   Future callGetPlantDetailsApi() async {
-    var response = await plantsRepository.fetchPlantDetail(
-      plantId: plantId.value,
-    );
-    if (response != null) {
-      plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+    isLoading.value = true;
+    errorMessage.value = "";
+    try {
+      var response = await plantsRepository.fetchPlantDetail(plantId: plantId.value);
+      if (response != null) {
+        plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        if (plantDetailData.value.data == null) {
+          errorMessage.value = "No plant details found";
+        }
+      } else {
+        errorMessage.value = "Failed to fetch plant details";
+      }
+    } catch (e) {
+      errorMessage.value = "Something went wrong: $e";
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  String getType(CareType type) {
+    switch (type) {
+      case CareType.watering:
+        return "Watering";
+      case CareType.fertilizing:
+        return "Fertilizing";
+      case CareType.pruning:
+        return "Pruning";
+      case CareType.critical:
+        return "Generic Care";
     }
   }
 
   Future callGetMyPlantDetailsApi() async {
-    var response = await plantsRepository.fetchMyPlantDetail(
-      plantId: plantId.value,
-    );
-    if (response != null) {
-      userPlantId.value = response['data']['user_plant_id'].toString();
-      debugPrint("userPlantId:::: ${userPlantId.value}");
-      plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
-      setDataForUpdate();
+    isLoading.value = true;
+    errorMessage.value = "";
+    try {
+      var response = await plantsRepository.fetchMyPlantDetail(plantId: plantId.value);
+      if (response != null) {
+        userPlantId.value = response['data']['user_plant_id'].toString();
+        debugPrint("userPlantId:::: ${userPlantId.value}");
+        plantDetailData.value = PlantDetailsResponseModel.fromJson(response);
+        debugPrint("response of plantDetailData::::: ${plantDetailData.value.data!.toJson()}");
+        log(plantDetailData.value.data!.toJson().toString());
+        if (plantDetailData.value.data == null) {
+          errorMessage.value = "No plant details found";
+        } else {
+          setDataForUpdate();
+        }
+      } else {
+        errorMessage.value = "Failed to fetch plant details";
+      }
+    } catch (e) {
+      errorMessage.value = "Something went wrong: $e";
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -276,6 +443,7 @@ class AllPlantsDetailsController extends GetxController {
       "fertilizer_preferred_time": fertilizingTime.value,
       "pruning_notification_enabled": isPruningOn.value,
       "pruning_reminder_frequency": pruningFrequency.value,
+      "pruning_preferred_time": pruningTime.value,
       "generic_notification_enabled": isCriticalOn.value,
       "generic_care_reminder_frequency": criticalCareFrequency.value,
     };
@@ -289,19 +457,124 @@ class AllPlantsDetailsController extends GetxController {
     debugPrint("Filtered map :::::: $map");
     final response = await plantsRepository.addPlant(addPlantReq: map);
     if (response != null) {
+      AllPlantsController? myPlantsController;
+      if (Get.isRegistered<AllPlantsController>()) {
+        myPlantsController = Get.find<AllPlantsController>();
+        myPlantsController.allPlantList.removeWhere(
+          (element) => element.id?.toString() == plantId.value,
+        );
+        myPlantsController.allPlantList.refresh();
+      }
+      if (Get.isRegistered<DashboardController>()) {
+        var dashboardController = Get.find<DashboardController>();
+        dashboardController.plantRecommendationList.removeWhere(
+          (element) => element.id?.toString() == plantId.value,
+        );
+        dashboardController.plantRecommendationList.refresh();
+      }
+      plantDetailData.value.data?.alreadyAdded = true;
+      plantDetailData.refresh();
       PlantAddSuccessDialog.show(
         Get.context!,
         title: plantDetailData.value.data!.plant!.commonName ?? "",
         image: plantDetailData.value.data!.plant!.imageUrl ?? "",
-        description: plantDetailData.value.data!.plant!.description ?? "",
+        description: "",
+        // description: plantDetailData.value.data!.plant!.description ?? "",
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
-        onButtonPressed: () => Get.back(),
+        onButtonPressed: () async {
+          if (Get.isRegistered<MyPlantsController>()) {
+            // Get.back();
+            // Get.back();
+            // Get.back();
+            Get.until((route) => route.settings.name == Routes.allPlantsScreen);
+          } else {
+            Get.back();
+            await Future.delayed(Duration(milliseconds: 100));
+            Get.offNamed(Routes.myPlantsScreen);
+          }
+        },
       );
+    }
+    if (Get.isRegistered<MyPlantsController>()) {
+      Get.find<MyPlantsController>().callGetMyPlantListApi();
     }
   }
 
   Future<void> callEditPlantApi() async {
-    final map = <String, dynamic>{
+    final map = _buildChangedBlockEditPlantMap();
+
+    debugPrint("Filtered map :::::: $map");
+
+    if (map.isEmpty) {
+      Get.back(result: true);
+      return;
+    }
+
+    final response = await plantsRepository.editPlant(
+      userPlantId: userPlantId.value,
+      editPlantReq: map,
+    );
+    debugPrint("response::::: callEditPlantApi $response");
+    if (response != null) {
+      Get.back(result: true);
+      if (Get.isRegistered<MyPlantsController>()) {
+        Get.find<MyPlantsController>().callGetMyPlantListApi();
+      }
+    }
+  }
+
+  static const List<String> _wateringEditKeys = [
+    'watering_notification_enabled',
+    'watering_reminder_frequency',
+    'watering_preferred_time',
+    'watering_note',
+  ];
+
+  static const List<String> _fertilizerEditKeys = [
+    'fertilizer_notification_enabled',
+    'fertilizer_reminder_frequency',
+    'fertilizer_preferred_time',
+    'fertilizer_note',
+  ];
+
+  static const List<String> _pruningEditKeys = [
+    'pruning_notification_enabled',
+    'pruning_reminder_frequency',
+    'pruning_preferred_time',
+    'pruning_note',
+  ];
+
+  static const List<String> _genericEditKeys = [
+    'generic_notification_enabled',
+    'generic_care_reminder_frequency',
+    'generic_care_preferred_time',
+    'generic_care_note',
+  ];
+
+  Map<String, dynamic> _buildChangedBlockEditPlantMap() {
+    final current = _buildEditPlantRequestMap();
+    final original = _buildOriginalEditPlantMap();
+    final changedMap = <String, dynamic>{};
+
+    void addBlockIfChanged(List<String> keys) {
+      final hasChange = keys.any((key) => !_isSameEditPlantValue(current[key], original[key]));
+      if (!hasChange) return;
+
+      for (final key in keys) {
+        changedMap[key] = current[key];
+      }
+    }
+
+    addBlockIfChanged(_wateringEditKeys);
+    addBlockIfChanged(_fertilizerEditKeys);
+    addBlockIfChanged(_pruningEditKeys);
+    addBlockIfChanged(_genericEditKeys);
+
+    return changedMap;
+  }
+
+  Map<String, dynamic> _buildEditPlantRequestMap() {
+    return {
       "plant_id": plantId.value,
       "watering_notification_enabled": isWateringOn.value,
       "watering_reminder_frequency": wateringFrequency.value,
@@ -309,19 +582,84 @@ class AllPlantsDetailsController extends GetxController {
       "fertilizer_notification_enabled": isFertilizingOn.value,
       "fertilizer_reminder_frequency": fertilizingFrequency.value,
       "fertilizer_preferred_time": fertilizingTime.value,
+      "pruning_preferred_time": pruningTime.value,
+      "generic_care_preferred_time": criticalTime.value,
       "pruning_notification_enabled": isPruningOn.value,
       "pruning_reminder_frequency": pruningFrequency.value,
       "generic_notification_enabled": isCriticalOn.value,
       "generic_care_reminder_frequency": criticalCareFrequency.value,
+      "watering_note": wateringController.text,
+      "fertilizer_note": fertilizeController.text,
+      "pruning_note": pruningController.text,
+      "generic_care_note": criticalController.text,
     };
-    debugPrint("Filtered map :::::: $map");
-    final response = await plantsRepository.editPlant(
-      userPlantId: userPlantId.value,
-      editPlantReq: map,
-    );
-    debugPrint("response:::::$response");
-    if (response != null) {
-      Get.back(result: true);
+  }
+
+  Map<String, dynamic> _buildOriginalEditPlantMap() {
+    final reminder = plantDetailData.value.data?.reminder;
+
+    return {
+      "plant_id": plantId.value,
+      "watering_notification_enabled": reminder?.wateringNotificationEnabled ?? false,
+      "watering_reminder_frequency": reminder?.wateringReminderFrequency ?? 0,
+      "watering_preferred_time": reminder?.wateringPreferredTime ?? "",
+      "fertilizer_notification_enabled": reminder?.fertilizerNotificationEnabled ?? false,
+      "fertilizer_reminder_frequency": reminder?.fertilizerReminderFrequency ?? 0,
+      "fertilizer_preferred_time": reminder?.fertilizerPreferredTime ?? "",
+      "pruning_preferred_time": reminder?.pruningPreferredTime ?? "",
+      "generic_care_preferred_time": reminder?.genericPreferredTime ?? "",
+      "pruning_notification_enabled": reminder?.pruningNotificationEnabled ?? false,
+      "pruning_reminder_frequency": reminder?.pruningReminderFrequency ?? 0,
+      "generic_notification_enabled": reminder?.genericNotificationEnabled ?? false,
+      "generic_care_reminder_frequency": reminder?.genericCareReminderFrequency ?? 0,
+      "watering_note": reminder?.wateringNote ?? "",
+      "fertilizer_note": reminder?.fertilizerNote ?? "",
+      "pruning_note": reminder?.pruningNote ?? "",
+      "generic_care_note": reminder?.genericCareNote ?? "",
+    };
+  }
+
+  bool _isSameEditPlantValue(dynamic current, dynamic original) {
+    if (current is String || original is String) {
+      return _normalizeEditPlantString(current) == _normalizeEditPlantString(original);
+    }
+
+    if (current is bool || original is bool) {
+      return _toBool(current) == _toBool(original);
+    }
+
+    if (current is num || original is num) {
+      return _toNum(current) == _toNum(original);
+    }
+
+    return current == original;
+  }
+
+  String _normalizeEditPlantString(dynamic value) {
+    final text = (value ?? '').toString().trim();
+    final parts = text.split(':');
+
+    if (parts.length >= 2) {
+      final hour = int.tryParse(parts[0]);
+      final minute = int.tryParse(parts[1]);
+      if (hour != null && minute != null) {
+        return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+      }
+    }
+
+    return text;
+  }
+
+  bool _toBool(dynamic value) => value == true;
+
+  num _toNum(dynamic value) {
+    if (value is num) return value;
+    return num.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  void showSnackBar({String? title, String? message}) {
+    if (Get.isSnackbarOpen == false) {
+      BaseSnackBar.show(title: title!, message: message!);
     }
   }
 }

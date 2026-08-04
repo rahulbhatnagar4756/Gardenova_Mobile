@@ -16,6 +16,10 @@ class Assets {
       'assets/html/privacy_policy_pt.html';
   static const String htmlPrivacyPolicyEn =
       'assets/html/privacy_policy_en.html';
+  static const String htmlAboutEn =
+      'assets/html/about_en.html';
+  static const String htmlAboutPt =
+      'assets/html/about_pt.html';
   static const String imagesAdd = 'assets/images/add.png';
   static const String imagesCar = 'assets/images/car.png';
   static const String imagesCart = 'assets/images/cart.png';
@@ -47,7 +51,11 @@ class Assets {
   static const String imagesThermometer = 'assets/images/thermometer.png';
   static const String imagesWaterDrop = 'assets/images/water_drop.png';
   static const String imagesWatering = 'assets/images/watering.png';
-
+  static const String navigationIc = 'assets/images/navgiation_ic.png';
+  static const String backBtnDraweClose = 'assets/images/back_btn_drawer.png';
+  static const String drawerIc = 'assets/images/drawer_ic.png';
+  static const String tickIc = 'assets/images/tick_ic.png';
+  static const String closeIc = 'assets/images/close_ic.png';
   static const String kasagardemFrontendSecret = 'secret.env';
   static const String jsonHeartFluttering = 'assets/json/heart_fluttering.json';
 }

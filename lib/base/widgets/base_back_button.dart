@@ -30,7 +30,7 @@ class BaseBackButton extends StatelessWidget {
             text: AppLocalizations.of(context)!.back,
             fontSize: fontSize16,
             fontWeight: FontWeight.w400,
-            textColor: AppColors.offWhite,
+            textColor: AppColors.blackColor,
           ),
         ],
       ),

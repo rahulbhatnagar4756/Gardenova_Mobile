@@ -28,7 +28,6 @@ class CreateRequestScreen extends GetWidget<RecommendedProfessionalsViewModel> {
             children: [
               BaseText(
                 text: AppLocalizations.of(context)!.selectService,
-                textColor: AppColors.offWhite,
                 fontSize: fontSize16,
               ),
               InkWell(
@@ -64,7 +63,6 @@ class CreateRequestScreen extends GetWidget<RecommendedProfessionalsViewModel> {
               ),
               BaseText(
                 text:  AppLocalizations.of(context)!.shortDescription,
-                textColor: AppColors.offWhite,
                 fontSize: fontSize16,
               ),
               BaseTextField(
@@ -84,7 +82,6 @@ class CreateRequestScreen extends GetWidget<RecommendedProfessionalsViewModel> {
               ),
               BaseText(
                 text:  AppLocalizations.of(context)!.sizeOfTheArea,
-                textColor: AppColors.offWhite,
                 fontSize: fontSize16,
               ),
               BaseTextField(

@@ -47,7 +47,7 @@ class SocialLoginLayout extends StatelessWidget {
     );
   }
 
-  socialLoginIcons(String socialLoginText, String appAsset) {
+  Widget socialLoginIcons(String socialLoginText, String appAsset) {
     return InkWell(
       onTap: () {
         if (type == AppStrings.login) {
@@ -80,8 +80,11 @@ class SocialLoginLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: spacerSize2,
           children: [
-            Image.asset(appAsset,width: 19.w,
-            height: 19.w,).paddingOnly(right: 2.w),
+            Image.asset(
+              appAsset,
+              width: 19.w,
+              height: 19.w,
+            ).paddingOnly(right: 2.w),
 
             BaseText(
               text: socialLoginText,

@@ -96,38 +96,45 @@ class LeadModel {
 }
 
 class LocationModel {
-  String? city;
-  String? state;
-  String? address;
   String? latitude;
   String? longitude;
+  String? country;
+  String? state;
+  String? city;
+  String? address;
+  String? postalCode;
 
   LocationModel({
-    this.city,
-    this.state,
-    this.address,
     this.latitude,
     this.longitude,
+    this.country,
+    this.state,
+    this.city,
+    this.address,
+    this.postalCode,
   });
 
   LocationModel.fromJson(dynamic json) {
-    city = json['city'];
-    state = json['state'];
-    address = json['address'];
     latitude = json['latitude']?.toString();
     longitude = json['longitude']?.toString();
+    country = json['country'];
+    state = json['state'];
+    city = json['city'];
+    address = json['address'];
+    postalCode = json['postalCode'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'city': city,
-      'state': state,
-      'address': address,
       'latitude': latitude,
       'longitude': longitude,
+      'country': country,
+      'state': state,
+      'city': city,
+      'address': address,
+      'postalCode': postalCode,
     };
   }
-
 }
 
 class RequestingUserModel {
@@ -159,7 +166,7 @@ class RequestingUserModel {
       'professionalProfileId': professionalProfileId.toString(),
       'description': description,
       "category": category,
-      "size":size
+      "size": size,
     };
   }
 }

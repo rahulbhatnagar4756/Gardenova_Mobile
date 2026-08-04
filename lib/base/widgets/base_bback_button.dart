@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_text.dart';
-import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 
 import '../../utils/constants/app_assets.dart';

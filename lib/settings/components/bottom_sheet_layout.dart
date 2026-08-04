@@ -20,50 +20,33 @@ class BottomSheetLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: Get.height * 0.63,
-      width: Get.width,
-      decoration: BoxDecoration(
-        color: AppColors.darkGreen,
-        border: Border(
-          top: BorderSide(
-            color: AppColors.offWhite10,
-            width: spacerSize2,
-            style: BorderStyle.solid,
-          ),
-        ),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(spacerSize28),
-          topRight: Radius.circular(spacerSize28),
-        ),
-      ),
-      child: isButtonVisible!
-          ? Center(
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  childLayout!,
-                  Visibility(
-                    visible: true,
-                    child: Positioned(
-                      child: BaseButton(
-                        buttonWidth: spacerSize200,
-                        backgroundColor: AppColors.burntGold,
-                        textColor: Colors.white,
-                        buttonLabel: buttonLabel ?? "",
-                        onPressed: onButtonTap,
-                      ),
+    return isButtonVisible!
+        ? Center(
+            child: Column(
+              children: [
+                Expanded(child: childLayout!),
+                Visibility(
+                  visible: true,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: BaseButton(
+                      bottomPadding: true,
+                      buttonWidth: spacerSize200,
+                      backgroundColor: AppColors.burntGold,
+                      textColor: Colors.white,
+                      buttonLabel: buttonLabel ?? "",
+                      onPressed: onButtonTap,
                     ),
                   ),
-                ],
-              ),
-            ).marginOnly(
-              left: spacerSize20,
-              right: spacerSize20,
-              bottom: spacerSize20,
-              top: spacerSize30,
-            )
-          : SizedBox(),
-    );
+                ),
+              ],
+            ),
+          ).marginOnly(
+            left: spacerSize20,
+            right: spacerSize20,
+            bottom: spacerSize20,
+            top: spacerSize30,
+          )
+        : SizedBox();
   }
 }

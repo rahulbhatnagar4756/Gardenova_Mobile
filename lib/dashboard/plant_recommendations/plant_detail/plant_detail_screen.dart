@@ -12,6 +12,8 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../../utils/utils.dart';
+
 class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
   const PlantDetailScreen({super.key});
 
@@ -34,7 +36,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
                 childWidget: Icon(
                   Icons.broken_image_rounded,
                   size: spacerSize40,
-                  color: AppColors.offWhite10,
+                  color: AppColors.liteGreyColor,
                 ),
               );
             },
@@ -45,6 +47,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
           CircularBottomAppBar(
             backgroundColor: AppColors.darkGreen,
             onSettingPressed: () {
+              Utils.callSettingBasicApi();
               Get.toNamed(Routes.settings);
             },
           ),
@@ -106,7 +109,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
     );
   }
 
-  titleAndDescriptionLayout({String? title, String? description}) {
+  Widget titleAndDescriptionLayout({String? title, String? description}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: spacerSize10,

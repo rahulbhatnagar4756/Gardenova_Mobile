@@ -48,3 +48,71 @@ String timeAgo(String dateTimeString) {
     return "${(diff.inDays / 365).floor()} years\t${AppLocalizations.of(Get.context!)!.ago}";
   }
 }
+
+String formatReminderTime(String scheduledTimeStr) {
+  DateTime? scheduledTime;
+
+  try {
+    scheduledTime = DateTime.parse(scheduledTimeStr);
+  } catch (e) {
+    // Fallback if it's not in ISO format (e.g. "2026-06-10 13:42:00")
+    // Adjust this pattern to match whatever format your string actually is
+    try {
+      scheduledTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(scheduledTimeStr);
+    } catch (e2) {
+      return ''; // or throw, depending on how strict you want to be
+    }
+  }
+  print("Before convert $scheduledTime");
+  print("Before after ${scheduledTime.toLocal()}");
+  scheduledTime.toLocal();
+
+  final now = DateTime.now();
+  final difference = scheduledTime.difference(now);
+  final isFuture = difference.inSeconds > 0;
+  final absDiff = difference.abs();
+
+  final today = DateTime(now.year, now.month, now.day);
+  final scheduledDay = DateTime(scheduledTime.year, scheduledTime.month, scheduledTime.day);
+  final dayDifference = today.difference(scheduledDay).inDays;
+
+  if (absDiff.inSeconds < 60) {
+    return isFuture ? 'In a few seconds' : 'Just now';
+  }
+
+  if (absDiff.inMinutes < 60) {
+    final value = absDiff.inMinutes;
+    final unit = value == 1 ? 'minute' : 'minutes';
+    return isFuture ? 'In $value $unit' : '$value $unit ago';
+  }
+
+  if (absDiff.inHours < 24) {
+    final value = absDiff.inHours;
+    final unit = value == 1 ? 'hour' : 'hours';
+    return isFuture ? 'In $value $unit' : '$value $unit ago';
+  }
+
+  if (!isFuture && dayDifference == 1) {
+    return 'Yesterday';
+  }
+
+  if (isFuture && dayDifference == -1) {
+    return 'Tomorrow';
+  }
+
+  final value = absDiff.inDays;
+  final unit = value == 1 ? 'day' : 'days';
+  return isFuture ? 'In $value $unit' : '$value $unit ago';
+}
+
+String convertTo12Hour(String time24) {
+  final parts = time24.split(':');
+  int hour = int.parse(parts[0]);
+  final minute = parts[1];
+
+  final period = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  if (hour == 0) hour = 12;
+
+  return '$hour:$minute $period';
+}

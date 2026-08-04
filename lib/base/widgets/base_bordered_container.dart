@@ -7,17 +7,17 @@ class BaseBorderedContainer extends StatelessWidget {
     super.key,
     this.height = spacerSize0,
     this.width = double.infinity,
-    this.backgroundColor = AppColors.darkGreen,
-    this.borderColor = AppColors.offWhite10,
+    this.backgroundColor,
+    this.borderColor ,
     this.childWidget,
-    this.borderRadius = spacerSize15,
+    this.borderRadius = spacerSize20,
     this.alignment = Alignment.topLeft,
     this.padding,
   });
 
   final double height;
-  final Color backgroundColor;
-  final Color borderColor;
+  final Color? backgroundColor;
+  final Color? borderColor;
   final Widget? childWidget;
   final double borderRadius;
   final EdgeInsets? padding;
@@ -32,11 +32,14 @@ class BaseBorderedContainer extends StatelessWidget {
       padding: padding,
       alignment: alignment ?? Alignment.topLeft,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: backgroundColor??AppColors.greenColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: borderColor, width: 1),
+        border: Border.all(color: borderColor??AppColors.greenColor.withValues(alpha: 0.2), width: 1),
       ),
       child: childWidget,
     );
   }
 }
+// color: AppColors.greenColor.withValues(alpha: 0.1),
+// borderRadius: BorderRadius.circular(spacerSize16),
+// border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.2)),

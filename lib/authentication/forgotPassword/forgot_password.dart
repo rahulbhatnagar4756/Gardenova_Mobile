@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
 import 'package:kasagardem/authentication/forgotPassword/forgot_password_view_model.dart';
@@ -10,10 +9,7 @@ import 'package:kasagardem/base/widgets/base_text_field.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
-import 'package:kasagardem/utils/constants/app_strings.dart';
-
-import '../../utils/routes.dart';
-import '../../utils/utils.dart';
+import '../../utils/validation_healper.dart';
 
 class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
   const ForgotPassword({super.key});
@@ -23,7 +19,7 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Stack(
@@ -44,32 +40,32 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
             ),
           ),
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: sendOtp(context),
-          )
+          Align(alignment: Alignment.bottomCenter, child: sendOtp(context)),
         ],
       ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
     );
   }
 
-  emailField(BuildContext context) {
+ Widget emailField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       hintColor: AppColors.mediumGrey,
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+      validator: ValidationHelper.validateEmail,
     );
   }
 
-  sendOtp(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 15.h),
+  Widget sendOtp(BuildContext context) {
+    return SizedBox(
+      // padding: EdgeInsets.only(bottom: 15.h),
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         textColor: AppColors.offWhite,
-        buttonLabel: AppLocalizations.of(context)!.sendOtp.toUpperCase(),
+        buttonLabel: AppLocalizations.of(context)!.sendOtp,
         onPressed: () {
           if (controller.sendOtpFormKey.currentState!.validate() &&
               RegExp(
@@ -77,10 +73,10 @@ class ForgotPassword extends GetWidget<ForgotPasswordViewModel> {
               ).hasMatch(controller.emailController.text)) {
             controller.sendOtp();
           } else {
-            BaseSnackBar.show(
-              title: AppStrings.exception,
-              message: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
-            );
+            // BaseSnackBar.show(
+            //   title: AppStrings.exception,
+            //   message: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+            // );
           }
         },
       ).marginOnly(top: spacerSize25),

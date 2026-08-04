@@ -9,6 +9,9 @@ class AppConfig {
   String baseUrl = "";
   MaterialColor primaryColor = Colors.blue;
   Flavor flavor = Flavor.dev;
+  String? adMobId;
+  String? bannerId;
+  String? rewardId;
 
   static AppConfig shared = AppConfig.create();
 
@@ -17,9 +20,28 @@ class AppConfig {
     String baseUrl = "",
     MaterialColor primaryColor = Colors.blue,
     Flavor flavor = Flavor.dev,
+    String? adMobId,
+    String? bannerId,
+    String? rewardId,
   }) {
-    return shared = AppConfig(appName, baseUrl, primaryColor, flavor);
+    return shared = AppConfig(
+      appName,
+      baseUrl,
+      primaryColor,
+      flavor,
+      adMobId,
+      bannerId,
+      rewardId,
+    );
   }
 
-  AppConfig(this.appName, this.baseUrl, this.primaryColor, this.flavor);
+  AppConfig(
+    this.appName,
+    this.baseUrl,
+    this.primaryColor,
+    this.flavor,
+    this.adMobId,
+    this.bannerId,
+    this.rewardId,
+  );
 }

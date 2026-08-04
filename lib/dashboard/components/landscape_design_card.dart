@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:kasagardem/dashboard/components/common_component_dashboardview.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
+import '../../utils/constants/app_assets.dart';
+
+class LandscapeDesignCard extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const LandscapeDesignCard({super.key, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: CommonComponentDashboardView(
+        title: AppStrings.aiLandscapeDesign,
+        description: AppStrings.designModernLushAndInspiringOutdoorSpacesWithAi,
+        image: AppAssets.aiLandscapeDesignIc,
+      ),
+    );
+
+    // return GestureDetector(
+    //   onTap: onTap,
+    //   child: BaseBorderedContainer(
+    //     height: spacerSize125,
+    //     width: double.infinity,
+    //     padding: const EdgeInsets.symmetric(
+    //       horizontal: spacerSize15,
+    //       vertical: spacerSize15,
+    //     ),
+    //     childWidget: Row(
+    //       children: [
+    //         /// 🔹 Icon Container
+    //         BaseBorderedContainer(
+    //           height: spacerSize60,
+    //           width: spacerSize60,
+    //           borderRadius: spacerSize100,
+    //           backgroundColor: AppColors.whiteColor,
+    //           borderColor: Colors.transparent,
+    //           alignment: Alignment.center,
+    //           padding: EdgeInsets.zero,
+    //           childWidget: Icon(
+    //             Icons.auto_awesome_mosaic_outlined,
+    //             size: 50.w,
+    //             color: AppColors.greenColor,
+    //           ),
+    //         ),
+
+    //         const SizedBox(width: spacerSize15),
+
+    //         /// 🔹 Text Section
+    //         const Expanded(
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               BaseText(
+    //                 text: AppStrings.aiLandscapeDesign,
+    //                 fontWeight: FontWeight.w600,
+    //                 fontSize: fontSize16,
+    //               ),
+    //               SizedBox(height: spacerSize5),
+    //               BaseText(
+    //                 text: AppStrings
+    //                     .designModernLushAndInspiringOutdoorSpacesWithAi,
+    //                 fontSize: fontSize12,
+    //                 fontWeight: FontWeight.w400,
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+
+    //         /// 🔹 Arrow Icon
+    //         Icon(
+    //           Icons.arrow_forward_ios,
+    //           size: 16,
+    //           color: AppColors.liteGreyColor,
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
+  }
+}

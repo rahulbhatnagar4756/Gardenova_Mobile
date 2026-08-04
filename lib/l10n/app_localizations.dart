@@ -188,13 +188,13 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterValidPhoneNo.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid phone no.'**
+  /// **'Please enter a valid phone no.'**
   String get pleaseEnterValidPhoneNo;
 
   /// No description provided for @pleaseEnterValidEmailId.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid emailId'**
+  /// **'Please enter a valid email Id'**
   String get pleaseEnterValidEmailId;
 
   /// No description provided for @iHaveAgreeTo.
@@ -218,13 +218,13 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicy.
   ///
   /// In en, this message translates to:
-  /// **'privacy policy'**
+  /// **'Privacy Policy'**
   String get privacyPolicy;
 
   /// No description provided for @orRegisterWith.
   ///
   /// In en, this message translates to:
-  /// **'Or Register With'**
+  /// **'or register with'**
   String get orRegisterWith;
 
   /// No description provided for @register.
@@ -260,13 +260,13 @@ abstract class AppLocalizations {
   /// No description provided for @logInNow.
   ///
   /// In en, this message translates to:
-  /// **'LogIn Now'**
+  /// **'Login Now'**
   String get logInNow;
 
   /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'LogIn'**
+  /// **'Login'**
   String get login;
 
   /// No description provided for @loginAccount.
@@ -281,11 +281,35 @@ abstract class AppLocalizations {
   /// **'Login an account to explore our app'**
   String get loginAccountSubTitle;
 
+  /// No description provided for @loginAccountProfessionalSubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to your professional account'**
+  String get loginAccountProfessionalSubTitle;
+
   /// No description provided for @forgotPassword.
   ///
   /// In en, this message translates to:
   /// **'Forgot password?'**
   String get forgotPassword;
+
+  /// No description provided for @loginWithOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with OTP'**
+  String get loginWithOtp;
+
+  /// No description provided for @loginWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Email'**
+  String get loginWithEmail;
+
+  /// No description provided for @loginMobileOtpSubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your mobile number to receive a one-time password'**
+  String get loginMobileOtpSubTitle;
 
   /// No description provided for @dontHaveAnAccount.
   ///
@@ -320,7 +344,7 @@ abstract class AppLocalizations {
   /// No description provided for @sendOtp.
   ///
   /// In en, this message translates to:
-  /// **'Send Otp'**
+  /// **'Send OTP'**
   String get sendOtp;
 
   /// No description provided for @enterYourOtp.
@@ -338,19 +362,19 @@ abstract class AppLocalizations {
   /// No description provided for @verifyOtp.
   ///
   /// In en, this message translates to:
-  /// **'Verify Otp'**
+  /// **'Verify OTP'**
   String get verifyOtp;
 
   /// No description provided for @didNotReceiveAnyCode.
   ///
   /// In en, this message translates to:
-  /// **'Didn’t Receive Any Code?'**
+  /// **'Didn’t receive any OTP?'**
   String get didNotReceiveAnyCode;
 
   /// No description provided for @resendCode.
   ///
   /// In en, this message translates to:
-  /// **'Resend Code'**
+  /// **'Resend'**
   String get resendCode;
 
   /// No description provided for @createPassword.
@@ -536,7 +560,7 @@ abstract class AppLocalizations {
   /// No description provided for @startDiagnosis.
   ///
   /// In en, this message translates to:
-  /// **'START DIAGNOSIS'**
+  /// **'Start Diagnosis'**
   String get startDiagnosis;
 
   /// No description provided for @questionOne.
@@ -689,6 +713,12 @@ abstract class AppLocalizations {
   /// **'View Report'**
   String get viewReport;
 
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
   /// No description provided for @pleaseSelectCity.
   ///
   /// In en, this message translates to:
@@ -710,7 +740,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginOrRegisterToContinue.
   ///
   /// In en, this message translates to:
-  /// **'Login or Register to continue'**
+  /// **'Create your account to continue'**
   String get loginOrRegisterToContinue;
 
   /// No description provided for @passwordCannotBeEmpty.
@@ -722,7 +752,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterValidName.
   ///
   /// In en, this message translates to:
-  /// **'Please enter valid name'**
+  /// **'Please enter a valid name'**
   String get pleaseEnterValidName;
 
   /// No description provided for @changePassword.
@@ -748,6 +778,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Refer A Friend'**
   String get referAFriend;
+
+  /// No description provided for @aboutApp.
+  ///
+  /// In en, this message translates to:
+  /// **'About App'**
+  String get aboutApp;
 
   /// No description provided for @logout.
   ///
@@ -838,6 +874,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automation Suggestions'**
   String get automationSuggestions;
+
+  /// No description provided for @aIPlantDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Plant Diagnosis'**
+  String get aIPlantDiagnosis;
 
   /// No description provided for @plantRecommendations.
   ///
@@ -1112,7 +1154,7 @@ abstract class AppLocalizations {
   /// No description provided for @noPlantsFound.
   ///
   /// In en, this message translates to:
-  /// **'No Plants Found !!!'**
+  /// **'No Plants Available'**
   String get noPlantsFound;
 
   /// No description provided for @seeAll.
@@ -1256,7 +1298,7 @@ abstract class AppLocalizations {
   /// No description provided for @kasagardemPlantDiagnosis.
   ///
   /// In en, this message translates to:
-  /// **'Kasagardem Plant Diagnosis'**
+  /// **'Gardenova Plant Diagnosis'**
   String get kasagardemPlantDiagnosis;
 
   /// No description provided for @automationFeature.
@@ -1304,7 +1346,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationPermissionsAreDenied.
   ///
   /// In en, this message translates to:
-  /// **'Location permissions are permanently denied. Please go to your app settings to enable them for Kasagardem.'**
+  /// **'Location permissions are permanently denied. Please go to your app settings to enable them for Gardenova.'**
   String get locationPermissionsAreDenied;
 
   /// No description provided for @openSettings.
@@ -1346,7 +1388,7 @@ abstract class AppLocalizations {
   /// No description provided for @siteKasagardem.
   ///
   /// In en, this message translates to:
-  /// **'Site kasagardem'**
+  /// **'Site Gardenova'**
   String get siteKasagardem;
 
   /// No description provided for @myProfile.
@@ -1664,7 +1706,7 @@ abstract class AppLocalizations {
   /// No description provided for @gotoMyPlants.
   ///
   /// In en, this message translates to:
-  /// **'Go to My Plants'**
+  /// **'Go to my plants'**
   String get gotoMyPlants;
 
   /// No description provided for @selectFrequency.
@@ -2030,7 +2072,7 @@ abstract class AppLocalizations {
   /// No description provided for @customerPlanDesc2.
   ///
   /// In en, this message translates to:
-  /// **'Do you want to continue receiving customers through Kasagardem?'**
+  /// **'Do you want to continue receiving customers through Gardenova?'**
   String get customerPlanDesc2;
 
   /// No description provided for @seePlans.
@@ -2066,7 +2108,7 @@ abstract class AppLocalizations {
   /// No description provided for @planType.
   ///
   /// In en, this message translates to:
-  /// **'planType'**
+  /// **'Plan Type'**
   String get planType;
 
   /// No description provided for @oneTime.
@@ -2084,7 +2126,7 @@ abstract class AppLocalizations {
   /// No description provided for @yourPlanEnds.
   ///
   /// In en, this message translates to:
-  /// **'yourPlanEnds'**
+  /// **'Your Plan Ends'**
   String get yourPlanEnds;
 
   /// No description provided for @yourPlanEndsDesc.
@@ -2092,6 +2134,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.'**
   String get yourPlanEndsDesc;
+
+  /// No description provided for @planExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Expired'**
+  String get planExpired;
+
+  /// No description provided for @planExpiredDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription has ended. Choose a plan to continue using premium features.'**
+  String get planExpiredDesc;
+
+  /// No description provided for @planExpiringToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring Today'**
+  String get planExpiringToday;
+
+  /// No description provided for @planExpiringTodayDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription ends today. Renew to keep premium features.'**
+  String get planExpiringTodayDesc;
 
   /// No description provided for @selectYourPlan.
   ///
@@ -2135,6 +2201,12 @@ abstract class AppLocalizations {
   /// **'Professional Status'**
   String get professionalStatus;
 
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
   /// No description provided for @renewPlan.
   ///
   /// In en, this message translates to:
@@ -2152,6 +2224,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exp'**
   String get exp;
+
+  /// No description provided for @expDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiration Date'**
+  String get expDate;
 
   /// No description provided for @deleteAccount.
   ///
@@ -2194,6 +2272,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find'**
   String get find;
+
+  /// No description provided for @plantAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Plant Diagnosis'**
+  String get plantAnalysis;
+
+  /// No description provided for @scanYourPlantForHealthAndDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan your plant to identify and check its health'**
+  String get scanYourPlantForHealthAndDetails;
+
+  /// No description provided for @noDataNa.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get noDataNa;
+
+  /// No description provided for @deletePlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Plant'**
+  String get deletePlant;
+
+  /// No description provided for @areYouSureYouWantToDeletePlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this plant? This action cannot be undone.'**
+  String get areYouSureYouWantToDeletePlant;
+
+  /// No description provided for @plantDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant deleted successfully'**
+  String get plantDeletedSuccessfully;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

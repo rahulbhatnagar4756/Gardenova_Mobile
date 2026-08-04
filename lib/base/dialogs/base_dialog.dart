@@ -54,10 +54,19 @@ class BaseDialog {
                     child: CommonClickWidget(
                       onTap: () => Get.back(),
                       child: Container(
-                        padding: EdgeInsets.only(top:15.w,right: 15.w,left: 15.w,bottom: 3.h),
+                        padding: EdgeInsets.only(
+                          top: 15.w,
+                          right: 15.w,
+                          left: 15.w,
+                          bottom: 3.h,
+                        ),
                         color: Colors.transparent,
-                        child: Image.asset(AppAssets.closeIc, width: 33.w,
-                          height: 33.w,),
+                        child: Image.asset(
+                          color: AppColors.greenColor,
+                          AppAssets.closeIc,
+                          width: 33.w,
+                          height: 33.w,
+                        ),
                       ),
                     ),
                   ),
@@ -70,13 +79,13 @@ class BaseDialog {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-
                         SuccessIconLayout(),
                         BaseText(
                           text: dialogTitle ?? "",
                           fontWeight: FontWeight.w600,
                           fontFamily: AppKeys.poppins,
                           fontSize: 25.sp,
+                          textAlign: TextAlign.center,
                         ),
                         SizedBox(height: spacerSize5),
                         BaseText(
@@ -87,7 +96,8 @@ class BaseDialog {
                           fontSize: 16.sp,
                           textAlign: TextAlign.center,
                         ).marginOnly(bottom: spacerSize30),
-                        SizedBox(width: double.infinity,
+                        SizedBox(
+                          width: double.infinity,
                           child: BaseButton(
                             onPressed: onButtonPressed,
                             backgroundColor: AppColors.burntGold,
@@ -114,47 +124,115 @@ class BaseDialog {
     required String title,
     required String description,
     required String buttonLabel,
+    Function()? onCancelDialog,
   }) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.darkGreen,
+        // insetPadding: EdgeInsets.symmetric(horizontal: spacerSize20),
+        backgroundColor: AppColors.whiteColor,
         title: BaseText(
           text: title,
           fontFamily: AppKeys.poppins,
           fontSize: fontSize22,
-          textColor: AppColors.offWhite,
+          // textColor: AppColors.offWhite,
           fontWeight: FontWeight.w700,
         ),
         content: BaseText(
           text: description,
           fontSize: fontSize16,
           textAlign: TextAlign.start,
-          textColor: AppColors.offWhite50,
+          textColor: AppColors.liteGreyColor,
           fontWeight: FontWeight.w400,
         ),
+        actionsOverflowButtonSpacing: 0,
+        actionsPadding: EdgeInsets.zero,
+        buttonPadding: EdgeInsets.zero,
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: BaseText(
-              text: AppLocalizations.of(context)!.cancel,
-              fontSize: fontSize14,
-              textColor: AppColors.offWhite50,
-              fontWeight: FontWeight.w600,
+            child: Container(
+              // color: Colors.red,
+              padding: EdgeInsets.only(
+                left: 10.w,
+                right: 10.w,
+                top: 15.h,
+                bottom: 15.h,
+              ),
+              child: BaseText(
+                text: AppLocalizations.of(context)!.cancel,
+                fontSize: fontSize14,
+                textColor: AppColors.liteGreyColor,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
 
+          // SizedBox(width: 5.w),
           TextButton(
             isSemanticButton: true,
             onPressed: onButtonPressed,
-            child: BaseText(
-              text: buttonLabel,
-              fontSize: fontSize14,
-              textColor: AppColors.burntGold,
-              fontWeight: FontWeight.w800,
+            child: Container(
+              // color: Colors.yellow,
+              padding: EdgeInsets.only(
+                right: 10.w,
+                left: 10.w,
+                top: 15.h,
+                bottom: 15.h,
+              ),
+              child: BaseText(
+                text: buttonLabel,
+                fontSize: fontSize14,
+                textColor: AppColors.greenColor,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
         ],
+      ),
+    ).then((value) {
+      debugPrint('onCancel diaog called');
+      onCancelDialog?.call();
+    });
+  }
+
+  static void showUnauthorizedDialog({
+    required BuildContext context,
+    required VoidCallback onLoginPressed,
+    required String message,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // ❌ can't close by tapping outside
+      builder: (context) => PopScope(
+        canPop: false, // ❌ disable back button
+        child: AlertDialog(
+          backgroundColor: AppColors.whiteColor,
+          title: BaseText(
+            text: 'Session Expired',
+            fontFamily: AppKeys.poppins,
+            fontSize: fontSize22,
+            fontWeight: FontWeight.w700,
+          ),
+          content: BaseText(
+            text: message,
+            fontSize: fontSize16,
+            textAlign: TextAlign.start,
+            textColor: AppColors.liteGreyColor,
+            fontWeight: FontWeight.w400,
+          ),
+          actions: [
+            TextButton(
+              onPressed: onLoginPressed,
+              child: BaseText(
+                text: 'Login',
+                fontSize: fontSize14,
+                textColor: AppColors.greenColor,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -39,3 +39,12 @@ class NotFoundException implements Exception {
     return '${AppStrings.notFoundException}: $message';
   }
 }
+class ConflictException implements Exception {
+  final String message;
+  ConflictException(this.message);
+
+  @override
+  String toString() {
+    return '${AppStrings.fetchDataException}: $message';
+  }
+}

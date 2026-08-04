@@ -45,18 +45,17 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               text: "${AppLocalizations.of(context)!.companyDetails}:",
               textAlign: TextAlign.center,
               fontFamily: AppKeys.poppins,
-              textColor: AppColors.offWhite,
               fontSize: fontSize20,
               fontWeight: FontWeight.w500,
             ).marginOnly(top: spacerSize10, bottom: spacerSize10),
 
             Container(
               padding: EdgeInsets.symmetric(horizontal: spacerSize10),
-              margin: EdgeInsets.only( bottom: spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
               decoration: BoxDecoration(
-                color: AppColors.darkGreen,
+                color: AppColors.appColor,
                 borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.offWhite10),
+                border: Border.all(color: AppColors.liteGreyColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,51 +86,51 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                 ],
               ),
             ),
-            if(leadData!.location!.address!=null)
-            BaseText(
-              text: "${AppLocalizations.of(context)!.location}:",
-              textAlign: TextAlign.center,
-              fontFamily: AppKeys.poppins,
-              textColor: AppColors.offWhite,
-              fontSize: fontSize20,
-              fontWeight: FontWeight.w500,
-            ).marginOnly(top: spacerSize10, bottom: spacerSize10),
+            if (leadData!.location!.address != null)
+              BaseText(
+                text: "${AppLocalizations.of(context)!.location}:",
+                textAlign: TextAlign.center,
+                fontFamily: AppKeys.poppins,
 
-            if(leadData!.location!.address!=null)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: spacerSize10),
-              decoration: BoxDecoration(
-                color: AppColors.darkGreen,
-                borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.offWhite10),
+                fontSize: fontSize20,
+                fontWeight: FontWeight.w500,
+              ).marginOnly(top: spacerSize10, bottom: spacerSize10),
+
+            if (leadData!.location!.address != null)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: spacerSize10),
+                decoration: BoxDecoration(
+                  color: AppColors.appColor,
+                  borderRadius: BorderRadius.circular(spacerSize12),
+                  border: Border.all(color: AppColors.liteGreyColor),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildItem(
+                      "${AppLocalizations.of(context)!.city}:",
+                      leadData!.location?.city ?? "",
+                    ),
+                    buildItem(
+                      "${AppLocalizations.of(context)!.state}:",
+                      leadData!.location?.state ?? "",
+                    ),
+                    buildItem(
+                      "${AppLocalizations.of(context)!.address}:",
+                      leadData!.location?.address ?? "",
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildItem(
-                    "${AppLocalizations.of(context)!.city}:",
-                    leadData!.location?.city ?? "",
-                  ),
-                  buildItem(
-                    "${AppLocalizations.of(context)!.state}:",
-                    leadData!.location?.state ?? "",
-                  ),
-                  buildItem(
-                    "${AppLocalizations.of(context)!.address}:",
-                    leadData!.location?.address ?? "",
-                  ),
-                ],
-              ),
-            ),
 
             Container(
               padding: EdgeInsets.all(spacerSize10),
-              margin: EdgeInsets.only(bottom:spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
-                color: AppColors.darkGreen,
+                color: AppColors.appColor,
                 borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.offWhite10),
+                border: Border.all(color: AppColors.liteGreyColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,14 +138,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   BaseText(
                     text: "${AppLocalizations.of(context)!.description}:",
                     fontFamily: AppKeys.poppins,
-                    textColor: AppColors.offWhite,
+
                     fontSize: fontSize20,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                   BaseText(
                     text: leadData!.requestingUser!.description ?? "",
                     fontFamily: AppKeys.inter,
-                    textColor: AppColors.offWhite70,
+                    textColor: AppColors.liteGreyColor,
                     fontSize: fontSize14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -155,13 +154,13 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             ),
             Container(
               padding: EdgeInsets.all(spacerSize10),
-              margin: EdgeInsets.only(bottom:spacerSize10),
+              margin: EdgeInsets.only(bottom: spacerSize10),
 
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
-                color: AppColors.darkGreen,
+                color: AppColors.appColor,
                 borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.offWhite10),
+                border: Border.all(color: AppColors.liteGreyColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,14 +168,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   BaseText(
                     text: "${AppLocalizations.of(context)!.serviceRequested}:",
                     fontFamily: AppKeys.poppins,
-                    textColor: AppColors.offWhite,
+
                     fontSize: fontSize20,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ).marginOnly(top: spacerSize10, bottom: spacerSize10),
                   BaseText(
                     text: leadData!.requestingUser!.category ?? "",
                     fontFamily: AppKeys.inter,
-                    textColor: AppColors.offWhite70,
+                    textColor: AppColors.liteGreyColor,
                     fontSize: fontSize14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -187,9 +186,9 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
               padding: EdgeInsets.all(spacerSize10),
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
-                color: AppColors.darkGreen,
+                color: AppColors.appColor,
                 borderRadius: BorderRadius.circular(spacerSize12),
-                border: Border.all(color: AppColors.offWhite10),
+                border: Border.all(color: AppColors.liteGreyColor),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,24 +196,20 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
                   BaseText(
                     text: "${AppLocalizations.of(context)!.sizeOfTheArea}:",
                     fontFamily: AppKeys.poppins,
-                    textColor: AppColors.offWhite,
+
                     fontSize: fontSize20,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ).marginOnly(top: spacerSize10, bottom: spacerSize10),
                   BaseText(
                     text: leadData!.requestingUser!.size ?? "",
                     fontFamily: AppKeys.inter,
-                    textColor: AppColors.offWhite70,
+                    textColor: AppColors.liteGreyColor,
                     fontSize: fontSize14,
                     fontWeight: FontWeight.w500,
                   ),
                 ],
               ),
             ),
-
-
-
-
           ],
         ),
       ),
@@ -232,15 +227,14 @@ class _LeadDetailsScreenState extends State<LeadDetailsScreen> {
             text: title,
             textAlign: TextAlign.center,
             fontFamily: AppKeys.inter,
-            textColor: AppColors.offWhite,
             fontSize: fontSize14,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
           Expanded(
             child: BaseText(
               text: value.isEmpty ? "-" : value,
               fontFamily: AppKeys.inter,
-              textColor: AppColors.offWhite70,
+              textColor: AppColors.liteGreyColor,
               fontSize: fontSize14,
               fontWeight: FontWeight.w500,
             ),

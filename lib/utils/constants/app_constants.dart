@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 
+import '../../base/widgets/base_text.dart';
+
 var enUS = Locale("en", "US");
 var ptBR = Locale("pt", "BR");
 String userRoleCode = "U";
-String appName = "Kasagardem";
+String appName = "Gardenova";
 
 /*FontSize*/
 const double fontSize9 = 9;
@@ -89,25 +92,117 @@ const double spacerSize250 = 250;
 const double spacerSize300 = 300;
 const double spacerSize310 = 310;
 const double spacerSize320 = 320;
+const double spacerSize335 = 335;
+const double spacerSize345 = 345;
 const double spacerSize350 = 350;
 const double spacerSize370 = 370;
 const double spacerSize400 = 400;
 const double spacerSize500 = 500;
 const double spacerSize600 = 600;
+const double defaultLatitude = 30.70828;
+const double defaultLongitude = 76.68834;
 
 double deviceWidth = MediaQuery.of(Get.context!).size.width;
 double deviceHeight = MediaQuery.of(Get.context!).size.height;
 
 class BaseSnackBar {
-  static show({String title = '', String message = ''}) {
+  static void show({String title = '', String message = ''}) {
+    if (title.trim().isEmpty && message.trim().isEmpty) {
+      return;
+    }
+
+    if (Get.isSnackbarOpen) {
+      Get.closeCurrentSnackbar();
+    }
+
+    void dismiss() {
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+    }
+
     Get.snackbar(
-      title,
-      message,
-      shouldIconPulse: true,
-      boxShadows: [BoxShadow(color: AppColors.burntGold, spreadRadius: 1)],
+      '',
+      '',
       backgroundColor: AppColors.darkGreen,
-      colorText: AppColors.offWhite,
-      icon: Image.asset(AppAssets.appLogo).marginOnly(left: spacerSize5),
+      snackPosition: SnackPosition.TOP,
+      borderRadius: 14,
+      padding: EdgeInsets.only(left: 12.w, bottom: 10.h, top: 4.h),
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+      isDismissible: true,
+      onTap: (_) => dismiss(),
+
+      titleText: const SizedBox.shrink(),
+
+      messageText: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: dismiss,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: [
+            /// ICON
+            Container(
+              margin: EdgeInsets.only(right: 11.w),
+              padding: EdgeInsets.all(5.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.greenColor.withValues(alpha: 0.5),
+              ),
+              height: 40.w,
+              width: 40.w,
+              child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain),
+            ),
+
+            /// TEXT
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BaseText(
+                    text: title.trim(),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                    textColor: AppColors.offWhite,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  BaseText(
+                    text: message.trim(),
+                    fontWeight: FontWeight.w400,
+                    fontSize: (11.2).sp,
+                    textColor: AppColors.offWhite,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: dismiss,
+              child: Container(
+                padding: EdgeInsets.only(
+                  left: 12.w,
+                  bottom: 10.h,
+                  top: 0.h,
+                  right: 10.w,
+                ),
+                color: Colors.transparent,
+                child: Icon(Icons.close, color: AppColors.offWhite, size: 20.w),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      boxShadows: [
+        BoxShadow(
+          color: AppColors.greenColor.withValues(alpha: 0.3),
+          blurRadius: 10,
+          offset: Offset(0, 4),
+        ),
+      ],
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/recommended_professionals/recommended_professionals_repository.dart';
-
 import '../base/dialogs/base_dialog.dart';
 import '../l10n/app_localizations.dart';
 import '../professional/professionalDashBoard/model/professional_dashboard_model.dart';
@@ -26,8 +25,6 @@ class RecommendedProfessionalsViewModel extends GetxController {
   RxList<ProfessionalCompany> selectedProfessionalsList =
       <ProfessionalCompany>[].obs;
 
-  // RxList<ProfessionalRecommendations> professionalsList = <ProfessionalRecommendations>[].obs;
-  //RxList<ProfessionalRecommendations> selectedProfessionalsList = <ProfessionalRecommendations>[].obs;
   final RxString selectedService = ''.obs;
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController serviceController = TextEditingController();
@@ -90,22 +87,19 @@ class RecommendedProfessionalsViewModel extends GetxController {
   Future getAllProfessionalList() async {
     final response = await _recommendedProfessionalRepository
         .fetchProfessionalList(
-        latitude: lat,
-        longitude:long,
-        pageNumber: pageNumber.toString(),
-        pageSize: pageSize.toString(),
-        category: selectedService.value
-
-    );
+          latitude: lat,
+          longitude: long,
+          pageNumber: pageNumber.toString(),
+          pageSize: pageSize.toString(),
+          category: selectedService.value,
+        );
     if (response != null) {
       final apiResponse = ApiResponse.fromJson(response);
       final professionalResponse = apiResponse.data;
       professionalsList.addAll(professionalResponse?.data ?? []);
-      isLoadMoreVisible.value =true;
-
+      isLoadMoreVisible.value = true;
     }
   }
-
 
   void navigateToNext(int index) {
     debugPrint("index:::$index");
@@ -143,7 +137,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     }
   }
 
-  onTapToSelect(int index) {
+  void onTapToSelect(int index) {
     professionalsList[index].isSelected = !professionalsList[index].isSelected;
     professionalsList.refresh();
     selectedProfessional(index);
@@ -207,7 +201,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     isLoading.value = false;
   }*/
 
-  checkLogin() {
+  void checkLogin() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
       //  createLead();
       createLeadForProfessional();
@@ -216,7 +210,7 @@ class RecommendedProfessionalsViewModel extends GetxController {
     }
   }
 
-  showLoginDialog() {
+  void showLoginDialog() {
     BaseDialog.showAlertDialog(
       context: Get.context!,
       onButtonPressed: () {

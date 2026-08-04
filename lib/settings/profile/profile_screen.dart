@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_app_bar.dart';
+import 'package:kasagardem/base/open_image_pciker_bottom_sheet.dart';
+import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/settings/components/bottom_sheet_layout.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
-import 'package:kasagardem/settings/components/text_field_layout.dart';
+import 'package:kasagardem/settings/components/settings_item_layout.dart';
+import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
+import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_strings.dart';
+import 'package:kasagardem/utils/routes.dart';
 
-import '../../utils/constants/app_keys.dart';
+import '../../base/widgets/subscription_status_view_widget.dart';
 
 class ProfileScreen extends GetWidget<SettingsViewModel> {
   const ProfileScreen({super.key});
@@ -17,115 +21,113 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkGreen,
-      appBar: BaseAppBar(
-        isAppIconVisible: false,
-        title: AppLocalizations.of(context)!.editProfile,
-        toolbarHeightScale: 1,
-      ),
-      body: ProfileIconLayout(isProfileEditable: true),
-
-      bottomSheet: controller.screenType.value == AppKeys.professional
-          ? BottomSheetLayout(
-              childLayout: Obx(
-                () => SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: spacerSize100),
-                  child: Column(
-                    children: [
-                      TextFieldLayout(
-                        editTextTitle: AppLocalizations.of(context)!.yourName,
-                        textEditingController: TextEditingController(
-                          text: controller.name.value,
-                        ),
-                        isTextFieldEnabled: false,
-                      ),
-
-                      TextFieldLayout(
-                        editTextTitle: AppLocalizations.of(
-                          context,
-                        )!.yourEmailId,
-                        textEditingController: TextEditingController(
-                          text: controller.email.value,
-                        ),
-                        isTextFieldEnabled: false,
-                      ),
-
-                      if (controller.screenType.value == AppKeys.professional)
-                        TextFieldLayout(
-                          editTextTitle: AppLocalizations.of(
-                            context,
-                          )!.description,
-                          textEditingController:
-                              controller.descriptionController,
-                          isTextFieldEnabled: true,
-                        ),
-
-                      if (controller.screenType.value == AppKeys.professional)
-                        TextFieldLayout(
-                          editTextTitle: AppLocalizations.of(context)!.region,
-                          textEditingController: controller.regionController,
-                          isTextFieldEnabled: true,
-                        ),
-
-                      if (controller.screenType.value == AppKeys.professional)
-                        TextFieldLayout(
-                          editTextTitle: AppLocalizations.of(
-                            context,
-                          )!.specialty,
-                          textEditingController: controller.specialtyController,
-                          isTextFieldEnabled: true,
-                        ),
-                    ],
-                  ),
+      backgroundColor: AppColors.greenColor,
+      body: SafeArea(
+        child: Container(
+          height: double.infinity,
+          color: AppColors.offWhite,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ProfileIconLayout(
+                  isEnableEditable: true,
+                  isProfileEditable: false,
+                  onClickEditPencil: () {
+                    OpenImagePickerBottomSheet(
+                      onPickImage: (isCamera) {
+                        controller.pickImage(isCamera: isCamera, directApiCall: true);
+                      },
+                      onThenCall: () {},
+                    ).show();
+                  },
+                  onClickPictureView: () {
+                    String profileImage = controller.profileImage.value;
+                    if (profileImage.trim().isEmpty) {
+                      profileImage = AppAssets.appLogo;
+                    }
+                    FullScreenImageView.open(
+                      imageUrl: profileImage,
+                      heroTag: "profile_image_appbar",
+                    );
+                  },
+                  title: AppLocalizations.of(context)!.myProfile,
                 ),
-              ),
-
-              buttonLabel: AppLocalizations.of(
-                context,
-              )!.saveChanges.toUpperCase(),
-              onButtonTap: () {
-                if (controller.screenType.value == AppKeys.professional) {
-                  controller.updateProfessionalProfile();
-                } else {
-                  controller.updateProfile();
-                }
-              },
-            )
-          : BottomSheetLayout(
-              childLayout: Obx(
-                () => Column(
-                  children: [
-                    TextFieldLayout(
-                      editTextTitle: AppLocalizations.of(context)!.yourName,
-                      textEditingController: TextEditingController(
-                        text: controller.name.value,
-                      ),
-                      hintText: AppLocalizations.of(context)!.enterYourName,
-                      isTextFieldEnabled: false,
+                SizedBox(height: 24.h),
+                subscriptionPlanCard(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: buildCategoryCard([
+                    SettingsItemLayout(
+                      icon: Icons.person_outline_rounded,
+                      title: AppLocalizations.of(context)!.editProfile,
+                      subtitle: "Update name, email and phone",
+                      onTap: () {
+                        controller.getProfileDetail(showloader: true);
+                        Get.toNamed(Routes.editProfile);
+                      },
                     ),
-
-                    TextFieldLayout(
-                      editTextTitle: AppLocalizations.of(context)!.yourEmailId,
-                      textEditingController: TextEditingController(
-                        text: controller.email.value,
+                    Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
+                    Obx(
+                      () => SettingsItemLayout(
+                        icon: Icons.lock_outline_rounded,
+                        title: controller.isEmailLogedInUser.value
+                            ? AppLocalizations.of(context)!.changePassword
+                            : AppStrings.setPwd,
+                        subtitle: controller.isEmailLogedInUser.value
+                            ? AppStrings.changePwdMsg
+                            : AppStrings.setPwdMsg,
+                        onTap: () {
+                          controller.confirmPasswordController.clear();
+                          controller.newPasswordController.clear();
+                          Get.toNamed(Routes.changePassword);
+                        },
                       ),
-                      isTextFieldEnabled: false,
-                      hintText: AppLocalizations.of(context)!.enterYourEmail,
                     ),
-                  ],
+                    Divider(color: Colors.grey.shade100, height: 1, thickness: 1),
+                    SettingsItemLayout(
+                      icon: Icons.history,
+                      title: AppStrings.changeDiagnosis,
+                      subtitle: "Retake your evaluation answers",
+                      onTap: () => Get.toNamed(Routes.question, arguments: true),
+                    ),
+                  ]),
                 ),
-              ),
-              buttonLabel: AppLocalizations.of(
-                context,
-              )!.saveChanges.toUpperCase(),
-              onButtonTap: () {
-                if (controller.screenType.value == AppKeys.professional) {
-                  controller.updateProfessionalProfile();
-                } else {
-                  controller.updateProfile();
-                }
-              },
+              ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCategoryCard(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget subscriptionPlanCard() {
+    return Obx(
+      () => SubscriptionStatusViewWidget(
+        controller.currentSubscriptionStatusModel.value ?? SubscriptionStatusUiModel(),
+        showCancelAction: controller.canCancelSubscription,
+        isCancellingSubscription: controller.isCancellingSubscription.value,
+        onCancelSubscription: controller.showCancelSubscriptionDialog,
+        onUpgradeRefresh: () {
+          controller.getProfileDetail();
+        },
+      ).paddingSymmetric(horizontal: 16.w),
     );
   }
 }

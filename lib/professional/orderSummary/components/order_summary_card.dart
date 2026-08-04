@@ -81,35 +81,48 @@ class OrderSummaryCard extends StatelessWidget {
           Divider(
             color: Colors.white12,
           ).marginZero.marginOnly(bottom: spacerSize10),
-          FeatureItemCard(
-            title:
-                "${controller.selectedPlanData!.citiesCoverage}\t${AppLocalizations.of(context)!.citiesCoverage}",
-          ),
-          Visibility(
-            visible: controller.selectedPlanData!.appearInSearch!,
-            child: FeatureItemCard(
-              title: AppLocalizations.of(context)!.appearInSearchResults,
+          if (controller.selectedPlanData?.features != null &&
+              controller.selectedPlanData!.features!.isNotEmpty)
+            ...controller.selectedPlanData!.features!
+                .where((f) => f.enabled == true)
+                .map((feature) {
+              return FeatureItemCard(
+                title: feature.displayLabel(
+                  isMonthly: controller.isTabMonthly.value,
+                ),
+              );
+            })
+          else ...[
+            FeatureItemCard(
+              title:
+                  "${controller.selectedPlanData!.citiesCoverage}\t${AppLocalizations.of(context)!.citiesCoverage}",
             ),
-          ),
-          FeatureItemCard(
-            title:
-                (controller.selectedPlanData!.leadsLimit == null ||
-                    controller.selectedPlanData!.leadsLimit == 0)
-                ? AppLocalizations.of(context)!.unlimitedLeads
-                : "${controller.selectedPlanData!.leadsLimit.toString()}\t Leads",
-          ),
-          Visibility(
-            visible: controller.selectedPlanData!.premiumProfileBadge!,
-            child: FeatureItemCard(
-              title: AppLocalizations.of(context)!.premiumProfileBadge,
+            Visibility(
+              visible: controller.selectedPlanData!.appearInSearch!,
+              child: FeatureItemCard(
+                title: AppLocalizations.of(context)!.appearInSearchResults,
+              ),
             ),
-          ),
-          Visibility(
-            visible: controller.selectedPlanData!.priorityCustomerSupport!,
-            child: FeatureItemCard(
-              title: AppLocalizations.of(context)!.priorityCustomerSupport,
+            FeatureItemCard(
+              title:
+                  (controller.selectedPlanData!.leadsLimit == null ||
+                      controller.selectedPlanData!.leadsLimit == 0)
+                  ? AppLocalizations.of(context)!.unlimitedLeads
+                  : "${controller.selectedPlanData!.leadsLimit.toString()}\t Leads",
             ),
-          ),
+            Visibility(
+              visible: controller.selectedPlanData!.premiumProfileBadge!,
+              child: FeatureItemCard(
+                title: AppLocalizations.of(context)!.premiumProfileBadge,
+              ),
+            ),
+            Visibility(
+              visible: controller.selectedPlanData!.priorityCustomerSupport!,
+              child: FeatureItemCard(
+                title: AppLocalizations.of(context)!.priorityCustomerSupport,
+              ),
+            ),
+          ],
 
           Divider(
             color: Colors.white12,

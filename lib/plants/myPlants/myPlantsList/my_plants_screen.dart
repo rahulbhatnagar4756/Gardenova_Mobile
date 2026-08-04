@@ -1,164 +1,254 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:kasagardem/base/widgets/base_back_button.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
+import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
+import 'package:kasagardem/services/admob_service.dart';
 
+import '../../../base/dialogs/base_dialog.dart';
 import '../../../base/widgets/base_app_bar.dart';
+import '../../../base/widgets/base_button.dart';
+import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/base_text.dart';
 import '../../../base/widgets/circular_bottom_app_bar.dart';
 import '../../../dashboard/components/full_drawer.dart';
-import '../../../generated/assets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../../utils/constants/app_strings.dart';
 import '../../../utils/routes.dart';
-import 'components/my_plants_list.dart';
+import '../../../utils/utils.dart';
+import 'components/my_plants_list_item.dart';
 import 'my_plants_controller.dart';
 
-class MyPlantsScreen extends GetWidget<MyPlantsController> {
+class MyPlantsScreen extends GetView<MyPlantsController> {
   const MyPlantsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
-        backgroundColor: AppColors.appColor,
-        drawer: FullScreenDrawer(
-          onTap: (index) {
-            controller.navigateToNext(index);
-          },
-        ),
-        appBar: controller.isUserLoggedIn.value
-            ? PreferredSize(
-            preferredSize: Size.fromHeight(spacerSize80),
-            child: Builder(
-              builder: (context) {
-                return CircularBottomAppBar(
-                  showMenuIcon: true,
-                  onSettingPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                );
-              },
-            ))
-            : BaseAppBar(isBackButtonVisible: false),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            BaseBackButton(),
-          ],
-        ).marginOnly(
-          bottom: spacerSize15,
-        ),
+    return Scaffold(
+      backgroundColor: AppColors.appColor,
 
-        body: RefreshIndicator(
-          onRefresh: () async {
-            await controller.callGetMyPlantListApi();
-          },
-          child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(
-              horizontal: spacerSize20,
-              vertical: spacerSize20,
-            ),
-            child: Column(
-              spacing: spacerSize12,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                titleWithSearch(context),
-                controller.myPlantList.isNotEmpty
-                    ? Expanded(child: MyPlantsList(controller: controller))
-                    : Expanded(child: _emptyState(context)),
-              ],
+      /// 🔹 Drawer
+      drawer: FullScreenDrawer(
+        onTap: (index) {
+          controller.navigateToNext(index);
+        },
+      ),
+
+      /// 🔹 AppBar (only this needs Obx)
+      appBar: PreferredSize(
+        // preferredSize: Size.fromHeight(spacerSize80),
+        preferredSize: Size.fromHeight(110.h + 30.h),
+        child: Obx(() {
+          return controller.isUserLoggedIn.value
+              ? Builder(
+                  builder: (context) {
+                    return CircularBottomAppBar(
+                      isBackButtonVisible: true,
+                      showMenuIcon: true,
+                      onSettingPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  },
+                )
+              : BaseAppBar(isBackButtonVisible: false);
+        }),
+      ),
+
+      /// 🔹 BODY
+      body: Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                controller.pageNumber.value = 1;
+                controller.callGetMyPlantListApi();
+              },
+
+              /// 🚀 IMPORTANT: Obx wraps CustomScrollView to handle slivers correctly
+              child: Obx(
+                () => CustomScrollView(
+                  controller: controller.scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                  slivers: [
+                    /// 🔹 HEADER
+                    SliverPersistentHeader(
+                      floating: true,
+                      pinned: false,
+                      delegate: MyPlantsHeaderDelegate(
+                        minHeight: 210.h,
+                        maxHeight: 210.h,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+                          child: titleWithSearch(context),
+                        ),
+                      ),
+                    ),
+
+                    /// 🔹 LIST / EMPTY / LOADING
+                    if (controller.myPlantList.isEmpty && controller.isLoading.value)
+                      _shimmerList()
+                    else if (controller.myPlantList.isEmpty)
+                      SliverFillRemaining(hasScrollBody: false, child: _emptyState(context))
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.only(
+                          left: spacerSize20,
+                          right: spacerSize20,
+                          bottom: 25.h,
+                        ),
+                        sliver: SliverGrid(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            var item = controller.myPlantList[index];
+
+                            return MyPlantsListItem(
+                              item: item,
+                              onTap: () {
+                                Get.toNamed(Routes.myPlantsDetails, arguments: item.plantId)?.then((
+                                  value,
+                                ) {
+                                  Utils.hideKeyboard();
+                                });
+                              },
+                              onDelete: () {
+                                showDeleteConfirmationDialog(context, item.plantId);
+                              },
+                            );
+                          }, childCount: controller.myPlantList.length),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: .81,
+                            crossAxisSpacing: 8.w,
+                            mainAxisSpacing: 8.w,
+                          ),
+                        ),
+                      ),
+
+                    /// 🔹 LOAD MORE LOADER
+                    SliverToBoxAdapter(
+                      child: controller.isLoadMoreRunning.value
+                          ? Padding(
+                              padding: EdgeInsets.only(
+                                left: spacerSize20,
+                                right: spacerSize20,
+                                bottom: spacerSize20,
+                              ),
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: .84,
+                                  crossAxisSpacing: 8.w,
+                                  mainAxisSpacing: 8.w,
+                                ),
+                                itemCount: 2,
+                                itemBuilder: (context, index) => _shimmerListItem(),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          Obx(() {
+            if (AdMobService.instance.shouldShowBanners &&
+                controller.isAdLoaded.value &&
+                controller.bannerAd != null) {
+              return Container(
+                alignment: Alignment.center,
+                width: controller.bannerAd!.size.width.toDouble().w,
+                height: controller.bannerAd!.size.height.toDouble().h,
+                child: AdWidget(ad: controller.bannerAd!),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
+        ],
       ),
     );
   }
 
+  /// 🔹 HEADER UI
   Widget titleWithSearch(BuildContext context) {
-    return Column(
-      spacing: spacerSize10,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BaseText(
-              text: AppLocalizations.of(context)!.myPlants,
-              textAlign: TextAlign.center,
-              fontFamily: AppKeys.poppins,
-              textColor: AppColors.offWhite,
-              fontSize: fontSize20,
-              fontWeight: FontWeight.w500,
-            ),
-            InkWell(
-              onTap: () {
-                Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-                  controller.callGetMyPlantListApi();
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.all(spacerSize10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.lightGold, AppColors.burntGold],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+    return Container(
+      color: AppColors.appColor,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: spacerSize20),
+                BaseText(
+                  text: AppLocalizations.of(context)!.myPlants,
+                  fontFamily: AppKeys.poppins,
+                  fontSize: fontSize20,
+                  fontWeight: FontWeight.w600,
+                ),
+                SizedBox(height: spacerSize5),
+
+                Obx(
+                  () => BaseText(
+                    text:
+                        "${controller.myPlantList.length} ${controller.myPlantList.length == 1 ? AppLocalizations.of(context)!.plant : controller.plantPlural} ${AppLocalizations.of(context)!.andCounting}!",
+                    fontFamily: AppKeys.inter,
+                    textColor: AppColors.liteGreyColor,
                   ),
-                  borderRadius: BorderRadius.circular(spacerSize12),
                 ),
-                child: Image.asset(
-                  Assets.imagesAdd,
-                  height: spacerSize16,
-                  width: spacerSize16,
+                SizedBox(height: spacerSize10),
+
+                BaseButton(
+                  buttonWidth: double.infinity,
+                  buttonLabel: AppLocalizations.of(context)!.addPlant,
+                  onPressed: () {
+                    Get.toNamed(Routes.allPlantsScreen)?.then((value) {
+                      Utils.hideKeyboard();
+                      // controller.callGetMyPlantListApi();
+                    });
+                  },
                 ),
-              ),
+
+                SizedBox(height: spacerSize25),
+
+                BaseTextField(
+                  textEditingController: controller.searchController,
+                  hintText: AppLocalizations.of(context)!.searchYourPlant,
+                  suffixIcon: Icon(Icons.search, color: AppColors.liteGreyColor),
+                  onChanged: (value) {
+                    controller.pageNumber.value = 1;
+                    controller.debouncer.call(() {
+                      controller.callGetMyPlantListApi(searchName: value);
+                    });
+                  },
+                ),
+              ],
             ),
-          ],
-        ).marginOnly(top: spacerSize10),
-        BaseText(
-          text: "${controller.myPlantList.length} "
-              "${controller.myPlantList.length == 1
-              ? AppLocalizations.of(context)!.plant
-              : controller.plantPlural} "
-              "${AppLocalizations.of(context)!.andCounting}!",
-
-          textAlign: TextAlign.center,
-
-          fontFamily: AppKeys.inter,
-          textColor: AppColors.offWhite70,
-          fontSize: fontSize14,
-          fontWeight: FontWeight.w400,
-        ).marginOnly(bottom: spacerSize10),
-        BaseTextField(
-          textEditingController: controller.searchController,
-          hintText: AppLocalizations.of(context)!.searchYourPlant,
-          hintColor: AppColors.offWhite70,
-          prefixIcon: Icon(Icons.search, color: AppColors.amberGold),
-          onChanged: (value) {
-            if (value.isEmpty) {
-              controller.pageNumber.value = 1;
-            }
-            controller.isSearching.value = true;
-            controller.debouncer.call(
-              () => controller.callGetMyPlantListApi(searchName: value),
-            );
-            controller.isSearching.value = false;
-          },
-        ).marginOnly(bottom: spacerSize16),
-      ],
+          );
+        },
+      ),
     );
   }
 
+  /// 🔹 EMPTY STATE
   Widget _emptyState(BuildContext context) {
     return Center(
       child: InkWell(
         onTap: () {
-          Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-            controller.callGetMyPlantListApi();
-          });
+          Utils.hideKeyboard();
+          // Get.toNamed(Routes.allPlantsScreen)!.then((_) {
+          //   Utils.hideKeyboard();
+          //   controller.callGetMyPlantListApi();
+          // });
         },
         child: RichText(
           textAlign: TextAlign.center,
@@ -166,38 +256,87 @@ class MyPlantsScreen extends GetWidget<MyPlantsController> {
             style: TextStyle(
               fontSize: fontSize14,
               fontWeight: FontWeight.w500,
-              color: AppColors.offWhite,
+              color: AppColors.blackColor,
               fontFamily: AppKeys.poppins,
             ),
-            children: [
-              TextSpan(text: "${AppLocalizations.of(context)!.tap}\t"),
-
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.allPlantsScreen)!.then((value) {
-                      controller.callGetMyPlantListApi();
-                    });
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: spacerSize4),
-                    child: Image.asset(
-                      Assets.imagesAdd,
-                      height: spacerSize12,
-                      width: spacerSize12,
-                    ),
-                  ),
-                ),
-              ),
-
-              TextSpan(
-                text: "\t${AppLocalizations.of(context)!.toAddYourFirstPlant}",
-              ),
-            ],
+            children: [TextSpan(text: AppStrings.tapAddPlantsToAddNewPlant)],
           ),
         ),
       ),
+    );
+  }
+
+  /// 🔹 SHIMMER LIST
+  Widget _shimmerList() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return _shimmerListItem();
+        }, childCount: 6),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: .84,
+          crossAxisSpacing: 8.w,
+          mainAxisSpacing: 8.w,
+        ),
+      ),
+    );
+  }
+
+  /// 🔹 SHIMMER ITEM
+  Widget _shimmerListItem() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGrey.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(spacerSize16),
+        border: Border.all(color: AppColors.backgroundGrey),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const BaseShimmer(height: 105, width: double.infinity, borderRadious: 16),
+          Padding(
+            padding: EdgeInsets.all(spacerSize8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const BaseShimmer(height: 14, width: 100, borderRadious: 4),
+                SizedBox(height: spacerSize4),
+                const BaseShimmer(height: 10, width: 60, borderRadious: 4),
+                const SizedBox(height: spacerSize12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const BaseShimmer(height: 18, width: 60, borderRadious: 20),
+                    const BaseShimmer(height: 18, width: 60, borderRadious: 20),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showDeleteConfirmationDialog(BuildContext context, int? id) {
+    if (id == null) return;
+    final localizations = AppLocalizations.of(context)!;
+    BaseDialog.showAlertDialog(
+      context: context,
+      title: localizations.deletePlant,
+      description: localizations.areYouSureYouWantToDeletePlant,
+      buttonLabel: localizations.confirm,
+      onButtonPressed: () {
+        final successMessage = localizations.plantDeletedSuccessfully;
+        Get.back(); // close dialog
+        controller.deletePlant(id).then((success) {
+          if (success) {
+            BaseSnackBar.show(title: appName, message: successMessage);
+          }
+        });
+      },
     );
   }
 }

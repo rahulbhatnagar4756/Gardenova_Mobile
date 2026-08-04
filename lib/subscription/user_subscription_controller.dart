@@ -1,0 +1,429 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:get/get.dart';
+// Razorpay subscription (disabled — Google Play Billing only)
+// import 'package:flutter/material.dart';
+// import 'package:kasagardem/professional/payment/razorpay_payment_repository.dart';
+import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
+// import 'package:kasagardem/professional/upgradePlans/upgrade_plan_repository.dart';
+// import 'package:kasagardem/services/alternate_billing_service.dart';
+// import 'package:kasagardem/services/razorpay_payment_service.dart';
+import 'package:kasagardem/services/subscription_service.dart';
+import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
+import 'package:kasagardem/settings/settings_view_model.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
+// import 'package:razorpay_flutter/razorpay_flutter.dart';
+
+class UserSubscriptionController extends GetxController {
+  RxBool isTabMonthly = true.obs;
+  RxString selectedPrice = ''.obs;
+  RxString remainingDays = ''.obs;
+
+  // getplans API disabled — plans load from Google Play Billing.
+  // final UpgradePlanRepository _repository = UpgradePlanRepository();
+  // final RazorpayPaymentRepository _razorpayRepository = RazorpayPaymentRepository();
+  RxList<PlanModel> planList = <PlanModel>[].obs;
+  PlanModel? selectedPlanData;
+  RxBool isLoading = false.obs;
+  RxBool isProcessingPayment = false.obs;
+  SubscriptionStatusUiModel? currentModel;
+
+  // String? _activeSubscriptionId;
+
+  @override
+  void onInit() {
+    // Razorpay alternate billing disabled — Google Play Billing only.
+    // if (Platform.isAndroid) {
+    //   AlternateBillingService.prepareIfAvailable();
+    // }
+    initIAP();
+    _readArguments();
+    _refreshSubscriptionStatusThenLoadPlans();
+
+    super.onInit();
+  }
+
+  /// Refresh status from GET api/v1/plans/subscriptions/me, then load plans.
+  Future<void> _refreshSubscriptionStatusThenLoadPlans() async {
+    try {
+      if (Get.isRegistered<SettingsViewModel>()) {
+        await Get.find<SettingsViewModel>().getSubscriptionDetail();
+        currentModel =
+            Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ?? currentModel;
+        _setRemainingDaysFromModel(currentModel);
+        _applyBillingCycleFromSubscription();
+      }
+    } catch (_) {}
+    await callGetAllPlanListApi();
+  }
+
+  void _readArguments() {
+    if (Get.arguments is SubscriptionStatusUiModel) {
+      currentModel = Get.arguments as SubscriptionStatusUiModel;
+
+      print(currentModel!.toJson());
+      _setRemainingDaysFromModel(currentModel);
+      _applyBillingCycleFromSubscription();
+      return;
+    }
+
+    if (Get.isRegistered<SettingsViewModel>()) {
+      currentModel = Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value;
+      if (currentModel != null) {
+        _setRemainingDaysFromModel(currentModel);
+        _applyBillingCycleFromSubscription();
+        return;
+      }
+    }
+
+    if (Get.arguments is Map) {
+      _setRemainingDaysFromPrefs();
+      return;
+    }
+
+    _setRemainingDaysFromPrefs();
+  }
+
+  void _applyBillingCycleFromSubscription() {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return;
+
+    final isMonthly = cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+    isTabMonthly.value = isMonthly;
+  }
+
+  void _setRemainingDaysFromModel(SubscriptionStatusUiModel? model) {
+    if (model?.updatedAt == null) {
+      remainingDays.value = '0';
+      return;
+    }
+
+    try {
+      final expirationDate = DateTime.parse(model!.updatedAt!).toLocal();
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final exp = DateTime(expirationDate.year, expirationDate.month, expirationDate.day);
+      remainingDays.value = exp.difference(today).inDays.clamp(0, 365).toString();
+    } catch (_) {
+      remainingDays.value = '0';
+    }
+  }
+
+  void _setRemainingDaysFromPrefs() {
+    remainingDays.value = SharedPrefsService.instance.getString(AppKeys.remainingDays) ?? '0';
+  }
+
+  void changeTab(bool value) {
+    if (isTabMonthly.value == value) return;
+
+    isTabMonthly.value = value;
+
+    // Paid subscribers: only keep the subscribed plan selected on their billing period.
+    if (_hasPaidSubscription) {
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      selectedPlanData = null;
+      selectedPrice.value = '';
+
+      if (isTabMonthly.value == _isSubscribedToMonthly) {
+        final subscribedPlan = _findSubscribedPlan();
+        if (subscribedPlan != null) {
+          subscribedPlan.setSelect = true;
+          selectedPlanData = subscribedPlan;
+          _updateSelectedPrice(subscribedPlan);
+        }
+      }
+      planList.refresh();
+      return;
+    }
+
+    // No paid subscription — Free is monthly-only.
+    for (final plan in planList) {
+      plan.setSelect = false;
+    }
+    if (isTabMonthly.value) {
+      final freePlan = planList.firstWhereOrNull(
+        (plan) => (plan.tier ?? '').toLowerCase() == 'free',
+      );
+      if (freePlan != null) {
+        freePlan.setSelect = true;
+        selectedPlanData = freePlan;
+        _updateSelectedPrice(freePlan);
+      } else {
+        selectedPlanData = null;
+        selectedPrice.value = '';
+      }
+    } else {
+      selectedPlanData = null;
+      selectedPrice.value = '';
+    }
+    planList.refresh();
+  }
+
+  void selectPlan(PlanModel plan) {
+    // Keep current selection until the user taps a different plan.
+    if (plan.isSelect == true) {
+      selectedPlanData = plan;
+      _updateSelectedPrice(plan);
+      return;
+    }
+
+    for (final item in planList) {
+      item.setSelect = item == plan;
+    }
+    selectedPlanData = plan;
+    _updateSelectedPrice(plan);
+    planList.refresh();
+  }
+
+  void _updateSelectedPrice(PlanModel plan) {
+    selectedPrice.value = isTabMonthly.value
+        ? '${plan.priceMonthly ?? '0'}/mo'
+        : '${plan.priceAnnual ?? '0'}/an';
+  }
+
+  void goToOrderSummary() {
+    final selectedPlan = planList.firstWhereOrNull((plan) => plan.isSelect == true);
+    if (selectedPlan == null) {
+      BaseSnackBar.show(title: 'Plan', message: 'Please select a plan');
+      return;
+    }
+
+    selectedPlanData = selectedPlan;
+
+    final tier = (selectedPlan.tier ?? selectedPlan.planName ?? '').toLowerCase();
+    if (tier == 'free') {
+      BaseSnackBar.show(
+        title: 'Free Plan',
+        message: 'You are already on the Free plan. Choose a paid plan to upgrade.',
+      );
+      return;
+    }
+
+    Get.toNamed(Routes.userOrderSummary);
+  }
+
+  double getOrderTotalAmount() {
+    final plan = selectedPlanData;
+    if (plan == null) return 0;
+
+    final basePriceStr = (isTabMonthly.value ? plan.priceMonthly : plan.priceAnnual) ?? '0';
+    return double.tryParse(basePriceStr.replaceAll(',', '').replaceAll(' ', '')) ?? 0.0;
+  }
+
+  Future<void> callGetAllPlanListApi() async {
+    isLoading.value = true;
+
+    // Commented getplans API — plans come from Google Play Billing / App Store.
+    // final response = await _repository.getPlanList();
+    // if (response != null) {
+    //   final planResponse = PlansResponseModel.fromJson(response);
+    //   planList
+    //     ..clear()
+    //     ..addAll(PlanModel.consolidateByTier(planResponse.data ?? []));
+    // }
+
+    await SubscriptionService.instance.setupInAppPurchase();
+    final plans = SubscriptionService.instance.buildPlansFromStore();
+    // Free is only for users without a paid subscription.
+    if (_hasPaidSubscription) {
+      plans.removeWhere((plan) => (plan.tier ?? '').toLowerCase() == 'free');
+    }
+    planList
+      ..clear()
+      ..addAll(plans);
+
+    if (planList.isEmpty) {
+      BaseSnackBar.show(
+        title: 'Google Play',
+        message: 'Unable to load subscription plans from the store.',
+      );
+    }
+
+    setSelectedPlan();
+    updateStorePrices();
+    isLoading.value = false;
+  }
+
+  Future<void> initIAP() async {
+    await SubscriptionService.instance.setupInAppPurchase();
+    updateStorePrices();
+  }
+
+  void updateStorePrices() {
+    if (!SubscriptionService.instance.isAvailable ||
+        SubscriptionService.instance.products.isEmpty) {
+      return;
+    }
+
+    for (final plan in planList) {
+      final tier = plan.tier ?? plan.planName ?? '';
+      final monthlyOffer = SubscriptionService.instance.findOfferForTier(tier, isMonthly: true);
+      final annualOffer = SubscriptionService.instance.findOfferForTier(tier, isMonthly: false);
+
+      if (monthlyOffer != null) {
+        plan.priceMonthly = monthlyOffer.rawPrice.toInt().toString();
+        plan.monthlyProductId = monthlyOffer.id;
+      }
+      if (annualOffer != null) {
+        plan.priceAnnual = annualOffer.rawPrice.toInt().toString();
+        plan.yearlyProductId = annualOffer.id;
+      }
+    }
+
+    planList.refresh();
+  }
+
+  /// Google Play Billing subscription purchase (Android only).
+  Future<void> startPurchaseFlow() async {
+    final plan = selectedPlanData;
+    print(selectedPlanData);
+    if (plan == null) {
+      BaseSnackBar.show(title: 'Plan', message: 'Please select a plan');
+      return;
+    }
+
+    if (isLoading.value || isProcessingPayment.value) return;
+
+    if (!Platform.isAndroid) {
+      BaseSnackBar.show(
+        title: 'Google Play',
+        message: 'Subscriptions are available on Android via Google Play only.',
+      );
+      return;
+    }
+
+    if (!SubscriptionService.instance.isAvailable) {
+      BaseSnackBar.show(
+        title: 'Google Play',
+        message:
+            'Play Store billing is not available on this device. Please try again on a device with Google Play.',
+      );
+      return;
+    }
+
+    // Sync latest subscription before upgrade/downgrade matching.
+    if (Get.isRegistered<SettingsViewModel>()) {
+      currentModel =
+          Get.find<SettingsViewModel>().currentSubscriptionStatusModel.value ?? currentModel;
+    }
+
+    isLoading.value = true;
+    isProcessingPayment.value = true;
+    try {
+      await SubscriptionService.instance.buyPlan(plan, isTabMonthly.value, currentModel);
+    } catch (e) {
+      log('Google Play subscription error: $e');
+      BaseSnackBar.show(title: 'Payment', message: 'Unable to start Google Play subscription.');
+    } finally {
+      isLoading.value = false;
+      isProcessingPayment.value = false;
+    }
+  }
+
+  void setSelectedPlan() {
+    if (_hasPaidSubscription) {
+      _applyBillingCycleFromSubscription();
+
+      final subscribedPlan = _findSubscribedPlan();
+      if (subscribedPlan == null) return;
+
+      for (final plan in planList) {
+        plan.setSelect = false;
+      }
+      subscribedPlan.setSelect = true;
+      selectedPlanData = subscribedPlan;
+      _updateSelectedPrice(subscribedPlan);
+      planList.refresh();
+      return;
+    }
+
+    // No paid subscription — select Free by default.
+    final freePlan = planList.firstWhereOrNull((plan) => (plan.tier ?? '').toLowerCase() == 'free');
+    if (freePlan == null) return;
+
+    for (final plan in planList) {
+      plan.setSelect = false;
+    }
+    freePlan.setSelect = true;
+    selectedPlanData = freePlan;
+    _updateSelectedPrice(freePlan);
+    planList.refresh();
+  }
+
+  bool get _hasActiveSubscription {
+    final model = currentModel;
+    if (model == null) return false;
+    if (model.isActive == true) return true;
+
+    final status = (model.status ?? '').trim().toLowerCase();
+    return status == 'active' ||
+        status == 'renewed' ||
+        status == 'cancelled' ||
+        status == 'canceled';
+  }
+
+  bool get _hasPaidSubscription {
+    if (!_hasActiveSubscription) return false;
+    final name = (currentModel?.name ?? '').trim().toLowerCase();
+    if (name.isEmpty || name == 'free' || name == 'trial') return false;
+    return true;
+  }
+
+  bool get _isSubscribedToMonthly {
+    final cycle = (currentModel?.billingCycle ?? '').trim().toLowerCase();
+    if (cycle.isEmpty) return true;
+    return cycle == 'monthly' || cycle == 'month' || cycle == 'mo';
+  }
+
+  /// True when [plan] is the user's active subscription on the current billing tab.
+  bool isCurrentSubscribedPlan(PlanModel plan) {
+    if (!_hasPaidSubscription) {
+      // Free is monthly-only.
+      return isTabMonthly.value && (plan.tier ?? '').toLowerCase() == 'free';
+    }
+    if (isTabMonthly.value != _isSubscribedToMonthly) return false;
+
+    final subscribedPlan = _findSubscribedPlan();
+    if (subscribedPlan == null) return false;
+
+    return identical(plan, subscribedPlan) ||
+        plan.id == subscribedPlan.id ||
+        ((plan.tier ?? '').toLowerCase() == (subscribedPlan.tier ?? '').toLowerCase());
+  }
+
+  PlanModel? _findSubscribedPlan() {
+    final model = currentModel;
+    if (model == null) return null;
+
+    final planId = model.id?.trim();
+    if (planId != null && planId.isNotEmpty) {
+      final byId = planList.firstWhereOrNull(
+        (plan) => plan.id == planId || plan.monthlyId == planId || plan.yearlyId == planId,
+      );
+      if (byId != null) return byId;
+    }
+
+    final planName = (model.name ?? '').trim().toLowerCase();
+    if (planName.isEmpty || planName == 'free' || planName == 'trial') {
+      return null;
+    }
+
+    return planList.firstWhereOrNull((plan) {
+      final tier = (plan.tier ?? '').trim().toLowerCase();
+      final name = (plan.planName ?? '').trim().toLowerCase();
+      return tier == planName || name == planName;
+    });
+  }
+
+  @override
+  void onClose() {
+    // RazorpayPaymentService.instance.dispose();
+    super.onClose();
+  }
+}

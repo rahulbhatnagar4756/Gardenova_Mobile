@@ -102,7 +102,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loginAccountSubTitle => 'Entre em uma Conta para Explorar Nosso Aplicativo';
 
   @override
+  String get loginAccountProfessionalSubTitle => 'Login to your professional account';
+
+  @override
   String get forgotPassword => 'Esqueceu a senha?';
+
+  @override
+  String get loginWithOtp => 'Entrar com OTP';
+
+  @override
+  String get loginWithEmail => 'Entrar com e-mail';
+
+  @override
+  String get loginMobileOtpSubTitle =>
+      'Digite seu número de celular para receber uma senha de uso único';
 
   @override
   String get dontHaveAnAccount => 'Não tem uma conta?';
@@ -135,7 +148,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get didNotReceiveAnyCode => 'Não recebeu nenhum código?';
 
   @override
-  String get resendCode => 'Reenviar Código';
+  String get resendCode => 'Reenviar';
 
   @override
   String get createPassword => 'Criar Nova Senha';
@@ -306,6 +319,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get viewReport => 'Ver Relatório';
 
   @override
+  String get report => 'Report';
+
+  @override
   String get pleaseSelectCity => 'Por Favor, Selecione a Cidade';
 
   @override
@@ -334,6 +350,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get referAFriend => 'Indique um Amigo';
+
+  @override
+  String get aboutApp => 'Sobre o Aplicativo';
 
   @override
   String get logout => 'Sair';
@@ -379,6 +398,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get automationSuggestions => 'Sugestões de Automação';
+
+  @override
+  String get aIPlantDiagnosis => 'AI Plant Diagnosis';
 
   @override
   String get plantRecommendations => 'Recomendações de Plantas';
@@ -588,7 +610,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get toxicity => 'Toxicidade';
 
   @override
-  String get kasagardemPlantDiagnosis => 'Diagnóstico de plantas Kasagardem';
+  String get kasagardemPlantDiagnosis => 'Diagnóstico de plantas Gardenova';
 
   @override
   String get automationFeature => 'Recurso de automação';
@@ -612,7 +634,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get locationPermissionRequired => 'É necessária autorização para utilizar o local.';
 
   @override
-  String get locationPermissionsAreDenied => 'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Kasagardem.';
+  String get locationPermissionsAreDenied => 'As permissões de localização estão permanentemente negadas. Por favor, acesse as configurações do seu aplicativo para habilitá-las para o Gardenova.';
 
   @override
   String get openSettings => 'Abra Configurações';
@@ -633,7 +655,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get courses => 'Cursos';
 
   @override
-  String get siteKasagardem => 'Site Kasagardem';
+  String get siteKasagardem => 'Site Gardenova';
 
   @override
   String get myProfile => 'Meu Perfil';
@@ -699,7 +721,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get upgradeToPremium => 'Upgrade to Premium';
 
   @override
-  String get enjoyExclusiveBenefits => 'Enjoy exclusive benefits and unlock all features';
+  String get enjoyExclusiveBenefits => 'Enjoy exclusive benefits';
 
   @override
   String get billedMonthly => 'Billed Monthly';
@@ -792,7 +814,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectGeneralFrequency => 'Please select general frequency';
 
   @override
-  String get gotoMyPlants => 'Go to My Plants';
+  String get gotoMyPlants => 'Go to my plants';
 
   @override
   String get selectFrequency => 'Select frequency';
@@ -870,7 +892,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tap => 'Tap';
 
   @override
-  String get toAddYourFirstPlant => '\tto add your first plant';
+  String get toAddYourFirstPlant => 'to add your first plant';
 
   @override
   String get serviceRequested => 'Service Requested';
@@ -975,10 +997,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get customerPlanDesc => 'Customers can\'t find you in the app, and your potential bookings are being suspended.';
 
   @override
-  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Kasagardem?';
+  String get customerPlanDesc2 => 'Do you want to continue receiving customers through Gardenova?';
 
   @override
-  String get seePlans => 'Yes,SEE PLANS';
+  String get seePlans => 'Yes, SEE PLANS';
 
   @override
   String get notNow => 'Not now';
@@ -987,13 +1009,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get additionalNationalCoverageDesc1 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
 
   @override
-  String get additionalNationalCoverageDesc2 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.';
+  String get additionalNationalCoverageDesc2 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over Brazil.';
 
   @override
   String get validFor1Year => '(Valid for 1 year only)';
 
   @override
-  String get planType => 'planType';
+  String get planType => 'Plan Type';
 
   @override
   String get oneTime => 'One-Time';
@@ -1002,10 +1024,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reccuring => 'Recurring';
 
   @override
-  String get yourPlanEnds => 'yourPlanEnds';
+  String get yourPlanEnds => 'Your Plan Ends';
 
   @override
   String get yourPlanEndsDesc => 'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
+
+  @override
+  String get planExpired => 'Plan Expired';
+
+  @override
+  String get planExpiredDesc => 'Your subscription has ended. Choose a plan to continue using premium features.';
+
+  @override
+  String get planExpiringToday => 'Expiring Today';
+
+  @override
+  String get planExpiringTodayDesc =>
+      'Your subscription ends today. Renew to keep premium features.';
 
   @override
   String get selectYourPlan => 'Select Your Plan';
@@ -1029,6 +1064,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get professionalStatus => 'Professional Status';
 
   @override
+  String get status => 'Status';
+
+  @override
   String get renewPlan => 'Renew Plan';
 
   @override
@@ -1036,6 +1074,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get exp => 'Exp';
+
+  @override
+  String get expDate => 'Expiration Date';
 
   @override
   String get deleteAccount => 'Delete Account';
@@ -1057,4 +1098,22 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get find => 'Find';
+
+  @override
+  String get plantAnalysis => 'Análise da Planta';
+
+  @override
+  String get scanYourPlantForHealthAndDetails => 'Escaneie sua planta para identificar e verificar sua saúde';
+
+  @override
+  String get noDataNa => 'N/A';
+
+  @override
+  String get deletePlant => 'Excluir Planta';
+
+  @override
+  String get areYouSureYouWantToDeletePlant => 'Tem certeza de que deseja excluir esta planta? Esta ação não pode ser desfeita.';
+
+  @override
+  String get plantDeletedSuccessfully => 'Planta excluída com sucesso';
 }

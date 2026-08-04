@@ -30,7 +30,7 @@ class AutomationSuggestions extends StatelessWidget {
     );
   }
 
-  suggestionItem({String? itemTitle, String? assetPath}) {
+  Widget suggestionItem({String? itemTitle, String? assetPath}) {
     return Expanded(
       child: BaseBorderedContainer(
         height: spacerSize125,
@@ -48,23 +48,22 @@ class AutomationSuggestions extends StatelessWidget {
               height: spacerSize50,
               width: spacerSize50,
               borderRadius: spacerSize100,
-              backgroundColor: AppColors.superDullWhite,
+              backgroundColor: AppColors.whiteColor,
               borderColor: Colors.transparent,
               alignment: Alignment.center,
               padding: EdgeInsets.all(spacerSize0),
               childWidget: Image.asset(
                 assetPath!,
-                color: AppColors.burntGold,
+                color: AppColors.greenColor,
                 scale: 2,
               ),
             ),
             Expanded(
               child: BaseText(
                 text: itemTitle ?? "",
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 textAlign: TextAlign.center,
                 fontSize: fontSize11,
-                textColor: AppColors.offWhite,
               ),
             ),
           ],

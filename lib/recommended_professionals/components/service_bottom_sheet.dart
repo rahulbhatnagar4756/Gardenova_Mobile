@@ -63,7 +63,7 @@ class ServiceBottomSheet extends StatelessWidget {
                 text: AppLocalizations.of(context)!.selectService,
                 fontFamily: AppKeys.inter,
                 fontWeight: FontWeight.w500,
-                textColor: AppColors.darkGold,
+                textColor: AppColors.greenColor,
                 fontSize: fontSize16,
               ),
               IconButton(

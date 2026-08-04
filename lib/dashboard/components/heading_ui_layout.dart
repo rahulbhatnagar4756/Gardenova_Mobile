@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../generated/assets.dart';
-import '../../recommended_professionals/components/service_bottom_sheet.dart';
-import '../../recommended_professionals/recommended_professionals_view_model.dart';
 
 class HeadingUiLayout extends StatelessWidget {
   final String? sectionTitle;
@@ -16,15 +13,16 @@ class HeadingUiLayout extends StatelessWidget {
   final double spacing;
   final bool? isFilterShow;
   final Function()? onTabFilter;
-
+  final double? titleLeftPadding;
 
   const HeadingUiLayout({
     super.key,
     this.child,
     this.sectionTitle,
-    this.spacing = spacerSize10,
-    this.isFilterShow =false,
-    this.onTabFilter
+    this.spacing = spacerSize6,
+    this.isFilterShow = false,
+    this.onTabFilter,
+    this.titleLeftPadding = 0,
   });
 
   @override
@@ -39,26 +37,21 @@ class HeadingUiLayout extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BaseText(
-              textColor: AppColors.offWhite,
               fontFamily: AppKeys.poppins,
-              fontSize: fontSize18,
-              fontWeight: FontWeight.w400,
+              fontSize: fontSize16,
+              fontWeight: FontWeight.w500,
               text: sectionTitle ?? "",
-            ),
+            ).marginOnly(left: titleLeftPadding ?? 0),
             Visibility(
-              visible: isFilterShow??false,
+              visible: isFilterShow ?? false,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   onTabFilter?.call();
                 },
                 child: Container(
                   padding: const EdgeInsets.all(spacerSize10),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.lightGold, AppColors.burntGold],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    gradient: AppColors.linearGradientForBtn,
                     borderRadius: BorderRadius.circular(spacerSize10),
                   ),
                   child: Image.asset(
@@ -75,5 +68,4 @@ class HeadingUiLayout extends StatelessWidget {
       ],
     );
   }
-
 }

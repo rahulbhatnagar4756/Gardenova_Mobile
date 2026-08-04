@@ -3,4 +3,5 @@
     <string name="facebook_app_id">1530353791540365</string>
     <string name="fb_login_protocol_scheme">fb1530353791540365</string>
     <string name="facebook_client_token">c9daaa885ba625e32e2e9885cbab580e</string>
+    <string name="default_notification_channel_id">plant_reminders</string>
 </resources>
