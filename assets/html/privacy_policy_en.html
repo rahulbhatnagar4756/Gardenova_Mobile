@@ -2,215 +2,388 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Kasagardem - Privacy Policy</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gardenova - Privacy Policy</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #e8f5e9;
+            --secondary: #1b5e20;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --background: #f4f7f5;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+            --radius: 18px;
+        }
+
         body {
-          font-family: Arial, sans-serif;
-          line-height: 1.6;
-          margin: 0;
-          padding: 0;
-          background: #ffffff;
-          color: #333;
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-dark);
+            line-height: 1.7;
         }
 
-        header {
-          background: #2E3A30;
-          color: #fff;
-          padding: 16px 24px;
+        .hero {
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
         }
 
-        header h1 {
-          margin: 0;
-          font-size: 22px;
-          color: #B48A3E;
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 14px;
         }
 
-        main {
-          max-width: 900px;
-          margin: 0 auto;
-          background: #ffffff;
-          padding: 24px;
+        .hero p {
+            max-width: 700px;
+            margin: auto;
+            font-size: 17px;
+            opacity: 0.95;
         }
 
-        h2 {
-          border-bottom: 1px solid #ddd;
-          padding-bottom: 6px;
-          margin-top: 32px;
+        .container {
+            max-width: 1100px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
         }
 
-        h3 {
-          margin-top: 20px;
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
         }
 
-        h4 {
-          margin-top: 15px;
+        .section {
+            margin-bottom: 45px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section h2 {
+            font-size: 28px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section h2::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            border-radius: 50px;
+        }
+
+        .section h3 {
+            margin-top: 28px;
+            margin-bottom: 14px;
+            font-size: 20px;
+            color: var(--text-dark);
+        }
+
+        .section p {
+            color: var(--text-light);
+            margin-bottom: 14px;
+        }
+
+        .info-box {
+            background: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-top: 18px;
         }
 
         ul {
-          padding-left: 20px;
+            margin-top: 12px;
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            color: var(--text-light);
         }
 
         table {
-          width: 100%;
-          border-collapse: collapse;
-          margin: 15px 0;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            overflow: hidden;
+            border-radius: 14px;
         }
 
-        table, th, td {
-          border: 1px solid #ccc;
+        thead {
+            background: var(--primary);
+            color: white;
         }
 
         th, td {
-          padding: 10px;
-          text-align: left;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .contact-card {
+            background: #f9fafb;
+            padding: 24px;
+            border-radius: 14px;
+            margin-top: 16px;
+        }
+
+        .contact-card p {
+            margin-bottom: 8px;
+        }
+
+        .contact-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
         }
 
         footer {
-          text-align: center;
-          font-size: 13px;
-          color: #777;
-          padding: 16px;
-          margin-top: 10px;
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-light);
+            font-size: 14px;
         }
 
-        .updated-date {
-          font-size: 13px;
-          color: #666;
-          margin-bottom: 16px;
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Kasagardem - Privacy Policy</h1>
-</header>
+<section class="hero">
+    <h1>Privacy Policy</h1>
+    <p>
+        Your privacy matters to us. Learn how Gardenova collects, uses,
+        and protects your information while providing a secure gardening experience.
+    </p>
+</section>
 
-<main>
+<div class="container">
+    <div class="card">
 
-    <section id="privacy">
-        <h2>Privacy Policy</h2>
-        <p>
-            Welcome to <strong>Kasagardem</strong>. This Privacy Policy explains how we collect,
-            use, store, and protect your personal data when you use our application and services.
-        </p>
+        <section class="section">
+            <h2>Welcome to Gardenova</h2>
 
-        <h3>1. Data We Collect</h3>
+            <p>
+                This Privacy Policy explains how Gardenova collects, uses,
+                stores, and protects your personal data when you use our
+                application and services.
+            </p>
 
-        <h4>Account Information</h4>
-        <table>
-            <tr>
-                <th>Data</th>
-                <th>Required</th>
-                <th>Purpose</th>
-            </tr>
-            <tr>
-                <td>Full Name</td>
-                <td>Yes</td>
-                <td>User identification and personalization</td>
-            </tr>
-            <tr>
-                <td>Email Address</td>
-                <td>Yes</td>
-                <td>Authentication and communication</td>
-            </tr>
-            <tr>
-                <td>Password (hashed)</td>
-                <td>Yes</td>
-                <td>Secure login</td>
-            </tr>
-            <tr>
-                <td>Phone Number</td>
-                <td>No</td>
-                <td>Optional contact</td>
-            </tr>
-        </table>
+            <div class="info-box">
+                We are committed to protecting your privacy and ensuring
+                transparency in how your data is handled.
+            </div>
+        </section>
 
-        <h4>Location Data</h4>
-        <ul>
-            <li>Collected only with your permission</li>
-            <li>Used for location-based features</li>
-            <li>Not stored permanently</li>
-        </ul>
+        <section class="section">
+            <h2>1. Data We Collect</h2>
 
-        <h4>Photos</h4>
-        <ul>
-            <li>Used for plant identification</li>
-            <li>Processed by third-party services (Plant.id)</li>
-        </ul>
+            <h3>Account Information</h3>
 
-        <h4>Usage Data</h4>
-        <ul>
-            <li>App interactions and usage patterns</li>
-            <li>Device type and OS version</li>
-        </ul>
+            <table>
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Required</th>
+                    <th>Purpose</th>
+                </tr>
+                </thead>
 
-        <h3>2. How We Use Your Data</h3>
-        <ul>
-            <li>Provide and improve app functionality</li>
-            <li>Personalize user experience</li>
-            <li>Send important notifications</li>
-        </ul>
+                <tbody>
+                <tr>
+                    <td>Full Name</td>
+                    <td>Yes</td>
+                    <td>User identification and personalization</td>
+                </tr>
 
-        <h3>3. Data Sharing</h3>
-        <p>We only share data with necessary service providers:</p>
-        <ul>
-            <li>Firebase (notifications)</li>
-            <li>RevenueCat (subscriptions)</li>
-            <li>AWS (hosting infrastructure)</li>
-        </ul>
+                <tr>
+                    <td>Email Address</td>
+                    <td>Yes</td>
+                    <td>Authentication and communication</td>
+                </tr>
 
-        <p><strong>We do not sell your personal data.</strong></p>
+                <tr>
+                    <td>Password (Hashed)</td>
+                    <td>Yes</td>
+                    <td>Secure login and account protection</td>
+                </tr>
 
-        <h3>4. Data Security</h3>
-        <ul>
-            <li>HTTPS encryption</li>
-            <li>Secure storage systems</li>
-            <li>Restricted access controls</li>
-        </ul>
+                <tr>
+                    <td>Phone Number</td>
+                    <td>No</td>
+                    <td>Optional communication support</td>
+                </tr>
+                </tbody>
+            </table>
 
-        <h3>5. Your Rights</h3>
-        <ul>
-            <li>Access your data</li>
-            <li>Correct your information</li>
-            <li>Delete your account</li>
-            <li>Withdraw consent</li>
-        </ul>
+            <h3>Location Data</h3>
 
-        <h3>6. Data Retention</h3>
-        <p>
-            We retain your data only as long as necessary to provide services or comply with legal obligations.
-        </p>
+            <ul>
+                <li>Collected only with your permission</li>
+                <li>Used to provide location-based features</li>
+                <li>Not stored permanently on our servers</li>
+            </ul>
 
-        <h3>7. Children’s Privacy</h3>
-        <p>
-            Our service is not intended for children under 13 years of age.
-        </p>
+            <h3>Photos</h3>
 
-        <h3>8. Changes to This Policy</h3>
-        <p>
-            We may update this Privacy Policy from time to time.
-        </p>
+            <ul>
+                <li>Used for plant identification functionality</li>
+                <li>Processed securely through third-party services such as Plant.id</li>
+            </ul>
 
-        <h3>9. Contact Us</h3>
-        <p>
-            <strong>Email:</strong> contato@kasagardem.com.br<br />
-            <strong>Website:</strong> https://admin.kasagardem.com
-        </p>
+            <h3>Usage Data</h3>
 
-    </section>
+            <ul>
+                <li>App interactions and feature usage</li>
+                <li>Device type, operating system, and diagnostics</li>
+            </ul>
+        </section>
 
-</main>
+        <section class="section">
+            <h2>2. How We Use Your Data</h2>
+
+            <ul>
+                <li>Provide and improve application functionality</li>
+                <li>Personalize your user experience</li>
+                <li>Send important updates and notifications</li>
+                <li>Maintain security and prevent misuse</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>3. Data Sharing</h2>
+
+            <p>
+                We only share data with trusted service providers that help us operate our platform:
+            </p>
+
+            <ul>
+                <li>Firebase — Notifications and analytics</li>
+                <li>RevenueCat — Subscription management</li>
+                <li>AWS — Secure cloud infrastructure and hosting</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>We never sell your personal information.</strong>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Data Security</h2>
+
+            <ul>
+                <li>HTTPS encryption for secure communication</li>
+                <li>Protected and secure storage systems</li>
+                <li>Restricted access controls for sensitive data</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>5. Your Rights</h2>
+
+            <ul>
+                <li>Access your personal data</li>
+                <li>Correct inaccurate information</li>
+                <li>Delete your account and associated data</li>
+                <li>Withdraw previously granted permissions</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>6. Data Retention</h2>
+
+            <p>
+                We retain your data only for as long as necessary to provide
+                our services and comply with legal obligations.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>7. Children’s Privacy</h2>
+
+            <p>
+                Gardenova services are not intended for children under the age of 13.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>8. Policy Updates</h2>
+
+            <p>
+                We may update this Privacy Policy occasionally to reflect
+                improvements, legal requirements, or service changes.
+            </p>
+        </section>
+
+        <section class="section">
+            <h2>9. Contact Us</h2>
+
+            <div class="contact-card">
+                <p><strong>Email:</strong> contato@Gardenova.com.br</p>
+                <p>
+                    <strong>Website:</strong>
+                    <a href="https://admin.Gardenova.com" target="_blank">
+                        admin.Gardenova.com
+                    </a>
+                </p>
+            </div>
+        </section>
+
+    </div>
+</div>
 
 <footer>
-    &copy; <span id="year"></span> Kasagardem. All rights reserved.
+    &copy; <span id="year"></span> Gardenova. All rights reserved.
 </footer>
 
 <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 
 </body>

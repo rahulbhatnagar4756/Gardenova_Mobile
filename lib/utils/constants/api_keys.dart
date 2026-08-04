@@ -11,8 +11,10 @@ class ApiKeys {
   static const token = 'token';
   static const idToken = "idToken";
   static const email = 'email';
+  static const responseId = 'responseId';
   static const name = 'name';
   static const roleCode = 'roleCode';
+  static const newPassword = 'new_password';
   static const password = 'password';
   static const oldPassword = 'old_password';
   static const phoneNumber = 'phoneNumber';
@@ -40,4 +42,7 @@ class ApiKeys {
   static const appleIdToken = 'appleIdToken';
   static const firstName = 'firstName';
   static const lastName = 'lastName';
+  static const otp = 'otp';
+  static const reqType = 'reqType';
+  static const isNewUser = 'isNewUser';
 }

@@ -3,6 +3,31 @@ class AppAssets {
   static const appLogoFull = 'assets/images/full_app_logo_ic.png';
   static const backBtnIc = 'assets/images/back_btn_ic.png';
   static const closeIc = 'assets/images/close_ic.png';
+  static const selectedRadioIc = 'assets/images/selected_radio_ic.png';
+  static const unSelectedRadioIc = 'assets/images/un_selected_radio_ic.png';
+  static const crownIc = 'assets/images/crown_ic.png';
+  static const verifiedIc = 'assets/images/verified_ic.png';
+  static const editPencilIc = 'assets/images/edit_pencil_ic.png';
+  static const plant = 'assets/images/plant.png';
+  static const plantPic = 'assets/images/plant_pic.png';
+
+  // appbar icond
+  static const drawerMenuIc = 'assets/images/drawer_btn_ic.png';
+  static const notificationIc = 'assets/images/notification_ic.png';
+
+  //
+  static const aiAnalysisIc = 'assets/images/plant_analysis_ic.png';
+  static const aiLandscapeDesignIc = 'assets/images/ai_landscape_ic.png';
+  static const rightArrowIc = 'assets/images/right_arrow_ic.png';
+  static const soilAnalysisIc = 'assets/images/soil_analysis_ic.png';
+
+  // bottom nav ic
+  static const homeIc = 'assets/images/home_ic.png';
+  static const scanIc = 'assets/images/scan_ic.png';
+  static const plantIc = 'assets/images/plants_ic.png';
+  static const reportIc = 'assets/images/reports_ic.png';
+  static const profileIc = 'assets/images/profile_ic.png';
+  static const reminderIc = 'assets/images/reminder_ic.png';
 
   //
   static const cart = 'assets/images/cart.png';

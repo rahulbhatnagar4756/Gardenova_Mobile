@@ -16,6 +16,7 @@ class TextFieldLayout extends StatefulWidget {
     this.isTextObscure = false,
     this.validator, // ✅ NEW
     this.hintText,
+    this.prefixIcon,
   });
 
   final String editTextTitle;
@@ -26,6 +27,7 @@ class TextFieldLayout extends StatefulWidget {
 
   /// ✅ Dynamic validator
   final String? Function(String?)? validator;
+  final Icon? prefixIcon;
 
   @override
   State<TextFieldLayout> createState() => _TextFieldLayoutState();
@@ -46,9 +48,8 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BaseText(
-          textColor: AppColors.offWhite,
           fontSize: fontSize14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
           text: widget.editTextTitle,
           textAlign: TextAlign.start,
         ),
@@ -56,6 +57,7 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
         const SizedBox(height: spacerSize5),
 
         BaseTextField(
+          prefixIcon: widget.prefixIcon,
           isTextObscure: isObscure,
           textEditingController: widget.textEditingController,
           isTextFieldEnabled: widget.isTextFieldEnabled,
@@ -63,13 +65,13 @@ class _TextFieldLayoutState extends State<TextFieldLayout> {
           hintText:
               widget.hintText ??
               AppLocalizations.of(context)!.enterYourPassword,
-          hintColor: AppColors.offWhite50,
+          hintColor: AppColors.liteGreyColor,
           validator: widget.validator,
           suffixIcon: widget.isTextObscure
               ? IconButton(
                   icon: Icon(
                     isObscure ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.offWhite,
+                    color: AppColors.liteGreyColor,
                   ),
                   onPressed: () {
                     setState(() {

@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart'; // OTP login phone field disabled
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
@@ -16,9 +17,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
 
-import '../../base/widgets/base_back_button.dart';
-import '../../base/widgets/base_bback_button.dart';
-import '../../utils/app_config.dart';
+import '../../utils/validation_healper.dart';
 import '../components/social_login_layout.dart';
 
 class LoginScreen extends GetWidget<LoginViewModel> {
@@ -26,9 +25,6 @@ class LoginScreen extends GetWidget<LoginViewModel> {
 
   @override
   Widget build(BuildContext context) {
-print('sdf ${AppLocalizations.of(
-  context,
-)!.loginAccountSubTitle}');
     return PopScope(
       canPop: true,
       /* onPopInvokedWithResult: (result, didPop) {
@@ -47,65 +43,78 @@ print('sdf ${AppLocalizations.of(
         }},*/
       child: Scaffold(
         backgroundColor: AppColors.appColor,
-        appBar: const BaseAppBar(
-          isAppIconVisible: false,
-          isBackButtonVisible: true,
+        appBar: BaseAppBar(
+          // isAppIconVisible: false,
+          isBackButtonVisible: Get.key.currentState!.canPop(),
         ),
         body: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child:
-                    BaseForm(
-                      formKey: controller.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
+                child: BaseForm(
+                  formKey: controller.formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      // BasBBackButton(),
+                      Obx(
+                        () => HeaderLogoLayout(
+                          title: AppLocalizations.of(context)!.loginAccount,
+                          // Login with OTP disabled.
+                          // subTitle: controller.isMobileOtpLoginMode.value
+                          //     ? AppLocalizations.of(context)!.loginMobileOtpSubTitle
+                          //     : controller.accountType.value == AppKeys.professional
+                          //     ? AppLocalizations.of(context)!.loginAccountProfessionalSubTitle
+                          //     : AppLocalizations.of(context)!.loginAccountSubTitle,
+                          subTitle: controller.accountType.value == AppKeys.professional
+                              ? AppLocalizations.of(context)!.loginAccountProfessionalSubTitle
+                              : AppLocalizations.of(context)!.loginAccountSubTitle,
+                        ),
+                      ),
+                      // Login with OTP / verify mobile number disabled.
+                      // Obx(
+                      //   () => controller.isMobileOtpLoginMode.value
+                      //       ? Column(children: [phoneField(context), loginModeToggle(context)])
+                      //       : Column(
+                      //           children: [
+                      //             emailField(context),
+                      //             passwordField(context),
+                      //             forgotPassword(context),
+                      //           ],
+                      //         ),
+                      // ),
+                      Column(
                         children: [
-                          // BasBBackButton(),
-                          HeaderLogoLayout(
-                            title: AppLocalizations.of(context)!.loginAccount,
-                            subTitle: AppLocalizations.of(
-                              context,
-                            )!.loginAccountSubTitle,
-                          ),
                           emailField(context),
                           passwordField(context),
                           forgotPassword(context),
-                          login(context),
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: orLoginWith(context),
-                          ),
-
-                          Visibility(
-                            visible:
-                                controller.accountType.value !=
-                                AppKeys.professional,
-                            child: SocialLoginLayout(
-                              loginController: controller,
-                              type: AppStrings.login,
-                            ),
-                          ),
-                          Visibility(
-                            visible: controller.accountType.value != AppKeys.professional,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: dontHaveAnAccount(context),
-                            ).marginOnly(top: 130.h),
-                          ),
-
                         ],
                       ),
-                    ).marginSymmetric(
-                      horizontal: spacerSize20,
-                      vertical: spacerSize0,
-                    ),
+                      login(context),
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: orLoginWith(context),
+                      ),
+
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: SocialLoginLayout(
+                          loginController: controller,
+                          type: AppStrings.login,
+                        ),
+                      ),
+                      Visibility(
+                        visible: controller.accountType.value != AppKeys.professional,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: dontHaveAnAccount(context),
+                        ).marginOnly(top: 35.h),
+                      ),
+                    ],
+                  ),
+                ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
               ),
             ),
-
-
           ],
         ),
       ),
@@ -114,28 +123,18 @@ print('sdf ${AppLocalizations.of(
 
   Widget emailField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       keyboardType: TextInputType.emailAddress,
       textEditingController: controller.emailController,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return AppLocalizations.of(context)!.enterYourEmail;
-        }
-        if (value.contains(' ')) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-        if (!emailRegex.hasMatch(value.trim())) {
-          return AppLocalizations.of(context)!.pleaseEnterValidEmailId;
-        }
-
-        return null;
-      },
+      validator: ValidationHelper.validateEmail,
     ).marginOnly(bottom: 10.h);
   }
 
-  passwordField(BuildContext context) {
+  Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.greenColor),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
@@ -144,8 +143,7 @@ print('sdf ${AppLocalizations.of(
         suffixIcon: IconButton(
           color: AppColors.liteGreyColor,
           onPressed: () {
-            controller.isPasswordObscure.value =
-                !controller.isPasswordObscure.value;
+            controller.isPasswordObscure.value = !controller.isPasswordObscure.value;
           },
           icon: controller.isPasswordObscure.value
               ? Icon(Icons.visibility_outlined)
@@ -155,43 +153,121 @@ print('sdf ${AppLocalizations.of(
     );
   }
 
-  forgotPassword(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routes.forgotPassword);
-      },
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: BaseText(
-          textAlign: TextAlign.right,
-          text: AppLocalizations.of(context)!.forgotPassword,
-          fontFamily: AppKeys.inter,
-          fontWeight: FontWeight.w500,
-          fontSize: 13.sp,
-          textColor: AppColors.greenColor,
+  // Login with OTP / verify mobile number disabled.
+  // Widget phoneField(BuildContext context) {
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Container(
+  //         height: 52.h,
+  //         padding: EdgeInsets.symmetric(horizontal: 14.w),
+  //         decoration: BoxDecoration(
+  //           color: AppColors.backgroundGrey,
+  //           borderRadius: BorderRadius.circular(spacerSize10),
+  //           border: Border.all(color: AppColors.borderGreyColor),
+  //         ),
+  //         alignment: Alignment.center,
+  //         child: BaseText(
+  //           text: '+91',
+  //           fontFamily: AppKeys.inter,
+  //           fontWeight: FontWeight.w500,
+  //           fontSize: 14.sp,
+  //         ),
+  //       ),
+  //       SizedBox(width: 8.w),
+  //       Expanded(
+  //         child: BaseTextField(
+  //           prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+  //           hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+  //           keyboardType: TextInputType.phone,
+  //           textEditingController: controller.phoneController,
+  //           errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+  //           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+  //           validator: ValidationHelper.validatePhone,
+  //         ),
+  //       ),
+  //     ],
+  //   ).marginOnly(bottom: 10.h);
+  // }
+
+  Widget forgotPassword(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        // Login with OTP disabled.
+        // GestureDetector(
+        //   onTap: controller.toggleLoginMode,
+        //   child: BaseText(
+        //     text: AppLocalizations.of(context)!.loginWithOtp,
+        //     fontFamily: AppKeys.inter,
+        //     fontWeight: FontWeight.w500,
+        //     fontSize: 13.sp,
+        //     textColor: AppColors.greenColor,
+        //   ),
+        // ),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(Routes.forgotPassword);
+          },
+          child: BaseText(
+            textAlign: TextAlign.right,
+            text: AppLocalizations.of(context)!.forgotPassword,
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 13.sp,
+            textColor: AppColors.greenColor,
+          ),
         ),
-      ).marginOnly(top:  10.h),
-    );
+      ],
+    ).marginOnly(top: 10.h);
   }
 
-  login(BuildContext context) {
+  // Login with OTP disabled.
+  // Widget loginModeToggle(BuildContext context) {
+  //   return GestureDetector(
+  //     onTap: controller.toggleLoginMode,
+  //     child: Align(
+  //       alignment: Alignment.centerRight,
+  //       child: BaseText(
+  //         textAlign: TextAlign.right,
+  //         text: AppLocalizations.of(context)!.loginWithEmail,
+  //         fontFamily: AppKeys.inter,
+  //         fontWeight: FontWeight.w500,
+  //         fontSize: 13.sp,
+  //         textColor: AppColors.greenColor,
+  //       ),
+  //     ).marginOnly(top: 10.h),
+  //   );
+  // }
+
+  Widget login(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         backgroundColor: AppColors.burntGold,
         onPressed: () {
           FocusScope.of(context).requestFocus(FocusNode());
 
           if (controller.formKey.currentState!.validate()) {
+            // Login with OTP disabled.
+            // if (controller.isMobileOtpLoginMode.value) {
+            //   controller.sendLoginOtp();
+            // } else {
+            //   controller.login();
+            // }
             controller.login();
           }
         },
         buttonLabel: AppLocalizations.of(context)!.login,
-      ).marginOnly(bottom: spacerSize30, top: spacerSize25),
+        // buttonLabel: controller.isMobileOtpLoginMode.value
+        //     ? AppLocalizations.of(context)!.sendOtp
+        //     : AppLocalizations.of(context)!.login,
+      ).marginOnly(bottom: 10.h, top: spacerSize25),
     );
   }
 
-  orLoginWith(BuildContext context) {
+  Widget orLoginWith(BuildContext context) {
     return Row(
       spacing: spacerSize6,
       children: [
@@ -205,20 +281,16 @@ print('sdf ${AppLocalizations.of(
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h);
+    ).marginOnly(bottom: 16.h);
   }
 
-  divider() {
+  Widget divider() {
     return Expanded(
-      child: Divider(
-        thickness: spacerSize1,
-        height: spacerSize1,
-        color: AppColors.liteGreyColor,
-      ),
+      child: Divider(thickness: spacerSize1, height: spacerSize1, color: AppColors.liteGreyColor),
     );
   }
 
-  dontHaveAnAccount(BuildContext context) {
+  Widget dontHaveAnAccount(BuildContext context) {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(

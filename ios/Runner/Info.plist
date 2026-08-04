@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>Kasagardem</string>
+	<string>Gardenova</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,7 +20,7 @@
 		<string>Portuguese (Brazil) pt-BR</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>Kasagardem</string>
+	<string>Gardenova</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -49,11 +49,13 @@
 	<key>FacebookClientToken</key>
 	<string>c9daaa885ba625e32e2e9885cbab580e</string>
 	<key>FacebookDisplayName</key>
-	<string>Kasagardem</string>
+	<string>Gardenova</string>
 	<key>GIDClientID</key>
 	<string>717938248293-qnmlvk2628anqiacplvpsvqe15ig5okt.apps.googleusercontent.com</string>
 	<key>GIDServerClientID</key>
 	<string>717938248293-qnmlvk2628anqiacplvpsvqe15ig5okt.apps.googleusercontent.com</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-9167105189322595~4796206308</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -98,6 +100,8 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
+        <string>remote-notification</string>
 		<string>location</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -119,5 +123,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to your photo library to save your landscape designs.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to diagnose plant health and take photos of your garden.</string>
 </dict>
 </plist>

@@ -22,9 +22,11 @@ class MainDashboardContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          HeadingUiLayout(
-            sectionTitle: AppLocalizations.of(context)!.overview,
-            child: SoilAnalysis(),
+          Obx(
+            () => HeadingUiLayout(
+              sectionTitle: AppLocalizations.of(context)!.overview,
+              child: SoilAnalysis(chartData: controller.chartData),
+            ),
           ),
           const SizedBox(height: spacerSize20),
           HeadingUiLayout(

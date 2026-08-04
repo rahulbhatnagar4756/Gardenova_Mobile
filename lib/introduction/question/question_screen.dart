@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_form.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
-import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/introduction/question/components/question_progress_indicator.dart';
 import 'package:kasagardem/introduction/question/models/question_response_model.dart';
 import 'package:kasagardem/introduction/question/question_view_model.dart';
@@ -13,8 +13,9 @@ import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
-import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
+import '../../utils/constants/app_assets.dart';
 
 class QuestionScreen extends GetWidget<QuestionViewModel> {
   const QuestionScreen({super.key});
@@ -27,18 +28,20 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     });
     return Obx(
       () => PopScope(
-        canPop: false,
+        canPop: controller.currentQuestion.value == 1,
         onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
           controller.backPressed();
         },
         child: Scaffold(
-          appBar: controller.isUserLoggedIn.value
-              ? CircularBottomAppBar(
-                  onSettingPressed: () {
-                    Get.toNamed(Routes.settings, arguments: 'question');
-                  },
-                )
-              : BaseAppBar(onBackPressed: controller.backPressed),
+          // appBar: controller.isUserLoggedIn.value && false
+          //     ? CircularBottomAppBar(
+          //         onSettingPressed: () {
+          //           Get.toNamed(Routes.settings, arguments: 'question');
+          //         },
+          //       )
+          //     : BaseAppBar(onBackPressed: controller.backPressed),
+          appBar: BaseAppBar(onBackPressed: controller.backPressed),
           backgroundColor: AppColors.appColor,
           body: Obx(
             () =>
@@ -48,19 +51,18 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       children: [
                         QuestionProgressIndicator(
                           currentQuestion: controller.currentQuestion.value,
-                          totalQuestions: controller.totalQuestions,
-                        ).marginOnly(top: spacerSize45),
+                          totalQuestions:
+                              controller.multipleChoiceQuestions.length +
+                              (controller.showExtraPreference ? 1 : 0),
+                        ).marginOnly(top: 25.h),
 
                         questionLayout(),
 
-                        if (controller.questionList.isNotEmpty)
-                          controller.totalQuestions ==
-                                  controller
-                                      .questionList[controller
-                                              .currentQuestion
-                                              .value -
-                                          1]
-                                      .order
+                        if (controller.multipleChoiceQuestions.isNotEmpty)
+                          // State/city tab is shown when currentQuestion exceeds the multipleChoiceQuestions list
+                          controller.showExtraPreference &&
+                                  controller.currentQuestion.value >
+                                      controller.multipleChoiceQuestions.length
                               ? answer5Layout(context)
                               : Wrap(
                                   direction: Axis.horizontal,
@@ -69,16 +71,14 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                   runSpacing: spacerSize10,
                                   children: List.generate(
                                     controller
-                                        .questionList[controller
-                                                .currentQuestion
-                                                .value -
+                                        .multipleChoiceQuestions[controller.currentQuestion.value -
                                             1]
                                         .options!
                                         .length,
                                     (index) {
                                       return answersLayout(
                                         question:
-                                            controller.questionList[controller
+                                            controller.multipleChoiceQuestions[controller
                                                     .currentQuestion
                                                     .value -
                                                 1],
@@ -87,7 +87,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                                       );
                                     },
                                   ),
-                                ).marginOnly(top: spacerSize15),
+                                ).marginOnly(top: 26.h),
                       ],
                     ),
                     continueAndBackLayout(context),
@@ -104,11 +104,13 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
     );
   }
 
-  answersLayout({
+  Widget answersLayout({
     int index = 0,
     required Questions question,
     required BuildContext context,
   }) {
+    // Image.asset(AppAssets.selectedRadioIc, width: 24.w,height: 24.w,),
+    // Image.asset(AppAssets.unSelectedRadioIc, width: 24.w,height: 24.w,),
     return GestureDetector(
       onTap: () {
         question.selectedAnswer = question.options![index].optionText;
@@ -116,134 +118,159 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       },
       child: Container(
         height: spacerSize60,
-        width: spacerSize150,
-        alignment: Alignment.topLeft,
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: spacerSize17, vertical: spacerSize10),
         decoration: BoxDecoration(
-          color: AppColors.darkGreen,
-          border: Border.all(
-            color:
-                (question.options![index].optionText == question.selectedAnswer)
-                ? AppColors.burntGold
-                : AppColors.backgroundGrey,
-          ),
           borderRadius: BorderRadius.circular(spacerSize10),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: spacerSize17,
-          vertical: spacerSize10,
-        ),
-        child: Center(
-          child: BaseText(
-            textAlign: TextAlign.center,
-            fontFamily: AppKeys.poppins,
-            fontWeight: FontWeight.w400,
-            fontSize: fontSize14,
-            textColor: AppColors.offWhite,
-            text: question.options![index].optionText ?? "",
+          border: Border.all(
+            color: (question.options![index].optionText == question.selectedAnswer)
+                ? AppColors
+                      .greenColor // selected border
+                : AppColors.borderLiteGreyColor,
+            width: 1.2,
           ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            /// ✅ Text (Left)
+            Expanded(
+              child: BaseText(
+                text: (question.options![index].optionText ?? "").trim(),
+                fontFamily: AppKeys.poppins,
+                fontWeight: FontWeight.w500,
+                fontSize: 13.sp,
+              ),
+            ),
+            SizedBox(width: 5.w),
+
+            /// ✅ Radio Icon (Right)
+            Image.asset(
+              (question.options![index].optionText == question.selectedAnswer)
+                  ? AppAssets.selectedRadioIc
+                  : AppAssets.unSelectedRadioIc,
+              width: 24.w,
+              height: 24.w,
+            ),
+          ],
         ),
       ),
     );
+    // return GestureDetector(
+    //   onTap: () {
+    //     question.selectedAnswer = question.options![index].optionText;
+    //     controller.questionList.refresh();
+    //   },
+    //   child: Container(
+    //     height: spacerSize60,
+    //     width: spacerSize150,
+    //     alignment: Alignment.topLeft,
+    //     decoration: BoxDecoration(
+    //       color: AppColors.darkGreen,
+    //       border: Border.all(
+    //         color:
+    //             (question.options![index].optionText == question.selectedAnswer)
+    //             ? AppColors.burntGold
+    //             : AppColors.backgroundGrey,
+    //       ),
+    //       borderRadius: BorderRadius.circular(spacerSize10),
+    //     ),
+    //     padding: EdgeInsets.symmetric(
+    //       horizontal: spacerSize17,
+    //       vertical: spacerSize10,
+    //     ),
+    //     child: Center(
+    //       child: BaseText(
+    //         textAlign: TextAlign.center,
+    //         fontFamily: AppKeys.poppins,
+    //         fontWeight: FontWeight.w400,
+    //         fontSize: fontSize14,
+    //         textColor: AppColors.offWhite,
+    //         text: question.options![index].optionText ?? "",
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
-  continueAndBackLayout(BuildContext context) {
+  Widget continueAndBackLayout(BuildContext context) {
     return Positioned(
       bottom: spacerSize0,
       left: 0,
       right: 0,
       child: Column(
         children: [
-          BaseButton(
-            backgroundColor: AppColors.burntGold,
-            textColor: AppColors.offWhite,
-            fontSize: fontSize17,
-            buttonLabel: AppLocalizations.of(
-              context,
-            )!.continueText.toUpperCase(),
-            onPressed: controller.onContinuePressed,
-          ),
-          GestureDetector(
-            onTap: controller.backPressed,
-            child: Row(
-              spacing: spacerSize4,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: spacerSize20,
-                    color: AppColors.offWhite,
-                    applyTextScaling: true,
-                  ),
-                ),
-                BaseText(
-                  text: AppLocalizations.of(context)!.back,
-                  fontSize: fontSize16,
-                  fontWeight: FontWeight.w400,
-                  textColor: AppColors.offWhite,
-                ),
-              ],
+          SizedBox(
+            width: double.infinity,
+            child: BaseButton(
+              bottomPadding: true,
+              backgroundColor: AppColors.burntGold,
+              textColor: AppColors.offWhite,
+              fontSize: fontSize17,
+              buttonLabel: AppLocalizations.of(context)!.continueText,
+              onPressed: controller.onContinuePressed,
             ),
-          ).marginOnly(top: spacerSize5),
+          ),
         ],
       ),
     );
   }
 
-  questionLayout() {
+  Widget questionLayout() {
+    // On the state/city tab, show a fixed heading instead of a question text
+    final isStateCityTab =
+        controller.multipleChoiceQuestions.isNotEmpty &&
+        controller.showExtraPreference &&
+        controller.currentQuestion.value > controller.multipleChoiceQuestions.length;
     return BaseText(
-      text: controller.questionList.isNotEmpty
-          ? controller
-                .questionList[controller.currentQuestion.value - 1]
-                .questionText!
+      text: isStateCityTab
+          ? ""
+          : controller.multipleChoiceQuestions.isNotEmpty
+          ? controller.multipleChoiceQuestions[controller.currentQuestion.value - 1].questionText!
                 .toTitleCase()
           : "",
-      textColor: AppColors.offWhite,
-      fontWeight: FontWeight.w400,
-      textAlign: TextAlign.center,
+      textColor: AppColors.blackColor,
+      fontWeight: FontWeight.w600,
+      textAlign: TextAlign.left,
       fontFamily: AppKeys.poppins,
-      fontSize: fontSize22,
-    ).marginOnly(top: spacerSize25).paddingAll(spacerSize5);
+      fontSize: 22.sp,
+    ).marginOnly(top: 29.h);
   }
 
-  answer5Layout(BuildContext context) {
+  Widget answer5Layout(BuildContext context) {
     return BaseForm(
       formKey: controller.formKey,
       child: Column(
-          spacing:spacerSize15,
-          children: [state(context), city(context)]).marginOnly(top: spacerSize30),
+        spacing: spacerSize15,
+        children: [state(context), city(context)],
+      ).marginOnly(top: 26.h),
     );
   }
 
-
-  state(BuildContext context) {
+  Widget state(BuildContext context) {
     return InkWell(
-          onTap: () => _showStateBottomSheet(context),
-          child: BaseTextField(
-            textEditingController: controller.stateController,
-            hintText: AppLocalizations.of(context)!.selectState,
-            hintColor: Colors.white,
-            isTextFieldEnabled:false,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return AppLocalizations.of(context)!.selectState;
-              }
-              return null;
-            },
-            suffixIcon: const Icon(
-              Icons.keyboard_arrow_down_outlined,
-              color: AppColors.offWhite,
-            ),
-          ),
-        );
+      onTap: () => _showStateBottomSheet(context),
+      child: BaseTextField(
+        textEditingController: controller.stateController,
+        hintText: AppLocalizations.of(context)!.selectState,
+        isTextFieldEnabled: false,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return AppLocalizations.of(context)!.selectState;
+          }
+          return null;
+        },
+        suffixIcon: Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.liteGreyColor),
+      ),
+    );
   }
 
-  city(BuildContext context) {
+  Widget city(BuildContext context) {
     return InkWell(
       onTap: () {
         if (controller.selectedState.value.name != null) {
           _showCityBottomSheet(context);
-        }else{
+        } else {
           BaseSnackBar.show(
             title: AppLocalizations.of(context)!.error,
             message: AppLocalizations.of(context)!.selectState,
@@ -253,23 +280,22 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       child: BaseTextField(
         textEditingController: controller.cityController,
         hintText: AppLocalizations.of(context)!.selectCity,
-        hintColor: Colors.white,
-        isTextFieldEnabled:false,
+        isTextFieldEnabled: false,
         validator: (value) {
           if (value!.isEmpty) {
             return AppLocalizations.of(context)!.selectCity;
           }
           return null;
         },
-        suffixIcon: const Icon(
-          Icons.keyboard_arrow_down_outlined,
-          color: AppColors.offWhite,
-        ),
+        suffixIcon: Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.liteGreyColor),
       ),
     );
   }
 
   void _showStateBottomSheet(BuildContext context) {
+    // Reset search field each time the sheet opens
+    controller.stateSearchController.clear();
+    controller.filterState('');
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -289,21 +315,21 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               fontWeight: FontWeight.w600,
               textColor: AppColors.offWhite,
             ).marginOnly(bottom: spacerSize15),
+            // Use a dedicated search controller — NOT stateController — so
+            // typing in the search box doesn't overwrite the selected value.
             BaseTextField(
-              textEditingController: controller.stateController,
+              textEditingController: controller.stateSearchController,
               hintText: AppLocalizations.of(context)!.search,
-              hintColor: Colors.white,
+              hintColor: AppColors.liteGreyColor,
               onChanged: (value) => controller.filterState(value),
             ),
             SizedBox(height: spacerSize15),
             Expanded(
               child: Obx(
-                    () => ListView.separated(
+                () => ListView.separated(
                   itemCount: controller.filteredStateList.length,
-                  separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withOpacity(0.1),
-                    height: 1,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      Divider(color: AppColors.offWhite.withValues(alpha: 0.1), height: 1),
                   itemBuilder: (context, index) {
                     final state = controller.filteredStateList[index];
                     return ListTile(
@@ -316,8 +342,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                       ),
                       onTap: () {
                         controller.selectedState.value = state;
-                        controller.stateController.text = state.name??"";
+                        controller.stateController.text = state.name ?? "";
                         controller.getCityList(stateCode: state.iso2);
+                        controller.stateSearchController.clear();
                         Get.back();
                       },
                     );
@@ -333,6 +360,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
   }
 
   void _showCityBottomSheet(BuildContext context) {
+    // Clear the search text only — filteredCityList is already populated by getCityList()
+    controller.citySearchController.clear();
     Get.bottomSheet(
       Container(
         height: Get.height * 0.7,
@@ -352,10 +381,11 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               fontWeight: FontWeight.w600,
               textColor: AppColors.offWhite,
             ).marginOnly(bottom: spacerSize15),
+            // Use a dedicated search controller — NOT cityController — so
+            // typing in the search box doesn't overwrite the selected value.
             BaseTextField(
-              textEditingController: controller.cityController,
+              textEditingController: controller.citySearchController,
               hintText: AppLocalizations.of(context)!.search,
-              hintColor: Colors.white,
               onChanged: (value) => controller.filterCity(value),
             ),
             SizedBox(height: spacerSize15),
@@ -363,10 +393,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               child: Obx(
                 () => ListView.separated(
                   itemCount: controller.filteredCityList.length,
-                  separatorBuilder: (context, index) => Divider(
-                    color: AppColors.offWhite.withOpacity(0.1),
-                    height: 1,
-                  ),
+                  separatorBuilder: (context, index) =>
+                      Divider(color: AppColors.offWhite.withValues(alpha: 0.1), height: 1),
                   itemBuilder: (context, index) {
                     final city = controller.filteredCityList[index];
                     return ListTile(
@@ -378,7 +406,10 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                         fontWeight: FontWeight.w500,
                       ),
                       onTap: () {
-                        controller.cityController.text = city.name??"";
+                        controller.selectedCity.value = city;
+                        controller.cityController.text = city.name ?? "";
+                        controller.citySearchController.clear();
+                        controller.formKey.currentState!.validate();
                         Get.back();
                       },
                     );
@@ -392,5 +423,4 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
       isScrollControlled: true,
     );
   }
-
 }

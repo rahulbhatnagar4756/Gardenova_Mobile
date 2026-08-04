@@ -10,9 +10,7 @@ class ProfileResponseModel {
   ProfileResponseModel.fromJson(dynamic json) {
     _success = json[ApiKeys.success];
     _message = json[ApiKeys.message];
-    _data = json[ApiKeys.data] != null
-        ? Data.fromJson(json[ApiKeys.data])
-        : null;
+    _data = json[ApiKeys.data] != null ? Data.fromJson(json[ApiKeys.data]) : null;
   }
 
   bool? _success;
@@ -48,6 +46,8 @@ class Data {
     String? name,
     String? email,
     String? contactNumber,
+    bool? isEmailVerified,
+    bool? isSsoUser,
     dynamic profileImage,
     dynamic imageUrl,
     dynamic dateOfBirth,
@@ -57,10 +57,18 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
+    String? responseId,
+    String? subscriptionPlan,
+    String? startDate,
+    String? endDate,
+    String? accountStatus,
+    Subscription? subscription,
   }) {
     _name = name;
     _email = email;
     _contactNumber = contactNumber;
+    _isEmailVerified = isEmailVerified;
+    _isSsoUser = isSsoUser;
     _profileImage = profileImage;
     _imageUrl = imageUrl;
     _dateOfBirth = dateOfBirth;
@@ -70,30 +78,50 @@ class Data {
     _socialLinks = socialLinks;
     _occupation = occupation;
     _company = company;
+    _responseId = responseId;
+    _subscriptionPlan = subscriptionPlan;
+    _startDate = startDate;
+    _endDate = endDate;
+    _accountStatus = accountStatus;
+    _subscription = subscription;
   }
 
   Data.fromJson(dynamic json) {
     _name = json[ApiKeys.name];
     _email = json[ApiKeys.email];
     _contactNumber = json[ApiKeys.contactNumber];
+    _isEmailVerified = json["is_email_verified"] ?? false;
+    _isSsoUser = json["is_sso_user"] ?? false;
     _profileImage = json[ApiKeys.profileImage];
     _imageUrl = json["imageUrl"];
     _dateOfBirth = json[ApiKeys.dateOfBirth];
     _gender = json[ApiKeys.gender];
     _bio = json[ApiKeys.bio];
-    _address = json[ApiKeys.address] != null
-        ? Address.fromJson(json[ApiKeys.address])
-        : null;
+    _address = json[ApiKeys.address] != null ? Address.fromJson(json[ApiKeys.address]) : null;
     _socialLinks = json[ApiKeys.socialLinks] != null
         ? SocialLinks.fromJson(json[ApiKeys.socialLinks])
         : null;
     _occupation = json[ApiKeys.occupation];
     _company = json[ApiKeys.company];
+    _responseId = json[ApiKeys.responseId];
+    _subscriptionPlan =
+        json['subscriptionPlan']?.toString() ?? json['subscription_plan']?.toString();
+    _startDate = json['startDate']?.toString() ?? json['start_date']?.toString();
+    _endDate = json['endDate']?.toString() ?? json['end_date']?.toString();
+    _accountStatus =
+        json['accountStatus']?.toString() ??
+        json['account_status']?.toString() ??
+        json['AccountStatus']?.toString();
+    _subscription = json['subscription'] != null
+        ? Subscription.fromJson(json['subscription'])
+        : null;
   }
 
   String? _name;
   String? _email;
   String? _contactNumber;
+  bool? _isEmailVerified;
+  bool? _isSsoUser;
   dynamic _profileImage;
   dynamic _imageUrl;
   dynamic _dateOfBirth;
@@ -103,11 +131,19 @@ class Data {
   SocialLinks? _socialLinks;
   dynamic _occupation;
   dynamic _company;
+  String? _responseId;
+  String? _subscriptionPlan;
+  String? _startDate;
+  String? _endDate;
+  String? _accountStatus;
+  Subscription? _subscription;
 
   Data copyWith({
     String? name,
     String? email,
     String? contactNumber,
+    bool? isEmailVerified,
+    bool? isSsoUser,
     dynamic profileImage,
     dynamic imageUrl,
     dynamic dateOfBirth,
@@ -117,10 +153,18 @@ class Data {
     SocialLinks? socialLinks,
     dynamic occupation,
     dynamic company,
+    String? responseId,
+    String? subscriptionPlan,
+    String? startDate,
+    String? endDate,
+    String? accountStatus,
+    Subscription? subscription,
   }) => Data(
     name: name ?? _name,
     email: email ?? _email,
     contactNumber: contactNumber ?? _contactNumber,
+    isEmailVerified: isEmailVerified ?? _isEmailVerified,
+    isSsoUser: isSsoUser ?? _isSsoUser,
     profileImage: profileImage ?? _profileImage,
     imageUrl: imageUrl ?? _imageUrl,
     dateOfBirth: dateOfBirth ?? _dateOfBirth,
@@ -130,6 +174,12 @@ class Data {
     socialLinks: socialLinks ?? _socialLinks,
     occupation: occupation ?? _occupation,
     company: company ?? _company,
+    responseId: responseId ?? _responseId,
+    subscriptionPlan: subscriptionPlan ?? _subscriptionPlan,
+    startDate: startDate ?? _startDate,
+    endDate: endDate ?? _endDate,
+    accountStatus: accountStatus ?? _accountStatus,
+    subscription: subscription ?? _subscription,
   );
 
   String? get name => _name;
@@ -137,6 +187,10 @@ class Data {
   String? get email => _email;
 
   String? get contactNumber => _contactNumber;
+
+  bool? get isEmailVerified => _isEmailVerified;
+
+  bool? get isSsoUser => _isSsoUser;
 
   dynamic get profileImage => _profileImage;
 
@@ -156,11 +210,27 @@ class Data {
 
   dynamic get company => _company;
 
+  String? get responseId => _responseId;
+
+  String? get subscriptionPlan => _subscriptionPlan;
+
+  String? get startDate => _startDate;
+
+  String? get endDate => _endDate;
+
+  String? get accountStatus => _accountStatus;
+
+  Subscription? get subscription => _subscription;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map[ApiKeys.name] = _name;
     map[ApiKeys.email] = _email;
     map[ApiKeys.contactNumber] = _contactNumber;
+
+    map['is_email_verified'] = _isEmailVerified;
+    map['is_sso_user'] = _isSsoUser;
+
     map[ApiKeys.profileImage] = _profileImage;
     map["imageUrl"] = _imageUrl;
     map[ApiKeys.dateOfBirth] = _dateOfBirth;
@@ -174,17 +244,100 @@ class Data {
     }
     map[ApiKeys.occupation] = _occupation;
     map[ApiKeys.company] = _company;
+    map[ApiKeys.responseId] = _responseId;
+    map['subscriptionPlan'] = _subscriptionPlan;
+    map['startDate'] = _startDate;
+    map['endDate'] = _endDate;
+    map['accountStatus'] = _accountStatus;
+    if (_subscription != null) {
+      map['subscription'] = _subscription?.toJson();
+    }
+    return map;
+  }
+}
+
+class Subscription {
+  Subscription({
+    String? planId,
+    String? planName,
+    String? status,
+    String? billingCycle,
+    bool? cancelAtPeriodEnd,
+    String? startedAt,
+    String? expiresAt,
+  }) {
+    _planId = planId;
+    _planName = planName;
+    _status = status;
+    _billingCycle = billingCycle;
+    _cancelAtPeriodEnd = cancelAtPeriodEnd;
+    _startedAt = startedAt;
+    _expiresAt = expiresAt;
+  }
+
+  Subscription.fromJson(dynamic json) {
+    _planId = json['planId']?.toString() ?? json['plan_id']?.toString();
+    _planName = json['planName']?.toString() ?? json['plan_name']?.toString();
+    _status = json['status']?.toString();
+    _billingCycle =
+        json['billingCycle']?.toString() ?? json['billing_cycle']?.toString();
+    _cancelAtPeriodEnd =
+        json['cancelAtPeriodEnd'] == true || json['cancel_at_period_end'] == true;
+    _startedAt =
+        json['startedAt']?.toString() ?? json['started_at']?.toString();
+    _expiresAt =
+        json['expiresAt']?.toString() ?? json['expires_at']?.toString();
+  }
+
+  String? _planId;
+  String? _planName;
+  String? _status;
+  String? _billingCycle;
+  bool? _cancelAtPeriodEnd;
+  String? _startedAt;
+  String? _expiresAt;
+
+  Subscription copyWith({
+    String? planId,
+    String? planName,
+    String? status,
+    String? billingCycle,
+    bool? cancelAtPeriodEnd,
+    String? startedAt,
+    String? expiresAt,
+  }) => Subscription(
+    planId: planId ?? _planId,
+    planName: planName ?? _planName,
+    status: status ?? _status,
+    billingCycle: billingCycle ?? _billingCycle,
+    cancelAtPeriodEnd: cancelAtPeriodEnd ?? _cancelAtPeriodEnd,
+    startedAt: startedAt ?? _startedAt,
+    expiresAt: expiresAt ?? _expiresAt,
+  );
+
+  String? get planId => _planId;
+  String? get planName => _planName;
+  String? get status => _status;
+  String? get billingCycle => _billingCycle;
+  bool? get cancelAtPeriodEnd => _cancelAtPeriodEnd;
+  String? get startedAt => _startedAt;
+  String? get expiresAt => _expiresAt;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['planId'] = _planId;
+    map['planName'] = _planName;
+    map['status'] = _status;
+    map['billingCycle'] = _billingCycle;
+    map['cancelAtPeriodEnd'] = _cancelAtPeriodEnd;
+    map['startedAt'] = _startedAt;
+    map['expiresAt'] = _expiresAt;
     return map;
   }
 }
 
 class SocialLinks {
-  SocialLinks({
-    dynamic facebook,
-    dynamic twitter,
-    dynamic linkedin,
-    dynamic instagram,
-  }) {
+  SocialLinks({dynamic facebook, dynamic twitter, dynamic linkedin, dynamic instagram}) {
     _facebook = facebook;
     _twitter = twitter;
     _linkedin = linkedin;
@@ -203,17 +356,13 @@ class SocialLinks {
   dynamic _linkedin;
   dynamic _instagram;
 
-  SocialLinks copyWith({
-    dynamic facebook,
-    dynamic twitter,
-    dynamic linkedin,
-    dynamic instagram,
-  }) => SocialLinks(
-    facebook: facebook ?? _facebook,
-    twitter: twitter ?? _twitter,
-    linkedin: linkedin ?? _linkedin,
-    instagram: instagram ?? _instagram,
-  );
+  SocialLinks copyWith({dynamic facebook, dynamic twitter, dynamic linkedin, dynamic instagram}) =>
+      SocialLinks(
+        facebook: facebook ?? _facebook,
+        twitter: twitter ?? _twitter,
+        linkedin: linkedin ?? _linkedin,
+        instagram: instagram ?? _instagram,
+      );
 
   dynamic get facebook => _facebook;
 
@@ -234,13 +383,7 @@ class SocialLinks {
 }
 
 class Address {
-  Address({
-    dynamic street,
-    dynamic city,
-    dynamic state,
-    dynamic country,
-    dynamic zipCode,
-  }) {
+  Address({dynamic street, dynamic city, dynamic state, dynamic country, dynamic zipCode}) {
     _street = street;
     _city = city;
     _state = state;

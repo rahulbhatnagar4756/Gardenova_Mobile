@@ -18,81 +18,80 @@ class CreateProfessionalLeadRequestScreen extends GetWidget<ProfessionalDashboar
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: BaseAppBar(),
-      body: Column(
-        spacing: spacerSize6,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BaseText(
-            text: AppLocalizations.of(context)!.selectService,
-            textColor: AppColors.offWhite,
-            fontSize: fontSize16,
-          ),
-          InkWell(
-            onTap: (){
-              ServiceBottomSheet.show(
-                categories: controller.categories,
-                selectedKey: controller.selectedService.value,
-                onSelect: (key, value) {
-                  controller.selectedService.value = key;
-                  controller.serviceController.text = value;
-                },
-              );
-            },
-            child: BaseTextField(
-              hintText:  AppLocalizations.of(context)!.selectService,
-              hintColor: AppColors.mediumGrey,
-              isTextFieldEnabled: false,
-              textEditingController: controller.serviceController,
-              errorText: AppLocalizations.of(context)!.selectService,
-              suffixIcon: Icon(
-                Icons.keyboard_arrow_down,
-                color: AppColors.offWhite,
-              ),
+      body: SingleChildScrollView(
+        child: Column(
+          spacing: spacerSize6,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BaseText(
+              text: AppLocalizations.of(context)!.selectService,
+              fontSize: fontSize16,
             ),
-          ).marginOnly(
-              bottom: spacerSize10
-          ),
-          BaseText(
-            text:  AppLocalizations.of(context)!.shortDescription,
-            textColor: AppColors.offWhite,
-            fontSize: fontSize16,
-          ),
-          BaseTextField(
-            hintText:AppLocalizations.of(context)!.shortDescription,
-            hintColor: AppColors.mediumGrey,
-            textEditingController: controller.descriptionController,
-            errorText:AppLocalizations.of(context)!.enterShortDescription,
-            maxLines: 4,
-          ).marginOnly(
-              bottom: spacerSize10
-          ),
-          BaseText(
-            text:  AppLocalizations.of(context)!.sizeOfTheArea,
-            textColor: AppColors.offWhite,
-            fontSize: fontSize16,
-          ),
-          BaseTextField(
-            hintText: AppLocalizations.of(context)!.sizeOfTheArea,
-            hintColor: AppColors.mediumGrey,
-            textEditingController: controller.sizeController,
-            errorText: AppLocalizations.of(context)!.enterSizeOfTheArea,
-          ),
-
-          BaseButton(
-            buttonLabel: AppLocalizations.of(
-              context,
-            )!.requestAQuote,
-            buttonWidth: Get.width,
-            onPressed: () {
-              if (controller.professionalsList.any((professional) => professional.isSelected == true)) {
-                controller.createLeadForProfessional();
-              }
-            },
-          ).marginOnly(
-              top: spacerSize40
-          ),
-        ],
-      ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+            InkWell(
+              onTap: (){
+                ServiceBottomSheet.show(
+                  categories: controller.categories,
+                  selectedKey: controller.selectedService.value,
+                  onSelect: (key, value) {
+                    controller.selectedService.value = key;
+                    controller.serviceController.text = value;
+                  },
+                );
+              },
+              child: BaseTextField(
+                hintText:  AppLocalizations.of(context)!.selectService,
+                hintColor: AppColors.mediumGrey,
+                isTextFieldEnabled: false,
+                textEditingController: controller.serviceController,
+                errorText: AppLocalizations.of(context)!.selectService,
+                suffixIcon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: AppColors.offWhite,
+                ),
+              ),
+            ).marginOnly(
+                bottom: spacerSize10
+            ),
+            BaseText(
+              text:  AppLocalizations.of(context)!.shortDescription,
+              fontSize: fontSize16,
+            ),
+            BaseTextField(
+              hintText:AppLocalizations.of(context)!.shortDescription,
+              hintColor: AppColors.mediumGrey,
+              textEditingController: controller.descriptionController,
+              errorText:AppLocalizations.of(context)!.enterShortDescription,
+              maxLines: 4,
+            ).marginOnly(
+                bottom: spacerSize10
+            ),
+            BaseText(
+              text:  AppLocalizations.of(context)!.sizeOfTheArea,
+              fontSize: fontSize16,
+            ),
+            BaseTextField(
+              hintText: AppLocalizations.of(context)!.sizeOfTheArea,
+              hintColor: AppColors.mediumGrey,
+              textEditingController: controller.sizeController,
+              errorText: AppLocalizations.of(context)!.enterSizeOfTheArea,
+            ),
+        
+            BaseButton(
+              buttonLabel: AppLocalizations.of(
+                context,
+              )!.requestAQuote,
+              buttonWidth: Get.width,
+              onPressed: () {
+                if (controller.professionalsList.any((professional) => professional.isSelected == true)) {
+                  controller.createLeadForProfessional();
+                }
+              },
+            ).marginOnly(
+                top: spacerSize40
+            ),
+          ],
+        ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
+      ),
     );
   }
 }

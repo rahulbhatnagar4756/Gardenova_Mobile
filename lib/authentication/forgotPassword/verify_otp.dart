@@ -12,7 +12,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
-import '../../utils/routes.dart';
+import '../../utils/utils.dart';
 
 class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
   const VerifyOtp({super.key});
@@ -21,113 +21,251 @@ class VerifyOtp extends GetWidget<ForgotPasswordViewModel> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      appBar: const BaseAppBar(
-        isAppIconVisible: false,
-        isBackButtonVisible: true,
+      appBar: const BaseAppBar(isBackButtonVisible: true),
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Center(
+              //   child: Container(
+              //     width: 84.w,
+              //     height: 84.w,
+              //     margin: EdgeInsets.only(top: 20.h, bottom: 15.h),
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       color: Colors.white,
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: Colors.black.withValues(alpha: 0.06),
+              //           blurRadius: 12,
+              //           spreadRadius: 2,
+              //         ),
+              //       ],
+              //       border: Border.all(
+              //         color: AppColors.borderLiteGreyColor,
+              //         width: 1.5.w,
+              //       ),
+              //     ),
+              //     child: Center(
+              //       child: ClipOval(
+              //         child: Image.asset(
+              //           AppAssets.appLogo,
+              //           width: 76.w,
+              //           height: 76.w,
+              //           fit: BoxFit.contain,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              HeaderLogoLayout(
+                title: AppLocalizations.of(context)!.enterYourOtp,
+                subTitle: AppLocalizations.of(
+                  context,
+                )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
+              ),
+              OtpLayout(
+                lengthOtp: 6,
+                widgetKey: controller.verifyOtpFormKey,
+                focusNode: controller.focusNode,
+                pinController: controller.pinController,
+              ),
+              securityBanner(context),
+              verifyOtp(context),
+              didNotReceiveAnyCode(context),
+              otpExpiryBanner(context),
+            ],
+          ).marginSymmetric(horizontal: spacerSize20),
+        ),
       ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                HeaderLogoLayout(
-                  title: AppLocalizations.of(context)!.enterYourOtp,
-                  subTitle: AppLocalizations.of(
-                    context,
-                  )!.checkYourEmailOrPhoneForTheOTPAndEnterItBelow,
-                ),
-                OtpLayout(forgotPasswordViewModel: controller),
-                verifyOtp(context),
-                didNotReceiveAnyCode(context),
-              ],
-            ),
-          ),
-        ],
-      ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize10),
     );
   }
 
-  verifyOtp(BuildContext context) {
+  Widget securityBanner(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF6FBF7),
+        border: Border.all(color: const Color(0xFFE2EFE5), width: 1.w),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.shield_outlined, color: AppColors.greenColor, size: 24.w),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Text(
+              AppLocalizations.of(context)?.localeName == 'pt'
+                  ? 'Para sua segurança, nunca compartilhe seu OTP com ninguém.'
+                  : 'For your security, never share your OTP with anyone.',
+              style: TextStyle(
+                color: AppColors.liteGreyColor,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w400,
+                fontFamily: AppKeys.inter,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget verifyOtp(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: BaseButton(
-        backgroundColor: AppColors.burntGold,
+        bottomPadding: true,
+        linearBackgroundColor: AppColors.linearGradientForBtn,
         onPressed: () {
-          if (controller.verifyOtpFormKey.currentState!.validate()) {
+          Utils.hideKeyboard();
+          if (controller.verifyOtpFormKey.currentState?.validate() ?? false) {
             controller.focusNode.unfocus();
             controller.verifyOtp();
           }
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.verifyOtp,
-      ).marginOnly(bottom: 24.h, top: spacerSize25),
+      ).marginOnly(top: spacerSize25),
     );
   }
 
-   didNotReceiveAnyCode(BuildContext context) {
+  Widget didNotReceiveAnyCode(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final isPt = locale?.localeName == 'pt';
     return Obx(
-      () => RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: AppLocalizations.of(context)!.didNotReceiveAnyCode,
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: AppColors.liteGreyColor,
-                fontWeight: FontWeight.w400,
-                fontFamily: AppKeys.inter,
+      () => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text:
+                      locale?.didNotReceiveAnyCode ?? "Didn't receive any OTP?",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.blackColor,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: AppKeys.inter,
+                  ),
+                ),
+                TextSpan(
+                  text: isPt ? ' Reenviar' : ' Resend',
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      if (controller.canResend.value) {
+                        controller.sendOtp(isResend: true);
+                      }
+                    },
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: controller.canResend.value
+                        ? AppColors.greenColor
+                        : AppColors.greenColor.withValues(alpha: 0.5),
+                    fontWeight: FontWeight.w600,
+                    fontFamily: AppKeys.inter,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!controller.canResend.value) ...[
+            SizedBox(height: 8.h),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: isPt
+                        ? 'Você pode reenviar o OTP em '
+                        : 'You can resend OTP in ',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: AppColors.liteGreyColor,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: AppKeys.inter,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        '${(controller.start ~/ 60).toString().padLeft(2, '0')}:${(controller.start.value % 60).toString().padLeft(2, '0')}',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: AppColors.greenColor,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: AppKeys.inter,
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            TextSpan(
-              text: '\t${AppLocalizations.of(context)!.resendCode}',
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  if (controller.canResend.value) {
-                    controller.sendOtp(isResend: true);
-                  }
-                },
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: controller.canResend.value
-                    ? AppColors.greenColor
-                    : AppColors.liteGreyColor,
-                fontWeight: FontWeight.w400,
-                fontFamily: AppKeys.inter,
-              ),
-            ),
-            if (!controller.canResend.value)
-              TextSpan(
-                text: '\t${AppLocalizations.of(context)!.inText}',
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    if (controller.canResend.value) {
-                      controller.sendOtp(isResend: true);
-                    }
-                  },
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: controller.canResend.value
-                      ? AppColors.greenColor
-                      : AppColors.liteGreyColor,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: AppKeys.inter,
-                ),
-              ),
-            if (!controller.canResend.value)
-              TextSpan(
-                text:
-                    '\t${(controller.start ~/ 60).toString().padLeft(2, '0')}:${(controller.start.value % 60).toString().padLeft(2, '0')}',
-                style: TextStyle(
-                  fontSize: 13.sp,
-                  color: AppColors.greenColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
           ],
-        ),
+        ],
       ),
     );
+  }
+
+  Widget otpExpiryBanner(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final isPt = locale?.localeName == 'pt';
+    return Obx(() {
+      final int minutes = controller.expiryStart.value ~/ 60;
+      final int seconds = controller.expiryStart.value % 60;
+      final String timeStr =
+          '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return Container(
+        margin: EdgeInsets.only(top: 25.h, bottom: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8F9FD),
+          border: Border.all(color: const Color(0xFFEFF0F6), width: 1.w),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.verified_user, color: AppColors.greenColor, size: 24.w),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: isPt ? 'O OTP expirará em ' : 'OTP will expire in ',
+                      style: TextStyle(
+                        color: AppColors.liteGreyColor,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: AppKeys.inter,
+                      ),
+                    ),
+                    TextSpan(
+                      text: timeStr,
+                      style: TextStyle(
+                        color: AppColors.greenColor,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: AppKeys.inter,
+                      ),
+                    ),
+                    TextSpan(
+                      text: isPt ? ' minutos' : ' minutes',
+                      style: TextStyle(
+                        color: AppColors.liteGreyColor,
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: AppKeys.inter,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
