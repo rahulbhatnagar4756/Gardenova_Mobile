@@ -25,10 +25,8 @@ class ReportSuccessScreen extends StatelessWidget {
             children: [
               SuccessIconLayout(),
               BaseText(
-                text: AppLocalizations.of(
-                  context,
-                )!.yourIntelligentDiagnosisReportIsReady,
-                textColor: AppColors.offWhite,
+                text: AppLocalizations.of(context)!.yourIntelligentDiagnosisReportIsReady,
+                textColor: AppColors.blackColor,
                 fontWeight: FontWeight.w400,
                 textAlign: TextAlign.center,
                 fontFamily: AppKeys.poppins,
@@ -42,7 +40,7 @@ class ReportSuccessScreen extends StatelessWidget {
     );
   }
 
-  continueAndBackLayout(BuildContext context) {
+  Widget continueAndBackLayout(BuildContext context) {
     return Positioned(
       bottom: spacerSize0,
       left: spacerSize0,

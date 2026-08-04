@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:kasagardem/dashboard/components/soil_analysis.dart'
+    show ChartData;
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/professional/myLead/my_lead_controller.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -113,12 +115,4 @@ class LeadMatricCard extends StatelessWidget {
       );
     });
   }
-}
-
-class ChartData {
-  ChartData(this.x, this.y, this.color);
-
-  final String x;
-  final double y;
-  final Color color;
 }

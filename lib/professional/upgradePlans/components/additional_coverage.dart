@@ -1,7 +1,9 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
+import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/professional/upgradePlans/components/toggle_button.dart';
 
 import '../../../base/widgets/base_text.dart';
@@ -9,6 +11,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../utils/constants/app_color.dart';
 import '../../../utils/constants/app_constants.dart';
 import '../../../utils/constants/app_keys.dart';
+import '../../../utils/utils.dart';
 import '../upgrade_plan_controller.dart';
 
 class AdditionalNationalCoverage extends StatelessWidget {
@@ -27,7 +30,7 @@ class AdditionalNationalCoverage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return CommonClickWidget(
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.all(spacerSize20),
@@ -36,68 +39,83 @@ class AdditionalNationalCoverage extends StatelessWidget {
             dashPattern: [5, 5],
             strokeWidth: spacerSize1,
             padding: EdgeInsets.all(spacerSize14),
-            color: isSelected ? AppColors.burntGold : AppColors.offWhite10,
+            color:  AppColors.greenColor,
             radius: const Radius.circular(spacerSize12),
           ),
           child: Row(
             spacing: spacerSize8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Container(
+              //   padding: EdgeInsets.all(spacerSize2),
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(spacerSize12),
+              //     border: Border.all(
+              //       color: isSelected
+              //           ? AppColors.burntGold
+              //           : AppColors.offWhite10,
+              //     ),
+              //   ),
+              //   child: CircleAvatar(
+              //     radius: spacerSize6,
+              //     backgroundColor: isSelected
+              //         ? AppColors.burntGold
+              //         : AppColors.appBarColor,
+              //   ),
+              // ),
               Container(
+                width: 14.w,
+                height: 14.w,
                 padding: EdgeInsets.all(spacerSize2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(spacerSize12),
                   border: Border.all(
-                    color: isSelected
-                        ? AppColors.burntGold
-                        : AppColors.offWhite10,
+                      color: isSelected
+                          ? AppColors.greenColor
+                          : AppColors.blackColor,
+                      width: 2
                   ),
                 ),
                 child: CircleAvatar(
                   radius: spacerSize6,
                   backgroundColor: isSelected
-                      ? AppColors.burntGold
-                      : AppColors.appBarColor,
+                      ? AppColors.greenColor
+                      : AppColors.appColor,
                 ),
               ),
-
               Expanded(
                 child: Column(
-                  spacing: spacerSize8,
+
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        BaseText(
-                          text: AppLocalizations.of(
-                            context,
-                          )!.additionalNationalCoverage,
-                          fontSize: fontSize14,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppKeys.inter,
-                          textColor: AppColors.offWhite70,
-                        ),
-                        Obx(
-                          () => FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: BaseText(
-                              text:
-                                  isShowPlanType &&
-                                      controller.isSelectOneTime.value
-                                  ? "+R\$\t100.00/${AppLocalizations.of(context)!.an}"
-                                  : !controller.isSelectOneTime.value
-                                  ? "+R\$1200.00/${AppLocalizations.of(context)!.an}"
-                                  : "+R\$\t100.00/${AppLocalizations.of(context)!.mu}",
-                              fontSize: fontSize14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: AppKeys.inter,
-                              textColor: AppColors.burntGold,
-                            ),
-                          ),
-                        ),
-                      ],
+                    BaseText(
+                      text: AppLocalizations.of(
+                        context,
+                      )!.additionalNationalCoverage,
+                      fontSize: fontSize14,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: AppKeys.inter,
                     ),
+
+                    Obx(
+                          () => FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: BaseText(
+                          text:
+                          isShowPlanType &&
+                              controller.isSelectOneTime.value
+                              ? "+R\$\t100.00/${AppLocalizations.of(context)!.an}"
+                              : !controller.isSelectOneTime.value
+                              ? "+R\$1200.00/${AppLocalizations.of(context)!.an}"
+                              : "+R\$\t100.00/${AppLocalizations.of(context)!.mu}",
+                          fontSize: fontSize10,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: AppKeys.inter,
+                          textColor: AppColors.greenColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: spacerSize8,),
                     if (!isShowPlanType)
                       BaseText(
                         text: AppLocalizations.of(
@@ -106,8 +124,8 @@ class AdditionalNationalCoverage extends StatelessWidget {
                         fontSize: fontSize12,
                         fontWeight: FontWeight.w400,
                         fontFamily: AppKeys.inter,
-                        textColor: AppColors.offWhite50,
-                      ),
+                        textColor: AppColors.liteGreyColor,
+                      ).paddingOnly(bottom:spacerSize8 ),
                     if (isShowPlanType)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,33 +137,34 @@ class AdditionalNationalCoverage extends StatelessWidget {
                             fontSize: fontSize12,
                             fontWeight: FontWeight.w400,
                             fontFamily: AppKeys.inter,
-                            textColor: AppColors.offWhite50,
+                            textColor: AppColors.liteGreyColor,
                           ),
+                          SizedBox(height: spacerSize8,),
                           Text(
                             AppLocalizations.of(context)!.validFor1Year,
                             style: TextStyle(
                               fontSize: fontSize12,
                               fontWeight: FontWeight.w400,
                               fontFamily: AppKeys.inter,
-                              color: AppColors.darkGold,
+                              color: AppColors.greenColor,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
                           Visibility(
-                            visible: controller.isTabAdditionalCoverage.value,
+                            visible: controller.isTabAdditionalCoverage.value || true,
                             child: Row(
                               spacing: spacerSize15,
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 BaseText(
-                                  text: AppLocalizations.of(
+                                  text: Utils.capitalize( AppLocalizations.of(
                                     context,
-                                  )!.planType.toUpperCase(),
+                                  )!.planType),
                                   fontSize: fontSize12,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   fontFamily: AppKeys.poppins,
-                                  textColor: AppColors.offWhite50,
+
                                 ).marginOnly(top: spacerSize6),
                                 Obx(
                                   () => Container(
@@ -155,10 +174,10 @@ class AdditionalNationalCoverage extends StatelessWidget {
                                     ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(
-                                        spacerSize30,
+                                        spacerSize3,
                                       ),
                                       border: Border.all(
-                                        color: AppColors.borderGold,
+                                        color: AppColors.greenColor,
                                       ),
                                     ),
                                     child: Row(
@@ -170,7 +189,7 @@ class AdditionalNationalCoverage extends StatelessWidget {
                                           horizontalPadding: spacerSize8,
                                           title: AppLocalizations.of(
                                             context,
-                                          )!.oneTime.toUpperCase(),
+                                          )!.oneTime,
                                           isSelected:
                                               controller.isSelectOneTime.value,
                                           onTap: () {
@@ -184,7 +203,7 @@ class AdditionalNationalCoverage extends StatelessWidget {
                                         ToggleButton(
                                           title: AppLocalizations.of(
                                             context,
-                                          )!.reccuring.toUpperCase(),
+                                          )!.reccuring,
                                           isSelected:
                                               !controller.isSelectOneTime.value,
                                           onTap: () {

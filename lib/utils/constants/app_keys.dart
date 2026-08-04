@@ -2,13 +2,16 @@ class AppKeys {
   static const multipleChoiceType = 1;
   static const dropDownType = 2;
   static const idToken = 'id_token';
+
   static const isLoggedIn = 'is_logged_in';
+  static const isSoftLoggedIn = 'is_soft_logged_in';
   static const isGuestLoggedIn = 'is_guest_logged_in';
   static const users = 'users';
   static const role = 'role';
   static const uid = 'uid';
   static const email = 'email';
   static const profileImage = 'profileImage';
+  static const emailLogedInUser = 'emailLogedInUser';
   static const password = 'password';
   static const name = 'name';
   static const createdAt = 'created_at';
@@ -27,6 +30,13 @@ class AppKeys {
   static const login = 'login';
   static const accountStatus = 'AccountStatus';
   static const remainingDays = 'remainingDays';
+  static const subscriptionPlan = 'subscriptionPlan';
+  static const razorpaySubscriptionId = 'razorpaySubscriptionId';
   static const currentLatKey = 'currentLat';
   static const currentLongKey = 'currentLongKey';
+  static const fcmToken = 'fcm_token';
+  static const lastRegisteredFcmToken = 'last_registered_fcm_token';
+  static const notificationsEnabled = 'notifications_enabled';
+  static const pendingNotificationPayload = 'pending_notification_payload';
+  static const isNewUserOtpLogin = 'isNewUserOtpLogin';
 }

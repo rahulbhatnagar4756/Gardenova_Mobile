@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/professional/professionalDashBoard/professional_dashboard_controller.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -40,26 +38,26 @@ class ProfessionalHeadingItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BaseText(
-              textColor: AppColors.offWhite,
               fontFamily: AppKeys.poppins,
               fontSize: fontSize18,
               fontWeight: FontWeight.w400,
               text: sectionTitle ?? "",
             ),
             Visibility(
-              visible: isFilterShow??false,
+              visible: isFilterShow ?? false,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   onTabFilter?.call();
                 },
                 child: Container(
                   padding: const EdgeInsets.all(spacerSize10),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.lightGold, AppColors.burntGold],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    color: AppColors.greenColor,
+                    // gradient: const LinearGradient(
+                    //   colors: [AppColors.lightGold, AppColors.burntGold],
+                    //   begin: Alignment.topCenter,
+                    //   end: Alignment.bottomCenter,
+                    // ),
                     borderRadius: BorderRadius.circular(spacerSize10),
                   ),
                   child: Image.asset(
@@ -76,5 +74,4 @@ class ProfessionalHeadingItem extends StatelessWidget {
       ],
     );
   }
-
 }

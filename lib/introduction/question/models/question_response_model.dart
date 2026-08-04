@@ -15,15 +15,12 @@ class QuestionResponseModel {
   String? _message;
   Data? _data;
 
-  QuestionResponseModel copyWith({
-    bool? success,
-    String? message,
-    Data? data,
-  }) => QuestionResponseModel(
-    success: success ?? _success,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  QuestionResponseModel copyWith({bool? success, String? message, Data? data}) =>
+      QuestionResponseModel(
+        success: success ?? _success,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
 
   bool? get success => _success;
 
@@ -58,8 +55,7 @@ class Data {
 
   List<Questions>? _questions;
 
-  Data copyWith({List<Questions>? questions}) =>
-      Data(questions: questions ?? _questions);
+  Data copyWith({List<Questions>? questions}) => Data(questions: questions ?? _questions);
 
   List<Questions>? get questions => _questions;
 

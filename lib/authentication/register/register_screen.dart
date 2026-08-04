@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/authentication/components/header_logo_layout.dart';
@@ -14,6 +15,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/utils/validation_healper.dart';
 
 import '../../utils/constants/app_strings.dart';
 import '../components/social_login_layout.dart';
@@ -26,42 +28,38 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
-        isAppIconVisible: false,
+        // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child:
-                  BaseForm(
-                    formKey: controller.formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        HeaderLogoLayout(
-                          title: AppLocalizations.of(context)!.welcome,
-                          subTitle: AppLocalizations.of(
-                            context,
-                          )!.loginOrRegisterToContinue,
-                        ),
-                        nameField(context),
-                        emailField(context),
-                        phoneNoField(context),
-                        passwordField(context),
-                        termOfUseAndPrivacyPolicy(context),
-                        register(context),
-                        orRegisterWith(context),
-                        /*  orRegisterWith(context),
-                  ,*/
-                        SocialLoginLayout(registerController: controller, type: AppStrings.register).paddingOnly(bottom: 25.h),
-
-                      ],
+              child: BaseForm(
+                formKey: controller.formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    HeaderLogoLayout(
+                      title: AppLocalizations.of(context)!.welcome,
+                      subTitle: AppLocalizations.of(context)!.loginOrRegisterToContinue,
                     ),
-                  ).marginSymmetric(
-                    horizontal: spacerSize20,
-                    vertical: spacerSize0,
-                  ),
+                    nameField(context),
+                    emailField(context),
+                    phoneNoField(context),
+                    passwordField(context),
+                    termOfUseAndPrivacyPolicy(context),
+                    register(context),
+                    orRegisterWith(context),
+                    /*  orRegisterWith(context),
+                  ,*/
+                    SocialLoginLayout(
+                      registerController: controller,
+                      type: AppStrings.register,
+                    ).paddingOnly(bottom: 25.h),
+                  ],
+                ),
+              ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
             ),
           ),
           alreadyHaveAnAccount(context),
@@ -71,54 +69,87 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  nameField(BuildContext context) {
+  Widget nameField(BuildContext context) {
     return BaseTextField(
+      prefixIcon: Icon(Icons.person_2_outlined, color: AppColors.greenColor),
       textEditingController: controller.nameController,
       hintText: AppLocalizations.of(context)!.enterYourName,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
-    ).marginOnly(top: spacerSize10, bottom: spacerSize10);
+      validator: ValidationHelper.validateName,
+    ).marginOnly(top: 0, bottom: spacerSize10);
   }
 
-  passwordField(BuildContext context) {
+  Widget passwordField(BuildContext context) {
     return Obx(
       () => BaseTextField(
+        prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.greenColor),
         hintText: AppLocalizations.of(context)!.enterYourPassword,
         keyboardType: TextInputType.visiblePassword,
         isTextObscure: controller.isPasswordObscure.value,
         textEditingController: controller.passwordController,
         errorText: AppLocalizations.of(context)!.passwordCannotBeEmpty,
         suffixIcon: IconButton(
-          color: AppColors.offWhite,
+          color: AppColors.liteGreyColor,
           onPressed: () {
-            controller.isPasswordObscure.value =
-                !controller.isPasswordObscure.value;
+            controller.isPasswordObscure.value = !controller.isPasswordObscure.value;
           },
           icon: controller.isPasswordObscure.value
               ? Icon(Icons.visibility_outlined)
               : Icon(Icons.visibility_off_outlined),
         ),
+        validator: ValidationHelper.validatePassword,
       ),
     );
   }
 
-  emailField(BuildContext context) {
+  Widget emailField(BuildContext context) {
     return BaseTextField(
       hintText: AppLocalizations.of(context)!.enterYourEmail,
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
+      prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
+      validator: ValidationHelper.validateEmail,
     ).marginOnly(bottom: spacerSize10);
   }
 
-  phoneNoField(BuildContext context) {
-    return BaseTextField(
-      hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
-      keyboardType: TextInputType.phone,
-      textEditingController: controller.phoneNoController,
-      errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+  // need to change
+  Widget phoneNoField(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 52.h,
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGrey,
+            borderRadius: BorderRadius.circular(spacerSize10),
+            border: Border.all(color: AppColors.borderGreyColor),
+          ),
+          alignment: Alignment.center,
+          child: BaseText(
+            text: '+91',
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            fontSize: 14.sp,
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: BaseTextField(
+            prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
+            hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
+            keyboardType: TextInputType.phone,
+            textEditingController: controller.phoneNoController,
+            errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            validator: ValidationHelper.validatePhone,
+          ),
+        ),
+      ],
     ).marginOnly(bottom: spacerSize10);
   }
 
-  termOfUseAndPrivacyPolicy(BuildContext context) {
+  Widget termOfUseAndPrivacyPolicy(BuildContext context) {
     return GestureDetector(
       onTap: controller.onCheckTermsAndCondition,
       child: Row(
@@ -133,9 +164,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                 value: controller.isUserAgreedToTerms.value,
                 activeColor: AppColors.greenColor,
 
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(spacerSize10),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(spacerSize10)),
                 onChanged: (bool? value) {
                   controller.onCheckTermsAndCondition();
                 },
@@ -161,7 +190,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                   TextSpan(
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        //  Get.toNamed(Routes.termsAndConditions);
+                        Get.toNamed(Routes.termsAndConditions);
                       },
                     text: "\t${AppLocalizations.of(context)!.termsOfUse}",
                     style: TextStyle(
@@ -181,6 +210,10 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
                     ),
                   ),
                   TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Get.toNamed(Routes.privacyPolicy);
+                      },
                     text: "\t${AppLocalizations.of(context)!.privacyPolicy}",
                     style: TextStyle(
                       color: AppColors.greenColor,
@@ -198,30 +231,31 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
     );
   }
 
-  register(BuildContext context) {
-    return SizedBox(width: double.infinity,
+  Widget register(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
       child: BaseButton(
+        bottomPadding: true,
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
+              // Register API first, then email OTP verification screen.
               controller.registerUser();
             } else {
               BaseSnackBar.show(
                 title: appName,
-                message: AppLocalizations.of(
-                  context,
-                )!.pleaseAcceptTermsAndConditions,
+                message: AppLocalizations.of(context)!.pleaseAcceptTermsAndConditions,
               );
             }
           }
         },
         fontSize: fontSize18,
         buttonLabel: AppLocalizations.of(context)!.register,
-      ).marginOnly(bottom: spacerSize20),
+      ).marginOnly(bottom: 0),
     );
   }
 
-  orRegisterWith(BuildContext context) {
+  Widget orRegisterWith(BuildContext context) {
     return Row(
       spacing: spacerSize6,
       children: [
@@ -233,20 +267,16 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         ),
         divider(),
       ],
-    ).marginOnly(bottom: 15.h,top: 28.h);
+    ).marginOnly(bottom: 22.h, top: 0);
   }
 
-  divider() {
+  Widget divider() {
     return Expanded(
-      child: Divider(
-        thickness: spacerSize1,
-        height: spacerSize1,
-        color: AppColors.liteGreyColor,
-      ),
+      child: Divider(thickness: spacerSize1, height: spacerSize1, color: AppColors.liteGreyColor),
     );
   }
 
-  alreadyHaveAnAccount(BuildContext context) {
+  Widget alreadyHaveAnAccount(BuildContext context) {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -264,7 +294,8 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
             text: '\t${AppLocalizations.of(context)!.logInNow}',
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Get.toNamed(Routes.login);
+                // Get.toNamed(Routes.login);
+                Get.back();
               },
             style: TextStyle(
               fontSize: 13.sp,

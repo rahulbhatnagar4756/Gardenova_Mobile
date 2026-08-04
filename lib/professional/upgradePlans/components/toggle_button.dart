@@ -34,18 +34,14 @@ class ToggleButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           gradient: isSelected
-              ? LinearGradient(
-                  colors: [AppColors.lightGold, AppColors.burntGold],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )
+              ? AppColors.linearGradientForBtn
               : null,
-          borderRadius: BorderRadius.circular(spacerSize30),
+          borderRadius: BorderRadius.circular(spacerSize3),
         ),
         child: BaseText(
           text: title,
-          textColor: AppColors.offWhite,
-          fontWeight: FontWeight.w400,
+          textColor:isSelected? AppColors.whiteColor:AppColors.greenColor,
+          fontWeight: FontWeight.w500,
           fontFamily: AppKeys.inter,
           fontSize: textSize ?? fontSize11,
         ),

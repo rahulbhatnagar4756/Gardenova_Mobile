@@ -1,15 +1,14 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
-import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import '../base/widgets/base_app_bar.dart';
 import '../generated/assets.dart';
 import '../utils/constants/app_keys.dart';
 
@@ -32,7 +31,7 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
     super.initState();
     _controller = WebViewController();
     debugPrint(
-      "language::::${SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "pt"}",
+      "language::::${SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "en"}",
     );
     loadHtmlFromAssets(
       languageCode: SharedPrefsService.instance.getString(
@@ -40,14 +39,6 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
       )!,
     );
   }
-
-  /*  Future<void> _loadHtmlFromAssets() async {
-    final String htmlContent = await rootBundle.loadString(widget.filePath!);
-    await _controller.loadRequest(
-
-      Uri.dataFromString(htmlContent, mimeType: 'text/html', encoding: Encoding.getByName('utf-8')),
-    );
-  }*/
 
   Future<void> loadHtmlFromAssets({required String languageCode}) async {
     debugPrint("languageCode:::$languageCode");
@@ -69,20 +60,24 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
+      backgroundColor: AppColors.appColor,
+      appBar: BaseAppBar(
+        isBackButtonVisible: true,
+        isAppIconVisible: false,
+        title: AppLocalizations.of(context)!.termsAndCondition,
+      ),
+      body: Column(
         children: [
-          WebViewWidget(
-            controller: _controller,
-          ).marginOnly(bottom: spacerSize50),
-          Positioned(
-            bottom: spacerSize0,
+          Expanded(child: WebViewWidget(controller: _controller)),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: BaseButton(
+              bottomPadding: true,
               textColor: AppColors.offWhite,
               buttonLabel: AppLocalizations.of(context)!.close,
-              backgroundColor: AppColors.darkGold,
               onPressed: () => Get.back(),
-            ).marginOnly(bottom: spacerSize10),
+            ),
           ),
         ],
       ),

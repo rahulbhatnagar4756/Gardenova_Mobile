@@ -1,13 +1,19 @@
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
-import 'authentication/auth_repository.dart';
-import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/services/notification_service.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+
+import 'authentication/auth_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,15 +28,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
+      log('user t11');
       refreshToken();
     } else {
-      navigateToIntroductionScreen();
+      log('user t12');
+
+      navigateToIntroductionScreen(isUserAlreadyLogedIn: false);
     }
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   // Your code here
-    //   print("UI rendered, now safe to use context");
-    // Get.toNamed(Routes.plantsCatalog);
-    // });
     super.initState();
   }
 
@@ -38,10 +42,13 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      body: Center(child: SizedBox(
-        width: 220.w,
+      body: Center(
+        child: SizedBox(
+          width: 220.w,
           height: 215.h,
-          child: Image.asset(AppAssets.appLogoFull, scale: 2))),
+          child: Image.asset(AppAssets.appLogoFull, scale: 2),
+        ),
+      ),
     );
   }
 
@@ -51,25 +58,57 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> refreshToken() async {
-    var response = await authRepository.refreshToken();
-    if (response != null) {
-      SharedPrefsService.instance.setString(
-        AppKeys.idToken,
-        response[ApiKeys.data][ApiKeys.token],
+    try {
+      final response = await authRepository.refreshToken().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () => null,
       );
-      navigateToIntroductionScreen();
+      if (response != null) {
+        await SharedPrefsService.instance.setString(
+          AppKeys.idToken,
+          response[ApiKeys.data][ApiKeys.token],
+        );
+        log('user t13');
+      } else {
+        log('user t131');
+      }
+    } catch (e) {
+      log('refreshToken failed: $e');
+    } finally {
+      navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
     }
   }
 
-  void navigateToIntroductionScreen() {
-    Get.back();
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      if (SharedPrefsService.instance.getString(AppKeys.role) !=
-          AppKeys.professional) {
-        Get.offNamed(Routes.introduction);
+  void navigateToIntroductionScreen({required bool isUserAlreadyLogedIn}) {
+    bool isSoftLogin = SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
+    String currentRole = SharedPrefsService.instance.getString(AppKeys.role) ?? '';
+
+    unawaited(_registerPushAfterNavigation());
+
+    // Short brand beat only — token refresh already awaited when logged in.
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (currentRole != AppKeys.professional) {
+        if (isUserAlreadyLogedIn) {
+          Get.offAllNamed(Routes.dashboard);
+        } else if (isSoftLogin) {
+          Get.offAllNamed(Routes.question);
+        } else {
+          Get.offAllNamed(Routes.login);
+        }
+        log('user t14');
       } else {
+        log('user t15');
         Get.offAllNamed(Routes.professionalDashboard);
       }
     });
+  }
+
+  Future<void> _registerPushAfterNavigation() async {
+    // Ensure deferred notification init from main() has finished.
+    await NotificationService.instance.initialize();
+    final granted = await NotificationService.instance.requestNotificationPermission();
+    if (granted) {
+      await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+    }
   }
 }

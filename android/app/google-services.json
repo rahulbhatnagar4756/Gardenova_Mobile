@@ -1,41 +1,57 @@
 {
   "project_info": {
-    "project_number": "717938248293",
-    "project_id": "kasagardem-775fb",
-    "storage_bucket": "kasagardem-775fb.firebasestorage.app"
+    "project_number": "581483405194",
+    "project_id": "gardenova-c1f0a",
+    "storage_bucket": "gardenova-c1f0a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:717938248293:android:5f07017db292f274bb148c",
+        "mobilesdk_app_id": "1:581483405194:android:c49be1809f903838533273",
         "android_client_info": {
-          "package_name": "com.kasagardem.enterprise"
+          "package_name": "com.gardenova.digisoft"
         }
       },
       "oauth_client": [
         {
-          "client_id": "717938248293-9307rrl0ie6vcl0nhns1bhvs5cm43kir.apps.googleusercontent.com",
+          "client_id": "581483405194-gnu18fc8129u7p760veukv1csekmd408.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.kasagardem.enterprise",
-            "certificate_hash": "3a5614bdab923072066d6d6051358b5943c89401"
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "f7bd919050407562f066c1c567b82e9215395bcd"
           }
         },
         {
-          "client_id": "717938248293-lfd3vhqup3cj40k1df23ukifoi12q55c.apps.googleusercontent.com",
+          "client_id": "581483405194-nebdha5tkeub73b2iq8t8u0khf6h9lb9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "aef6a82f9ade057d547e58b9857f88e465ed0c9b"
+          }
+        },
+        {
+          "client_id": "581483405194-urtvjqiakseva6mnnv88tv5gg8oagqiu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "6eaf8298c3d008538f466f8b769834c04db8c173"
+          }
+        },
+        {
+          "client_id": "581483405194-fp4i2qhfi4e4o5hfqpf2e22vi2g3smmn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCIdse40QOk-PV8GYzwD55G59MotYXFFgA"
+          "current_key": "AIzaSyDutPKCKe5hsMcrDdrHpg1wrKPhNefan9o"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "717938248293-lfd3vhqup3cj40k1df23ukifoi12q55c.apps.googleusercontent.com",
+              "client_id": "581483405194-fp4i2qhfi4e4o5hfqpf2e22vi2g3smmn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

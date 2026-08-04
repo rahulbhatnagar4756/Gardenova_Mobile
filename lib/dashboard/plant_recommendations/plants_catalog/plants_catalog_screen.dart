@@ -13,6 +13,8 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
 
+import '../../../utils/utils.dart';
+
 class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
   const PlantsCatalogScreen({super.key});
 
@@ -23,7 +25,8 @@ class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
         backgroundColor: AppColors.appColor,
         appBar: CircularBottomAppBar(
           onSettingPressed: () {
-            Get.toNamed(Routes.settings);
+            Utils.callSettingBasicApi();
+            Get.toNamed(Routes.profile);
           },
         ),
         body: Column(
@@ -112,7 +115,7 @@ class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
                                         childWidget: Icon(
                                           Icons.broken_image_rounded,
                                           size: spacerSize40,
-                                          color: AppColors.offWhite10,
+                                          color: AppColors.liteGreyColor,
                                         ),
                                       );
                                     },
