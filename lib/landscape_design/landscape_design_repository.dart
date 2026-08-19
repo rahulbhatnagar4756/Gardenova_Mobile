@@ -29,7 +29,7 @@ class LandscapeDesignRepository {
             "confidence": "high",
             "reasoning":
                 "The image shows a raised outdoor area with a railing, potted plants, and a view of the surrounding buildings, which is characteristic of a balcony.",
-          },
+          },  
         },
       };
       return response;

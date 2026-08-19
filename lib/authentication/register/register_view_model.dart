@@ -6,8 +6,11 @@ import 'package:kasagardem/authentication/register/register_request_model.dart';
 import 'package:kasagardem/authentication/social_sign_in_mixin.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 class RegisterViewModel extends GetxController with SocialSignInMixin {
   RxBool isPasswordObscure = true.obs;
@@ -108,8 +111,34 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       otp: pinController.text.trim(),
     );
     if (response != null) {
+      _saveRegisterSession(response);
       registerSuccessDialog();
     }
+  }
+
+  void _saveRegisterSession(dynamic response) {
+    final data = response[ApiKeys.data];
+    if (data == null) return;
+
+    SharedPrefsService.instance.setString(
+      AppKeys.idToken,
+      data[ApiKeys.token] ?? '',
+    );
+    SharedPrefsService.instance.setString(
+      ApiKeys.refreshToken,
+      data[ApiKeys.refreshToken] ?? '',
+    );
+    SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
+    SharedPrefsService.instance.setString(AppKeys.name, nameController.text.trim());
+    SharedPrefsService.instance.setString(AppKeys.email, emailController.text.trim());
+    SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, true);
+
+    String responseId = '';
+    if (data is Map && data.containsKey(ApiKeys.responseId)) {
+      responseId = data[ApiKeys.responseId] ?? '';
+    }
+    SharedPrefsService.instance.setString(AppKeys.submissionResponseId, responseId);
+    SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, true);
   }
 
   /// Create account first, then open email OTP verification.
@@ -151,13 +180,9 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       Get.context!,
       dialogTitle: AppLocalizations.of(Get.context!)!.success,
       dialogDescription: AppLocalizations.of(Get.context!)!.yourAccountHasBeenCreated,
-      buttonLabel: AppLocalizations.of(Get.context!)!.backToLogin,
+      buttonLabel: AppLocalizations.of(Get.context!)!.continueText,
       onButtonPressed: () {
-        Navigator.pushNamedAndRemoveUntil(
-          Get.context!,
-          Routes.login,
-          (Route<dynamic> route) => false,
-        );
+        Get.offAllNamed(Routes.question);
       },
     );
   }

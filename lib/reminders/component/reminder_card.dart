@@ -38,11 +38,11 @@ class ReminderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(spacerSize18),
+      padding: const EdgeInsets.all(spacerSize14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(spacerSize25),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(.04), blurRadius: spacerSize10)],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(.1), blurRadius: spacerSize4)],
       ),
       child: Column(
         children: [
@@ -63,10 +63,10 @@ class ReminderCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BaseText(text: plantName, fontSize: fontSize18, fontWeight: FontWeight.w700),
+                    BaseText(text: plantName, fontSize: fontSize14, fontWeight: FontWeight.w600),
                     BaseText(
                       text: getActivityTitle(task),
-                      fontSize: fontSize14,
+                      fontSize: fontSize13,
                       textColor: AppColors.lightGreyColor,
                     ),
                   ],
@@ -91,6 +91,10 @@ class ReminderCard extends StatelessWidget {
               ),
               if (status.toLowerCase() != AppStrings.completed.toLowerCase())
                 PopupMenuButton<String>(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(spacerSize10),
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                   menuPadding: EdgeInsets.zero,
@@ -108,10 +112,10 @@ class ReminderCard extends StatelessWidget {
                       PopupMenuItem(
                         value: 'complete',
                         child: Row(
-                          spacing: spacerSize6,
+                          spacing: spacerSize3,
                           children: [
-                            Icon(Icons.check, color: AppColors.lightGreyColor.withAlpha(120)),
-                            BaseText(text: AppStrings.markAsComplete),
+                            Icon(Icons.check, color: AppColors.blackColor.withAlpha(120)),
+                            BaseText(text: AppStrings.markAsComplete, fontSize: fontSize12, fontWeight: FontWeight.w500),
                           ],
                         ),
                       ),
@@ -120,8 +124,8 @@ class ReminderCard extends StatelessWidget {
                         child: Row(
                           spacing: spacerSize6,
                           children: [
-                            Icon(Icons.date_range, color: AppColors.lightGreyColor.withAlpha(120)),
-                            BaseText(text: AppStrings.reschedule),
+                            Icon(Icons.date_range, color: AppColors.blackColor.withAlpha(120)),
+                            BaseText(text: AppStrings.reschedule, fontSize: fontSize12, fontWeight: FontWeight.w500),
                           ],
                         ),
                       ),
@@ -134,7 +138,7 @@ class ReminderCard extends StatelessWidget {
                               Icons.notifications_off,
                               color: AppColors.lightGreyColor.withAlpha(120),
                             ),
-                            BaseText(text: AppStrings.disableReminder),
+                            BaseText(text: AppStrings.disableReminder, fontSize: fontSize12, fontWeight: FontWeight.w500),
                           ],
                         ),
                       ),
@@ -145,7 +149,7 @@ class ReminderCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: spacerSize14),
+          const SizedBox(height: spacerSize10),
 
           Row(
             spacing: spacerSize12,
@@ -154,45 +158,45 @@ class ReminderCard extends StatelessWidget {
               if (timeLabel.isNotEmpty)
                 BaseText(
                   text: convertTo12Hour(timeLabel),
-                  fontSize: fontSize14,
+                  fontSize: fontSize12,
                   textColor: AppColors.lightGreyColor,
                 ),
               if (reminderTime != null && reminderTime!.isNotEmpty) ...[
-                BaseText(text: "•", fontSize: fontSize14, textColor: AppColors.lightGreyColor),
+                BaseText(text: "•", fontSize: fontSize14, textColor: AppColors.reminderTimeTextColor),
                 BaseText(
                   text: BaseDateTimeFormat.format(dateTime: reminderTime!, format: "EEE, MMMM d"),
-                  fontSize: fontSize14,
-                  textColor: AppColors.lightGreyColor,
+                  fontSize: fontSize12,
+                  textColor: AppColors.reminderTimeTextColor,
                 ),
               ],
             ],
           ),
 
           if (reminderTime != null && reminderTime!.isNotEmpty) ...[
-            const SizedBox(height: spacerSize16),
+            const SizedBox(height: spacerSize8),
             Align(
               alignment: Alignment.centerLeft,
               child: BaseText(
                 text: formatReminderTime(reminderTime!),
-                fontSize: fontSize18,
-                textColor: status == AppStrings.missed ? Colors.red : AppColors.lightGreyColor,
-                fontWeight: FontWeight.w600,
+                fontSize: fontSize13,
+                textColor: status == AppStrings.missed ? Colors.red : AppColors.reminderTimeTextColor,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
 
-          if (note != null && note!.isNotEmpty) ...[
-            const SizedBox(height: spacerSize14),
+         if (note != null && note!.isNotEmpty) ...[
+            const SizedBox(height: spacerSize8),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(spacerSize14),
               decoration: BoxDecoration(
-                color: const Color(0xffF2EEE8),
+                color: const Color(0xffeee9e0),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Text(note!, style: const TextStyle(fontStyle: FontStyle.italic)),
+              child: Text(note??'', style: const TextStyle(fontStyle: FontStyle.italic)),
             ),
-          ],
+         ],
 
           if (showActions) ...[
             const SizedBox(height: spacerSize18),

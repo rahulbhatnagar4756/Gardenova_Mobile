@@ -83,4 +83,6 @@ class AppColors {
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
+  //reminder time color 
+  static const reminderTimeTextColor=Color(0xFF7A8C7D);
 }

@@ -241,6 +241,10 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
       );
+      SharedPrefsService.instance.setString(
+        ApiKeys.refreshToken,
+        loginResponse[ApiKeys.data][ApiKeys.refreshToken],
+      );
       String responseId = '';
       if (loginResponse.containsKey(ApiKeys.data) &&
           loginResponse[ApiKeys.data].containsKey(ApiKeys.responseId)) {

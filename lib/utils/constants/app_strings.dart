@@ -211,9 +211,9 @@ class ErrorStrings {
   static const invalidName = 'Please enter a valid Name.';
   static const invalidEmail = 'Please enter a valid Email.';
   static const invalidPhoneNo = 'Please enter a valid Phone Number.';
-  static const phoneNoMustBeAtleast7Digits = 'Phone number must contain 7 to 14 digits.';
+  static const phoneNoMustBeAtleast7Digits = 'Phone number must contain 10 digits.';
 
-  static const pwdFieldNotEmpty = 'Password field cannot be Empty.';
+  static const pwdFieldNotEmpty = 'Password cannot be empty.';
   static const invalidPassword = 'Please enter a valid Password.';
 
   static const pwdMustBeAtLeadEightCharecter = 'Password must be at least 8 Characters.';
@@ -225,4 +225,8 @@ class ErrorStrings {
   static const pwdMustContainAtLeastOneSpecialCharacter =
       'Password must contain at least one Special Character.';
   static const confirmPasswordsNotMatch = 'Confirm Password do not Match.';
+
+  //new password validation strings
+ static const newPwdFieldNotEmpty = 'New password cannot be empty.';
+ static const confirmNewPwdFieldNotEmpty = 'Confirm new password cannot be empty.';
 }

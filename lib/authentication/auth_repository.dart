@@ -1,6 +1,7 @@
 import 'package:kasagardem/authentication/register/register_request_model.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/network_services/api_repository.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 class AuthRepository {
   final String _registerUrl = 'api/v1/auth/register';
@@ -113,8 +114,10 @@ class AuthRepository {
   }
 
   refreshToken() async {
-    var refreshTokenResponse = await ApiRepository.instance.get(
+    final refreshToken = SharedPrefsService.instance.getString(ApiKeys.refreshToken) ?? '';
+    var refreshTokenResponse = await ApiRepository.instance.post(
       _refreshTokenUrl,
+      body: {ApiKeys.refreshToken: refreshToken},
       showDefaultLoader: false,
       showRunTimeError: false,
     );

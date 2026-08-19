@@ -15,12 +15,11 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF8F8F8),
+      backgroundColor: const Color(0xffffffff),
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: spacerSize5),
-
             /// Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: spacerSize10),
@@ -28,19 +27,20 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
                 children: [
                   IconButton(
                     onPressed: Get.back,
-                    icon: const Icon(Icons.arrow_back, size: spacerSize28),
+                    icon: const Icon(Icons.arrow_back, size: spacerSize24,color: AppColors.blackColor,),
                   ),
                   const BaseText(
                     text: AppStrings.plantCareReminders,
-                    fontSize: fontSize18,
+                    fontSize: fontSize16,
                     fontWeight: FontWeight.w600,
                     fontFamily: AppKeys.poppins,
+                    textColor: AppColors.blackColor,
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: spacerSize20),
+            const SizedBox(height: spacerSize8),
 
             /// Status Tabs
             Obx(
@@ -76,7 +76,7 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
               ),
             ),
 
-            const SizedBox(height: spacerSize20),
+            const SizedBox(height: spacerSize10),
 
             /// Type Filters
             Obx(
@@ -119,13 +119,15 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     slivers: [
                       if (controller.reminderList.isEmpty && controller.isLoading.value == false)
-                        const SliverFillRemaining(
+                        SliverFillRemaining(
                           hasScrollBody: false,
                           child: Center(
                             child: BaseText(
                               text: AppStrings.noRemindersFound,
-                              fontSize: fontSize16,
-                              textColor: Colors.grey,
+                              fontSize: fontSize15,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: AppKeys.poppins,
+                              textColor: AppColors.liteGreyColor,
                             ),
                           ),
                         )
@@ -188,9 +190,10 @@ class StatusChip extends StatelessWidget {
         children: [
           BaseText(
             text: title,
-            fontSize: fontSize18,
-            textColor: selected ? Colors.white : Colors.black87,
-            fontWeight: FontWeight.w600,
+            fontSize: fontSize12,
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            textColor: selected ? AppColors.whiteColor : AppColors.blackColor,
           ),
           const SizedBox(width: spacerSize6),
           CircleAvatar(
@@ -198,7 +201,13 @@ class StatusChip extends StatelessWidget {
             backgroundColor: selected
                 ? AppColors.whiteColor.withValues(alpha: .3)
                 : AppColors.lightGrey,
-            child: BaseText(text: count, fontSize: fontSize12),
+            child: BaseText(
+              text: count,
+              fontSize: fontSize12,
+              fontFamily: AppKeys.inter,
+              fontWeight: FontWeight.w500,
+              textColor: AppColors.blackColor,
+            ),
           ),
         ],
       ),
@@ -233,7 +242,9 @@ class FilterChipWidget extends StatelessWidget {
             ],
             BaseText(
               text: text,
-              fontSize: fontSize16,
+              fontSize: fontSize12,
+              fontFamily: AppKeys.inter,
+              fontWeight: FontWeight.w500,
               textColor: selected ? AppColors.darkGreen : AppColors.blackColor,
             ),
           ],

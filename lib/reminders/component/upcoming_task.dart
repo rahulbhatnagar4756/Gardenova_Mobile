@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
 
 class UpcomingTask extends StatelessWidget {
   final bool isVisible;
@@ -39,13 +40,16 @@ class UpcomingTask extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BaseText(
-                  text: "$taskCount upcoming ${taskCount == "1" ? "task" : "tasks"}",
-                  fontSize: fontSize18,
-                  fontWeight: FontWeight.w700,
+                  text: "$taskCount Upcoming ${taskCount == "1" ? "task" : "tasks"}",
+                  fontSize: fontSize16,
+                  fontWeight: FontWeight.w600,
+                  fontFamily:  AppKeys.poppins,
+                  textColor: AppColors.blackColor,
                 ),
                 const BaseText(
                   text: "Next: In 5 hours",
                   fontSize: fontSize14,
+                  fontFamily:  AppKeys.poppins,
                   textColor: Colors.grey,
                 ),
               ],

@@ -136,12 +136,14 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         SizedBox(width: 8.w),
         Expanded(
           child: BaseTextField(
+            maxLength: 10,
             prefixIcon: Icon(Icons.phone_outlined, color: AppColors.greenColor),
             hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
             keyboardType: TextInputType.phone,
             textEditingController: controller.phoneNoController,
             errorText: AppLocalizations.of(context)!.pleaseEnterValidPhoneNo,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            
             validator: ValidationHelper.validatePhone,
           ),
         ),

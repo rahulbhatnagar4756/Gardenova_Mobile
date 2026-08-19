@@ -45,4 +45,7 @@ class ApiKeys {
   static const otp = 'otp';
   static const reqType = 'reqType';
   static const isNewUser = 'isNewUser';
+  //refresh token key
+  static const refreshToken = "refreshToken";
+
 }

@@ -170,6 +170,11 @@ class DashboardScreen extends GetWidget<DashboardController> {
                         ],
                       ),
                     ),
+                    Positioned(
+                      right: spacerSize20,
+                      bottom: spacerSize16,
+                      child: _chatbotIcon(),
+                    ),
                   ],
                 ),
               ),
@@ -237,6 +242,41 @@ class DashboardScreen extends GetWidget<DashboardController> {
           );
         }),
       ),
+    );
+  }
+
+  Widget _chatbotIcon() {
+    return GestureDetector(
+      onTap: _onChatbotTap,
+      child: Container(
+        width: 56.w,
+        height: 56.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppColors.linearGradientForBtn,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.greenColor.withValues(alpha: 0.35),
+              blurRadius: 14,
+              spreadRadius: 1,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(
+          Icons.message
+          ,
+          color: AppColors.whiteColor,
+          size: 26.w,
+        ),
+      ),
+    );
+  }
+
+  void _onChatbotTap() {
+    BaseSnackBar.show(
+      title: "Chatbot",
+      message: "This feature is yet to be implemented. We'll be back soon with updates.",
     );
   }
 

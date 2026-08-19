@@ -26,11 +26,13 @@ class BaseTextField extends StatelessWidget {
     this.validator,
     this.inputFormatters,
     this.focusNode,
+    this.maxLength,
   });
 
   final TextEditingController? textEditingController;
   final String? labelText;
   final int? maxLines;
+  final int? maxLength;
   final String? hintText;
   final String? errorText;
   final Icon? prefixIcon;
@@ -77,6 +79,7 @@ class BaseTextField extends StatelessWidget {
               controller: textEditingController,
               enabled: isTextFieldEnabled,
               maxLines: maxLines ?? 1,
+              maxLength: maxLength,
               obscureText: isTextObscure,
               keyboardType: keyboardType,
               inputFormatters: inputFormatters?.cast<TextInputFormatter>(),
@@ -149,6 +152,7 @@ class BaseTextField extends StatelessWidget {
 
                 // Hide default error text
                 errorStyle: const TextStyle(height: 0, fontSize: 0),
+                counterText: '',
               ),
             ),
 

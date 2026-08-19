@@ -19,7 +19,7 @@ class LandscapeStyleBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final styles = [
-      "modern",
+      "modern", 
       "luxury",
       "luxury_modern",
       "tropical",

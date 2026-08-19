@@ -69,10 +69,14 @@ class SettingsRepository {
   }
 
   changePassword(String oldPassword, String password) async {
-    var changePasswordResponse = await ApiRepository.instance.patch(changePasswordEndPoint, {
-      ApiKeys.oldPassword: oldPassword,
-      ApiKeys.password: password,
-    });
+    var changePasswordResponse = await ApiRepository.instance.patch(
+      changePasswordEndPoint,
+      {
+        ApiKeys.oldPassword: oldPassword,
+        ApiKeys.password: password,
+      },
+      returnFailureResponse: true,
+    );
     return changePasswordResponse;
   }
 

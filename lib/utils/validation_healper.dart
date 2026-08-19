@@ -40,6 +40,9 @@ class ValidationHelper {
     if (value == null || value.trim().isEmpty) {
       return ErrorStrings.invalidPhoneNo;
     }
+    if (value.length != 10) {
+      return ErrorStrings.phoneNoMustBeAtleast7Digits;
+    }
 
     // Remove spaces
     final phone = value.trim().replaceAll(' ', '');
@@ -98,7 +101,7 @@ class ValidationHelper {
     required String? confirmPassword,
   }) {
     if (confirmPassword == null || confirmPassword.trim().isEmpty) {
-      return ErrorStrings.pwdFieldNotEmpty;
+      return ErrorStrings.confirmNewPwdFieldNotEmpty;
     }
 
     if (password != confirmPassword) {

@@ -29,7 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
       log('user t11');
-      refreshToken();
+     //refreshToken();
+     navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
     } else {
       log('user t12');
 
@@ -49,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Image.asset(AppAssets.appLogoFull, scale: 2),
         ),
       ),
-    );
+    );      
   }
 
   @override
@@ -67,6 +68,10 @@ class _SplashScreenState extends State<SplashScreen> {
         await SharedPrefsService.instance.setString(
           AppKeys.idToken,
           response[ApiKeys.data][ApiKeys.token],
+        );
+        await SharedPrefsService.instance.setString(
+          ApiKeys.refreshToken,
+          response[ApiKeys.data][ApiKeys.refreshToken],
         );
         log('user t13');
       } else {

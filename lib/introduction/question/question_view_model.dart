@@ -41,6 +41,21 @@ class QuestionViewModel extends GetxController {
   List<Questions> get multipleChoiceQuestions =>
       questionList.where((q) => q.options != null && q.options!.isNotEmpty).toList();
 
+  int get totalOnboardingQuestions =>
+      multipleChoiceQuestions.length + (showExtraPreference ? 1 : 0);
+
+  int get answeredQuestionCount {
+    var count = multipleChoiceQuestions
+        .where((q) => (q.selectedAnswer ?? '').isNotEmpty)
+        .length;
+    if (showExtraPreference &&
+        (selectedState.value.name ?? '').isNotEmpty &&
+        (selectedCity.value.name ?? '').isNotEmpty) {
+      count++;
+    }
+    return count;
+  }
+
   @override
   onInit() {
     cameFromSetting = Get.arguments as bool? ?? false;

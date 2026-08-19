@@ -30,8 +30,11 @@ class ApiRepository {
   factory ApiRepository() => instance;
   Timer? _loaderTimer;
   bool _isLoaderVisible = false;
+  Future<bool>? _refreshInFlight;
+  bool _isUnauthorizedDialogVisible = false;
+  static const String _refreshTokenUrl = 'api/v1/auth/refresh';
 
-  Map<String, String> _buildDefaultHeaders() {
+  Map<String, String> _buildDefaultHeaders({bool includeAuth = true}) {
     final token = SharedPrefsService.instance.getToken();
     final String accecptLanguage =
         Get.locale?.languageCode ??
@@ -42,7 +45,7 @@ class ApiRepository {
       'Content-Type': 'application/json',
       'Accept-Language': accecptLanguage,
       'accept-language': accecptLanguage,
-      if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+      if (includeAuth && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
   }
 
@@ -62,6 +65,7 @@ class ApiRepository {
     bool directUrl = false,
     bool showRunTimeError = true,
     bool rethrowExceptions = false,
+    bool returnFailureResponse = false,
   }) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult[0] == ConnectivityResult.none) {
@@ -77,73 +81,71 @@ class ApiRepository {
     debugPrint("API Request: $uri");
     debugPrint("API Request: $body");
 
-    log('---------------------------------');
-    log('Api data-> uri: $uri ');
-    log('Api data-> body: $uri ');
-    log('Api data-> fields: $fields ');
-    log('Api data-> headers: $headers ');
-    log('---------------------------------');
-
-    final defaultHeaders = _buildDefaultHeaders();
+    final defaultHeaders = _buildDefaultHeaders(
+      includeAuth: !_isRefreshTokenEndpoint(endPoint),
+    );
 
     if (headers != null) {
       defaultHeaders.addAll(headers);
     }
+
+    log('---------------------------------');
+    log('Api data-> method: ${method.toUpperCase()}');
+    log('Api data-> uri: $uri');
+    log('Api data-> body: $body');
+    log('Api data-> fields: $fields');
+    log('Api data-> headers: $defaultHeaders');
+    log('Api data-> hasAuthorization: ${defaultHeaders.containsKey('Authorization')}');
+    log('---------------------------------');
     http.Response response;
     try {
       if (showDefaultLoader) {
         showLoader();
       }
-      switch (method.toUpperCase()) {
-        case ApiKeys.get:
-          response = await http.get(uri, headers: defaultHeaders);
-          break;
-        case ApiKeys.post:
-          debugPrint("body::::${jsonEncode(body)}");
-          response = await http.post(
-            uri,
-            body: body == null ? body : jsonEncode(body),
-            headers: defaultHeaders,
-          );
-          break;
-        case ApiKeys.put:
-          response = await http.put(uri, body: jsonEncode(body), headers: defaultHeaders);
-          break;
-        case ApiKeys.delete:
-          response = await http.delete(uri, headers: defaultHeaders);
-          break;
-        case ApiKeys.patch:
-          response = await http.patch(uri, body: jsonEncode(body), headers: defaultHeaders);
-
-        case ApiKeys.multipartPut:
-          final request = http.MultipartRequest(ApiKeys.put, uri);
-          request.headers.addAll(defaultHeaders);
-          request.fields.addAll(fields!);
-
-          if (base64Images != null) {
-            base64Images.forEach((key, value) {
-              fields[key] = value;
-            });
-          }
-
-          final streamedResponse = await request.send();
-          response = await http.Response.fromStream(streamedResponse);
-          response = await http.put(uri, body: jsonEncode(body), headers: defaultHeaders);
-          break;
-        default:
-          throw ArgumentError('${AppStrings.invalidHttpMethod}: $method');
-      }
+      response = await _dispatchHttp(
+        method: method,
+        uri: uri,
+        headers: defaultHeaders,
+        body: body,
+        fields: fields,
+        base64Images: base64Images,
+      );
       log("API Response::: ${response.body}");
+
+      if (response.statusCode == 401 &&
+          !_isRefreshTokenEndpoint(endPoint) &&
+          _storedRefreshToken().isNotEmpty) {
+        final refreshed = await _refreshSession();
+        if (refreshed) {
+          defaultHeaders
+            ..clear()
+            ..addAll(_buildDefaultHeaders());
+          if (headers != null) {
+            defaultHeaders.addAll(headers);
+          }
+          response = await _dispatchHttp(
+            method: method,
+            uri: uri,
+            headers: defaultHeaders,
+            body: body,
+            fields: fields,
+            base64Images: base64Images,
+          );
+          log("API Response::: ${response.body}");
+        } else {
+          return null;
+        }
+      }
 
       final responseData = _returnResponse(response);
       log("API Response::: ${jsonEncode(responseData)}");
-      // if (showDefaultLoader) {
-      //   hideLoader();
-      // }
+      if (responseData == null) {
+        return null;
+      }
       if (directUrl || responseData[ApiKeys.success] == true) {
         log('---------------------------------response');
-        // log('Api response->  $responseData');
-        // log('---------------------------------response');
+        return responseData;
+      } else if (returnFailureResponse) {
         return responseData;
       } else {
         log('---------------------------------responseElse');
@@ -228,14 +230,157 @@ class ApiRepository {
     rethrowExceptions: rethrowExceptions,
   );
 
-  Future<dynamic> patch(String endPoint, dynamic body, {Map<String, String>? headers}) async =>
-      request(ApiKeys.patch, endPoint, body: body, headers: headers);
+  Future<dynamic> patch(
+    String endPoint,
+    dynamic body, {
+    Map<String, String>? headers,
+    bool returnFailureResponse = false,
+  }) async => request(
+    ApiKeys.patch,
+    endPoint,
+    body: body,
+    headers: headers,
+    returnFailureResponse: returnFailureResponse,
+  );
 
   Future<dynamic> put(String endPoint, {dynamic body, Map<String, String>? headers}) async =>
       request(ApiKeys.put, endPoint, body: body, headers: headers);
 
   Future<dynamic> delete(String endPoint, {Map<String, String>? headers}) async =>
       request(ApiKeys.delete, endPoint, headers: headers);
+
+  bool _isRefreshTokenEndpoint(String endPoint) {
+    return endPoint.contains(_refreshTokenUrl);
+  }
+
+  String _storedRefreshToken() {
+    return SharedPrefsService.instance.getString(ApiKeys.refreshToken) ?? '';
+  }
+
+  Future<http.Response> _dispatchHttp({
+    required String method,
+    required Uri uri,
+    required Map<String, String> headers,
+    dynamic body,
+    Map<String, String>? fields,
+    Map<String, String>? base64Images,
+  }) async {
+    switch (method.toUpperCase()) {
+      case ApiKeys.get:
+        return http.get(uri, headers: headers);
+      case ApiKeys.post:
+        debugPrint("body::::${jsonEncode(body)}");
+        return http.post(
+          uri,
+          body: body == null ? body : jsonEncode(body),
+          headers: headers,
+        );
+      case ApiKeys.put:
+        return http.put(uri, body: jsonEncode(body), headers: headers);
+      case ApiKeys.delete:
+        return http.delete(uri, headers: headers);
+      case ApiKeys.patch:
+        return http.patch(uri, body: jsonEncode(body), headers: headers);
+      case ApiKeys.multipartPut:
+        final request = http.MultipartRequest(ApiKeys.put, uri);
+        request.headers.addAll(headers);
+        request.fields.addAll(fields!);
+
+        if (base64Images != null) {
+          base64Images.forEach((key, value) {
+            fields[key] = value;
+          });
+        }
+
+        final streamedResponse = await request.send();
+        await http.Response.fromStream(streamedResponse);
+        return http.put(uri, body: jsonEncode(body), headers: headers);
+      default:
+        throw ArgumentError('${AppStrings.invalidHttpMethod}: $method');
+    }
+  }
+
+  Future<bool> _refreshSession() async {
+    final refreshToken = _storedRefreshToken();
+    if (refreshToken.isEmpty) return false;
+
+    final inFlight = _refreshInFlight;
+    if (inFlight != null) return inFlight;
+
+    final future = _performTokenRefresh(refreshToken);
+    _refreshInFlight = future;
+    try {
+      return await future;
+    } finally {
+      if (identical(_refreshInFlight, future)) {
+        _refreshInFlight = null;
+      }
+    }
+  }
+
+  Future<bool> _performTokenRefresh(String refreshToken) async {
+    try {
+      final refreshResponse = await http.post(
+        Uri.parse(baseUrl + _refreshTokenUrl),
+        headers: _buildDefaultHeaders(includeAuth: false),
+        body: jsonEncode({ApiKeys.refreshToken: refreshToken}),
+      );
+      log('Refresh token status::: ${refreshResponse.statusCode}');
+      log('Refresh token body::: ${refreshResponse.body}');
+
+      if (refreshResponse.statusCode == 401) {
+        _showUnauthorizedLogout();
+        return false;
+      }
+
+      if (refreshResponse.statusCode != 200 && refreshResponse.statusCode != 201) {
+        return false;
+      }
+
+      final result = jsonDecode(refreshResponse.body);
+      if (result is! Map || result[ApiKeys.success] != true) {
+        return false;
+      }
+      final data = result[ApiKeys.data];
+      if (data == null) return false;
+
+      final token = data[ApiKeys.token]?.toString() ?? '';
+      final newRefreshToken = data[ApiKeys.refreshToken]?.toString() ?? '';
+      if (token.isEmpty) return false;
+
+      await SharedPrefsService.instance.setString(AppKeys.idToken, token);
+      if (newRefreshToken.isNotEmpty) {
+        await SharedPrefsService.instance.setString(ApiKeys.refreshToken, newRefreshToken);
+      }
+      return true;
+    } catch (e) {
+      log('Refresh token failed: $e');
+      return false;
+    }
+  }
+
+  void _showUnauthorizedLogout() {
+    if (_isUnauthorizedDialogVisible) return;
+    _isUnauthorizedDialogVisible = true;
+    Future.delayed(Duration.zero, () {
+      final context = Get.context;
+      if (context == null) {
+        _isUnauthorizedDialogVisible = false;
+        return;
+      }
+      BaseDialog.showUnauthorizedDialog(
+        context: context,
+        message: 'Your session has expired. Please login again to continue.',
+        onLoginPressed: () async {
+          _isUnauthorizedDialogVisible = false;
+          await ReminderPushNotificationService.instance.onUserLogout();
+          SharedPrefsService.instance.clear();
+          Get.back();
+          Get.offAllNamed(Routes.login);
+        },
+      );
+    });
+  }
 
   dynamic _returnResponse(http.Response response) {
     debugPrint("response.statusCode:::${response.statusCode}");
@@ -244,8 +389,7 @@ class ApiRepository {
     try {
       final body = jsonDecode(response.body);
       debugPrint("response:::$body");
-      message = body['message'];
-      print("value of mesage" + message!);
+      message = body['message']?.toString();
     } catch (_) {}
 
     switch (response.statusCode) {
@@ -260,19 +404,7 @@ class ApiRepository {
         throw BadRequestException(message ?? response.body.toString());
 
       case 401:
-        Future.delayed(Duration.zero, () {
-          BaseDialog.showUnauthorizedDialog(
-            context: Get.context!,
-            message: 'Your session has expired. Please login again to continue.',
-            onLoginPressed: () async {
-              await ReminderPushNotificationService.instance.onUserLogout();
-              SharedPrefsService.instance.clear();
-              Get.back();
-              // then navigate
-              Get.offAllNamed(Routes.login);
-            },
-          );
-        });
+        _showUnauthorizedLogout();
         return null;
       case 403:
         throw UnauthorisedException(message ?? response.body.toString());

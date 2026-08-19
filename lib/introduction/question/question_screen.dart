@@ -50,10 +50,8 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
                     Column(
                       children: [
                         QuestionProgressIndicator(
-                          currentQuestion: controller.currentQuestion.value,
-                          totalQuestions:
-                              controller.multipleChoiceQuestions.length +
-                              (controller.showExtraPreference ? 1 : 0),
+                          currentQuestion: controller.answeredQuestionCount,
+                          totalQuestions: controller.totalOnboardingQuestions,
                         ).marginOnly(top: 25.h),
 
                         questionLayout(),

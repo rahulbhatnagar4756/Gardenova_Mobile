@@ -650,19 +650,30 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
       oldPasswordController.text,
       newPasswordController.text,
     );
-    if (response != null) {
-      oldPasswordController.clear();
-      BaseDialog.showFullScreenDialog(
-        Get.context!,
-        buttonLabel: AppLocalizations.of(Get.context!)!.close.toUpperCase(),
-        dialogTitle: AppLocalizations.of(Get.context!)!.passwordChanged,
-        dialogDescription: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
-        onButtonPressed: () {
-          Get.back();
-          Get.back();
-        },
+    if (response == null || response is! Map) return;
+
+    final apiMessage = response[ApiKeys.message]?.toString().trim();
+    if (response[ApiKeys.success] != true) {
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: (apiMessage != null && apiMessage.isNotEmpty)
+            ? apiMessage
+            : AppStrings.somethingWentWrong,
       );
+      return;
     }
+
+    oldPasswordController.clear();
+    newPasswordController.clear();
+    confirmPasswordController.clear();
+    BaseSnackBar.show(
+      title: AppLocalizations.of(Get.context!)!.passwordChanged,
+      message: (apiMessage != null && apiMessage.isNotEmpty)
+          ? apiMessage
+          : AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
+    );
+    Get.back();
+
   }
 
   void setPassword() async {
@@ -678,16 +689,11 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
       isEmailLogedInUser.refresh();
       await SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, true);
       oldPasswordController.clear();
-      BaseDialog.showFullScreenDialog(
-        Get.context!,
-        buttonLabel: AppLocalizations.of(Get.context!)!.close.toUpperCase(),
-        dialogTitle: AppStrings.setPwd,
-        dialogDescription: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
-        onButtonPressed: () {
-          Get.back();
-          Get.back();
-        },
+      BaseSnackBar.show(
+        title: AppStrings.setPwd,
+        message: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
       );
+      Get.back();
     }
   }
 
