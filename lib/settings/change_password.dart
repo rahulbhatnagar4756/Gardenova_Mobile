@@ -25,10 +25,10 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.darkGreen,
+      //  backgroundColor: AppColors.darkGreen,
         body: Container(
           height: double.infinity,
-          color: AppColors.greenColor,
+        //  color: AppColors.greenColor,
           child: SafeArea(
             child: Container(
               color: AppColors.whiteColor,

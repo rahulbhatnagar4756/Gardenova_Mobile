@@ -171,9 +171,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                       ),
                     ),
                     Positioned(
-                      right: spacerSize20,
-                      bottom: spacerSize16,
-                      child: _chatbotIcon(),
+                      right: spacerSize24,
+                      bottom: spacerSize75,
+                      child: _ChatbotFab(onTap: _onChatbotTap),
                     ),
                   ],
                 ),
@@ -245,39 +245,8 @@ class DashboardScreen extends GetWidget<DashboardController> {
     );
   }
 
-  Widget _chatbotIcon() {
-    return GestureDetector(
-      onTap: _onChatbotTap,
-      child: Container(
-        width: 56.w,
-        height: 56.w,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: AppColors.linearGradientForBtn,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.greenColor.withValues(alpha: 0.35),
-              blurRadius: 14,
-              spreadRadius: 1,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(
-          Icons.message
-          ,
-          color: AppColors.whiteColor,
-          size: 26.w,
-        ),
-      ),
-    );
-  }
-
   void _onChatbotTap() {
-    BaseSnackBar.show(
-      title: "Chatbot",
-      message: "This feature is yet to be implemented. We'll be back soon with updates.",
-    );
+    Get.toNamed(Routes.chatScreen);
   }
 
   void openImagePickerBottomSheet({
@@ -340,5 +309,120 @@ class DashboardScreen extends GetWidget<DashboardController> {
     //   controller.selectedNavType.value = BottomNavType.home;
     //   controller.selectedNavType.refresh();
     // });
+  }
+}
+
+class _ChatbotFab extends StatefulWidget {
+  const _ChatbotFab({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  State<_ChatbotFab> createState() => _ChatbotFabState();
+}
+
+class _ChatbotFabState extends State<_ChatbotFab> with SingleTickerProviderStateMixin {
+  late final AnimationController _borderController;
+  late final Animation<double> _borderFade;
+
+  @override
+  void initState() {
+    super.initState();
+    _borderController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat(reverse: true);
+    _borderFade = CurvedAnimation(
+      parent: _borderController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _borderController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 68.w,
+      height: 68.w,
+      child: AnimatedBuilder(
+        animation: _borderFade,
+        builder: (context, child) {
+          final fade = _borderFade.value;
+          return Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Opacity(
+                opacity: fade,
+                child: Container(
+                  width: 64.w,
+                  height: 64.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.greenColor,
+                      width: 2.2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.greenColor.withValues(alpha: 0.4 * fade),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              child!,
+            ],
+          );
+        },
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 56.w,
+            height: 56.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.greenColor.withValues(alpha: 0.35),
+                  blurRadius: 14,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Material(
+                color: Colors.transparent,
+                child: Ink(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: AppColors.linearGradientForBtn,
+                  ),
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: widget.onTap,
+                    splashColor: AppColors.whiteColor.withValues(alpha: 0.35),
+                    highlightColor: AppColors.whiteColor.withValues(alpha: 0.16),
+                    child: Icon(
+                      Icons.message,
+                      color: AppColors.whiteColor,
+                      size: 26.w,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

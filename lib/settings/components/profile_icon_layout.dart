@@ -28,13 +28,17 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
   final Function? onClickEditPencil;
   final bool? isEnableEditable;
 
+  static const double _identityAvatarSize = 76;
+  static const double _editAvatarSize = 108;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.only(bottom: 15.h),
+        padding: EdgeInsets.only(bottom: 20.h, top: 20.h),
         decoration: BoxDecoration(
-          color: AppColors.greenColor,
+          gradient: AppColors.linearGradientForBtn,
+          //color: AppColors.greenColor,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(25.r),
             bottomRight: Radius.circular(25.r),
@@ -79,84 +83,108 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                 ),
               ],
             ),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 2.0),
-                      child: Obx(
-                        () => GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            onClickPictureView?.call();
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            padding: EdgeInsets.all(3.w),
-                            width: 108.w,
-                            height: 108.w,
-                            child: CircleAvatar(
-                              backgroundColor: AppColors.antiqueWhite,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: _buildProfileImage(controller),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    (isEnableEditable == true)
-                        ? Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: IgnorePointer(
-                              ignoring: isProfileEditable ?? false,
-                              child: CommonClickWidget(
-                                // test: true,
-                                onTap: () => onClickEditPencil?.call(),
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                    right: 10.w,
-                                    left: 15.w,
-                                    top: 20.w,
-                                  ),
-                                  child: Image.asset(
-                                    AppAssets.editPencilIc,
-                                    width: 20.w,
-                                    height: 20.w,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
-              ],
-            ).marginOnly(bottom: spacerSize10, top: spacerSize10),
-            nameAndEmailFields(),
+            (isProfileEditable == true)
+                ? _buildCenteredAvatar()
+                    .marginOnly(bottom: spacerSize10, top: spacerSize10)
+                : _buildIdentityRow()
+                    .marginOnly(bottom: spacerSize10, top: spacerSize6),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileImage(SettingsViewModel controller) {
+  Widget _buildIdentityRow() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildAvatar(size: _identityAvatarSize.w),
+          SizedBox(width: 14.w),
+          Expanded(child: nameAndEmailFields()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCenteredAvatar() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        _buildAvatar(size: _editAvatarSize.w),
+      ],
+    );
+  }
+
+  Widget _buildAvatar({required double size}) {
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 2.0),
+          child: Obx(
+            () => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                onClickPictureView?.call();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                padding: EdgeInsets.all(3.w),
+                width: size,
+                height: size,
+                child: CircleAvatar(
+                  backgroundColor: AppColors.antiqueWhite,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: _buildProfileImage(controller, size: size),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        (isEnableEditable == true)
+            ? Positioned(
+                bottom: 0,
+                right: 0,
+                child: IgnorePointer(
+                  ignoring: isProfileEditable ?? false,
+                  child: CommonClickWidget(
+                    // test: true,
+                    onTap: () => onClickEditPencil?.call(),
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        right: size > 90.w ? 10.w : 2.w,
+                        left: size > 90.w ? 15.w : 8.w,
+                        top: size > 90.w ? 20.w : 10.w,
+                      ),
+                      child: Image.asset(
+                        AppAssets.editPencilIc,
+                        width: 20.w,
+                        height: 20.w,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox(),
+      ],
+    );
+  }
+
+  Widget _buildProfileImage(SettingsViewModel controller, {required double size}) {
     // 1️⃣ Local file image (highest priority)
     if (controller.imageFile.value.path.isNotEmpty) {
       return Image.file(
         controller.imageFile.value,
         fit: BoxFit.cover,
-        width: 108.w,
-        height: 108.w,
-        errorBuilder: (_, error, errorThird) => _defaultImage(),
+        width: size,
+        height: size,
+        errorBuilder: (_, error, errorThird) => _defaultImage(size),
       );
     }
 
@@ -169,27 +197,27 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
       return CachedNetworkImage(
         imageUrl: url,
         fit: BoxFit.cover,
-        width: 108.w,
-        height: 108.w,
+        width: size,
+        height: size,
         placeholder: (_, second) => BaseShimmer(
           backgroundColor: AppColors.antiqueWhite,
-          height: 108.w,
-          width: 108.w,
+          height: size,
+          width: size,
         ),
-        errorWidget: (_, error, errorThird) => _defaultImage(),
+        errorWidget: (_, error, errorThird) => _defaultImage(size),
       );
     }
 
     // 3️⃣ Default fallback
-    return _defaultImage();
+    return _defaultImage(size);
   }
 
-  Widget _defaultImage() {
+  Widget _defaultImage(double size) {
     return Image.asset(
       AppAssets.appLogo,
       fit: BoxFit.cover,
-      width: 108.w,
-      height: 108.w,
+      width: size,
+      height: size,
     );
   }
 
@@ -197,41 +225,42 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
     return !(isProfileEditable!)
         ? Obx(
             () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    BaseText(
-                      text: controller.name.value,
-                      textColor: AppColors.whiteColor,
-
-                      fontFamily: AppKeys.poppins,
-                      fontWeight: FontWeight.w700,
-                      fontSize: fontSize20,
-                      textAlign: TextAlign.center,
+                    Flexible(
+                      child: BaseText(
+                        text: controller.name.value,
+                        textColor: AppColors.whiteColor,
+                        fontFamily: AppKeys.poppins,
+                        fontWeight: FontWeight.w700,
+                        fontSize: fontSize18,
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    isEnableEditable == true
-                        ? Row(
-                            children: [
-                              SizedBox(width: 5.w),
-                              Image.asset(
-                                AppAssets.verifiedIc,
-                                width: 20.w,
-                                height: 20.w,
-                              ),
-                            ],
-                          )
-                        : const SizedBox(),
+                    if (isEnableEditable == true) ...[
+                      SizedBox(width: 5.w),
+                      Image.asset(
+                        AppAssets.verifiedIc,
+                        width: 18.w,
+                        height: 18.w,
+                      ),
+                    ],
                   ],
                 ),
+                SizedBox(height: 4.h),
                 BaseText(
                   text: controller.email.value,
-                  textColor: AppColors.whiteColor.withValues(alpha: .6),
+                  textColor: AppColors.whiteColor.withValues(alpha: .7),
                   fontFamily: AppKeys.inter,
                   fontWeight: FontWeight.w400,
-                  fontSize: fontSize16,
-                  textAlign: TextAlign.center,
+                  fontSize: fontSize13,
+                  textAlign: TextAlign.left,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

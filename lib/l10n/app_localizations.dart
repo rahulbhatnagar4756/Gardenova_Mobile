@@ -2308,6 +2308,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plant deleted successfully'**
   String get plantDeletedSuccessfully;
+
+  /// No description provided for @aiAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get aiAssistant;
+
+  /// No description provided for @askMeAnything.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me anything'**
+  String get askMeAnything;
+
+  /// No description provided for @newChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New chat'**
+  String get newChat;
+
+  /// No description provided for @promptHypoallergenicVarieties.
+  ///
+  /// In en, this message translates to:
+  /// **'List of hypoallergenic varieties'**
+  String get promptHypoallergenicVarieties;
+
+  /// No description provided for @promptAboutPalms.
+  ///
+  /// In en, this message translates to:
+  /// **'About palms'**
+  String get promptAboutPalms;
+
+  /// No description provided for @online.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get online;
+
+  /// No description provided for @promptWateringAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'How should I water my plants?'**
+  String get promptWateringAdvice;
+
+  /// No description provided for @loadingConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading conversation'**
+  String get loadingConversation;
+
+  /// No description provided for @loadingEarlierMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading earlier messages'**
+  String get loadingEarlierMessages;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

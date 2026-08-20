@@ -70,6 +70,8 @@ import '../subscription/user_order_summary_screen.dart';
 import '../subscription/user_subscription_controller.dart';
 import '../subscription/user_subscription_screen.dart';
 import '../recommended_professionals/components/create_request_screen.dart';
+import '../chatbot/chatbot_controller.dart';
+import '../chatbot/chatbot_screen.dart';
 import '../settings/profile/verified_email_otp_view/verified_email_otp_view_model.dart';
 
 class Routes {
@@ -454,6 +456,13 @@ class Routes {
       GetPage(
         name: Routes.leadDetailsScreen,
         page: () => LeadDetailsScreen(),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+      GetPage(
+        name: Routes.chatScreen,
+        page: () => const ChatbotScreen(),
+        binding: BindingsBuilder.put(() => ChatbotController()),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

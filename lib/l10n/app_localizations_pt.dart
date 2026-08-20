@@ -1116,4 +1116,37 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get plantDeletedSuccessfully => 'Planta excluída com sucesso';
+
+  @override
+  String get aiAssistant => 'Assistente de IA';
+
+  @override
+  String get askMeAnything => 'Pergunte ao nosso especialista de jardim';
+
+  @override
+  String get newChat => 'Nova conversa';
+
+  @override
+  String get promptHypoallergenicVarieties => 'Lista de variedades hipoalergênicas';
+
+  @override
+  String get promptAboutPalms => 'Sobre palmeiras';
+
+  @override
+  String get online => 'Online';
+
+  @override
+  String get promptWateringAdvice => 'Como devo regar minhas plantas?';
+
+  @override
+  String get loadingConversation => 'Carregando conversa';
+
+  @override
+  String get loadingEarlierMessages => 'Carregando mensagens anteriores';
+
+  @override
+  String get copied => 'Copiado';
+
+  @override
+  String get yesterday => 'Ontem';
 }

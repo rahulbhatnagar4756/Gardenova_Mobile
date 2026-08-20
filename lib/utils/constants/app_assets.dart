@@ -43,5 +43,6 @@ class AppAssets {
   static const waterDrop = 'assets/images/water_drop.png';
   static const facebookIcon = 'assets/images/facebook.png';
   static const thermometer = 'assets/images/thermometer.png';
+  static const chatbotIcon = 'assets/images/chatboticon.svg';
   static const heartAnimation = 'assets/json/heart_fluttering.json';
 }

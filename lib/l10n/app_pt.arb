@@ -367,5 +367,16 @@
   "noDataNa": "N/A",
   "deletePlant": "Excluir Planta",
   "areYouSureYouWantToDeletePlant": "Tem certeza de que deseja excluir esta planta? Esta ação não pode ser desfeita.",
-  "plantDeletedSuccessfully": "Planta excluída com sucesso"
+  "plantDeletedSuccessfully": "Planta excluída com sucesso",
+  "aiAssistant": "Assistente de IA",
+  "askMeAnything": "Pergunte ao nosso especialista de jardim",
+  "newChat": "Nova conversa",
+  "promptHypoallergenicVarieties": "Lista de variedades hipoalergênicas",
+  "promptAboutPalms": "Sobre palmeiras",
+  "online": "Online",
+  "promptWateringAdvice": "Como devo regar minhas plantas?",
+  "loadingConversation": "Carregando conversa",
+  "loadingEarlierMessages": "Carregando mensagens anteriores",
+  "copied": "Copiado",
+  "yesterday": "Ontem"
 }

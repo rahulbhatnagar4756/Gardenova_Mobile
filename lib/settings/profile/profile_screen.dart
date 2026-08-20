@@ -21,9 +21,10 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.greenColor,
+     // backgroundColor: AppColors.greenColor,
       body: SafeArea(
         child: Container(
+          
           height: double.infinity,
           color: AppColors.offWhite,
           child: SingleChildScrollView(

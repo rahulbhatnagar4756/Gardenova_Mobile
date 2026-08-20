@@ -57,264 +57,19 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
           children: [
             Expanded(
               child: Container(
-                color: AppColors.appColor,
-                child: SafeArea(
-                  child: Column(
-                    spacing: spacerSize20,
-                    children: [
-                      Container(
-                        height: spacerSize80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(spacerSize35),
-                            bottomRight: Radius.circular(spacerSize35),
-                          ),
-                          color: AppColors.appColor,
-                          // border: Border.all(color: AppColors.backgroundGrey),
-                          // border: Border(
-                          //   left: BorderSide(color: AppColors.backgroundGrey),
-                          //   right: BorderSide(color: AppColors.backgroundGrey),
-                          //   bottom: BorderSide(color: AppColors.backgroundGrey),
-                          //   // top is intentionally removed
-                          // ),
-                        ),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          spacing: spacerSize5,
-                          children: [
-                            SizedBox(width: spacerSize15),
-                            // Center(child: Image.asset(AppAssets.appLogo)),
-                            Obx(() {
-                              final imageUrl = Get.isRegistered<SettingsViewModel>()
-                                  ? Get.find<SettingsViewModel>().profileImage.value
-                                  : "";
-
-                              return Container(
-                                width: 42.w,
-                                height: 42.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: AppColors.backgroundGrey),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: ClickableImage(
-                                    borderRadius: BorderRadius.circular(100),
-                                    imageUrl: imageUrl,
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    heroTag: "profile_image_appbar_drawer",
-                                    errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
-                                  ),
-                                ),
-                              );
-                            }),
-                            Expanded(
-                              flex: 5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BaseText(
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: AppKeys.poppins,
-                                    fontSize: fontSize14,
-                                    // textColor: AppColors.offWhite,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    text:
-                                        '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!',
-                                  ),
-                                  SharedPrefsService.instance.getString(AppKeys.role) ==
-                                          AppKeys.professional
-                                      ? Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: spacerSize10,
-                                            vertical: spacerSize2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.toLiteGreenColor,
-                                            borderRadius: BorderRadius.circular(spacerSize20),
-                                          ),
-                                          child: BaseText(
-                                            text: () {
-                                              final l10n =
-                                                  AppLocalizations.of(Get.context!)!;
-                                              final remaining =
-                                                  SharedPrefsService.instance
-                                                      .getString(AppKeys.remainingDays);
-                                              if (BaseCalculateRemainingDays
-                                                  .isZeroRemainingDays(remaining)) {
-                                                return l10n.planExpiringToday;
-                                              }
-                                              return "$remaining\t${l10n.days}\t${l10n.left}";
-                                            }(),
-                                            fontSize: fontSize10,
-                                            fontFamily: AppKeys.inter,
-                                            fontWeight: FontWeight.w400,
-                                            textColor: AppColors.whiteColor,
-                                          ),
-                                        )
-                                      : BaseText(
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: AppKeys.inter,
-                                          fontSize: fontSize12,
-                                          textColor: AppColors.liteGreyColor,
-                                          text: getGreeting(),
-                                        ),
-                                ],
-                              ).marginOnly(left: spacerSize10),
-                            ),
-                            // Expanded(
-                            //   flex: 4,
-                            //   child: Align(
-                            //     alignment: Alignment.centerRight,
-                            //     child: IconButton(
-                            //       style: IconButton.styleFrom(
-                            //         padding: EdgeInsets.zero,
-                            //         minimumSize: Size.zero,
-                            //       ),
-                            //       onPressed: () {
-                            //         Get.back();
-                            //       },
-                            //       icon: Image.asset(
-                            //         color: AppColors.greenColor,
-                            //         Assets.imagesClose,
-                            //         height: spacerSize20,
-                            //         width: spacerSize20,
-                            //       ).marginOnly(right: spacerSize30),
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
-                        ).marginOnly(top: spacerSize20, bottom: spacerSize15),
-                      ),
-
-                      widget.isProfessional
-                          ? Expanded(
-                              child: ListView(
-                                children: [
-                                  drawerItem(
-                                    title: AppLocalizations.of(context)!.myLeads,
-                                    onTap: () {
-                                      widget.onTap(0);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    title:
-                                        "${AppLocalizations.of(context)!.find}\t${AppLocalizations.of(context)!.professionals}",
-                                    onTap: () {
-                                      widget.onTap(1);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    title: AppLocalizations.of(context)!.wholesaleSuppliers,
-                                    onTap: () {
-                                      widget.onTap(2);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    showDivider: false,
-                                    title: AppLocalizations.of(Get.context!)!.myProfile,
-                                    onTap: () {
-                                      widget.onTap(3);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Expanded(
-                              child: ListView(
-                                children: [
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.home,
-                                    onTap: () {
-                                      widget.onTap(0);
-                                    },
-                                  ),
-                                  // drawerItem(
-                                  //   title: AppLocalizations.of(Get.context!)!.professionals,
-                                  //   onTap: () {
-                                  //     widget.onTap(1);
-                                  //   },
-                                  // ),
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.store,
-                                    onTap: () {
-                                      // launchExternalUrl("https://loja.kasagardem.com.br/");
-                                      BaseSnackBar.show(
-                                        title: AppStrings.temporarilyUnavailable,
-                                        message: AppStrings.storeOnHold,
-                                      );
-                                    },
-                                  ),
-
-                                  /* drawerItem(
-                                      title: AppLocalizations.of(Get.context!)!.courses,
-                                      onTap: () {
-                                        launchExternalUrl(courseLink);
-                                      },
-                                    ),
-                                    drawerItem(
-                                      title: AppLocalizations.of(
-                                        Get.context!,
-                                      )!.siteKasagardem,
-                                      onTap: () {
-                                        launchExternalUrl(websiteLink);
-                                      },
-                                    ),*/
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.myPlants,
-                                    onTap: () {
-                                      widget.onTap(6);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.myProfile,
-                                    onTap: () {
-                                      widget.onTap(5);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.settings,
-                                    onTap: () {
-                                      widget.onTap(7);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    title: AppLocalizations.of(Get.context!)!.aboutApp,
-                                    onTap: () {
-                                      Get.back();
-                                      Get.toNamed(Routes.aboutApp);
-                                    },
-                                  ),
-                                  drawerItem(
-                                    showDivider: false,
-                                    title: AppLocalizations.of(Get.context!)!.logout,
-                                    onTap: () {
-                                      logout();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                    ],
-                  ),
+                color: AppColors.offWhite,
+                child: Column(
+                  children: [
+                    _buildHeader(),
+                    Expanded(
+                      child: widget.isProfessional
+                          ? _buildProfessionalMenu()
+                          : _buildUserMenu(),
+                    ),
+                  ],
                 ),
               ),
             ),
-            // SafeArea(
-            //   child: Visibility(
-            //     child: Image.asset(
-            //       Assets.backBtnDraweClose,
-            //       height: 42.w,
-            //       width:42.w,
-            //     ),
-            //   ),
-            // )
             SizedBox(width: 32.w),
           ],
         ),
@@ -332,6 +87,255 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildHeader() {
+    final bool isProfessional =
+        SharedPrefsService.instance.getString(AppKeys.role) == AppKeys.professional;
+    final String userName = SharedPrefsService.instance.getString(AppKeys.name) ?? "";
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: AppColors.linearGradientForBtn,
+        color: AppColors.greenColor,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24.r),
+          bottomRight: Radius.circular(24.r),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => widget.onTap(isProfessional ? 3 : 5),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 22.h),
+            child: Row(
+              children: [
+                Obx(() {
+                  final imageUrl = Get.isRegistered<SettingsViewModel>()
+                      ? Get.find<SettingsViewModel>().profileImage.value
+                      : "";
+
+                  return AbsorbPointer(
+                    absorbing: true,
+                    child: Container(
+                      width: 56.w,
+                      height: 56.w,
+                      padding: EdgeInsets.all(2.w),
+                      decoration: const BoxDecoration(
+                        color: AppColors.whiteColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: ClickableImage(
+                          borderRadius: BorderRadius.circular(100),
+                          imageUrl: imageUrl,
+                          height: double.infinity,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          heroTag: "profile_image_appbar_drawer",
+                          errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+                SizedBox(width: 14.w),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BaseText(
+                        fontWeight: FontWeight.w400,
+                        fontFamily: AppKeys.inter,
+                        fontSize: fontSize12,
+                        textColor: AppColors.whiteColor.withValues(alpha: 0.8),
+                        text: getGreeting(),
+                      ),
+                      SizedBox(height: 2.h),
+                      BaseText(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: AppKeys.poppins,
+                        fontSize: fontSize16,
+                        textColor: AppColors.whiteColor,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: '${AppLocalizations.of(Get.context!)!.hi}, $userName!',
+                      ),
+                      if (isProfessional) ...[
+                        SizedBox(height: 6.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: spacerSize10,
+                            vertical: spacerSize3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.whiteColor.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(spacerSize20),
+                          ),
+                          child: BaseText(
+                            text: () {
+                              final l10n = AppLocalizations.of(Get.context!)!;
+                              final remaining = SharedPrefsService.instance.getString(
+                                AppKeys.remainingDays,
+                              );
+                              if (BaseCalculateRemainingDays.isZeroRemainingDays(remaining)) {
+                                return l10n.planExpiringToday;
+                              }
+                              return "$remaining\t${l10n.days}\t${l10n.left}";
+                            }(),
+                            fontSize: fontSize10,
+                            fontFamily: AppKeys.inter,
+                            fontWeight: FontWeight.w500,
+                            textColor: AppColors.whiteColor,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                // Icon(
+                //   Icons.chevron_right_rounded,
+                //   color: AppColors.whiteColor.withValues(alpha: 0.8),
+                //   size: 22.w,
+                // ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserMenu() {
+    return ListView(
+      padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 28.h),
+      children: [
+        _menuCard(
+          children: [
+            drawerItem(
+              icon: Icons.home_outlined,
+              title: AppLocalizations.of(Get.context!)!.home,
+              onTap: () => widget.onTap(0),
+            ),
+            drawerItem(
+              icon: Icons.storefront_outlined,
+              title: AppLocalizations.of(Get.context!)!.store,
+              onTap: () {
+                BaseSnackBar.show(
+                  title: AppStrings.temporarilyUnavailable,
+                  message: AppStrings.storeOnHold,
+                );
+              },
+            ),
+            drawerItem(
+              icon: Icons.local_florist_outlined,
+              title: AppLocalizations.of(Get.context!)!.myPlants,
+              showDivider: false,
+              onTap: () => widget.onTap(6),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        _menuCard(
+          children: [
+            drawerItem(
+              icon: Icons.person_outline,
+              title: AppLocalizations.of(Get.context!)!.myProfile,
+              onTap: () => widget.onTap(5),
+            ),
+            drawerItem(
+              icon: Icons.settings_outlined,
+              title: AppLocalizations.of(Get.context!)!.settings,
+              onTap: () => widget.onTap(7),
+            ),
+            drawerItem(
+              icon: Icons.info_outline,
+              title: AppLocalizations.of(Get.context!)!.aboutApp,
+              showDivider: false,
+              onTap: () {
+                Get.back();
+                Get.toNamed(Routes.aboutApp);
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        _menuCard(
+          children: [
+            drawerItem(
+              icon: Icons.logout_outlined,
+              title: AppLocalizations.of(Get.context!)!.logout,
+              isDestructive: true,
+              showDivider: false,
+              onTap: logout,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfessionalMenu() {
+    return ListView(
+      padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 28.h),
+      children: [
+        _menuCard(
+          children: [
+            drawerItem(
+              icon: Icons.assignment_outlined,
+              title: AppLocalizations.of(context)!.myLeads,
+              onTap: () => widget.onTap(0),
+            ),
+            drawerItem(
+              icon: Icons.person_search_outlined,
+              title:
+                  "${AppLocalizations.of(context)!.find}\t${AppLocalizations.of(context)!.professionals}",
+              onTap: () => widget.onTap(1),
+            ),
+            drawerItem(
+              icon: Icons.local_shipping_outlined,
+              title: AppLocalizations.of(context)!.wholesaleSuppliers,
+              showDivider: false,
+              onTap: () => widget.onTap(2),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.h),
+        _menuCard(
+          children: [
+            drawerItem(
+              icon: Icons.person_outline,
+              title: AppLocalizations.of(Get.context!)!.myProfile,
+              showDivider: false,
+              onTap: () => widget.onTap(3),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _menuCard({required List<Widget> children}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(children: children),
     );
   }
 
@@ -353,27 +357,71 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
     }
   }
 
-  Widget drawerItem({required String title, required VoidCallback onTap, bool showDivider = true}) {
+  Widget drawerItem({
+    required String title,
+    required VoidCallback onTap,
+    required IconData icon,
+    Color? iconColor,
+    bool showDivider = true,
+    bool isDestructive = false,
+  }) {
+    final Color resolvedIconColor = isDestructive
+        ? AppColors.red
+        : (iconColor ?? AppColors.greenColor);
+    final Color resolvedIconBg = isDestructive
+        ? AppColors.red.withValues(alpha: 0.1)
+        : AppColors.greenColor.withValues(alpha: 0.1);
+    final Color resolvedTitleColor = isDestructive ? AppColors.red : AppColors.blackColor;
+    final Color resolvedChevronColor = isDestructive
+        ? AppColors.red.withValues(alpha: 0.5)
+        : AppColors.liteGreyColor;
+
     return Column(
       children: [
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: spacerSize25, vertical: spacerSize1),
-          title: BaseText(
-            fontFamily: AppKeys.poppins,
-            fontWeight: FontWeight.w500,
-            fontSize: fontSize18,
-            // textColor: AppColors.offWhite,
-            text: title,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40.w,
+                    height: 40.w,
+                    decoration: BoxDecoration(
+                      color: resolvedIconBg,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    child: Icon(icon, color: resolvedIconColor, size: 20.w),
+                  ),
+                  SizedBox(width: 14.w),
+                  Expanded(
+                    child: BaseText(
+                      fontFamily: AppKeys.poppins,
+                      fontWeight: FontWeight.w500,
+                      fontSize: fontSize15,
+                      textColor: resolvedTitleColor,
+                      text: title,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    color: resolvedChevronColor,
+                    size: 12.sp,
+                  ),
+                ],
+              ),
+            ),
           ),
-          onTap: onTap,
         ),
         if (showDivider)
           Divider(
             color: AppColors.backgroundGrey,
             thickness: 1,
             height: 1,
-            indent: spacerSize12,
-            endIndent: spacerSize12,
+            indent: 68.w,
+            endIndent: 14.w,
           ),
       ],
     );

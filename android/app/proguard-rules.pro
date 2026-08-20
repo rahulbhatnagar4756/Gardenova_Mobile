@@ -104,6 +104,15 @@
 # Gardenova push notification bridge
 -keep class com.gardenova.digisoft.** { *; }
 
+#########################################
+# flutter_tts (release / R8)
+#########################################
+
+-keep class com.tundralabs.fluttertts.** { *; }
+-keep class com.eyedeadevelopment.fluttertts.** { *; }
+-keep class android.speech.tts.** { *; }
+-dontwarn android.speech.tts.**
+
 ## Gson rules
 # Gson uses generic type information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.

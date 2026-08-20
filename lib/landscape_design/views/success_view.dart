@@ -5,6 +5,8 @@ import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/clickable_image.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/landscape_design/landscape_design_view_model.dart';
+import 'package:kasagardem/landscape_design/model/landscape_design_model.dart';
+import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -195,6 +197,13 @@ class LandscapeDesignSuccessView extends StatelessWidget {
                       ),
                     ),
 
+                    if (data.recommendedPlants?.hasPlants == true) ...[
+                      const SizedBox(height: spacerSize24),
+                      _RecommendedPlantsSection(
+                        recommendedPlants: data.recommendedPlants!,
+                      ),
+                    ],
+
                     const SizedBox(height: spacerSize24),
 
                     /// 🔹 COMPARISON SECTION
@@ -315,4 +324,206 @@ class LandscapeDesignSuccessView extends StatelessWidget {
       ],
     );
   }
+}
+
+class _RecommendedPlantsSection extends StatelessWidget {
+  const _RecommendedPlantsSection({required this.recommendedPlants});
+
+  final RecommendedPlants recommendedPlants;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final plants = recommendedPlants.plants;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BaseText(
+          text: l10n.plantRecommendations,
+          fontSize: fontSize18,
+          fontWeight: FontWeight.w600,
+          fontFamily: AppKeys.poppins,
+        ),
+        if (_hasMeta) ...[
+          const SizedBox(height: spacerSize12),
+          Wrap(
+            spacing: spacerSize8,
+            runSpacing: spacerSize8,
+            children: [
+              if (recommendedPlants.region?.trim().isNotEmpty == true)
+                _MetaChip(
+                  icon: Icons.location_on_outlined,
+                  label: '${l10n.region}: ${_prettyLabel(recommendedPlants.region)}',
+                ),
+              if (recommendedPlants.climate?.trim().isNotEmpty == true)
+                _MetaChip(
+                  icon: Icons.thermostat_outlined,
+                  label: _prettyLabel(recommendedPlants.climate),
+                ),
+            ],
+          ),
+        ],
+        const SizedBox(height: spacerSize12),
+        ...plants.map(
+          (plant) => Padding(
+            padding: const EdgeInsets.only(bottom: spacerSize12),
+            child: _RecommendedPlantCard(plant: plant),
+          ),
+        ),
+      ],
+    );
+  }
+
+  bool get _hasMeta =>
+      recommendedPlants.region?.trim().isNotEmpty == true ||
+      recommendedPlants.climate?.trim().isNotEmpty == true;
+}
+
+class _RecommendedPlantCard extends StatelessWidget {
+  const _RecommendedPlantCard({required this.plant});
+
+  final RecommendedPlant plant;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(spacerSize16),
+      decoration: BoxDecoration(
+        color: AppColors.greenColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44.w,
+                height: 44.w,
+                decoration: const BoxDecoration(
+                  color: AppColors.lightGreen,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.local_florist_rounded,
+                  color: AppColors.greenColor,
+                  size: 22.w,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BaseText(
+                      text: plant.commonName ?? '',
+                      fontSize: fontSize16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: AppKeys.poppins,
+                    ),
+                    if (plant.latinName?.trim().isNotEmpty == true) ...[
+                      const SizedBox(height: 2),
+                      BaseText(
+                        text: plant.latinName!,
+                        fontSize: fontSize12,
+                        fontFamily: AppKeys.inter,
+                        fontWeight: FontWeight.w400,
+                        textColor: AppColors.liteGreyColor,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (_hasTags) ...[
+            const SizedBox(height: spacerSize12),
+            Wrap(
+              spacing: spacerSize8,
+              runSpacing: spacerSize8,
+              children: [
+                if (plant.type?.trim().isNotEmpty == true)
+                  _MetaChip(
+                    icon: Icons.eco_outlined,
+                    label: _prettyLabel(plant.type),
+                  ),
+                if (plant.sunlight?.trim().isNotEmpty == true)
+                  _MetaChip(
+                    icon: Icons.wb_sunny_outlined,
+                    label: _prettyLabel(plant.sunlight),
+                  ),
+                if (plant.waterNeeds?.trim().isNotEmpty == true)
+                  _MetaChip(
+                    icon: Icons.water_drop_outlined,
+                    label: _prettyLabel(plant.waterNeeds),
+                  ),
+              ],
+            ),
+          ],
+          if (plant.notes?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: spacerSize12),
+            BaseText(
+              text: plant.notes!,
+              fontSize: fontSize13,
+              fontFamily: AppKeys.inter,
+              fontWeight: FontWeight.w400,
+              textColor: AppColors.liteGreyColor,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  bool get _hasTags =>
+      plant.type?.trim().isNotEmpty == true ||
+      plant.sunlight?.trim().isNotEmpty == true ||
+      plant.waterNeeds?.trim().isNotEmpty == true;
+}
+
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.greenColor.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14.w, color: AppColors.greenColor),
+          SizedBox(width: 6.w),
+          BaseText(
+            text: label,
+            fontSize: fontSize11,
+            fontFamily: AppKeys.inter,
+            fontWeight: FontWeight.w500,
+            textColor: AppColors.darkGreenColor,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _prettyLabel(String? value) {
+  if (value == null || value.trim().isEmpty) return '';
+  return value
+      .replaceAll('_', ' ')
+      .split(RegExp(r'\s+'))
+      .where((word) => word.isNotEmpty)
+      .map((word) => '${word[0].toUpperCase()}${word.substring(1)}')
+      .join(' ');
 }

@@ -155,7 +155,7 @@ class BottomNavigationWidget extends StatelessWidget {
                                         ? FontWeight.w600
                                         : FontWeight.w400,
 
-                                    color: selectedColor ?? AppColors.liteGreyColor,
+                                    color: selectedColor,
                                   ),
 
                                   child: BaseText(text: item.label, textColor: selectedColor),

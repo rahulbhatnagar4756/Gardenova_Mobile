@@ -1138,4 +1138,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plantDeletedSuccessfully => 'Plant removed from My Plants successfully.';
+
+  @override
+  String get aiAssistant => 'AI Assistant';
+
+  @override
+  String get askMeAnything => 'Ask Our Garden Expert';
+
+  @override
+  String get newChat => 'New chat';
+
+  @override
+  String get promptHypoallergenicVarieties => 'List of hypoallergenic varieties';
+
+  @override
+  String get promptAboutPalms => 'About palms';
+
+  @override
+  String get online => 'Online';
+
+  @override
+  String get promptWateringAdvice => 'How should I water my plants?';
+
+  @override
+  String get loadingConversation => 'Loading conversation';
+
+  @override
+  String get loadingEarlierMessages => 'Loading earlier messages';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

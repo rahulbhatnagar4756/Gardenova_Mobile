@@ -11,6 +11,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../base/widgets/base_app_bar.dart';
 import '../generated/assets.dart';
 import '../utils/constants/app_keys.dart';
+import '../utils/device_info_helper.dart';
 
 class AboutAppScreen extends StatefulWidget {
   final String? filePath;
@@ -46,7 +47,12 @@ class AboutAppScreenState extends State<AboutAppScreen> {
         ? Assets.htmlAboutEn
         : Assets.htmlAboutPt;
 
-    final String htmlContent = await rootBundle.loadString(path);
+    final String htmlTemplate = await rootBundle.loadString(path);
+    final String appVersion = await DeviceInfoHelper.getAppVersion();
+    final String htmlContent = htmlTemplate.replaceAll(
+      '{{APP_VERSION}}',
+      appVersion,
+    );
 
     await _controller.loadRequest(
       Uri.dataFromString(

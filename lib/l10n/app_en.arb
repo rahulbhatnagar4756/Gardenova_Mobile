@@ -369,6 +369,16 @@
   "noDataNa": "N/A",
   "deletePlant": "Remove Plant",
   "areYouSureYouWantToDeletePlant": "Are you sure you want to remove this plant from My Plants? This action cannot be undone.",
-  "plantDeletedSuccessfully": "Plant removed from My Plants successfully.
-"
+  "plantDeletedSuccessfully": "Plant removed from My Plants successfully.",
+  "aiAssistant": "AI Assistant",
+  "askMeAnything": "Ask Our Garden Expert",
+  "newChat": "New chat",
+  "promptHypoallergenicVarieties": "List of hypoallergenic varieties",
+  "promptAboutPalms": "About palms",
+  "online": "Online",
+  "promptWateringAdvice": "How should I water my plants?",
+  "loadingConversation": "Loading conversation",
+  "loadingEarlierMessages": "Loading earlier messages",
+  "copied": "Copied",
+  "yesterday": "Yesterday"
 }

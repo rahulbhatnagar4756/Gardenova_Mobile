@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:gal/gal.dart';
 import 'package:http/http.dart' as http;
 import 'package:kasagardem/utils/constants/app_color.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/network_services/app_exceptions.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'landscape_design_repository.dart';
 import 'model/landscape_design_model.dart';
@@ -82,6 +84,7 @@ class LandscapeDesignViewModel extends GetxController {
 
       LandscapeDesignRequestModel request = LandscapeDesignRequestModel(
         imageBase64: base64String,
+        responseId: SharedPrefsService.instance.getString(AppKeys.submissionResponseId),
         prefs: Prefs(style: selectedStyle.value),
       );
 

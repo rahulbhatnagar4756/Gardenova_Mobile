@@ -26,7 +26,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
     return Scaffold(
       backgroundColor: AppColors.appColor,
       body: Container(
-        color: AppColors.greenColor,
+       // color: AppColors.greenColor,
         child: SafeArea(
           child: Container(
             color: AppColors.whiteColor,
