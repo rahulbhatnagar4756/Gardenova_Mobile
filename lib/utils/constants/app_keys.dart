@@ -21,7 +21,7 @@ class AppKeys {
   static const emailAlreadyInUse = 'email-already-in-use';
   static const poppins = 'poppins';
   static const inter = 'Inter';
-  static const selectedLang = 'selected_lang';
+  static const selectedLang = 'en';
   static const submissionResponseId = 'submission_response_id';
   static const user = 'user';
   static const professional = 'professional';

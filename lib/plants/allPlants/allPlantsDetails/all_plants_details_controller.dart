@@ -483,10 +483,7 @@ class AllPlantsDetailsController extends GetxController {
         buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
         onButtonPressed: () async {
           if (Get.isRegistered<MyPlantsController>()) {
-            // Get.back();
-            // Get.back();
-            // Get.back();
-            Get.until((route) => route.settings.name == Routes.allPlantsScreen);
+            Get.until((route) => route.settings.name == Routes.myPlantsScreen);
           } else {
             Get.back();
             await Future.delayed(Duration(milliseconds: 100));

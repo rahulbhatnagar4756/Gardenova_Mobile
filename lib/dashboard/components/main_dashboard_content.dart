@@ -25,7 +25,10 @@ class MainDashboardContent extends StatelessWidget {
           Obx(
             () => HeadingUiLayout(
               sectionTitle: AppLocalizations.of(context)!.overview,
-              child: SoilAnalysis(chartData: controller.chartData),
+              child: SoilAnalysis(
+                chartData: controller.chartData,
+                isLoading: controller.isLoadingGardenInsights.value,
+              ),
             ),
           ),
           const SizedBox(height: spacerSize20),

@@ -721,6 +721,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get upgradeToPremium => 'Upgrade to Premium';
 
   @override
+  String get subscribeNow => 'Assinar agora';
+
+  @override
   String get enjoyExclusiveBenefits => 'Enjoy exclusive benefits';
 
   @override
@@ -1149,4 +1152,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get yesterday => 'Ontem';
+
+  @override
+  String get fitnessScore => 'Pontuação de Aptidão';
+
+  @override
+  String get fitnessScoreSubtitle =>
+      'Veja o quão preparado seu jardim está para um crescimento saudável';
 }

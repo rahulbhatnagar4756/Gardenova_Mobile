@@ -227,7 +227,7 @@ class PlantDiagnosisViewModel extends GetxController {
         // Get.back();
         // Get.back();
         if (Get.isRegistered<DashboardController>()) {
-          Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+          Get.find<DashboardController>().getGardenInsights();
         }
         Get.key.currentState?.popUntil((route) => route.settings.name == Routes.dashboard);
         break;

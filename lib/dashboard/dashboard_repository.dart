@@ -7,6 +7,7 @@ import 'package:kasagardem/utils/network_services/api_repository.dart';
 class DashboardRepository {
   final String _plantRecommendationEndPoint = "api/v1/answers/plants";
   final String _externalLinksUrl = "api/v1/externalLinks";
+  final String _gardenInsightsEndPoint = "api/v1/garden-insights";
 
   String getPlantRecommendationEndPoint(String responseId) {
     log("getPlantRecommendationEndPoint responseId::::$responseId");
@@ -27,6 +28,14 @@ class DashboardRepository {
   fetchExternalLink() async {
     var linkResponse = await ApiRepository.instance.get(_externalLinksUrl);
     return linkResponse;
+  }
+
+  Future<dynamic> fetchGardenInsights() async {
+    return ApiRepository.instance.get(
+      _gardenInsightsEndPoint,
+      showDefaultLoader: false,
+      showRunTimeError: false,
+    );
   }
 
   /// NEW FUNCTION

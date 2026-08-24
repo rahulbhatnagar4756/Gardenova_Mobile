@@ -8,7 +8,11 @@ class GardenChatResponseModel {
   GardenChatResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
-    data = json['data'] != null ? GardenChatData.fromJson(json['data']) : null;
+    if (json['data'] is Map) {
+      data = GardenChatData.fromJson(
+        Map<String, dynamic>.from(json['data'] as Map),
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -28,6 +32,7 @@ class GardenChatData {
   String? reply;
   List<GardenChatHistoryItem>? history;
   GardenChatPagination? pagination;
+  List<String>? suggestionsQuestion;
 
   GardenChatData({
     this.conversationId,
@@ -35,21 +40,27 @@ class GardenChatData {
     this.reply,
     this.history,
     this.pagination,
+    this.suggestionsQuestion,
   });
 
   GardenChatData.fromJson(Map<String, dynamic> json) {
     conversationId = json['conversationId']?.toString();
     isGardeningRelated = json['isGardeningRelated'];
     reply = json['reply']?.toString();
-    if (json['history'] != null) {
+    if (json['history'] is List) {
       history = <GardenChatHistoryItem>[];
       json['history'].forEach((item) {
-        history!.add(GardenChatHistoryItem.fromJson(item));
+        if (item is Map) {
+          history!.add(
+            GardenChatHistoryItem.fromJson(Map<String, dynamic>.from(item)),
+          );
+        }
       });
     }
     pagination = json['pagination'] != null
         ? GardenChatPagination.fromJson(json['pagination'])
         : null;
+    suggestionsQuestion = _parseSuggestionQuestions(json);
   }
 
   Map<String, dynamic> toJson() {
@@ -63,8 +74,21 @@ class GardenChatData {
     if (pagination != null) {
       json['pagination'] = pagination!.toJson();
     }
+    if (suggestionsQuestion != null) {
+      json['suggestionsQustion'] = suggestionsQuestion;
+    }
     return json;
   }
+}
+
+List<String>? _parseSuggestionQuestions(Map<String, dynamic> json) {
+  final raw = json['suggestionsQustion'] ?? json['suggestionsQuestion'];
+  if (raw is! List) return null;
+  final parsed = raw
+      .map((item) => item.toString().trim())
+      .where((item) => item.isNotEmpty)
+      .toList();
+  return parsed.isEmpty ? null : parsed;
 }
 
 class GardenChatPagination {

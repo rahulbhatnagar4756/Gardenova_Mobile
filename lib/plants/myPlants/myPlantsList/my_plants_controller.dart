@@ -105,7 +105,7 @@ class MyPlantsController extends GetxController {
     switch (index) {
       case 0:
         if (Get.isRegistered<DashboardController>()) {
-          Get.find<DashboardController>().refreshSoilAnalysis.refresh();
+          Get.find<DashboardController>().getGardenInsights();
         }
         Get.until((route) => route.settings.name == Routes.dashboard);
         break;

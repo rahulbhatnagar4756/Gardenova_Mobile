@@ -7,6 +7,7 @@ import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
 import 'package:kasagardem/dashboard/dashboard_repository.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
+import 'package:kasagardem/dashboard/model/garden_insights_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -42,12 +43,8 @@ class DashboardController extends GetxController {
   var refreshSoilAnalysis = false.obs;
   var selectedNavType = BottomNavType.home.obs;
 
-  var chartData = [
-    ChartData('Organic', 1, AppColors.organicColor),
-    ChartData('Sand', 1, AppColors.sandColor),
-    ChartData('Salt', 1, AppColors.siltColor),
-    ChartData('Clay', 1, AppColors.clayColor),
-  ].obs;
+  var chartData = <ChartData>[].obs;
+  var isLoadingGardenInsights = true.obs;
 
   BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
@@ -59,6 +56,7 @@ class DashboardController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupBannerAds();
       getPlantsRecommendations(responseId);
+      getGardenInsights();
       isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     });
 
@@ -111,6 +109,7 @@ class DashboardController extends GetxController {
     switch (index) {
       case 0:
         refreshSoilAnalysis.refresh();
+        getGardenInsights();
         Get.back();
         break;
       case 1:
@@ -226,7 +225,6 @@ class DashboardController extends GetxController {
       // Save locally
       sharedPrefsService.setString(AppKeys.currentLatKey, lat.toString());
       sharedPrefsService.setString(AppKeys.currentLongKey, long.toString());
-      await getSoilAnalysis(lat: lat, long: long);
       // sharedPrefsService.setString("lat", lat.toString());
       // sharedPrefsService.setString("long", long.toString());
       if ((Get.isDialogOpen ?? false) == true) {
@@ -240,21 +238,64 @@ class DashboardController extends GetxController {
     }
   }
 
+  Future<void> getGardenInsights() async {
+    isLoadingGardenInsights.value = true;
+    try {
+      final response = await dashboardRepository.fetchGardenInsights();
+      if (response == null) return;
+
+      final model = GardenInsightsResponseModel.fromJson(
+        Map<String, dynamic>.from(response),
+      );
+      if (model.success != true || model.data?.chart == null) return;
+
+      final mapped = <ChartData>[];
+      final items = model.data!.chart!;
+      for (int i = 0; i < items.length; i++) {
+        final item = items[i];
+        final label = item.label?.trim().isNotEmpty == true
+            ? item.label!.trim()
+            : (item.key ?? '');
+        if (label.isEmpty) continue;
+        mapped.add(
+          ChartData(label, item.percent ?? 0, _colorForInsight(item.key, i)),
+        );
+      }
+      chartData.assignAll(mapped);
+      refreshSoilAnalysis.refresh();
+    } catch (e) {
+      debugPrint('Garden insights error: $e');
+    } finally {
+      isLoadingGardenInsights.value = false;
+    }
+  }
+
+  Color _colorForInsight(String? key, int index) {
+    switch (key) {
+      case 'lightFit':
+        return AppColors.organicColor;
+      case 'waterConsistency':
+        return AppColors.liteGreenColor;
+      case 'experienceReadiness':
+        return AppColors.sandColor;
+      case 'spaceUtilization':
+        return AppColors.siltColor;
+      case 'growthPotential':
+        return AppColors.clayColor;
+      default:
+        const fallback = [
+          AppColors.sandColor,
+          AppColors.liteGreenColor,
+          AppColors.organicColor,
+          AppColors.siltColor,
+          AppColors.clayColor,
+        ];
+        return fallback[index % fallback.length];
+    }
+  }
+
   Future<void> getSoilAnalysis({required double lat, required double long}) async {
-    // chartData.assignAll([
-    //   ChartData('Organic', 15, AppColors.liteYellowColor),
-    //   ChartData('Sand', 40, AppColors.darkGreenColor),
-    //   ChartData('Salt', 25, AppColors.liteGreenColor),
-    //   ChartData('Clay', 20, AppColors.toLiteGreenColor),
-    // ]);
-    chartData.assignAll([
-      ChartData('Organic', 15, AppColors.organicColor),
-      ChartData('Sand', 40, AppColors.sandColor),
-      ChartData('Salt', 25, AppColors.siltColor),
-      ChartData('Clay', 20, AppColors.clayColor),
-    ]);
-    refreshSoilAnalysis.refresh();
-    return;
+    return getGardenInsights();
   }
 
   Future<void> pickImage({

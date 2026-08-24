@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,12 +7,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/chatbot/chatbot_controller.dart';
 import 'package:kasagardem/chatbot/models/chat_message.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/professional/upgradePlans/model/plan_model.dart';
+import 'package:kasagardem/subscription/subscription_navigation.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -56,7 +58,7 @@ class ChatbotScreen extends GetWidget<ChatbotController> {
                       return _EmptyChatView(
                         greeting: controller.greetingTitle,
                         askMeAnything: l10n.askMeAnything,
-                        suggestions: [],
+                        suggestions: controller.suggestions.toList(),
                         onSuggestionTap: controller.applySuggestion,
                       );
                     }
@@ -284,7 +286,7 @@ class _RoundIconButton extends StatelessWidget {
 }
 
 class _EmptyChatView extends StatelessWidget {
-  const   _EmptyChatView({
+  const _EmptyChatView({
     required this.greeting,
     required this.askMeAnything,
     required this.suggestions,
@@ -293,60 +295,90 @@ class _EmptyChatView extends StatelessWidget {
 
   final String greeting;
   final String askMeAnything;
-  final List<_SuggestionItem> suggestions;
+  final List<String> suggestions;
   final ValueChanged<String> onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Get.focusScope?.unfocus(),
-      child: CustomScrollView(
-        slivers: [
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: spacerSize24),
-              child: Column(
-                children: [
-                  const Spacer(),
-                  const _HeroOrb(),
-                  SizedBox(height: 22.h),
-                  BaseText(
-                    text: greeting,
-                    fontSize: fontSize24,
-                    textColor: AppColors.charcoalGrey,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: AppKeys.poppins,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8.h),
-                  BaseText(
-                    text: askMeAnything,
-                    fontSize: fontSize16  ,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: AppKeys.inter,
-                    textColor: AppColors.liteGreyColor,
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacer(),
-                  ...suggestions.map(
-                    (item) => Padding(
-                      padding: EdgeInsets.only(bottom: 10.h),
-                      child: _SuggestionCard(
-                        item: item,
-                        onTap: () => onSuggestionTap(item.label),
-                      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: spacerSize24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 8.h),
+                    const _HeroOrb(),
+                    SizedBox(height: 22.h),
+                    BaseText(
+                      text: greeting,
+                      fontSize: fontSize24,
+                      textColor: AppColors.charcoalGrey,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: AppKeys.poppins,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  SizedBox(height: 8.h),
-                ],
+                    SizedBox(height: 8.h),
+                    BaseText(
+                      text: askMeAnything,
+                      fontSize: fontSize16,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: AppKeys.inter,
+                      textColor: AppColors.liteGreyColor,
+                      textAlign: TextAlign.center,
+                    ),
+                    if (suggestions.isNotEmpty) ...[
+                      SizedBox(height: 28.h),
+                      ...List.generate(suggestions.length, (index) {
+                        final label = suggestions[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10.h),
+                          child: _SuggestionCard(
+                            item: _SuggestionItem(
+                              label: label,
+                              icon: _iconForSuggestion(label, index),
+                            ),
+                            onTap: () => onSuggestionTap(label),
+                          ),
+                        );
+                      }),
+                    ],
+                    SizedBox(height: 8.h),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
+}
+
+IconData _iconForSuggestion(String text, int index) {
+  final lower = text.toLowerCase();
+  if (lower.contains('yellow') || lower.contains('leaf') || lower.contains('leaves')) {
+    return Icons.eco_outlined;
+  }
+  if (lower.contains('beginner')) {
+    return Icons.spa_outlined;
+  }
+  if (lower.contains('balcon')) {
+    return Icons.apartment_outlined;
+  }
+  const fallback = [
+    Icons.eco_outlined,
+    Icons.local_florist_outlined,
+    Icons.yard_outlined,
+    Icons.chat_bubble_outline_rounded,
+  ];
+  return fallback[index % fallback.length];
 }
 
 class _HeroOrb extends StatefulWidget {
@@ -770,42 +802,178 @@ class _UpgradeRequiredView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final features = [
+      PlanFeature(key: 'diagnosis_scans', label: 'Diagnosis scans'),
+      PlanFeature(key: 'landscape_gens', label: 'Landscape generations'),
+      PlanFeature(key: 'saved_plants', label: 'Saved plants'),
+      PlanFeature(key: 'ai_assistant', label: 'AI assistant'),
+      PlanFeature(key: 'basic_reminders', label: 'Basic reminders'),
+    ];
+
     return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: spacerSize24),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: spacerSize30, vertical: spacerSize24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 88.w,
-              height: 88.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.lightGreen,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.greenColor.withValues(alpha: 0.18),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.workspace_premium_rounded,
-                size: 42.w,
-                color: AppColors.greenColor,
-              ),
-            ),
-            SizedBox(height: 20.h),
+            const _UpgradeRocketIllustration(),
+            SizedBox(height: 28.h),
             BaseText(
-              text: message,
-              fontSize: fontSize14,
-              fontFamily: AppKeys.inter,
-              fontWeight: FontWeight.w400,
-              textColor: AppColors.charcoalGrey,
+              text: l10n.upgradeToPremium, 
+              fontSize: fontSize22,
+              fontFamily: AppKeys.poppins,
+              fontWeight: FontWeight.w700,
+              textColor: AppColors.blackColor,
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10.h),
+            BaseText(
+              text: message,
+              fontSize: fontSize13,
+              fontFamily: AppKeys.inter,
+              fontWeight: FontWeight.w400,
+              textColor: AppColors.liteGreyColor,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24.h),
+            ...features.map(
+              (feature) => Padding(
+                padding: EdgeInsets.only(bottom: 14.h),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 22.w,
+                      height: 22.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.greenColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check_rounded,
+                        size: 14.w,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: BaseText(
+                        text: feature.label!,
+                        fontSize: fontSize14,
+                        fontFamily: AppKeys.inter,
+                        fontWeight: FontWeight.w500,
+                        textColor: AppColors.charcoalGrey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            BaseButton(
+              onPressed: () {
+                Get.toNamed(
+                  SubscriptionNavigation.upgradeRoute,
+                  arguments: {AppKeys.screenType: AppKeys.dashboard},
+                );
+              },
+              buttonLabel: l10n.subscribeNow,
+              buttonWidth: double.infinity,
+              fontSize: fontSize16,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UpgradeRocketIllustration extends StatefulWidget {
+  const _UpgradeRocketIllustration();
+
+  @override
+  State<_UpgradeRocketIllustration> createState() =>
+      _UpgradeRocketIllustrationState();
+}
+
+class _UpgradeRocketIllustrationState extends State<_UpgradeRocketIllustration>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _float;
+  late final Animation<double> _scale;
+  late final Animation<double> _shadowScale;
+  late final Animation<double> _shadowOpacity;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+
+    _float = Tween<double>(begin: 0, end: -10).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _scale = Tween<double>(begin: 1, end: 1.06).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _shadowScale = Tween<double>(begin: 1, end: 0.72).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+    _shadowOpacity = Tween<double>(begin: 0.1, end: 0.04).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Column(
+          children: [
+            Transform.translate(
+              offset: Offset(0, _float.value.h),
+              child: Transform.scale(
+                scale: _scale.value,
+                child: child,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Transform.scale(
+              scaleX: _shadowScale.value,
+              child: Container(
+                width: 64.w,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: AppColors.blackColor.withValues(
+                    alpha: _shadowOpacity.value,
+                  ),
+                  borderRadius: BorderRadius.circular(50.r),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      child: Container(
+        width: 110.w,
+        height: 110.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.lightGreen,
+        ),
+        child: Icon(
+          Icons.rocket_launch_rounded,
+          size: 56.w,
+          color: AppColors.greenColor,
         ),
       ),
     );
@@ -817,28 +985,8 @@ class _HistoryLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 28.w,
-            height: 28.w,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.4,
-              color: AppColors.greenColor,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          BaseText(
-            text: AppLocalizations.of(context)!.loadingConversation,
-            fontSize: fontSize12,
-            fontFamily: AppKeys.inter,
-            fontWeight: FontWeight.w400,
-            textColor: AppColors.liteGreyColor,
-          ),
-        ],
-      ),
+    return const Center(
+      child: SpinKitSpinningLines(color: AppColors.greenColor),
     );
   }
 }

@@ -25,6 +25,7 @@ class ChatbotController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final RxList<ChatMessage> messages = <ChatMessage>[].obs;
+  final RxList<String> suggestions = <String>[].obs;
   final Rxn<File> selectedImage = Rxn<File>();
   final RxBool hasText = false.obs;
   final RxBool isTyping = false.obs;
@@ -221,14 +222,25 @@ class ChatbotController extends GetxController {
       );
       if (response == null) return;
 
-      final model = GardenChatResponseModel.fromJson(
-        Map<String, dynamic>.from(response),
-      );
-      if (model.success != true || model.data == null) return;
+      final responseMap = Map<String, dynamic>.from(response);
+      final model = GardenChatResponseModel.fromJson(responseMap);
+      final suggestionList = _readSuggestions(model.data, responseMap);
 
       if (reset) {
         upgradeRequiredMessage.value = null;
       }
+
+      if (model.data == null) {
+        if (reset) {
+          messages.clear();
+          _canPaginate = false;
+          hasMoreHistory.value = false;
+          suggestions.assignAll(suggestionList);
+        }
+        return;
+      }
+
+      if (model.success != true) return;
 
       conversationId = model.data!.conversationId ?? conversationId;
       final pagination = model.data!.pagination;
@@ -240,6 +252,11 @@ class ChatbotController extends GetxController {
       if (reset) {
         messages.assignAll(mapped);
         _canPaginate = mapped.isNotEmpty;
+        if (mapped.isEmpty) {
+          suggestions.assignAll(suggestionList);
+        } else {
+          suggestions.clear();
+        }
       } else {
         if (mapped.isEmpty) {
           hasMoreHistory.value = false;
@@ -253,6 +270,7 @@ class ChatbotController extends GetxController {
             ? e.message
             : 'Garden chat is available for paid users only. Please upgrade your plan to continue.';
         messages.clear();
+        suggestions.clear();
         hasMoreHistory.value = false;
         _canPaginate = false;
         return;
@@ -276,6 +294,25 @@ class ChatbotController extends GetxController {
     isLoadingMore.value = true;
     _currentPage += 1;
     fetchHistory();
+  }
+
+  List<String> _readSuggestions(
+    GardenChatData? data,
+    Map<String, dynamic> response,
+  ) {
+    final fromData = data?.suggestionsQuestion;
+    if (fromData != null && fromData.isNotEmpty) return fromData;
+
+    dynamic raw = response['suggestionsQustion'] ?? response['suggestionsQuestion'];
+    if (raw == null && response['data'] is Map) {
+      final dataMap = Map<String, dynamic>.from(response['data'] as Map);
+      raw = dataMap['suggestionsQustion'] ?? dataMap['suggestionsQuestion'];
+    }
+    if (raw is! List) return const [];
+    return raw
+        .map((item) => item.toString().trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
   }
 
   List<ChatMessage> _mapHistory(List<GardenChatHistoryItem> history) {
@@ -378,7 +415,7 @@ class ChatbotController extends GetxController {
         if (model.success == true && model.data != null) {
           conversationId = model.data!.conversationId;
           isTyping.value = false;
-          _applyResponse(model.data!, localImagePath: image?.path);
+          _applyResponse(model.data!);
           didGetReply = true;
         } else {
           messages.add(_somethingWentWrongMessage(animateIn: true));
@@ -394,16 +431,7 @@ class ChatbotController extends GetxController {
     }
   }
 
-  void _applyResponse(GardenChatData data, {String? localImagePath}) {
-    if (localImagePath != null) {
-      for (int i = messages.length - 1; i >= 0; i--) {
-        if (messages[i].isUser && !messages[i].hasImage) {
-          messages[i] = messages[i].copyWith(imagePath: localImagePath);
-          break;
-        }
-      }
-    }
-
+  void _applyResponse(GardenChatData data) {
     ChatMessage? assistant;
     if (data.reply != null && data.reply!.trim().isNotEmpty) {
       assistant = ChatMessage(

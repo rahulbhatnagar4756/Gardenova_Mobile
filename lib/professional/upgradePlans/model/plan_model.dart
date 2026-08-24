@@ -488,6 +488,10 @@ class PlanModel {
     }
   }
 
+  static List<PlanFeature> featuresForTier(String tier) {
+    return _defaultFeaturesForTier(tier);
+  }
+
   static List<PlanFeature> _defaultFeaturesForTier(String tier) {
     switch (tier) {
       case 'free':

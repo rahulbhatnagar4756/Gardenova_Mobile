@@ -90,7 +90,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
                             controller.refreshSoilAnalysis.value;
                             return HeadingUiLayout(
                               sectionTitle: AppLocalizations.of(context)!.overview,
-                              child: SoilAnalysis(chartData: controller.chartData),
+                              child: SoilAnalysis(
+                                chartData: controller.chartData,
+                                isLoading: controller.isLoadingGardenInsights.value,
+                              ),
                             ).marginOnly(left: spacerSize20, right: spacerSize20);
                           }),
                           // const SizedBox(height: spacerSize15),

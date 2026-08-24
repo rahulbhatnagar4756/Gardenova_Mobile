@@ -1517,6 +1517,12 @@ abstract class AppLocalizations {
   /// **'Upgrade to Premium'**
   String get upgradeToPremium;
 
+  /// No description provided for @subscribeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe Now'**
+  String get subscribeNow;
+
   /// No description provided for @enjoyExclusiveBenefits.
   ///
   /// In en, this message translates to:
@@ -2374,6 +2380,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterday;
+
+  /// No description provided for @fitnessScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Fitness Score'**
+  String get fitnessScore;
+
+  /// No description provided for @fitnessScoreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how well your garden is set up for healthy growth'**
+  String get fitnessScoreSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

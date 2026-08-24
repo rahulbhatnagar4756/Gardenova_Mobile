@@ -239,6 +239,7 @@
   "plantAnalysis": "Análise da Planta",
   "scanYourPlantForHealthAndDetails": "Escaneie sua planta para identificar e verificar sua saúde",
   "upgradeToPremium": "Upgrade to Premium",
+  "subscribeNow": "Assinar agora",
   "completePayment": "Complete Payment",
   "alerts": "Alerts",
   "reminders": "Reminders",
@@ -378,5 +379,7 @@
   "loadingConversation": "Carregando conversa",
   "loadingEarlierMessages": "Carregando mensagens anteriores",
   "copied": "Copiado",
-  "yesterday": "Ontem"
+  "yesterday": "Ontem",
+  "fitnessScore": "Pontuação de Aptidão",
+  "fitnessScoreSubtitle": "Veja o quão preparado seu jardim está para um crescimento saudável"
 }

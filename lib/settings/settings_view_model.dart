@@ -569,6 +569,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     var response = await profileRepository.updateProfile(updateProfileReq: updateProfileResponse);
 
     if (response != null) {
+    
       await getProfileDetail();
       if (isNewUserOtpLogin.value) {
         SharedPrefsService.instance.setString(AppKeys.name, nameController.text);
@@ -577,7 +578,15 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
         return;
       }
       Get.back();
+        BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.success,
+        message: response['message'] ?? "",
+      );
     } else {
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: response['message'] ?? "",
+      );
       profileImage.value = '';
       imageFile.value = File('');
       if (apiImage.isNotEmpty) {

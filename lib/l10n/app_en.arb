@@ -236,6 +236,7 @@
   "plantHistory": "Plant History",
   "upcomingEvents": "Upcoming Events",
   "upgradeToPremium": "Upgrade to Premium",
+  "subscribeNow": "Subscribe Now",
   "enjoyExclusiveBenefits": "Enjoy exclusive benefits and unlock all features",
   "billedMonthly": "Billed Monthly",
   "billedAnnually": "Billed Annually",
@@ -380,5 +381,7 @@
   "loadingConversation": "Loading conversation",
   "loadingEarlierMessages": "Loading earlier messages",
   "copied": "Copied",
-  "yesterday": "Yesterday"
+  "yesterday": "Yesterday",
+  "fitnessScore": "Fitness Score",
+  "fitnessScoreSubtitle": "See how well your garden is set up for healthy growth"
 }

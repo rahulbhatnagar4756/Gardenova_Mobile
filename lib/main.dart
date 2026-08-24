@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -24,7 +23,6 @@ import 'package:kasagardem/utils/network_services/network_connectivity_service.d
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:kasagardem/utils/utils.dart';
-
 import 'base/widgets/base_calculate_remaining_days.dart';
 import 'services/notification_service.dart';
 import 'services/reminder_push_notification_service.dart';
