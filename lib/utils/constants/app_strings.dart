@@ -187,6 +187,8 @@ class AppStrings {
       "Notifications are currently disabled. Please enable them in system settings to receive plant care reminders.";
   static const String storeOnHold =
       "The store is currently on hold. We’ll be back soon with updates.";
+  static const String plantAnalysisOnHold =
+      "Plant analysis is currently on hold. We’ll be back soon with updates.";
   static const String subscriptionPayment = "Subscription payment";
   static const String razorpayKeyNotConfigured = "Razorpay key is not configured.";
   static const String cancelSubscription = "Cancel Subscription";

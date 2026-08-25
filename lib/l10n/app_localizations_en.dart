@@ -677,6 +677,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myPlants => 'My Plants';
 
   @override
+  String get myPlantAnalysis => 'My Plant Analysis';
+
+  @override
   String get searchYourPlant => 'Search Your Plant';
 
   @override

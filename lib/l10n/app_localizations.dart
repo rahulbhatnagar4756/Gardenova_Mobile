@@ -1403,6 +1403,12 @@ abstract class AppLocalizations {
   /// **'My Plants'**
   String get myPlants;
 
+  /// No description provided for @myPlantAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'My Plant Analysis'**
+  String get myPlantAnalysis;
+
   /// No description provided for @searchYourPlant.
   ///
   /// In en, this message translates to:

@@ -544,7 +544,7 @@ class AllPlantsDetailsController extends GetxController {
   static const List<String> _genericEditKeys = [
     'generic_notification_enabled',
     'generic_care_reminder_frequency',
-    'generic_care_preferred_time',
+    'generic_care_preferred_time',  
     'generic_care_note',
   ];
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../base/dialogs/base_dialog.dart';
 import '../../base/widgets/base_calculate_remaining_days.dart';
 import '../../base/widgets/base_text.dart';
@@ -236,8 +235,18 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
             drawerItem(
               icon: Icons.local_florist_outlined,
               title: AppLocalizations.of(Get.context!)!.myPlants,
-              showDivider: false,
               onTap: () => widget.onTap(6),
+            ),
+            drawerItem(
+              icon: Icons.analytics_outlined,
+              title: AppLocalizations.of(Get.context!)!.myPlantAnalysis,
+              showDivider: false,
+              onTap: () {
+                BaseSnackBar.show(
+                  title: AppStrings.comingSoon,
+                  message: AppStrings.plantAnalysisOnHold,
+                );
+              },
             ),
           ],
         ),

@@ -664,6 +664,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get myPlants => 'Minhas Plantas';
 
   @override
+  String get myPlantAnalysis => 'Análise das Minhas Plantas';
+
+  @override
   String get searchYourPlant => 'Pesquisar Sua Planta';
 
   @override
