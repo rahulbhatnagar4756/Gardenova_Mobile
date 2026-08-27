@@ -99,7 +99,7 @@ class SoilAnalysis extends StatelessWidget {
                           DoughnutSeries<ChartData, String>(
                             dataSource: chartData,
                             xValueMapper: (data, _) => data.x,
-                            yValueMapper: (data, _) => data.y,
+                            yValueMapper: (data, _) => data.piePercent ?? data.y,
                             pointColorMapper: (data, _) => data.color,
                             innerRadius: '45%',
                             radius: '100%',
@@ -275,9 +275,10 @@ class _FitnessScoreSkeleton extends StatelessWidget {
 }
 
 class ChartData {
-  ChartData(this.x, this.y, this.color);
+  ChartData(this.x, this.y, this.color, {this.piePercent});
 
   final String x;
   double y;
   final Color color;
+  final double? piePercent;
 }

@@ -20,6 +20,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../../base/widgets/clickable_image.dart';
 import '../../base/widgets/expandable_text.dart';
+import '../../base/widgets/status_bar_overlap_scroll_view.dart';
 
 class DiagnosisSuccessView extends StatelessWidget {
   final PlantDiagnosisViewModel controller;
@@ -90,7 +91,7 @@ class DiagnosisSuccessView extends StatelessWidget {
         /// =====================================================
         /// MAIN CONTENT (SCROLLABLE)
         /// =====================================================
-        SingleChildScrollView(
+        StatusBarOverlapScrollView(
           child: Column(
             children: [
               // Transparent spacer to allow image to show

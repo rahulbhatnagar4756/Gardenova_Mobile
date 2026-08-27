@@ -677,7 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myPlants => 'My Plants';
 
   @override
-  String get myPlantAnalysis => 'My Plant Analysis';
+  String get myPlantAnalysis => 'My Plant Diagnosis';
 
   @override
   String get searchYourPlant => 'Search Your Plant';
@@ -690,6 +690,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addYourFirstPlant => 'Add Your First Plant';
+
+  @override
+  String get addYourPlant => 'Add Your Plant';
 
   @override
   String get addYourFirstPlantDescription =>
@@ -1146,7 +1149,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get plantDeletedSuccessfully => 'Plant removed from My Plants successfully.';
 
   @override
-  String get aiAssistant => 'AI Assistant';
+  String get aiAssistant => 'AI Garden Assistant';
 
   @override
   String get askMeAnything => 'Ask Our Garden Expert';
@@ -1184,4 +1187,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get fitnessScoreSubtitle =>
       'See how well your garden is set up for healthy growth';
+
+  @override
+  String get healthy => 'Healthy';
+
+  @override
+  String get needsAttention => 'Needs Attention';
+
+  @override
+  String get scansAndCounting => 'scans';
+
+  @override
+  String get noPlantAnalysisFound => 'No plant analysis yet';
+
+  @override
+  String get noPlantAnalysisFoundDescription =>
+      'Scan a plant to see your analysis history here.';
+
+  @override
+  String get compare => 'Compare';
+
+  @override
+  String get comparePlantState => 'Compare plant state';
+
+  @override
+  String get previousScan => 'Previous';
+
+  @override
+  String get currentScan => 'Current';
+
+  @override
+  String get selectEarlierScan => 'Select an earlier scan';
+
+  @override
+  String get noPreviousScan => 'No earlier scan found for this plant';
+
+  @override
+  String get healthImproved => 'Health improved';
+
+  @override
+  String get healthDeclined => 'Health declined';
+
+  @override
+  String get healthUnchanged => 'Health unchanged';
+
+  @override
+  String get rescan => 'Rescan';
 }

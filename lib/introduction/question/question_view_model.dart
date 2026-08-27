@@ -37,6 +37,7 @@ class QuestionViewModel extends GetxController {
   TextEditingController citySearchController = TextEditingController();
   bool cameFromSetting = false;
   bool showExtraPreference = false;
+  bool _isSelectionPopupVisible = false;
 
   List<Questions> get multipleChoiceQuestions =>
       questionList.where((q) => q.options != null && q.options!.isNotEmpty).toList();
@@ -245,8 +246,13 @@ class QuestionViewModel extends GetxController {
   }
 
   void onContinuePressed() {
+    if (!Get.isSnackbarOpen) {
+      _isSelectionPopupVisible = false;
+    }
     if (currentQuestion.value <= multipleChoiceQuestions.length) {
       if (multipleChoiceQuestions[currentQuestion.value - 1].selectedAnswer == null) {
+        if (_isSelectionPopupVisible || Get.isSnackbarOpen) return;
+        _isSelectionPopupVisible = true;
         BaseSnackBar.show(
           title: AppStrings.selectionRequired.tr,
           message: AppStrings.pleaseSelectAnAnswerToContinue.tr,

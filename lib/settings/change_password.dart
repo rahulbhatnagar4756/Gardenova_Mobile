@@ -25,111 +25,110 @@ class ChangePassword extends GetWidget<SettingsViewModel> {
         }
       },
       child: Scaffold(
-      //  backgroundColor: AppColors.darkGreen,
-        body: Container(
-          height: double.infinity,
-        //  color: AppColors.greenColor,
-          child: SafeArea(
-            child: Container(
-              color: AppColors.whiteColor,
-              child: Column(
-                children: [
-                  Obx(
-                    () => ProfileIconLayout(
-                      isEnableEditable: false,
-                      title: controller.isEmailLogedInUser.value
-                          ? AppLocalizations.of(context)!.changePassword
-                          : AppStrings.setPwd,
-                    ),
+        body: SafeArea(
+          top: false,
+          child: Container(
+            height: double.infinity,
+            color: AppColors.whiteColor,
+            child: Column(
+              children: [
+                Obx(
+                  () => ProfileIconLayout(
+                    isEnableEditable: false,
+                    title: controller.isEmailLogedInUser.value
+                        ? AppLocalizations.of(context)!.changePassword
+                        : AppStrings.setPwd,
                   ),
-                  Expanded(
-                    child: Obx(
-                      () => BottomSheetLayout(
-                        childLayout: BaseForm(
-                          formKey: controller.changePasswordFormKey,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                if (controller.isEmailLogedInUser.value)
-                                  TextFieldLayout(
-                                    prefixIcon: Icon(
-                                      Icons.lock_outline_rounded,
-                                      color: AppColors.greenColor,
+                ),
+                Expanded(
+                  child: Obx(
+                    () => BottomSheetLayout(
+                      childLayout: BaseForm(
+                        formKey: controller.changePasswordFormKey,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              if (controller.isEmailLogedInUser.value)
+                                TextFieldLayout(
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline_rounded,
+                                    color: AppColors.greenColor,
+                                  ),
+                                  editTextTitle: AppLocalizations.of(
+                                    context,
+                                  )!.currentPassword,
+                                  textEditingController:
+                                      controller.oldPasswordController,
+                                  hintText: AppLocalizations.of(
+                                    context,
+                                  )!.currentPassword,
+                                  isTextObscure: true,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return ErrorStrings.pwdFieldNotEmpty;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              TextFieldLayout(
+                                prefixIcon: Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: AppColors.greenColor,
+                                ),
+                                editTextTitle: AppLocalizations.of(
+                                  context,
+                                )!.newPassword,
+                                hintText: AppLocalizations.of(
+                                  context,
+                                )!.newPassword,
+                                textEditingController:
+                                    controller.newPasswordController,
+                                isTextObscure: true,
+                                validator: ValidationHelper.validatePassword,
+                              ),
+                              TextFieldLayout(
+                                prefixIcon: Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: AppColors.greenColor,
+                                ),
+                                editTextTitle: AppLocalizations.of(
+                                  context,
+                                )!.confirmNewPassword,
+                                hintText: AppLocalizations.of(
+                                  context,
+                                )!.confirmNewPassword,
+                                textEditingController:
+                                    controller.confirmPasswordController,
+                                isTextObscure: true,
+                                validator: (value) =>
+                                    ValidationHelper.validateConfirmPassword(
+                                      password: controller
+                                          .newPasswordController
+                                          .text,
+                                      confirmPassword: value,
                                     ),
-                                    editTextTitle: AppLocalizations.of(
-                                      context,
-                                    )!.currentPassword,
-                                    textEditingController:
-                                        controller.oldPasswordController,
-                                    hintText: AppLocalizations.of(
-                                      context,
-                                    )!.currentPassword,
-                                    isTextObscure: true,
-
-                                    validator:
-                                        ValidationHelper.validatePassword,
-                                  ),
-
-                                TextFieldLayout(
-                                  prefixIcon: Icon(
-                                    Icons.lock_outline_rounded,
-                                    color: AppColors.greenColor,
-                                  ),
-                                  editTextTitle: AppLocalizations.of(
-                                    context,
-                                  )!.newPassword,
-                                  hintText: AppLocalizations.of(
-                                    context,
-                                  )!.newPassword,
-                                  textEditingController:
-                                      controller.newPasswordController,
-                                  isTextObscure: true,
-                                  validator: ValidationHelper.validatePassword,
-                                ),
-                                TextFieldLayout(
-                                  prefixIcon: Icon(
-                                    Icons.lock_outline_rounded,
-                                    color: AppColors.greenColor,
-                                  ),
-                                  editTextTitle: AppLocalizations.of(
-                                    context,
-                                  )!.confirmNewPassword,
-                                  hintText: AppLocalizations.of(
-                                    context,
-                                  )!.confirmNewPassword,
-                                  textEditingController:
-                                      controller.confirmPasswordController,
-                                  isTextObscure: true,
-                                  validator: (value) =>
-                                      ValidationHelper.validateConfirmPassword(
-                                        password: controller
-                                            .newPasswordController
-                                            .text,
-                                        confirmPassword: value,
-                                      ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
-                        buttonLabel: controller.isEmailLogedInUser.value
-                            ? AppLocalizations.of(context)!.saveChanges
-                            : AppStrings.setPwdBtnMsg,
-                        onButtonTap: () {
-                          if (controller.changePasswordFormKey.currentState!
-                              .validate()) {
-                            if (controller.isEmailLogedInUser.value) {
-                              controller.updatePassword();
-                            } else {
-                              controller.setPassword();
-                            }
-                          }
-                        },
                       ),
+                      buttonLabel: controller.isEmailLogedInUser.value
+                          ? AppLocalizations.of(context)!.saveChanges
+                          : AppStrings.setPwdBtnMsg,
+                      onButtonTap: () {
+                        if (controller.changePasswordFormKey.currentState!
+                            .validate()) {
+                          if (controller.isEmailLogedInUser.value) {
+                            controller.updatePassword();
+                          } else {
+                            controller.setPassword();
+                          }
+                        }
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

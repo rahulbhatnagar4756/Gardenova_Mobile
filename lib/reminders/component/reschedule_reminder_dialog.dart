@@ -58,8 +58,10 @@ class _RescheduleReminderFieldsState extends State<_RescheduleReminderFields> {
 
   bool validate() {
     if (frequency == 0 || preferredTime.isEmpty) {
-      final loc = AppLocalizations.of(context)!;
-      Get.snackbar(AppStrings.reschedule, frequency == 0 ? loc.selectFrequency : loc.selectTime);
+      if (!Get.isSnackbarOpen) {
+        final loc = AppLocalizations.of(context)!;
+        Get.snackbar(AppStrings.reschedule, frequency == 0 ? loc.selectFrequency : loc.selectTime);
+      }
       return false;
     }
     return true;

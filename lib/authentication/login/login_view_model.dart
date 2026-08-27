@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -262,16 +261,23 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
   }
 
   Future<void> registerGoogleToken() async {
-    log('google register google token-> $googleAuthToken');
+    debugPrint('google register google token-> $googleAuthToken');
     var loginResponse = await authRepository.registerGoogleToken(
       socialLoginReq: {ApiKeys.googleAccessToken: googleAuthToken, ApiKeys.roleCode: "U"},
     );
     if (loginResponse != null) {
+      debugPrint('loginResponse -> ${loginResponse}');
       // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
       );
+      SharedPrefsService.instance.setString(
+        ApiKeys.refreshToken,
+        loginResponse[ApiKeys.data][ApiKeys.refreshToken],
+      );
+      debugPrint('refresh token -> ${loginResponse[ApiKeys.data][ApiKeys.refreshToken]}');
+
       getProfileDetail();
     }
   }
@@ -285,6 +291,10 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
+      );
+      SharedPrefsService.instance.setString(
+        ApiKeys.refreshToken,
+        loginResponse[ApiKeys.data][ApiKeys.refreshToken],
       );
       getProfileDetail();
     }
@@ -305,6 +315,10 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
       SharedPrefsService.instance.setString(
         AppKeys.idToken,
         loginResponse[ApiKeys.data][ApiKeys.token],
+      );
+      SharedPrefsService.instance.setString(  
+        ApiKeys.refreshToken,
+        loginResponse[ApiKeys.data][ApiKeys.refreshToken],
       );
       getProfileDetail();
     }

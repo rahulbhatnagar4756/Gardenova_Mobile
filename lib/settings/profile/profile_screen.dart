@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/open_image_pciker_bottom_sheet.dart';
-import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
 import 'package:kasagardem/settings/components/settings_item_layout.dart';
 import 'package:kasagardem/settings/model/subscription_local_status_ui_model.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
-import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 import 'package:kasagardem/utils/routes.dart';
@@ -21,10 +19,9 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: AppColors.greenColor,
       body: SafeArea(
+        top: false,
         child: Container(
-          
           height: double.infinity,
           color: AppColors.offWhite,
           child: SingleChildScrollView(
@@ -41,19 +38,9 @@ class ProfileScreen extends GetWidget<SettingsViewModel> {
                       onThenCall: () {},
                     ).show();
                   },
-                  onClickPictureView: () {
-                    String profileImage = controller.profileImage.value;
-                    if (profileImage.trim().isEmpty) {
-                      profileImage = AppAssets.appLogo;
-                    }
-                    FullScreenImageView.open(
-                      imageUrl: profileImage,
-                      heroTag: "profile_image_appbar",
-                    );
-                  },
                   title: AppLocalizations.of(context)!.myProfile,
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 14.h),
                 subscriptionPlanCard(),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),

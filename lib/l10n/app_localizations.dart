@@ -1406,7 +1406,7 @@ abstract class AppLocalizations {
   /// No description provided for @myPlantAnalysis.
   ///
   /// In en, this message translates to:
-  /// **'My Plant Analysis'**
+  /// **'My Plant Diagnosis'**
   String get myPlantAnalysis;
 
   /// No description provided for @searchYourPlant.
@@ -1432,6 +1432,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add Your First Plant'**
   String get addYourFirstPlant;
+
+  /// No description provided for @addYourPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Your Plant'**
+  String get addYourPlant;
 
   /// No description provided for @addYourFirstPlantDescription.
   ///
@@ -2398,6 +2404,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See how well your garden is set up for healthy growth'**
   String get fitnessScoreSubtitle;
+
+  /// No description provided for @healthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get healthy;
+
+  /// No description provided for @needsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Attention'**
+  String get needsAttention;
+
+  /// No description provided for @scansAndCounting.
+  ///
+  /// In en, this message translates to:
+  /// **'scans'**
+  String get scansAndCounting;
+
+  /// No description provided for @noPlantAnalysisFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No plant analysis yet'**
+  String get noPlantAnalysisFound;
+
+  /// No description provided for @noPlantAnalysisFoundDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a plant to see your analysis history here.'**
+  String get noPlantAnalysisFoundDescription;
+
+  /// No description provided for @compare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compare;
+
+  /// No description provided for @comparePlantState.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare plant state'**
+  String get comparePlantState;
+
+  /// No description provided for @previousScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previousScan;
+
+  /// No description provided for @currentScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get currentScan;
+
+  /// No description provided for @selectEarlierScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an earlier scan'**
+  String get selectEarlierScan;
+
+  /// No description provided for @noPreviousScan.
+  ///
+  /// In en, this message translates to:
+  /// **'No earlier scan found for this plant'**
+  String get noPreviousScan;
+
+  /// No description provided for @healthImproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Health improved'**
+  String get healthImproved;
+
+  /// No description provided for @healthDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Health declined'**
+  String get healthDeclined;
+
+  /// No description provided for @healthUnchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Health unchanged'**
+  String get healthUnchanged;
+
+  /// No description provided for @rescan.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescan'**
+  String get rescan;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

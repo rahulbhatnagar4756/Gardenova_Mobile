@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -29,7 +30,9 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: appSystemOverlayStyle,
+      child: Scaffold(
       backgroundColor: AppColors.appColor,
 
       /// 🔹 Drawer
@@ -39,7 +42,6 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
         },
       ),
 
-      /// 🔹 AppBar (only this needs Obx)
       appBar: PreferredSize(
         // preferredSize: Size.fromHeight(spacerSize80),
         preferredSize: Size.fromHeight(110.h + 30.h),
@@ -172,6 +174,7 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
             return const SizedBox.shrink();
           }),
         ],
+      ),
       ),
     );
   }

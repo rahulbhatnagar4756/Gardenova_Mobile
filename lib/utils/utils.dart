@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
+import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/network_services/api_repository.dart';
+import 'package:kasagardem/utils/routes.dart';
+import 'package:kasagardem/utils/shared_prefs_service.dart';
 
 class Utils {
   Utils._();
@@ -8,7 +13,11 @@ class Utils {
   static const Transition transition = Transition.rightToLeft;
   static const Transition noTransition = Transition.noTransition;
   static void hideKeyboard() {
-    FocusScope.of(Get.context!).unfocus();
+    FocusManager.instance.primaryFocus?.unfocus();
+    final context = Get.context;
+    if (context != null) {
+      FocusScope.of(context).unfocus();
+    }
   }
 
   static String capitalize(String text) {
@@ -48,5 +57,19 @@ class Utils {
     if (Get.isRegistered<SettingsViewModel>()) {
       await Get.find<SettingsViewModel>().initFunctions();
     }
+  }
+
+  static Future<void> logoutUser() async {
+    ApiRepository.instance.showLoader();
+    await Future<void>.delayed(Duration.zero);
+    try {
+      await ReminderPushNotificationService.instance.onUserLogout();
+      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
+      SharedPrefsService.instance.clear();
+      SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
+    } finally {
+      ApiRepository.instance.hideLoader();
+    }
+    Get.offAllNamed(Routes.login);
   }
 }

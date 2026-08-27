@@ -233,22 +233,10 @@ class _HeaderAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 42.w,
       height: 42.w,
-      padding: EdgeInsets.all(6.w),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.whiteColor,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.greenColor.withValues(alpha: 0.22),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain),
+      child: Image.asset(AppAssets.chatbotIconPng, fit: BoxFit.contain),
     );
   }
 }
@@ -456,23 +444,11 @@ class _HeroOrbState extends State<_HeroOrb> with TickerProviderStateMixin {
         opacity: _fade,
         child: ScaleTransition(
           scale: _scale,
-          child: Container(
-            width: 130.w,
-            height: 130.w,
-            padding: EdgeInsets.all(18.w),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.whiteColor,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.greenColor.withValues(alpha: 0.28),
-                  blurRadius: 28,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Image.asset(AppAssets.appLogo, fit: BoxFit.contain, width: 120.w, height: 120.w),
+          child: Image.asset(
+            AppAssets.chatbotIconPng,
+            width: 120.w,
+            height: 120.w,
+            fit: BoxFit.contain,
           ),
         ),
       ),
@@ -807,7 +783,7 @@ class _UpgradeRequiredView extends StatelessWidget {
       PlanFeature(key: 'diagnosis_scans', label: 'Diagnosis scans'),
       PlanFeature(key: 'landscape_gens', label: 'Landscape generations'),
       PlanFeature(key: 'saved_plants', label: 'Saved plants'),
-      PlanFeature(key: 'ai_assistant', label: 'AI assistant'),
+      PlanFeature(key: 'ai_assistant', label: 'AI Garden Assistant'),
       PlanFeature(key: 'basic_reminders', label: 'Basic reminders'),
     ];
 

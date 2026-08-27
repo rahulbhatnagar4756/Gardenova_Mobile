@@ -10,6 +10,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/clickable_image.dart';
+import '../../../base/widgets/status_bar_overlap_scroll_view.dart';
 import '../../../l10n/app_localizations.dart';
 import 'all_plants_details_controller.dart';
 import 'components/main_content_card.dart';
@@ -82,7 +83,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
           const BaseShimmer(height: spacerSize350),
 
           // 2. Content Card Shimmer
-          SingleChildScrollView(
+          StatusBarOverlapScrollView(
             child: Column(
               children: [
                 const SizedBox(height: spacerSize300),

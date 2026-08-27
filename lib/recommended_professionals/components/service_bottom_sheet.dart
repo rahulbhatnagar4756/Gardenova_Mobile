@@ -51,7 +51,9 @@ class ServiceBottomSheet extends StatelessWidget {
           topRight: Radius.circular(spacerSize28),
         ),
       ),
-      child: Column(
+      child: SafeArea(
+        top: false,
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,6 +117,7 @@ class ServiceBottomSheet extends StatelessWidget {
             },
           ),
         ],
+        ),
       ),
     );
   }

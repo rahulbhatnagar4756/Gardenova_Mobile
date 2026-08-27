@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/base/widgets/clickable_image.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -33,12 +35,14 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    final statusBarHeight = MediaQuery.paddingOf(context).top;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: darkHeaderSystemOverlayStyle,
       child: Container(
-        padding: EdgeInsets.only(bottom: 20.h, top: 20.h),
+        padding: EdgeInsets.only(bottom: 20.h, top: 5.h + statusBarHeight),
         decoration: BoxDecoration(
           gradient: AppColors.linearGradientForBtn,
-          //color: AppColors.greenColor,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(25.r),
             bottomRight: Radius.circular(25.r),
@@ -123,26 +127,31 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
         Padding(
           padding: EdgeInsets.only(bottom: 2.0),
           child: Obx(
-            () => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                onClickPictureView?.call();
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                padding: EdgeInsets.all(3.w),
-                width: size,
-                height: size,
-                child: CircleAvatar(
-                  backgroundColor: AppColors.antiqueWhite,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: _buildProfileImage(controller, size: size),
-                  ),
-                ),
+            () => Container(
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              padding: EdgeInsets.all(3.w),
+              width: size,
+              height: size,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: isProfileEditable == true
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => onClickPictureView?.call(),
+                        child: _buildProfileImage(controller, size: size),
+                      )
+                    : ClickableImage(
+                        imageUrl: _profileImageUrl,
+                        height: size,
+                        width: size,
+                        fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(100),
+                        heroTag: "profile_image_appbar",
+                        errorWidget: _defaultImage(size),
+                      ),
               ),
             ),
           ),
@@ -174,6 +183,17 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
             : const SizedBox(),
       ],
     );
+  }
+
+  String get _profileImageUrl {
+    if (controller.imageFile.value.path.isNotEmpty) {
+      return controller.imageFile.value.path;
+    }
+    final url = controller.screenType.value == AppKeys.professional
+        ? controller.professionalProfileData.value?.data?.imageUrl
+        : controller.profileImage.value;
+    if (url != null && url.isNotEmpty) return url;
+    return AppAssets.appLogo;
   }
 
   Widget _buildProfileImage(SettingsViewModel controller, {required double size}) {

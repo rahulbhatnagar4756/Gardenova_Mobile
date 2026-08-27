@@ -25,13 +25,12 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      body: Container(
-       // color: AppColors.greenColor,
-        child: SafeArea(
-          child: Container(
-            color: AppColors.whiteColor,
-            height: double.infinity,
-            child: Column(
+      body: SafeArea(
+        top: false,
+        child: Container(
+          color: AppColors.whiteColor,
+          height: double.infinity,
+          child: Column(
               children: [
                 ProfileIconLayout(
                   isEnableEditable: true,
@@ -49,7 +48,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                   },
                   title: AppLocalizations.of(context)!.editProfile,
                 ),
-                SizedBox(height: 34.h),
+                SizedBox(height: 14.h),
                 Expanded(
                   child: Form(
                     key: controller.profileFormKey,
@@ -112,15 +111,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                               ),
 
                               buttonLabel: AppLocalizations.of(context)!.saveChanges,
-                              onButtonTap: () {
-                                if (controller.profileFormKey.currentState!.validate()) {
-                                  if (controller.screenType.value == AppKeys.professional) {
-                                    controller.updateProfessionalProfile();
-                                  } else {
-                                    controller.updateProfile();
-                                  }
-                                }
-                              },
+                              onButtonTap: () => _onSaveChanges(context),
                             )
                           : BottomSheetLayout(
                               childLayout: SingleChildScrollView(
@@ -142,6 +133,9 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                                       hintText: AppLocalizations.of(context)!.name,
                                       keyboardType: TextInputType.name,
                                       textEditingController: controller.nameController,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+                                      ],
                                       validator: ValidationHelper.validateName,
                                     ),
                                     SizedBox(height: 15.h),
@@ -163,6 +157,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                                       textEditingController: controller.emailController,
                                       isTextFieldEnabled: true,
                                       validator: ValidationHelper.validateEmail,
+                                      onChanged: controller.onEmailChanged,
                                       suffixIcon: Obx(() {
                                         if (controller.showVerifyButton.value) {
                                           if (controller.countdownTimer.value > 0) {
@@ -213,15 +208,7 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
                                 ),
                               ),
                               buttonLabel: AppLocalizations.of(context)!.saveChanges,
-                              onButtonTap: () {
-                                if (controller.profileFormKey.currentState!.validate()) {
-                                  if (controller.screenType.value == AppKeys.professional) {
-                                    controller.updateProfessionalProfile();
-                                  } else {
-                                    controller.updateProfile();
-                                  }
-                                }
-                              },
+                              onButtonTap: () => _onSaveChanges(context),
                             );
                     }),
                   ),
@@ -230,8 +217,19 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
             ),
           ),
         ),
-      ),
-    );
+      );
+  }
+
+  void _onSaveChanges(BuildContext context) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    FocusScope.of(context).unfocus();
+    if (controller.profileFormKey.currentState!.validate()) {
+      if (controller.screenType.value == AppKeys.professional) {
+        controller.updateProfessionalProfile();
+      } else {
+        controller.updateProfile();
+      }
+    }
   }
 
   Widget phoneNoField(BuildContext context) {
@@ -240,8 +238,12 @@ class EditProfileScreen extends GetWidget<SettingsViewModel> {
       hintText: AppLocalizations.of(context)!.enterYourPhoneNo,
       keyboardType: TextInputType.phone,
       textEditingController: controller.phoneNoController,
-      isTextFieldEnabled: false,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      isTextFieldEnabled: true,
+      maxLength: 10,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
+      ],
       validator: ValidationHelper.validatePhone,
     );
   }

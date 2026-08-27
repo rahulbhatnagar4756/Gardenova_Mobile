@@ -235,16 +235,28 @@ class ApiRepository {
     dynamic body, {
     Map<String, String>? headers,
     bool returnFailureResponse = false,
+    bool showDefaultLoader = true,
   }) async => request(
     ApiKeys.patch,
     endPoint,
     body: body,
     headers: headers,
     returnFailureResponse: returnFailureResponse,
+    showDefaultLoader: showDefaultLoader,
   );
 
-  Future<dynamic> put(String endPoint, {dynamic body, Map<String, String>? headers}) async =>
-      request(ApiKeys.put, endPoint, body: body, headers: headers);
+  Future<dynamic> put(
+    String endPoint, {
+    dynamic body,
+    Map<String, String>? headers,
+    bool showDefaultLoader = true,
+  }) async => request(
+    ApiKeys.put,
+    endPoint,
+    body: body,
+    headers: headers,
+    showDefaultLoader: showDefaultLoader,
+  );
 
   Future<dynamic> delete(String endPoint, {Map<String, String>? headers}) async =>
       request(ApiKeys.delete, endPoint, headers: headers);
@@ -373,9 +385,15 @@ class ApiRepository {
         message: 'Your session has expired. Please login again to continue.',
         onLoginPressed: () async {
           _isUnauthorizedDialogVisible = false;
-          await ReminderPushNotificationService.instance.onUserLogout();
-          SharedPrefsService.instance.clear();
           Get.back();
+          showLoader();
+          await Future<void>.delayed(Duration.zero);
+          try {
+            await ReminderPushNotificationService.instance.onUserLogout();
+            SharedPrefsService.instance.clear();
+          } finally {
+            hideLoader();
+          }
           Get.offAllNamed(Routes.login);
         },
       );

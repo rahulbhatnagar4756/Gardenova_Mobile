@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
 
 import '../utils/app_config.dart';
 
@@ -137,6 +139,56 @@ class AdMobService {
     }
 
     return loaded ? ad : null;
+  }
+
+  /// Same gate as AI plant diagnosis: free users watch a rewarded ad
+  /// before [onProceed]; ad-free plans skip straight through.
+  void showRewardedAdAndProceed(VoidCallback onProceed) {
+    if (!shouldShowRewarded) {
+      onProceed();
+      return;
+    }
+
+    Get.dialog(
+      const Center(
+        child: CircularProgressIndicator(color: AppColors.greenColor),
+      ),
+      barrierDismissible: false,
+    );
+
+    var hasProceeded = false;
+    var earnedReward = false;
+
+    void proceed() {
+      if (hasProceeded) return;
+      hasProceeded = true;
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      onProceed();
+    }
+
+    void cancel() {
+      if (hasProceeded) return;
+      hasProceeded = true;
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+    }
+
+    showRewardedAd(
+      onUserEarnedReward: () {
+        earnedReward = true;
+      },
+      onAdDismissed: () {
+        if (earnedReward) {
+          proceed();
+        } else {
+          cancel();
+        }
+      },
+      onAdFailedToShow: proceed,
+    );
   }
 
   /// Helper to load and show a RewardedAd

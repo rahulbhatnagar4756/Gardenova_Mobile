@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
+import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/reminders/component/reminders_list.dart';
 import 'package:kasagardem/reminders/component/upcoming_task.dart';
 import 'package:kasagardem/reminders/plant_reminder_controller.dart';
+import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -14,9 +18,11 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffffffff),
-      body: SafeArea(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: appSystemOverlayStyle,
+      child: Scaffold(
+        backgroundColor: const Color(0xffffffff),
+        body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: spacerSize5),
@@ -25,9 +31,16 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
               padding: const EdgeInsets.symmetric(horizontal: spacerSize10),
               child: Row(
                 children: [
-                  IconButton(
-                    onPressed: Get.back,
-                    icon: const Icon(Icons.arrow_back, size: spacerSize24,color: AppColors.blackColor,),
+                  CommonClickWidget(
+                    onTap: () => Get.back(result: true),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 2.w, right: 12.w, top: 8.h, bottom: 8.h),
+                      child: Image.asset(
+                        AppAssets.backBtnIc,
+                        width: 20.w,
+                        height: 16.w,
+                      ),
+                    ),
                   ),
                   const BaseText(
                     text: AppStrings.plantCareReminders,
@@ -166,6 +179,7 @@ class PlantReminderListScreen extends GetWidget<PlantReminderController> {
           ],
         ),
       ),
+      ),
     );
   }
 }
@@ -236,6 +250,7 @@ class FilterChipWidget extends StatelessWidget {
             if (text != AppStrings.allTypes) ...[
               Icon(
                 getActivityIcon(text),
+                size: spacerSize20,
                 color: selected ? AppColors.darkGreen : AppColors.blackColor.withValues(alpha: .8),
               ),
               const SizedBox(width: spacerSize6),

@@ -115,12 +115,13 @@ class PlantDiagnosisViewModel extends GetxController {
   void rescanImage() {
     Get.bottomSheet(
       Container(
-        height: Get.height * .2,
         color: AppColors.offWhite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ListTile(
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
               leading: const Icon(Icons.camera_alt, color: AppColors.greenColor),
               title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
               onTap: () async {
@@ -150,7 +151,7 @@ class PlantDiagnosisViewModel extends GetxController {
                 final XFile? pickedFile = await picker.pickImage(
                   source: ImageSource.gallery,
                   requestFullMetadata: true,
-                  imageQuality: 10,
+                  imageQuality: 70,
                 );
                 if (pickedFile != null && pickedFile.path.isNotEmpty) {
                   imageFile!.value = File(pickedFile.path);
@@ -159,7 +160,8 @@ class PlantDiagnosisViewModel extends GetxController {
                 }
               },
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );

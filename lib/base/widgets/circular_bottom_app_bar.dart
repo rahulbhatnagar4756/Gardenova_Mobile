@@ -122,15 +122,20 @@ class CircularBottomAppBar extends StatelessWidget implements PreferredSizeWidge
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BaseText(
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppKeys.poppins,
-                          fontSize: fontSize14,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          text:
-                              '${AppLocalizations.of(Get.context!)!.hi}, ${SharedPrefsService.instance.getString(AppKeys.name) ?? ""}!👋',
-                        ),
+                        Obx(() {
+                          final userName = Get.isRegistered<SettingsViewModel>()
+                              ? Get.find<SettingsViewModel>().name.value
+                              : (SharedPrefsService.instance.getString(AppKeys.name) ?? "");
+                          return BaseText(
+                            fontWeight: FontWeight.w600,
+                            fontFamily: AppKeys.poppins,
+                            fontSize: fontSize14,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            text:
+                                '${AppLocalizations.of(Get.context!)!.hi}, $userName!👋',
+                          );
+                        }),
 
                         SizedBox(height: 2),
 

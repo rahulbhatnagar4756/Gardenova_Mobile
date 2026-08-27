@@ -9,7 +9,6 @@ import '../../base/widgets/circular_bottom_app_bar.dart';
 import '../../base/widgets/clickable_image.dart';
 import '../../generated/assets.dart';
 import '../../l10n/app_localizations.dart';
-import '../../services/reminder_push_notification_service.dart';
 import '../../settings/settings_view_model.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/app_color.dart';
@@ -18,6 +17,7 @@ import '../../utils/constants/app_keys.dart';
 import '../../utils/constants/app_strings.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
+import '../../utils/utils.dart';
 import '../dashboard_repository.dart';
 
 class FullScreenDrawer extends StatefulWidget {
@@ -92,7 +92,6 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
   Widget _buildHeader() {
     final bool isProfessional =
         SharedPrefsService.instance.getString(AppKeys.role) == AppKeys.professional;
-    final String userName = SharedPrefsService.instance.getString(AppKeys.name) ?? "";
 
     return Container(
       width: double.infinity,
@@ -106,45 +105,42 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
       ),
       child: SafeArea(
         bottom: false,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => widget.onTap(isProfessional ? 3 : 5),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 22.h),
-            child: Row(
-              children: [
-                Obx(() {
-                  final imageUrl = Get.isRegistered<SettingsViewModel>()
-                      ? Get.find<SettingsViewModel>().profileImage.value
-                      : "";
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 22.h),
+          child: Row(
+            children: [
+              Obx(() {
+                final imageUrl = Get.isRegistered<SettingsViewModel>()
+                    ? Get.find<SettingsViewModel>().profileImage.value
+                    : "";
 
-                  return AbsorbPointer(
-                    absorbing: true,
-                    child: Container(
-                      width: 56.w,
-                      height: 56.w,
-                      padding: EdgeInsets.all(2.w),
-                      decoration: const BoxDecoration(
-                        color: AppColors.whiteColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: ClickableImage(
-                          borderRadius: BorderRadius.circular(100),
-                          imageUrl: imageUrl,
-                          height: double.infinity,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          heroTag: "profile_image_appbar_drawer",
-                          errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
-                        ),
-                      ),
+                return Container(
+                  width: 56.w,
+                  height: 56.w,
+                  padding: EdgeInsets.all(2.w),
+                  decoration: const BoxDecoration(
+                    color: AppColors.whiteColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: ClickableImage(
+                      borderRadius: BorderRadius.circular(100),
+                      imageUrl: imageUrl,
+                      height: double.infinity,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      heroTag: "profile_image_appbar_drawer",
+                      errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
                     ),
-                  );
-                }),
-                SizedBox(width: 14.w),
-                Expanded(
+                  ),
+                );
+              }),
+              SizedBox(width: 14.w),
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => widget.onTap(isProfessional ? 3 : 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,15 +153,20 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                         text: getGreeting(),
                       ),
                       SizedBox(height: 2.h),
-                      BaseText(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: AppKeys.poppins,
-                        fontSize: fontSize16,
-                        textColor: AppColors.whiteColor,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        text: '${AppLocalizations.of(Get.context!)!.hi}, $userName!',
-                      ),
+                      Obx(() {
+                        final userName = Get.isRegistered<SettingsViewModel>()
+                            ? Get.find<SettingsViewModel>().name.value
+                            : (SharedPrefsService.instance.getString(AppKeys.name) ?? "");
+                        return BaseText(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: AppKeys.poppins,
+                          fontSize: fontSize16,
+                          textColor: AppColors.whiteColor,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          text: '${AppLocalizations.of(Get.context!)!.hi}, $userName!',
+                        );
+                      }),
                       if (isProfessional) ...[
                         SizedBox(height: 6.h),
                         Container(
@@ -198,13 +199,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                     ],
                   ),
                 ),
-                // Icon(
-                //   Icons.chevron_right_rounded,
-                //   color: AppColors.whiteColor.withValues(alpha: 0.8),
-                //   size: 22.w,
-                // ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -242,10 +238,9 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
               title: AppLocalizations.of(Get.context!)!.myPlantAnalysis,
               showDivider: false,
               onTap: () {
-                BaseSnackBar.show(
-                  title: AppStrings.comingSoon,
-                  message: AppStrings.plantAnalysisOnHold,
-                );
+                Get.back();
+                if (Get.currentRoute == Routes.plantAnalysis) return;
+                Get.toNamed(Routes.plantAnalysis);
               },
             ),
           ],
@@ -466,11 +461,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
       title: AppLocalizations.of(Get.context!)!.logout,
       description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToLogout,
       onButtonPressed: () async {
-        await ReminderPushNotificationService.instance.onUserLogout();
-        SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
-        SharedPrefsService.instance.clear();
-        SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
-        Get.offAllNamed(Routes.login);
+        Get.back();
+        await Utils.logoutUser();
       },
     );
   }

@@ -434,9 +434,12 @@ class NotificationService with WidgetsBindingObserver {
         data['route'] == Routes.plantRemindersListing;
   }
 
+  bool _permissionDialogOpen = false;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      _closePermissionDialogIfGranted();
       _handleResumeIfNeeded();
     }
   }
@@ -452,18 +455,57 @@ class NotificationService with WidgetsBindingObserver {
     onAppResumed?.call();
   }
 
-  Future<bool> requestNotificationPermission() async {
+  Future<bool> _isNotificationGranted() async {
     final status = await Permission.notification.status;
-    if (status.isGranted) {
-      await refreshFcmToken();
-      onTokenRefreshed?.call();
+    if (status.isGranted) return true;
+    final settings = await _firebaseMessaging.getNotificationSettings();
+    return settings.authorizationStatus == AuthorizationStatus.authorized ||
+        settings.authorizationStatus == AuthorizationStatus.provisional;
+  }
+
+  Future<void> _markGranted() async {
+    await refreshFcmToken();
+    onTokenRefreshed?.call();
+  }
+
+  Future<bool> isNotificationGranted() => _isNotificationGranted();
+
+  /// Requests the OS prompt when possible. If denied, shows a skippable
+  /// settings popup and then continues into the app.
+  Future<bool> ensureNotificationPermissionGranted() {
+    return requestNotificationPermission();
+  }
+
+  Future<bool> requestNotificationPermission() async {
+    if (await _tryRequestOsPermission()) {
+      await _persistNotificationsEnabled(true);
+      return true;
+    }
+    await _showSettingsDialog();
+    if (await _isNotificationGranted()) {
+      await _markGranted();
+      await _persistNotificationsEnabled(true);
+      return true;
+    }
+    await _persistNotificationsEnabled(false);
+    return false;
+  }
+
+  Future<void> _persistNotificationsEnabled(bool enabled) async {
+    await SharedPrefsService.instance.setBool(
+      AppKeys.notificationsEnabled,
+      enabled,
+    );
+  }
+
+  Future<bool> _tryRequestOsPermission() async {
+    if (await _isNotificationGranted()) {
+      await _markGranted();
       return true;
     }
 
-    if (status.isPermanentlyDenied) {
-      _showSettingsDialog();
-      return false;
-    }
+    final status = await Permission.notification.status;
+    if (status.isPermanentlyDenied) return false;
 
     final settings = await _firebaseMessaging.requestPermission(
       alert: true,
@@ -474,37 +516,55 @@ class NotificationService with WidgetsBindingObserver {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized ||
         settings.authorizationStatus == AuthorizationStatus.provisional) {
-      await refreshFcmToken();
-      onTokenRefreshed?.call();
+      await _markGranted();
       return true;
     }
 
     final requestStatus = await Permission.notification.request();
     if (requestStatus.isGranted) {
-      await refreshFcmToken();
-      onTokenRefreshed?.call();
+      await _markGranted();
       return true;
-    } else if (requestStatus.isPermanentlyDenied) {
-      _showSettingsDialog();
     }
     return false;
   }
 
-  void _showSettingsDialog() {
-    final targetContext = Get.context;
-    if (targetContext == null) return;
+  Future<void> _closePermissionDialogIfGranted() async {
+    if (!_permissionDialogOpen) return;
+    if (!await _isNotificationGranted()) return;
+    final ctx = Get.overlayContext ?? Get.context;
+    if (ctx != null && Navigator.of(ctx, rootNavigator: true).canPop()) {
+      Navigator.of(ctx, rootNavigator: true).pop();
+    }
+  }
 
-    BaseDialog.showAlertDialog(
+  Future<void> _showSettingsDialog() async {
+    if (_permissionDialogOpen) return;
+
+    BuildContext? targetContext = Get.overlayContext ?? Get.context;
+    for (var i = 0; i < 30 && targetContext == null; i++) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      targetContext = Get.overlayContext ?? Get.context;
+    }
+    if (targetContext == null) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      return;
+    }
+
+    _permissionDialogOpen = true;
+    await BaseDialog.showAlertDialog(
       context: targetContext,
-      title: 'Notification Permission Required',
+      barrierDismissible: false,
+      showCancel: true,
+      canPop: true,
+      title: 'Enable Notifications',
       description:
-          'Notifications are currently disabled. Please enable them in system settings to receive plant care reminders.',
+          'Notifications are currently disabled. Enable them in system settings to receive plant care reminders, or continue without them.',
       buttonLabel: 'Open Settings',
       onButtonPressed: () {
-        Get.back();
         openAppSettings();
       },
     );
+    _permissionDialogOpen = false;
   }
 
   Future<String?> refreshFcmToken() async {

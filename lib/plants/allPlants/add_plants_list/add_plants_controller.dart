@@ -30,6 +30,11 @@ class AllPlantsController extends GetxController {
   final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
   ScrollController scrollController = ScrollController();
 
+  bool get hasMyPlants {
+    if (!Get.isRegistered<MyPlantsController>()) return false;
+    return Get.find<MyPlantsController>().myPlantList.isNotEmpty;
+  }
+
   @override
   void onInit() {
     isUserLoggedIn.value =

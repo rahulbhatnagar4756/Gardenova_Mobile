@@ -42,7 +42,10 @@ class BaseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        onPressed?.call();
+      },
       child: Container(
         margin: EdgeInsets.only(bottom: bottomPadding==true?25.h:0),
         width: buttonWidth,

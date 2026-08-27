@@ -6,6 +6,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'base_app_bar.dart';
 import 'base_button.dart';
+import '../../utils/status_bar_style.dart';
 
 class BaseWebViewScreen extends StatefulWidget {
   final String url;
@@ -38,6 +39,7 @@ class _BaseWebViewScreenState extends State<BaseWebViewScreen> {
             });
           },
           onPageFinished: (String url) {
+            StatusBarStyle.applyLightScreen();
             setState(() {
               isLoading = false;
             });

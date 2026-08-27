@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -27,16 +26,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    if (SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false) {
-      log('user t11');
-     //refreshToken();
-     navigateToIntroductionScreen(isUserAlreadyLogedIn: true);
-    } else {
-      log('user t12');
-
-      navigateToIntroductionScreen(isUserAlreadyLogedIn: false);
-    }
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _start();
+    });
+  }
+
+  Future<void> _start() async {
+    final isUserAlreadyLogedIn =
+        SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+    log(isUserAlreadyLogedIn ? 'user t11' : 'user t12');
+    await _ensureNotificationPermission();
+    if (!mounted) return;
+    navigateToIntroductionScreen(isUserAlreadyLogedIn: isUserAlreadyLogedIn);
   }
 
   @override
@@ -88,10 +90,9 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isSoftLogin = SharedPrefsService.instance.getBool(AppKeys.isSoftLoggedIn) ?? false;
     String currentRole = SharedPrefsService.instance.getString(AppKeys.role) ?? '';
 
-    unawaited(_registerPushAfterNavigation());
-
     // Short brand beat only — token refresh already awaited when logged in.
     Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
       if (currentRole != AppKeys.professional) {
         if (isUserAlreadyLogedIn) {
           Get.offAllNamed(Routes.dashboard);
@@ -108,10 +109,10 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  Future<void> _registerPushAfterNavigation() async {
-    // Ensure deferred notification init from main() has finished.
+  Future<void> _ensureNotificationPermission() async {
     await NotificationService.instance.initialize();
-    final granted = await NotificationService.instance.requestNotificationPermission();
+    final granted =
+        await NotificationService.instance.ensureNotificationPermissionGranted();
     if (granted) {
       await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
     }

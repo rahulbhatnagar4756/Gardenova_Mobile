@@ -59,6 +59,12 @@ import '../plants/myPlants/myPlantDetails/my_plant_details_controller.dart';
 import '../plants/myPlants/myPlantDetails/my_plant_details_screen.dart';
 import '../plants/myPlants/myPlantsList/my_plants_controller.dart';
 import '../plants/myPlants/myPlantsList/my_plants_screen.dart';
+import '../plants/plant_analysis/plant_analysis_compare_controller.dart';
+import '../plants/plant_analysis/plant_analysis_compare_screen.dart';
+import '../plants/plant_analysis/plant_analysis_controller.dart';
+import '../plants/plant_analysis/plant_analysis_detail_controller.dart';
+import '../plants/plant_analysis/plant_analysis_detail_screen.dart';
+import '../plants/plant_analysis/plant_analysis_screen.dart';
 import '../professional/professionalDashBoard/components/create_professional_lead_request_screen.dart';
 import '../professional/professionalDashBoard/components/professional_dashbord_success_quote.dart';
 // Razorpay payment (disabled — Google Play Billing only)
@@ -121,6 +127,9 @@ class Routes {
   static const landscapeDesign = '/landscape_design';
   static const cameraCapture = '/camera_capture';
   static const plantRemindersListing = '/plant_reminders_listing';
+  static const plantAnalysis = '/plant_analysis';
+  static const plantAnalysisDetail = '/plant_analysis_detail';
+  static const plantAnalysisCompare = '/plant_analysis_compare';
 
   static List<GetPage> getPages() {
     return [
@@ -371,6 +380,30 @@ class Routes {
         name: Routes.myPlantsDetails,
         page: () => MyPlantDetailsScreen(),
         binding: BindingsBuilder.put(() => MyPlantDetailsController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+      GetPage(
+        name: Routes.plantAnalysis,
+        page: () => const PlantAnalysisScreen(),
+        binding: BindingsBuilder.put(() => PlantAnalysisController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+      GetPage(
+        name: Routes.plantAnalysisDetail,
+        page: () => const PlantAnalysisDetailScreen(),
+        binding: BindingsBuilder.put(() => PlantAnalysisDetailController()),
+        transition: Utils.transition,
+        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+      ),
+      GetPage(
+        name: Routes.plantAnalysisCompare,
+        page: () => const PlantAnalysisCompareScreen(),
+        binding: BindingsBuilder(() {
+          Get.delete<PlantAnalysisCompareController>(force: true);
+          Get.put(PlantAnalysisCompareController());
+        }),
         transition: Utils.transition,
         transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       ),

@@ -4,17 +4,13 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
-import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/settings/components/profile_icon_layout.dart';
 import 'package:kasagardem/settings/components/settings_item_layout.dart';
 import 'package:kasagardem/settings/settings_view_model.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
-import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
-import 'package:kasagardem/utils/shared_prefs_service.dart';
 
-import '../base/widgets/full_screen_image_preview.dart';
 import '../base/widgets/subscription_status_view_widget.dart';
 import '../subscription/subscription_navigation.dart';
 import '../utils/constants/app_assets.dart';
@@ -27,8 +23,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: AppColors.greenColor,
       body: SafeArea(
+        top: false,
         child: Container(
           color: AppColors.offWhite,
           height: double.infinity,
@@ -39,16 +35,6 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
                   isEnableEditable: false,
                   title: AppLocalizations.of(context)!.settings,
                   isProfileEditable: false,
-                  onClickPictureView: () {
-                    String profileImage = controller.profileImage.value;
-                    if (profileImage.trim().isEmpty) {
-                      profileImage = AppAssets.appLogo;
-                    }
-                    FullScreenImageView.open(
-                      imageUrl: profileImage,
-                      heroTag: "profile_image_appbar",
-                    );
-                  },
                 ),
                 SizedBox(height: 16.h),
                 settingItemsLayout(context),
@@ -297,11 +283,8 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       title: AppLocalizations.of(Get.context!)!.logout,
       description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToLogout,
       onButtonPressed: () async {
-        await ReminderPushNotificationService.instance.onUserLogout();
-        SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
-        SharedPrefsService.instance.clear();
-        SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
-        Get.offAllNamed(Routes.login);
+        Get.back();
+        await Utils.logoutUser();
       },
     );
   }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/clickable_image.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
+import 'package:kasagardem/base/widgets/status_bar_overlap_scroll_view.dart';
 import 'package:kasagardem/landscape_design/landscape_design_view_model.dart';
 import 'package:kasagardem/landscape_design/model/landscape_design_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -39,7 +40,7 @@ class LandscapeDesignSuccessView extends StatelessWidget {
         ),
 
         /// 🔹 SCROLLABLE CONTENT
-        SingleChildScrollView(
+        StatusBarOverlapScrollView(
           child: Column(
             children: [
               GestureDetector(
@@ -354,7 +355,8 @@ class _RecommendedPlantsSection extends StatelessWidget {
               if (recommendedPlants.region?.trim().isNotEmpty == true)
                 _MetaChip(
                   icon: Icons.location_on_outlined,
-                  label: '${l10n.region}: ${_prettyLabel(recommendedPlants.region)}',
+                  label:
+                      '${l10n.region}: ${_prettyLabel(recommendedPlants.region)}',
                 ),
               if (recommendedPlants.climate?.trim().isNotEmpty == true)
                 _MetaChip(

@@ -25,47 +25,52 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: appSystemOverlayStyle,
+      child: Scaffold(
       backgroundColor: AppColors.appColor,
       appBar: const BaseAppBar(
         // isAppIconVisible: false,
         isBackButtonVisible: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: BaseForm(
-                formKey: controller.formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    HeaderLogoLayout(
-                      title: AppLocalizations.of(context)!.welcome,
-                      subTitle: AppLocalizations.of(context)!.loginOrRegisterToContinue,
-                    ),
-                    nameField(context),
-                    emailField(context),
-                    phoneNoField(context),
-                    passwordField(context),
-                    termOfUseAndPrivacyPolicy(context),
-                    register(context),
-                    orRegisterWith(context),
-                    /*  orRegisterWith(context),
-                  ,*/
-                    SocialLoginLayout(
-                      registerController: controller,
-                      type: AppStrings.register,
-                    ).paddingOnly(bottom: 25.h),
-                  ],
-                ),
-              ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: BaseForm(
+                  formKey: controller.formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      HeaderLogoLayout(
+                        title: AppLocalizations.of(context)!.welcome,
+                        subTitle: AppLocalizations.of(context)!.loginOrRegisterToContinue,
+                      ),
+                      nameField(context),
+                      emailField(context),
+                      phoneNoField(context),
+                      passwordField(context),
+                      termOfUseAndPrivacyPolicy(context),
+                      register(context),
+                     // orRegisterWith(context),
+                      /*  orRegisterWith(context),
+                    ,*/
+                      // SocialLoginLayout(
+                      //   registerController: controller,
+                      //   type: AppStrings.register,
+                      // ).paddingOnly(bottom: 25.h),
+                    ],
+                  ),
+                ).marginSymmetric(horizontal: spacerSize20, vertical: spacerSize0),
+              ),
             ),
-          ),
-          alreadyHaveAnAccount(context),
-        ],
+            alreadyHaveAnAccount(context),
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: true,
+    ),
     );
   }
 
@@ -75,6 +80,10 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       textEditingController: controller.nameController,
       hintText: AppLocalizations.of(context)!.enterYourName,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidName,
+      keyboardType: TextInputType.name,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9 ]')),
+      ],
       validator: ValidationHelper.validateName,
     ).marginOnly(top: 0, bottom: spacerSize10);
   }
@@ -108,6 +117,7 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
       textEditingController: controller.emailController,
       errorText: AppLocalizations.of(context)!.pleaseEnterValidEmailId,
       prefixIcon: Icon(Icons.mail_outline, color: AppColors.greenColor),
+      keyboardType: TextInputType.emailAddress,
       validator: ValidationHelper.validateEmail,
     ).marginOnly(bottom: spacerSize10);
   }
@@ -241,7 +251,6 @@ class RegisterScreen extends GetWidget<RegisterViewModel> {
         onPressed: () {
           if (controller.formKey.currentState!.validate()) {
             if (controller.isUserAgreedToTerms.value) {
-              // Register API first, then email OTP verification screen.
               controller.registerUser();
             } else {
               BaseSnackBar.show(

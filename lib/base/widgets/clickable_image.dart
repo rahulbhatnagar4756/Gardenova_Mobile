@@ -3,6 +3,8 @@
 /// CREATE NEW FILE
 /// =========================================================
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
@@ -40,8 +42,15 @@ class ClickableImage extends StatelessWidget {
     this.initialIndex = 0,
   });
 
-  void _onTap() {
+  void _onTap(BuildContext context) {
     final images = allImages;
+    final urlToOpen = imageUrl.trim().isEmpty ? errorImageUrl : imageUrl;
+    final box = context.findRenderObject() as RenderBox?;
+    Rect? origin;
+    if (box != null && box.hasSize) {
+      origin = box.localToGlobal(Offset.zero) & box.size;
+    }
+
     if (images != null && images.length > 1) {
       FullScreenGalleryView.openGallery(
         images: images,
@@ -49,37 +58,61 @@ class ClickableImage extends StatelessWidget {
         heroTag: heroTag,
       );
     } else {
-      FullScreenImageView.open(imageUrl: imageUrl, heroTag: heroTag);
+      FullScreenImageView.open(
+        imageUrl: urlToOpen,
+        heroTag: heroTag,
+        originRect: origin,
+        originRadius: borderRadius ?? BorderRadius.zero,
+        context: context,
+      );
     }
+  }
+
+  Widget _buildImage() {
+    final url = imageUrl.trim();
+    if (url.isEmpty || url.startsWith('assets/')) {
+      return Image.asset(
+        url.isEmpty ? errorImageUrl : url,
+        height: height,
+        width: width,
+        fit: fit,
+        gaplessPlayback: true,
+        errorBuilder: (_, __, ___) =>
+            errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+      );
+    }
+    if (url.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: url,
+        height: height,
+        width: width,
+        fit: fit,
+        placeholder: (context, url) => BaseShimmer(height: height, width: width),
+        errorWidget: (_, __, ___) =>
+            errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+      );
+    }
+    return Image.file(
+      File(url),
+      height: height,
+      width: width,
+      fit: fit,
+      gaplessPlayback: true,
+      errorBuilder: (_, __, ___) =>
+          errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final imageWidget = CachedNetworkImage(
-      imageUrl: imageUrl,
-      height: height,
-      width: width,
-      fit: fit,
-      placeholder: (context, url) => BaseShimmer(height: height, width: width),
-      errorWidget: (_, __, ___) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          debugPrint('onClick erro image');
-          FullScreenImageView.open(imageUrl: errorImageUrl, heroTag: heroTag);
-        },
-        child: errorWidget ?? const Center(child: Icon(Icons.broken_image)),
-      ),
-    );
+    final imageWidget = _buildImage();
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _onTap,
-      child: Hero(
-        tag: heroTag ?? imageUrl,
-        child: borderRadius != null
-            ? ClipRRect(borderRadius: borderRadius!, child: imageWidget)
-            : imageWidget,
-      ),
+      onTap: () => _onTap(context),
+      child: borderRadius != null
+          ? ClipRRect(borderRadius: borderRadius!, child: imageWidget)
+          : imageWidget,
     );
   }
 }

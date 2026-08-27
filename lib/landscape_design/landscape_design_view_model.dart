@@ -56,13 +56,15 @@ class LandscapeDesignViewModel extends GetxController {
   Future<void> generateLandscapeDesign() async {
     if (selectedStyle.value == lastGeneratedStyle &&
         landscapeResponse.value.data != null) {
-      Get.snackbar(
-        "Notice",
-        "This style is already applied",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.greenColor,
-        colorText: AppColors.whiteColor,
-      );
+      if (!Get.isSnackbarOpen) {
+        Get.snackbar(
+          "Notice",
+          "This style is already applied",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.greenColor,
+          colorText: AppColors.whiteColor,
+        );
+      }
       return;
     }
 
@@ -233,13 +235,15 @@ class LandscapeDesignViewModel extends GetxController {
         await file.writeAsBytes(response.bodyBytes);
 
         await Gal.putImage(file.path);
-        Get.snackbar(
-          "Success",
-          "Image saved to gallery",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.greenColor,
-          colorText: AppColors.whiteColor,
-        );
+        if (!Get.isSnackbarOpen) {
+          Get.snackbar(
+            "Success",
+            "Image saved to gallery",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: AppColors.greenColor,
+            colorText: AppColors.whiteColor,
+          );
+        }
       } else {
         errorMessage.value = "Failed to download image";
       }

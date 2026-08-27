@@ -12,6 +12,7 @@ import '../base/widgets/base_app_bar.dart';
 import '../generated/assets.dart';
 import '../utils/constants/app_keys.dart';
 import '../utils/device_info_helper.dart';
+import '../utils/status_bar_style.dart';
 
 class AboutAppScreen extends StatefulWidget {
   final String? filePath;
@@ -61,31 +62,35 @@ class AboutAppScreenState extends State<AboutAppScreen> {
         encoding: Encoding.getByName('utf-8'),
       ),
     );
+    StatusBarStyle.applyLightScreen();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.appColor,
+     // backgroundColor: AppColors.appColor,
       appBar: BaseAppBar(
         isBackButtonVisible: true,
         isAppIconVisible: false,
         title: AppLocalizations.of(context)!.aboutApp,
       ),
-      body: Column(
-        children: [
-          Expanded(child: WebViewWidget(controller: _controller)),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: BaseButton(
-              bottomPadding: true,
-              textColor: AppColors.offWhite,
-              buttonLabel: AppLocalizations.of(context)!.close,
-              onPressed: () => Get.back(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: WebViewWidget(controller: _controller)),
+            Container(
+              margin: EdgeInsets.only(top: 20.h),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: BaseButton(
+                bottomPadding: true,
+                textColor: AppColors.offWhite,
+                buttonLabel: AppLocalizations.of(context)!.close,
+                onPressed: () => Get.back(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

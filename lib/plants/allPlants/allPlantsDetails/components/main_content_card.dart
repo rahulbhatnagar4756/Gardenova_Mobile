@@ -18,6 +18,7 @@ import '../../../../base/widgets/base_date_format.dart';
 import '../../../../base/widgets/base_text.dart';
 import '../../../../base/widgets/expandable_text.dart';
 import '../../../../base/widgets/full_screen_image_preview.dart';
+import '../../../../base/widgets/status_bar_overlap_scroll_view.dart';
 import '../../../../generated/assets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/constants/app_color.dart';
@@ -44,7 +45,7 @@ class MainContentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     print("value of argument ${controller.plantDetailData.value.data!.alreadyAdded}");
     print("value of argument ${controller.plantDetailData.value.data!.toJson()}");
-    return SingleChildScrollView(
+    return StatusBarOverlapScrollView(
       child: Column(
         children: [
           GestureDetector(
@@ -873,7 +874,7 @@ class MainContentCard extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
                     decoration: BoxDecoration(
-                      color: AppColors.greenColor,
+                      gradient: AppColors.linearGradientForBtn,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(

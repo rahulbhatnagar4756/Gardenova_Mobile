@@ -1,15 +1,16 @@
+import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class ValidationHelper {
+  static final RegExp _nameRegex = RegExp(r'^[A-Za-z0-9]+(?: +[A-Za-z0-9]+)*$');
+
   /// =========================
   /// NAME VALIDATION
+  /// Letters, numbers, and spaces only.
   /// =========================
   static String? validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return ErrorStrings.invalidName;
-    }
-
-    if (value.trim().length < 2) {
+    final name = value?.trim() ?? '';
+    if (name.isEmpty || name.length < 2 || !_nameRegex.hasMatch(name)) {
       return ErrorStrings.invalidName;
     }
 
@@ -20,13 +21,10 @@ class ValidationHelper {
   /// EMAIL VALIDATION
   /// =========================
   static String? validateEmail(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return ErrorStrings.invalidEmail;
-    }
-
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-    if (!emailRegex.hasMatch(value.trim())) {
+    final email = value?.trim() ?? '';
+    if (email.isEmpty ||
+        email.startsWith('.') ||
+        !RegExp(emailRegexPattern).hasMatch(email)) {
       return ErrorStrings.invalidEmail;
     }
 
@@ -60,13 +58,15 @@ class ValidationHelper {
   /// =========================
   /// PASSWORD VALIDATION
   /// =========================
-  static String? validatePassword(String? value) {
+  static String? validatePassword(
+    String? value, {
+    bool requireMinLength = true,
+  }) {
     if (value == null || value.trim().isEmpty) {
       return ErrorStrings.pwdFieldNotEmpty;
     }
 
-    // Minimum 8 characters
-    if (value.length < 8) {
+    if (requireMinLength && value.length < 8) {
       return ErrorStrings.pwdMustBeAtLeadEightCharecter;
     }
 

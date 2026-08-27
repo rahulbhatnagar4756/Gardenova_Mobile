@@ -39,10 +39,11 @@ class SettingsRepository {
     );
   }
 
-  updateProfile({UpdateProfileModel? updateProfileReq}) async {
+  updateProfile({UpdateProfileModel? updateProfileReq, bool showDefaultLoader = true}) async {
     var updateProfileResponse = await ApiRepository.instance.put(
       profileEndPoint,
       body: updateProfileReq,
+      showDefaultLoader: showDefaultLoader,
     );
     return updateProfileResponse;
   }
@@ -55,16 +56,23 @@ class SettingsRepository {
     return updateProfileResponse;
   }
 
-  updateProfessionalProfile({Map<String, dynamic>? updateProfessionalProfileReq}) async {
+  updateProfessionalProfile({
+    Map<String, dynamic>? updateProfessionalProfileReq,
+    bool showDefaultLoader = true,
+  }) async {
     var updateProfileResponse = await ApiRepository.instance.patch(
       updateProfessionalProfileUrl,
       updateProfessionalProfileReq,
+      showDefaultLoader: showDefaultLoader,
     );
     return updateProfileResponse;
   }
 
-  fetchProfessionalProfile() async {
-    var profileResponse = await ApiRepository.instance.get(_professionalProfileDetail);
+  fetchProfessionalProfile({bool showloader = true}) async {
+    var profileResponse = await ApiRepository.instance.get(
+      _professionalProfileDetail,
+      showDefaultLoader: showloader,
+    );
     return profileResponse;
   }
 

@@ -14,79 +14,178 @@ import 'package:photo_view/photo_view.dart';
 class FullScreenImageView extends StatelessWidget {
   final String imageUrl;
   final String? heroTag;
+  final Rect? originRect;
+  final BorderRadius originRadius;
+  final Animation<double> animation;
 
-  const FullScreenImageView({super.key, required this.imageUrl, this.heroTag});
+  const FullScreenImageView({
+    super.key,
+    required this.imageUrl,
+    required this.animation,
+    this.heroTag,
+    this.originRect,
+    this.originRadius = BorderRadius.zero,
+  });
 
-  static void open({required String imageUrl, String? heroTag}) {
-    debugPrint('open from full image view');
+  static void open({
+    required String imageUrl,
+    String? heroTag,
+    Rect? originRect,
+    BorderRadius? originRadius,
+    BuildContext? context,
+  }) {
     if (imageUrl.trim().isEmpty) return;
-    debugPrint('open image url is $imageUrl');
-    Get.to(
-      () => FullScreenImageView(imageUrl: imageUrl, heroTag: heroTag),
-      transition: Transition.fadeIn,
-      duration: const Duration(milliseconds: 250),
-      opaque: false,
+    final navContext = context ?? Get.overlayContext ?? Get.context;
+    if (navContext == null) return;
+
+    precacheImage(_providerFor(imageUrl), navContext);
+
+    Navigator.of(navContext, rootNavigator: true).push(
+      PageRouteBuilder<void>(
+        opaque: false,
+        barrierDismissible: true,
+        barrierColor: Colors.transparent,
+        transitionDuration: const Duration(milliseconds: 340),
+        reverseTransitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FullScreenImageView(
+            imageUrl: imageUrl,
+            heroTag: heroTag,
+            originRect: originRect,
+            originRadius: originRadius ?? BorderRadius.zero,
+            animation: animation,
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        },
+      ),
     );
   }
 
-  // Image.asset(
-  //                             AppAssets.appLogo,
-  //                             fit: BoxFit.cover,
-  //                           )
-  ImageProvider _getImageProvider() {
-    debugPrint('image url is $imageUrl');
-    // Network image
+  static ImageProvider _providerFor(String imageUrl) {
     if (imageUrl.startsWith('http')) {
       return CachedNetworkImageProvider(imageUrl);
     }
-
-    // Asset image
     if (imageUrl.startsWith('assets/')) {
       return AssetImage(imageUrl);
     }
-
-    // Local file image
     return FileImage(File(imageUrl));
+  }
+
+  ImageProvider get _imageProvider => _providerFor(imageUrl);
+
+  Widget _closeButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        padding: EdgeInsets.all(7.w),
+        decoration: const BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(Icons.close, color: Colors.white),
+      ),
+    );
+  }
+
+  Rect _destinationRect(Size screen, Rect origin) {
+    final aspect = origin.width == 0 ? 1.0 : origin.width / origin.height;
+    final maxW = screen.width;
+    final maxH = screen.height;
+    late final double width;
+    late final double height;
+    if (maxW / maxH > aspect) {
+      height = maxH;
+      width = height * aspect;
+    } else {
+      width = maxW;
+      height = width / aspect;
+    }
+    return Rect.fromCenter(
+      center: Offset(screen.width / 2, screen.height / 2),
+      width: width,
+      height: height,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: 0.7),
-      body: Stack(
-        children: [
-          Center(
-            child: Hero(
-              tag: heroTag ?? imageUrl,
-              child: PhotoView(
-                filterQuality: FilterQuality.high,
-                imageProvider: _getImageProvider(),
-                minScale: PhotoViewComputedScale.contained,
-                maxScale: PhotoViewComputedScale.covered * 3,
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.transparent,
-                ),
-              ),
-            ),
-          ),
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) {
+        final curved = Curves.easeInOutCubic.transform(animation.value);
+        final backdrop = GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(color: Colors.black.withValues(alpha: 0.85 * curved)),
+        );
 
-          Positioned(
-            top: 57.h,
-            left: 10.w,
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: Container(
-                padding: EdgeInsets.all(7.w),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  shape: BoxShape.circle,
+        if (originRect == null) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [
+                Positioned.fill(child: backdrop),
+                FadeTransition(
+                  opacity: animation,
+                  child: PhotoView(
+                    filterQuality: FilterQuality.high,
+                    imageProvider: _imageProvider,
+                    minScale: PhotoViewComputedScale.contained,
+                    maxScale: PhotoViewComputedScale.covered * 3,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                  ),
                 ),
-                child: const Icon(Icons.close, color: Colors.white),
-              ),
+                Positioned(
+                  top: 57.h,
+                  left: 10.w,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: _closeButton(context),
+                  ),
+                ),
+              ],
             ),
+          );
+        }
+
+        final destRect = _destinationRect(MediaQuery.sizeOf(context), originRect!);
+        final rect = Rect.lerp(originRect, destRect, curved)!;
+        final radius = BorderRadius.lerp(originRadius, BorderRadius.zero, curved)!;
+
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              Positioned.fill(child: backdrop),
+              Positioned.fromRect(
+                rect: rect,
+                child: ClipRRect(
+                  borderRadius: radius,
+                  child: Image(
+                    image: _imageProvider,
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                    filterQuality: FilterQuality.high,
+                    width: rect.width,
+                    height: rect.height,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 57.h,
+                left: 10.w,
+                child: Opacity(
+                  opacity: curved,
+                  child: _closeButton(context),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -250,4 +349,3 @@ class _FullScreenGalleryViewState extends State<FullScreenGalleryView> {
     );
   }
 }
-

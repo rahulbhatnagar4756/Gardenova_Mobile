@@ -181,7 +181,7 @@ class DashboardController extends GetxController {
     );
   }
 
-  void getPlantsRecommendations(String responseId) async {
+  Future<void> getPlantsRecommendations(String responseId) async {
     String recommendationId = sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
     if (recommendationId.trim().isEmpty) {
       recommendationId = responseId;
@@ -198,6 +198,14 @@ class DashboardController extends GetxController {
       _scrollToFirstIndex();
     }
     isLoading.value = false;
+  }
+
+  Future<void> refreshDashboard() async {
+    refreshSoilAnalysis.refresh();
+    await Future.wait([
+      getGardenInsights(),
+      getPlantsRecommendations(responseId),
+    ]);
   }
 
   void _scrollToFirstIndex() {
@@ -258,7 +266,12 @@ class DashboardController extends GetxController {
             : (item.key ?? '');
         if (label.isEmpty) continue;
         mapped.add(
-          ChartData(label, item.percent ?? 0, _colorForInsight(item.key, i)),
+          ChartData(
+            label,
+            item.percent ?? 0,
+            _colorForInsight(item.key, i),
+            piePercent: item.piePercent,
+          ),
         );
       }
       chartData.assignAll(mapped);
@@ -329,7 +342,7 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-          _showAdAndProceed(() {
+        _showAdAndProceed(() {
             goToPlantDiagnosis(result);
           });
         }
@@ -341,7 +354,7 @@ class DashboardController extends GetxController {
       final XFile? pickedFile = await picker.pickImage(
         source: isCamera ? ImageSource.camera : ImageSource.gallery,
         requestFullMetadata: true,
-        imageQuality: 10,
+        imageQuality: 70,
         preferredCameraDevice: CameraDevice.front,
       );
 

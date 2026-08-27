@@ -67,13 +67,15 @@ class GardenInsightChartItem {
   String? key;
   String? label;
   double? percent;
+  double? piePercent;
 
-  GardenInsightChartItem({this.key, this.label, this.percent});
+  GardenInsightChartItem({this.key, this.label, this.percent, this.piePercent});
 
   GardenInsightChartItem.fromJson(Map<String, dynamic> json) {
     key = json['key']?.toString();
     label = json['label']?.toString();
     percent = double.tryParse(json['percent']?.toString() ?? '');
+    piePercent = double.tryParse(json['piePercent']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +83,7 @@ class GardenInsightChartItem {
       'key': key,
       'label': label,
       'percent': percent,
+      'piePercent': piePercent,
     };
   }
 }

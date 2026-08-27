@@ -12,6 +12,7 @@ import 'package:kasagardem/utils/constants/app_color.dart';
 // import 'package:kasagardem/utils/shared_prefs_service.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 import '../base/widgets/base_app_bar.dart';
+import '../utils/status_bar_style.dart';
 // import '../generated/assets.dart';
 // import '../utils/constants/app_keys.dart';
 
@@ -87,73 +88,77 @@ class TermsAndConditionsState extends State<TermsAndConditions> {
         
         title: AppLocalizations.of(context)!.termsAndCondition,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                InAppWebView(
-                  initialUrlRequest: URLRequest(
-                    url: WebUri('https://gardenova.ai/terms-and-conditions'),
-                  ),
-                  initialSettings: InAppWebViewSettings(
-                    javaScriptEnabled: true,
-                    useHybridComposition: true,
-                    transparentBackground: true,
-                  ),
-                  initialUserScripts: UnmodifiableListView<UserScript>([
-                    UserScript(
-                      source: _hideWebsiteNavScript,
-                      injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  InAppWebView(
+                    initialUrlRequest: URLRequest(
+                      url: WebUri('https://gardenova.ai/terms-and-conditions'),
                     ),
-                    UserScript(
-                      source: _hideWebsiteNavScript,
-                      injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
+                    initialSettings: InAppWebViewSettings(
+                      javaScriptEnabled: true,
+                      useHybridComposition: true,
+                      transparentBackground: true,
                     ),
-                  ]),
-                  onWebViewCreated: (controller) {
-                    webViewController = controller;
-                  },
-                  onLoadStart: (controller, url) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                  },
-                  onLoadStop: (controller, url) async {
-                    await _hideWebsiteNavigation(controller);
-                    setState(() {
-                      isLoading = false;
-                    });
-                  },
-                  onReceivedError: (controller, request, error) {
-                    setState(() {
-                      isLoading = false;
-                    });
-                  },
-                ),
-                if (isLoading)
-                  ColoredBox(
-                    color: AppColors.appColor,
-                    child: const Center(
-                      child: SpinKitSpinningLines(color: AppColors.greenColor),
-                    ),
+                    initialUserScripts: UnmodifiableListView<UserScript>([
+                      UserScript(
+                        source: _hideWebsiteNavScript,
+                        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+                      ),
+                      UserScript(
+                        source: _hideWebsiteNavScript,
+                        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
+                      ),
+                    ]),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                    },
+                    onLoadStop: (controller, url) async {
+                      await _hideWebsiteNavigation(controller);
+                      StatusBarStyle.applyLightScreen();
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    onReceivedError: (controller, request, error) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
                   ),
-              ],
+                  if (isLoading)
+                    ColoredBox(
+                      color: AppColors.appColor,
+                      child: const Center(
+                        child: SpinKitSpinningLines(color: AppColors.greenColor),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-          // Expanded(child: WebViewWidget(controller: _controller)),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: BaseButton(
-              bottomPadding: true,
-              textColor: AppColors.offWhite,
-              buttonLabel: AppLocalizations.of(context)!.close,
-              onPressed: () => Get.back(),
+            // Expanded(child: WebViewWidget(controller: _controller)),
+            Container(
+              margin: EdgeInsets.only(top: 20.h),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: BaseButton(
+                bottomPadding: true,
+                textColor: AppColors.offWhite,
+                buttonLabel: AppLocalizations.of(context)!.close,
+                onPressed: () => Get.back(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

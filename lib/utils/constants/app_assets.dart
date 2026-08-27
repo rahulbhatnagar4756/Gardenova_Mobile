@@ -44,5 +44,6 @@ class AppAssets {
   static const facebookIcon = 'assets/images/facebook.png';
   static const thermometer = 'assets/images/thermometer.png';
   static const chatbotIcon = 'assets/images/chatboticon.svg';
+  static const chatbotIconPng = 'assets/images/chatbotIcon.png';
   static const heartAnimation = 'assets/json/heart_fluttering.json';
 }

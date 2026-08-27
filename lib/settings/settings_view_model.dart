@@ -34,6 +34,7 @@ import '../utils/device_info_helper.dart';
 import '../utils/permission_manager.dart';
 import '../utils/routes.dart';
 import '../utils/shared_prefs_service.dart';
+import '../utils/validation_healper.dart';
 
 class SettingsViewModel extends GetxController with WidgetsBindingObserver {
   TextEditingController oldPasswordController = TextEditingController();
@@ -57,7 +58,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
   RxString profileImage = ''.obs;
   RxString screenType = ''.obs;
   RxBool isShareInProgress = false.obs;
-  RxBool notificationsEnabled = true.obs;
+  RxBool notificationsEnabled = false.obs;
   String apiImage = '';
   Rxn<ProfessionalProfileModel> professionalProfileData = Rxn();
   SettingsRepository profileRepository = SettingsRepository();
@@ -81,19 +82,11 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     isEmailLogedInUser.value =
         SharedPrefsService.instance.getBool(AppKeys.emailLogedInUser) ?? true;
-    notificationsEnabled.value =
-        SharedPrefsService.instance.getBool(AppKeys.notificationsEnabled) ?? true;
+    unawaited(syncNotificationsFromSystem());
     fetchAppVersion();
-    emailController.addListener(() {
-      final mail = emailController.text.trim();
-      if (mail.isNotEmpty && mail != originalEmail.value) {
-        isEmailVerified.value = false;
-        showVerifyButton.value = true;
-      } else {
-        isEmailVerified.value = true;
-        showVerifyButton.value = false;
-      }
-    });
+    emailController.addListener(onEmailChanged);
+    name.value = SharedPrefsService.instance.getString(AppKeys.name) ?? '';
+    email.value = SharedPrefsService.instance.getString(AppKeys.email) ?? '';
     focusNode = FocusNode();
     if (Get.arguments != null) {
       if (Get.arguments is String) {
@@ -122,6 +115,18 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     super.onInit();
   }
 
+  void onEmailChanged([String? value]) {
+    final mail = emailController.text.trim();
+    final isValidEmail = ValidationHelper.validateEmail(mail) == null;
+    if (mail.isNotEmpty && mail != originalEmail.value) {
+      isEmailVerified.value = false;
+      showVerifyButton.value = isValidEmail;
+    } else {
+      isEmailVerified.value = true;
+      showVerifyButton.value = false;
+    }
+  }
+
   Future<void> initFunctions() async {
     bool isUserLoggedIn = SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     if (isUserLoggedIn) {
@@ -141,21 +146,26 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     });
   }
 
-  void toggleNotifications(bool value) async {
-    notificationsEnabled.value = value;
-    await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, value);
+  Future<void> syncNotificationsFromSystem() async {
+    final granted = await NotificationService.instance.isNotificationGranted();
+    notificationsEnabled.value = granted;
+    await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, granted);
+  }
 
+  void toggleNotifications(bool value) async {
     if (value) {
       final granted = await NotificationService.instance.requestNotificationPermission();
+      notificationsEnabled.value = granted;
+      await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, granted);
       if (granted) {
         await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
-      } else {
-        notificationsEnabled.value = false;
-        await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, false);
       }
-    } else {
-      await ReminderPushNotificationService.instance.unregisterDeviceToken();
+      return;
     }
+
+    notificationsEnabled.value = false;
+    await SharedPrefsService.instance.setBool(AppKeys.notificationsEnabled, false);
+    await ReminderPushNotificationService.instance.unregisterDeviceToken();
   }
 
   void fetchAppVersion() async {
@@ -184,7 +194,9 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed || !_awaitingPlayCancelReturn) return;
+    if (state != AppLifecycleState.resumed) return;
+    unawaited(syncNotificationsFromSystem());
+    if (!_awaitingPlayCancelReturn) return;
     _awaitingPlayCancelReturn = false;
     unawaited(_refreshSubscriptionAfterPlayReturn());
   }
@@ -222,7 +234,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
       final XFile? pickedFile = await picker.pickImage(
         source: isCamera ? ImageSource.camera : ImageSource.gallery,
         requestFullMetadata: true,
-        imageQuality: 10,
+        imageQuality: 70,
         preferredCameraDevice: CameraDevice.front,
       );
       if (pickedFile != null) {
@@ -272,8 +284,8 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     await getSubscriptionDetail();
   }
 
-  Future<void> getProfessionalProfileDetail() async {
-    var response = await profileRepository.fetchProfessionalProfile();
+  Future<void> getProfessionalProfileDetail({bool showloader = true}) async {
+    var response = await profileRepository.fetchProfessionalProfile(showloader: showloader);
     if (response != null) {
       ProfessionalProfileModel profileResponse = ProfessionalProfileModel.fromJson(response);
       professionalProfileData.value = profileResponse;
@@ -539,6 +551,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
   }
 
   void updateProfile() async {
+    Utils.hideKeyboard();
     if (!isEmailVerified.value) {
       BaseSnackBar.show(
         title: "Verification Required",
@@ -566,33 +579,40 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
 
     log("updateProfileResponse ${updateProfileResponse.toJson()}");
 
-    var response = await profileRepository.updateProfile(updateProfileReq: updateProfileResponse);
+    ApiRepository.instance.showLoader();
+    await Future<void>.delayed(Duration.zero);
 
+    dynamic response;
+    try {
+      response = await profileRepository.updateProfile(
+        updateProfileReq: updateProfileResponse,
+        showDefaultLoader: false,
+      );
+
+      if (response != null) {
+        _persistLocalProfile();
+        await getProfileDetail();
+      } else {
+        profileImage.value = '';
+        imageFile.value = File('');
+        if (apiImage.isNotEmpty) {
+          profileImage.value = apiImage;
+          profileImage.refresh();
+        }
+      }
+    } finally {
+      ApiRepository.instance.hideLoader();
+    }
+
+    Utils.hideKeyboard();
     if (response != null) {
-    
-      await getProfileDetail();
       if (isNewUserOtpLogin.value) {
-        SharedPrefsService.instance.setString(AppKeys.name, nameController.text);
-        SharedPrefsService.instance.setString(AppKeys.email, emailController.text);
         _completeNewUserOtpLoginNavigation();
         return;
       }
-      Get.back();
-        BaseSnackBar.show(
-        title: AppLocalizations.of(Get.context!)!.success,
-        message: response['message'] ?? "",
+      await _showSuccessThenGoBack(
+        (response is Map ? response['message'] : null)?.toString() ?? '',
       );
-    } else {
-      BaseSnackBar.show(
-        title: AppLocalizations.of(Get.context!)!.error,
-        message: response['message'] ?? "",
-      );
-      profileImage.value = '';
-      imageFile.value = File('');
-      if (apiImage.isNotEmpty) {
-        profileImage.value = apiImage;
-        profileImage.refresh();
-      }
     }
   }
 
@@ -610,6 +630,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
   }
 
   void updateProfessionalProfile() async {
+    Utils.hideKeyboard();
     if (!isEmailVerified.value) {
       BaseSnackBar.show(
         title: "Verification Required",
@@ -646,11 +667,56 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     }
 
     log("map::::$map");
-    var response = await profileRepository.updateProfessionalProfile(
-      updateProfessionalProfileReq: map,
-    );
+    ApiRepository.instance.showLoader();
+    await Future<void>.delayed(Duration.zero);
+
+    dynamic response;
+    try {
+      response = await profileRepository.updateProfessionalProfile(
+        updateProfessionalProfileReq: map,
+        showDefaultLoader: false,
+      );
+      if (response != null) {
+        _persistLocalProfile();
+        await getProfessionalProfileDetail(showloader: false);
+      }
+    } finally {
+      ApiRepository.instance.hideLoader();
+    }
+
+    Utils.hideKeyboard();
     if (response != null) {
-      Get.back();
+      await _showSuccessThenGoBack(
+        (response is Map ? response['message'] : null)?.toString() ?? '',
+      );
+    }
+  }
+
+  void _persistLocalProfile() {
+    final updatedName = nameController.text.trim();
+    final updatedEmail = emailController.text.trim();
+    if (updatedName.isNotEmpty) {
+      name.value = updatedName;
+      SharedPrefsService.instance.setString(AppKeys.name, updatedName);
+    }
+    if (updatedEmail.isNotEmpty) {
+      email.value = updatedEmail;
+      SharedPrefsService.instance.setString(AppKeys.email, updatedEmail);
+    }
+    name.refresh();
+    email.refresh();
+  }
+
+  Future<void> _showSuccessThenGoBack(String message) async {
+    Utils.hideKeyboard();
+    final context = Get.context;
+    BaseSnackBar.show(
+      title: AppLocalizations.of(Get.context!)!.success,
+      message: message,
+    );
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (context != null && context.mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -720,7 +786,7 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
 
   Future<void> sendEmailVerification() async {
     final String mail = emailController.text.trim();
-    if (mail.isEmpty || !GetUtils.isEmail(mail)) {
+    if (ValidationHelper.validateEmail(mail) != null) {
       BaseSnackBar.show(title: "Error", message: "Please enter a valid email address.");
       return;
     }

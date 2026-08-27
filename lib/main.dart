@@ -22,6 +22,7 @@ import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/network_services/network_connectivity_service.dart';
 import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
+import 'package:kasagardem/utils/status_bar_style.dart';
 import 'package:kasagardem/utils/utils.dart';
 import 'base/widgets/base_calculate_remaining_days.dart';
 import 'services/notification_service.dart';
@@ -50,13 +51,7 @@ Future<void> main() async {
     };
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(appSystemOverlayStyle);
 
     // Web/desktop Facebook SDK only — mobile uses the native Facebook SDK.
     if (kIsWeb) {
@@ -120,7 +115,9 @@ Future<void> main() async {
     } catch (_) {}
     runApp(
       MaterialApp(
-        home: Scaffold(body: Center(child: Text('Startup failed: $error'))),
+        home: Scaffold(
+          body: Center(child: Text('Startup failed: $error')),
+        ),
       ),
     );
   } finally {
@@ -143,10 +140,34 @@ Future<void> _initDeferredServices() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key, this.locale});
 
   final Locale? locale;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      StatusBarStyle.applyForRoute(Get.currentRoute);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,24 +185,21 @@ class MyApp extends StatelessWidget {
           },
         );
       },
-      child: SafeArea(
-        top: false,
-        bottom: true,
-        child: ScreenUtilInit(
-          designSize: const Size(375, 812),
-          minTextAdapt: true,
-          splitScreenMode: false,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => Utils.hideKeyboard(),
-            child: GetMaterialApp(
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: false,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Utils.hideKeyboard(),
+          child: GetMaterialApp(
               scrollBehavior: const MaterialScrollBehavior().copyWith(
                 overscroll: false,
                 physics: ClampingScrollPhysics(),
               ),
               fallbackLocale: enUS,
               popGesture: true,
-              locale: locale,
+              locale: widget.locale,
               supportedLocales: [enUS],
               localizationsDelegates: [
                 AppLocalizations.delegate,
@@ -196,22 +214,32 @@ class MyApp extends StatelessWidget {
                 useMaterial3: true,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                appBarTheme: const AppBarTheme(surfaceTintColor: Colors.transparent),
+                appBarTheme: const AppBarTheme(
+                  surfaceTintColor: Colors.transparent,
+                  systemOverlayStyle: appSystemOverlayStyle,
+                ),
               ),
               color: AppColors.offWhite,
               initialRoute: Routes.splash,
               defaultTransition: Transition.rightToLeftWithFade,
               getPages: Routes.getPages(),
+              routingCallback: (routing) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  StatusBarStyle.applyForRoute(routing?.current);
+                });
+              },
               builder: (context, child) {
-                return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
-                  child: child!,
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: appSystemOverlayStyle,
+                  child: MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+                    child: child!,
+                  ),
                 );
               },
             ),
           ),
         ),
-      ),
     );
   }
 }

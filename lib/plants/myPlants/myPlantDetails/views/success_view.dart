@@ -8,6 +8,7 @@ import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/common_click_widget.dart';
 import 'package:kasagardem/base/widgets/full_screen_image_preview.dart';
+import 'package:kasagardem/base/widgets/status_bar_overlap_scroll_view.dart';
 import 'package:kasagardem/generated/assets.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_health_section.dart'
@@ -52,7 +53,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
           errorWidget: (context, url, error) =>
               const Icon(Icons.broken_image, color: AppColors.offWhite10),
         ),
-        SingleChildScrollView(
+        StatusBarOverlapScrollView(
           child: Column(
             children: [
               GestureDetector(

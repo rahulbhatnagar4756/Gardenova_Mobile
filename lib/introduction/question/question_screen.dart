@@ -305,7 +305,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           ),
         ),
         padding: EdgeInsets.all(spacerSize20),
-        child: Column(
+        child: SafeArea(
+          top: false,
+          child: Column(
           children: [
             BaseText(
               text: AppLocalizations.of(context)!.selectState,
@@ -351,6 +353,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               ),
             ),
           ],
+          ),
         ),
       ),
       isScrollControlled: true,
@@ -371,7 +374,9 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
           ),
         ),
         padding: EdgeInsets.all(spacerSize20),
-        child: Column(
+        child: SafeArea(
+          top: false,
+          child: Column(
           children: [
             BaseText(
               text: AppLocalizations.of(context)!.selectCity,
@@ -416,6 +421,7 @@ class QuestionScreen extends GetWidget<QuestionViewModel> {
               ),
             ),
           ],
+          ),
         ),
       ),
       isScrollControlled: true,

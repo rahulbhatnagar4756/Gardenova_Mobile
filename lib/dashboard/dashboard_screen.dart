@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
+import 'package:kasagardem/base/widgets/chatbot_fab.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
 import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
@@ -39,7 +41,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
       await ReminderPushNotificationService.instance.onAppReady();
     });
     return Obx(
-      () => Scaffold(
+      () => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: appSystemOverlayStyle,
+        child: Scaffold(
         backgroundColor: AppColors.appColor,
         drawer: SizedBox(
           // width: MediaQuery.of(context).size.width * 0.9,
@@ -72,129 +76,132 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 },
               ),
 
-        body: SizedBox(
-          child: Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
+        floatingActionButton: ChatbotFab(onTap: _onChatbotTap),
+        floatingActionButtonLocation: const _TightEndFloatFabLocation(),
+        body: SafeArea(
+          child: SizedBox(
+            child: Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    color: AppColors.greenColor,
+                    onRefresh: controller.refreshDashboard,
+                    child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 3.h),
-                          Obx(() {
-                            controller.refreshSoilAnalysis.value;
-                            return HeadingUiLayout(
-                              sectionTitle: AppLocalizations.of(context)!.overview,
-                              child: SoilAnalysis(
-                                chartData: controller.chartData,
-                                isLoading: controller.isLoadingGardenInsights.value,
-                              ),
-                            ).marginOnly(left: spacerSize20, right: spacerSize20);
-                          }),
-                          // const SizedBox(height: spacerSize15),
-                          // HeadingUiLayout(
-                          //   sectionTitle: AppLocalizations.of(
-                          //     context,
-                          //   )!.automationSuggestions,
-                          //   child: AutomationSuggestions(),
-                          // ),|
-                          const SizedBox(height: spacerSize12),
-                          AiPlantDiagnosisCard(
-                            onTap: () {
-                              openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
-                            },
-                          ).marginOnly(left: spacerSize20, right: spacerSize20),
-                          const SizedBox(height: spacerSize12),
-                          LandscapeDesignCard(
-                            onTap: () {
-                              if (controller.isUserLoggedIn.value == false) {
-                                BaseDialog.showAlertDialog(
-                                  context: Get.context!,
-                                  onButtonPressed: () {
-                                    Get.back();
-                                    Get.offAllNamed(
-                                      Routes.login,
-                                      arguments: {"question_state_passed": true},
-                                    );
-                                  },
-                                  title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
-                                  description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
-                                  buttonLabel: AppLocalizations.of(
-                                    Get.context!,
-                                  )!.login.toUpperCase(),
-                                );
-                                return;
-                              }
-                              LandscapeStyleBottomSheet.show().then((style) {
-                                if (style != null) {
-                                  openImagePickerBottomSheet(
-                                    source: ImagePickerSource.landscape,
-                                    selectedStyle: style,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 3.h),
+                        Obx(() {
+                          controller.refreshSoilAnalysis.value;
+                          return HeadingUiLayout(
+                            sectionTitle: AppLocalizations.of(context)!.overview,
+                            child: SoilAnalysis(
+                              chartData: controller.chartData,
+                              isLoading: controller.isLoadingGardenInsights.value,
+                            ),
+                          ).marginOnly(left: spacerSize20, right: spacerSize20);
+                        }),
+                        // const SizedBox(height: spacerSize15),
+                        // HeadingUiLayout(
+                        //   sectionTitle: AppLocalizations.of(
+                        //     context,
+                        //   )!.automationSuggestions,
+                        //   child: AutomationSuggestions(),
+                        // ),|
+                        const SizedBox(height: spacerSize12),
+                        AiPlantDiagnosisCard(
+                          onTap: () {
+                            openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
+                          },
+                        ).marginOnly(left: spacerSize20, right: spacerSize20),
+                        const SizedBox(height: spacerSize12),
+                        LandscapeDesignCard(
+                          onTap: () {
+                            if (controller.isUserLoggedIn.value == false) {
+                              BaseDialog.showAlertDialog(
+                                context: Get.context!,
+                                onButtonPressed: () {
+                                  Get.back();
+                                  Get.offAllNamed(
+                                    Routes.login,
+                                    arguments: {"question_state_passed": true},
                                   );
-                                }
-                              });
-                            },
-                          ).marginOnly(left: spacerSize20, right: spacerSize20),
-                          const SizedBox(height: spacerSize12),
-                          HeadingUiLayout(
-                            titleLeftPadding: spacerSize20,
-                            sectionTitle: AppLocalizations.of(context)!.plantRecommendations,
-                            child: Column(children: [PlantRecommendations(controller: controller)]),
-                          ),
-
-                          SizedBox(height: spacerSize5),
-                          Obx(
-                            () => controller.isUserLoggedIn.value == false
-                                ? SizedBox()
-                                : Container(
-                                    width: double.infinity,
-                                    // color: AppColors.blackColor.withValues(
-                                    //   alpha: 0.6,
-                                    // ),
-                                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                                    child: BaseButton(
-                                      bottomPadding: false,
-                                      buttonLabel: AppLocalizations.of(context)!.addPlant,
-                                      buttonWidth: Get.width,
-                                      fontSize: fontSize15,
-                                      onPressed: () {
-                                        Get.toNamed(Routes.allPlantsScreen);
-                                        return;
-                                      },
-                                    ).paddingSymmetric(horizontal: spacerSize20),
-                                  ),
-                          ),
-                          SizedBox(height: 0.h),
-                        ],
-                      ),
+                                },
+                                title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+                                description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
+                                buttonLabel: AppLocalizations.of(
+                                  Get.context!,
+                                )!.login.toUpperCase(),
+                              );
+                              return;
+                            }
+                            LandscapeStyleBottomSheet.show().then((style) {
+                              if (style != null) {
+                                openImagePickerBottomSheet(
+                                  source: ImagePickerSource.landscape,
+                                  selectedStyle: style,
+                                );
+                              }
+                            });
+                          },
+                        ).marginOnly(left: spacerSize20, right: spacerSize20),
+                        const SizedBox(height: spacerSize12),
+                        HeadingUiLayout(
+                          titleLeftPadding: spacerSize20,
+                          sectionTitle: AppLocalizations.of(context)!.plantRecommendations,
+                          child: Column(children: [PlantRecommendations(controller: controller)]),
+                        ),
+          
+                        SizedBox(height: spacerSize5),
+                        Obx(
+                          () => controller.isUserLoggedIn.value == false
+                              ? SizedBox()
+                              : Container(
+                                  width: double.infinity,
+                                  // color: AppColors.blackColor.withValues(
+                                  //   alpha: 0.6,
+                                  // ),
+                                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                                  child: BaseButton(
+                                    bottomPadding: false,
+                                    buttonLabel: AppLocalizations.of(context)!.addPlant,
+                                    buttonWidth: Get.width,
+                                    fontSize: fontSize15,
+                                    onPressed: () {
+                                      Get.toNamed(Routes.allPlantsScreen);
+                                      return;
+                                    },
+                                  ).paddingSymmetric(horizontal: spacerSize20),
+                                ),
+                        ),
+                        SizedBox(height: 0.h),
+                      ],
                     ),
-                    Positioned(
-                      right: spacerSize24,
-                      bottom: spacerSize75,
-                      child: _ChatbotFab(onTap: _onChatbotTap),
-                    ),
-                  ],
+                  ),
+                  ),
                 ),
-              ),
-              // AdMob Banner Ad Area (only if user does not have a premium subscription)
-              Obx(() {
-                if (AdMobService.instance.shouldShowBanners &&
-                    controller.isAdLoaded.value &&
-                    controller.bannerAd != null) {
-                  return SizedBox(
-                    width: controller.bannerAd!.size.width.toDouble(),
-                    height: controller.bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: controller.bannerAd!),
-                  );
-                }
-                return const SizedBox.shrink();
-              }),
-            ],
+                // AdMob Banner Ad Area (only if user does not have a premium subscription)
+                Obx(() {
+                  if (AdMobService.instance.shouldShowBanners &&
+                      controller.isAdLoaded.value &&
+                      controller.bannerAd != null) {
+                    final banner = controller.bannerAd!;
+                    return Align(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: banner.size.width.toDouble(),
+                        height: banner.size.height.toDouble(),
+                        child: AdWidget(ad: banner),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: Obx(() {
@@ -244,6 +251,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
             },
           );
         }),
+      ),
       ),
     );
   }
@@ -315,117 +323,20 @@ class DashboardScreen extends GetWidget<DashboardController> {
   }
 }
 
-class _ChatbotFab extends StatefulWidget {
-  const _ChatbotFab({required this.onTap});
+class _TightEndFloatFabLocation extends FloatingActionButtonLocation {
+  const _TightEndFloatFabLocation();
 
-  final VoidCallback onTap;
-
-  @override
-  State<_ChatbotFab> createState() => _ChatbotFabState();
-}
-
-class _ChatbotFabState extends State<_ChatbotFab> with SingleTickerProviderStateMixin {
-  late final AnimationController _borderController;
-  late final Animation<double> _borderFade;
+  static const double _margin = 4;
 
   @override
-  void initState() {
-    super.initState();
-    _borderController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
-    _borderFade = CurvedAnimation(
-      parent: _borderController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _borderController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 68.w,
-      height: 68.w,
-      child: AnimatedBuilder(
-        animation: _borderFade,
-        builder: (context, child) {
-          final fade = _borderFade.value;
-          return Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Opacity(
-                opacity: fade,
-                child: Container(
-                  width: 64.w,
-                  height: 64.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.greenColor,
-                      width: 2.2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.greenColor.withValues(alpha: 0.4 * fade),
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              child!,
-            ],
-          );
-        },
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: 56.w,
-            height: 56.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.greenColor.withValues(alpha: 0.35),
-                  blurRadius: 14,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: Material(
-                color: Colors.transparent,
-                child: Ink(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: AppColors.linearGradientForBtn,
-                  ),
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: widget.onTap,
-                    splashColor: AppColors.whiteColor.withValues(alpha: 0.35),
-                    highlightColor: AppColors.whiteColor.withValues(alpha: 0.16),
-                    child: Icon(
-                      Icons.message,
-                      color: AppColors.whiteColor,
-                      size: 26.w,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    final Size fabSize = scaffoldGeometry.floatingActionButtonSize;
+    final double x =
+        scaffoldGeometry.scaffoldSize.width -
+        scaffoldGeometry.minInsets.right -
+        fabSize.width -
+        _margin;
+    final double y = scaffoldGeometry.contentBottom - fabSize.height - _margin;
+    return Offset(x, y);
   }
 }

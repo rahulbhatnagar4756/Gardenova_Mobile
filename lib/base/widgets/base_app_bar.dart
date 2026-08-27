@@ -136,6 +136,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: backgroundColor,
       elevation: 0,
+      systemOverlayStyle: appSystemOverlayStyle,
       toolbarHeight: kToolbarHeight * (toolbarHeightScale ?? 1.5),
 
       /// ❌ Remove default leading (we handle manually)

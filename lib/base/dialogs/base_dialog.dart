@@ -118,77 +118,80 @@ class BaseDialog {
     );
   }
 
-  static void showAlertDialog({
+  static Future<void> showAlertDialog({
     required BuildContext context,
     required VoidCallback onButtonPressed,
     required String title,
     required String description,
     required String buttonLabel,
     Function()? onCancelDialog,
+    bool barrierDismissible = true,
+    bool showCancel = true,
+    bool? canPop,
   }) {
-    showDialog(
+    final allowPop = canPop ?? barrierDismissible;
+    return showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        // insetPadding: EdgeInsets.symmetric(horizontal: spacerSize20),
-        backgroundColor: AppColors.whiteColor,
-        title: BaseText(
-          text: title,
-          fontFamily: AppKeys.poppins,
-          fontSize: fontSize22,
-          // textColor: AppColors.offWhite,
-          fontWeight: FontWeight.w700,
-        ),
-        content: BaseText(
-          text: description,
-          fontSize: fontSize16,
-          textAlign: TextAlign.start,
-          textColor: AppColors.liteGreyColor,
-          fontWeight: FontWeight.w400,
-        ),
-        actionsOverflowButtonSpacing: 0,
-        actionsPadding: EdgeInsets.zero,
-        buttonPadding: EdgeInsets.zero,
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Container(
-              // color: Colors.red,
-              padding: EdgeInsets.only(
-                left: 10.w,
-                right: 10.w,
-                top: 15.h,
-                bottom: 15.h,
+      barrierDismissible: barrierDismissible,
+      builder: (context) => PopScope(
+        canPop: allowPop,
+        child: AlertDialog(
+          backgroundColor: AppColors.whiteColor,
+          title: BaseText(
+            text: title,
+            fontFamily: AppKeys.poppins,
+            fontSize: fontSize22,
+            fontWeight: FontWeight.w700,
+          ),
+          content: BaseText(
+            text: description,
+            fontSize: fontSize16,
+            textAlign: TextAlign.start,
+            textColor: AppColors.liteGreyColor,
+            fontWeight: FontWeight.w400,
+          ),
+          actionsOverflowButtonSpacing: 0,
+          actionsPadding: EdgeInsets.zero,
+          buttonPadding: EdgeInsets.zero,
+          actions: [
+            if (showCancel)
+              TextButton(
+                onPressed: () => Get.back(),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 10.w,
+                    right: 10.w,
+                    top: 15.h,
+                    bottom: 15.h,
+                  ),
+                  child: BaseText(
+                    text: AppLocalizations.of(context)!.cancel,
+                    fontSize: fontSize14,
+                    textColor: AppColors.liteGreyColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-              child: BaseText(
-                text: AppLocalizations.of(context)!.cancel,
-                fontSize: fontSize14,
-                textColor: AppColors.liteGreyColor,
-                fontWeight: FontWeight.w600,
+            TextButton(
+              isSemanticButton: true,
+              onPressed: onButtonPressed,
+              child: Container(
+                padding: EdgeInsets.only(
+                  right: 10.w,
+                  left: 10.w,
+                  top: 15.h,
+                  bottom: 15.h,
+                ),
+                child: BaseText(
+                  text: buttonLabel,
+                  fontSize: fontSize14,
+                  textColor: AppColors.greenColor,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-          ),
-
-          // SizedBox(width: 5.w),
-          TextButton(
-            isSemanticButton: true,
-            onPressed: onButtonPressed,
-            child: Container(
-              // color: Colors.yellow,
-              padding: EdgeInsets.only(
-                right: 10.w,
-                left: 10.w,
-                top: 15.h,
-                bottom: 15.h,
-              ),
-              child: BaseText(
-                text: buttonLabel,
-                fontSize: fontSize14,
-                textColor: AppColors.greenColor,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     ).then((value) {
       debugPrint('onCancel diaog called');

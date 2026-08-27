@@ -679,6 +679,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get addYourFirstPlant => 'Adicione sua primeira planta';
 
   @override
+  String get addYourPlant => 'Adicione sua planta';
+
+  @override
   String get addYourFirstPlantDescription => 'Pesquise pelo nome comum, nome científico ou variedade da sua planta';
 
   @override
@@ -1162,4 +1165,51 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get fitnessScoreSubtitle =>
       'Veja o quão preparado seu jardim está para um crescimento saudável';
+
+  @override
+  String get healthy => 'Saudável';
+
+  @override
+  String get needsAttention => 'Precisa de atenção';
+
+  @override
+  String get scansAndCounting => 'análises';
+
+  @override
+  String get noPlantAnalysisFound => 'Nenhuma análise de planta ainda';
+
+  @override
+  String get noPlantAnalysisFoundDescription =>
+      'Escaneie uma planta para ver o histórico de análises aqui.';
+
+  @override
+  String get compare => 'Comparar';
+
+  @override
+  String get comparePlantState => 'Comparar estado da planta';
+
+  @override
+  String get previousScan => 'Anterior';
+
+  @override
+  String get currentScan => 'Atual';
+
+  @override
+  String get selectEarlierScan => 'Selecione uma análise anterior';
+
+  @override
+  String get noPreviousScan =>
+      'Nenhuma análise anterior encontrada para esta planta';
+
+  @override
+  String get healthImproved => 'Saúde melhorou';
+
+  @override
+  String get healthDeclined => 'Saúde piorou';
+
+  @override
+  String get healthUnchanged => 'Saúde sem alteração';
+
+  @override
+  String get rescan => 'Nova análise';
 }
