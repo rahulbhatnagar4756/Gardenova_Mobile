@@ -58,6 +58,8 @@ class AllPlantsDetailsController extends GetxController {
   TextEditingController wateringController = TextEditingController();
   TextEditingController criticalController = TextEditingController();
 
+  final RxBool hasMyPlants = false.obs;
+
   @override
   void onInit() {
     if (Get.arguments != null) {
@@ -72,8 +74,23 @@ class AllPlantsDetailsController extends GetxController {
     } else {
       callGetMyPlantDetailsApi();
     }
+    _loadHasMyPlants();
     _setupBannerAds();
     super.onInit();
+  }
+
+  Future<void> _loadHasMyPlants() async {
+    if (Get.isRegistered<AllPlantsController>() &&
+        Get.find<AllPlantsController>().hasMyPlants.value) {
+      hasMyPlants.value = true;
+      return;
+    }
+    if (Get.isRegistered<MyPlantsController>() &&
+        Get.find<MyPlantsController>().myPlantList.isNotEmpty) {
+      hasMyPlants.value = true;
+      return;
+    }
+    hasMyPlants.value = await plantsRepository.userHasMyPlants();
   }
 
   void _setupBannerAds() {
@@ -464,7 +481,9 @@ class AllPlantsDetailsController extends GetxController {
           (element) => element.id?.toString() == plantId.value,
         );
         myPlantsController.allPlantList.refresh();
+        myPlantsController.hasMyPlants.value = true;
       }
+      hasMyPlants.value = true;
       if (Get.isRegistered<DashboardController>()) {
         var dashboardController = Get.find<DashboardController>();
         dashboardController.plantRecommendationList.removeWhere(

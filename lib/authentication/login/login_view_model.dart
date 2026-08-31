@@ -265,6 +265,7 @@ class LoginViewModel extends GetxController with SocialSignInMixin {
     var loginResponse = await authRepository.registerGoogleToken(
       socialLoginReq: {ApiKeys.googleAccessToken: googleAuthToken, ApiKeys.roleCode: "U"},
     );
+    log('loginResponse -> $googleAuthToken');
     if (loginResponse != null) {
       debugPrint('loginResponse -> ${loginResponse}');
       // SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);

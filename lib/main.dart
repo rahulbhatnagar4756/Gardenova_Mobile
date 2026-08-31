@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide appFlavor;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -41,6 +41,11 @@ Future<void> main() async {
     }
 
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    try {
+      NotificationService.registerBackgroundHandler();
+    } catch (e) {
+      debugPrint('Background FCM handler registration deferred: $e');
+    }
 
     FlutterError.onError = (errorDetails) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -63,7 +68,7 @@ Future<void> main() async {
       );
     }
 
-    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'dev');
+    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'prod');
     late final Flavor currentFlavor;
     late final String baseUrl;
     switch (flavorString.toLowerCase()) {

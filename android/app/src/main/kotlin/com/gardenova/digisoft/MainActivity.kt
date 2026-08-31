@@ -32,6 +32,7 @@ class MainActivity : FlutterActivity() {
 
         GardenovaPushNotifier.persistNotificationPayload(this, payload)
         GardenovaPushBridge.notifyTap(payload)
+        android.util.Log.i("MainActivity", "[PUSH][tap] user opened notification payload=$payload")
 
         intent.removeExtra(PAYLOAD_KEY)
         intent.removeExtra(NOTIFICATION_ID_KEY)

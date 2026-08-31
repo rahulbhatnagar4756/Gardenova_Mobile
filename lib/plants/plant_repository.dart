@@ -73,6 +73,21 @@ class PlantsRepository {
     return plantsResponse;
   }
 
+  Future<bool> userHasMyPlants() async {
+    final response = await fetchMyPlants(
+      pageNumber: '1',
+      pageSize: '1',
+      showDefaultLoader: false,
+    );
+    if (response is! Map) return false;
+    final data = response['data'];
+    if (data is! Map) return false;
+    final totalCount = int.tryParse(data['totalCount']?.toString() ?? '') ?? 0;
+    if (totalCount > 0) return true;
+    final plants = data['plants'];
+    return plants is List && plants.isNotEmpty;
+  }
+
   deletePlant({required int userPlantId}) async {
     var deleteResponse = await ApiRepository.instance.delete("$deletePlantUrl$userPlantId");
     return deleteResponse;

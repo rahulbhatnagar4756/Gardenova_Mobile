@@ -16,7 +16,16 @@ class GardenovaPushPlugin(
                 val payload = call.argument<String>("payload").orEmpty()
                 val id = call.argument<Int>("id") ?: 0
                 if (title.isNotEmpty() && body.isNotEmpty()) {
+                    android.util.Log.i(
+                        "GardenovaPushPlugin",
+                        "[PUSH][received] dart requested tray id=$id title=\"$title\"",
+                    )
                     GardenovaPushNotifier.show(context, title, body, payload, id)
+                } else {
+                    android.util.Log.w(
+                        "GardenovaPushPlugin",
+                        "[PUSH][skipped] dart tray request missing title/body",
+                    )
                 }
                 result.success(null)
             }

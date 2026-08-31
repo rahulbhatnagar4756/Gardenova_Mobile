@@ -8,8 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.RemoteMessage
@@ -26,13 +24,13 @@ object GardenovaPushNotifier {
     private const val PREFS_NAME = "FlutterSharedPreferences"
     private const val PENDING_PAYLOAD_KEY = "pending_notification_payload"
     private const val NOTIFICATIONS_ENABLED_KEY = "notifications_enabled"
+    private const val FLUTTER_NOTIFICATIONS_ENABLED_KEY = "flutter.notifications_enabled"
     private const val LAST_MESSAGE_ID_KEY = "gardenova_last_fcm_message_id"
     private const val LAST_MESSAGE_AT_KEY = "gardenova_last_fcm_message_at"
     private const val DEDUPE_WINDOW_MS = 15_000L
     private const val PENDING_INTENT_REQUEST_CODE = 0x6A617264
     private const val MAX_NOTIFICATION_BODY_WORDS = 50
     private const val TAG = "GardenovaPushNotifier"
-    private val fcmSuppressionDelaysMs = longArrayOf(250L, 600L, 1200L)
 
     fun ellipsizeNotificationBody(
         body: String,
@@ -46,20 +44,34 @@ object GardenovaPushNotifier {
     fun showFromRemoteMessage(context: Context, message: RemoteMessage) {
         val messageId = message.messageId ?: message.data["google.message_id"] ?: message.data["message_id"]
         if (messageId != null && isDuplicateMessage(context, messageId)) {
-            Log.d(TAG, "Skipping duplicate message id=$messageId")
+            Log.i(TAG, "[PUSH][skipped] duplicate message id=$messageId")
             return
         }
+
+        val data = message.data
+        val title = message.notification?.title
+            ?: data["title"]
+            ?: data["notification_title"]
+            ?: data["Title"]
+        val body = message.notification?.body
+            ?: data["body"]
+            ?: data["message"]
+            ?: data["notification_body"]
+            ?: data["Body"]
+        if (title.isNullOrBlank() || body.isNullOrBlank()) {
+            Log.w(TAG, "[PUSH][skipped] missing title/body id=$messageId data=$data")
+            return
+        }
+        if (!areNotificationsEnabled(context)) {
+            Log.i(TAG, "[PUSH][skipped] notifications disabled in prefs id=$messageId")
+            return
+        }
+
         if (messageId != null) {
             markMessageShown(context, messageId)
         }
 
-        val data = message.data
-        val title = message.notification?.title ?: data["title"] ?: return
-        val body = message.notification?.body ?: data["body"] ?: data["message"] ?: return
-        if (title.isBlank() || body.isBlank()) return
-        if (!areNotificationsEnabled(context)) return
-
-        val payload = buildPayloadJson(message, title, body)
+        val payload = payloadJsonFor(message, title, body)
         val logId = data["notification_log_id"]
         val notificationId =
             when {
@@ -68,7 +80,7 @@ object GardenovaPushNotifier {
                 else -> message.hashCode()
             }
 
-        show(context, title, body, payload, notificationId, message)
+        show(context, title, body, payload, notificationId)
     }
 
     fun show(
@@ -77,14 +89,14 @@ object GardenovaPushNotifier {
         body: String,
         payload: String,
         notificationId: Int,
-        remoteMessage: RemoteMessage? = null,
     ) {
         val appContext = context.applicationContext
         ensureChannel(appContext)
         val displayBody = ellipsizeNotificationBody(body)
         val builtNotification = buildNotification(appContext, title, displayBody, payload, notificationId)
         val manager = appContext.getSystemService(NotificationManager::class.java)
-        publishExclusiveNotification(manager, builtNotification, notificationId, remoteMessage)
+        manager.notify(NOTIFICATION_TAG, notificationId, builtNotification)
+        Log.i(TAG, "[PUSH][shown] user received notification id=$notificationId title=\"$title\"")
     }
 
     private fun buildNotification(
@@ -96,12 +108,14 @@ object GardenovaPushNotifier {
     ) =
         NotificationCompat
             .Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.drawable.ic_stat_notify)
             .setContentTitle(title)
             .setContentText(displayBody)
             .setStyle(NotificationCompat.BigTextStyle().bigText(displayBody))
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVibrate(longArrayOf(0, 250, 250, 250))
             .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setColor(Color.parseColor("#01AF55"))
@@ -133,69 +147,10 @@ object GardenovaPushNotifier {
         )
     }
 
-    /**
-     * FCM auto-displays a second tray entry (tag + id 0) when the payload includes a
-     * notification block. That system entry often has a weak tap intent. Keep only ours.
-     */
-    private fun publishExclusiveNotification(
-        manager: NotificationManager,
-        notification: android.app.Notification,
-        notificationId: Int,
-        remoteMessage: RemoteMessage?,
-    ) {
-        cancelFcmAutoNotifications(manager, remoteMessage)
-        manager.cancelAll()
-        manager.notify(NOTIFICATION_TAG, notificationId, notification)
-        scheduleFcmSuppression(manager, notification, notificationId, remoteMessage)
-    }
-
-    private fun scheduleFcmSuppression(
-        manager: NotificationManager,
-        notification: android.app.Notification,
-        notificationId: Int,
-        remoteMessage: RemoteMessage?,
-    ) {
-        val handler = Handler(Looper.getMainLooper())
-        for (delayMs in fcmSuppressionDelaysMs) {
-            handler.postDelayed({
-                cancelFcmAutoNotifications(manager, remoteMessage)
-                manager.cancelAll()
-                manager.notify(NOTIFICATION_TAG, notificationId, notification)
-            }, delayMs)
-        }
-    }
-
-    private fun cancelFcmAutoNotifications(
-        manager: NotificationManager,
-        remoteMessage: RemoteMessage?,
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (status in manager.activeNotifications) {
-                if (status.tag == NOTIFICATION_TAG) continue
-
-                val tag = status.tag
-                val isFcmAutoDisplay =
-                    status.id == 0 &&
-                        (tag == null || tag.startsWith("FCM-Notification:"))
-                if (isFcmAutoDisplay) {
-                    manager.cancel(tag, status.id)
-                }
-            }
-        }
-
-        remoteMessage?.notification?.tag?.let { tag ->
-            manager.cancel(tag, 0)
-        }
-
-        remoteMessage?.data?.get("gcm.notification.tag")?.let { tag ->
-            manager.cancel(tag, 0)
-        }
-
-        // FCM SDK always uses notification id 0 for auto-displayed tray entries.
-        manager.cancel(null, 0)
-    }
-
     fun isAppInForeground(context: Context): Boolean {
+        val keyguard = context.getSystemService(Context.KEYGUARD_SERVICE) as? android.app.KeyguardManager
+        if (keyguard?.isKeyguardLocked == true) return false
+
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val processes = activityManager.runningAppProcesses ?: return false
         for (process in processes) {
@@ -217,18 +172,37 @@ object GardenovaPushNotifier {
     private fun ensureChannel(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = context.getSystemService(NotificationManager::class.java)
-        if (manager.getNotificationChannel(CHANNEL_ID) != null) return
+        val existing = manager.getNotificationChannel(CHANNEL_ID)
+        if (existing != null && existing.importance >= NotificationManager.IMPORTANCE_HIGH) return
+        if (existing != null) {
+            manager.deleteNotificationChannel(CHANNEL_ID)
+        }
         val channel =
             NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Plant care reminder notifications"
                 enableVibration(true)
+                enableLights(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+                setShowBadge(true)
             }
         manager.createNotificationChannel(channel)
     }
 
     private fun areNotificationsEnabled(context: Context): Boolean {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean(NOTIFICATIONS_ENABLED_KEY, true)
+        return try {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val stored = prefs.all[FLUTTER_NOTIFICATIONS_ENABLED_KEY]
+                ?: prefs.all[NOTIFICATIONS_ENABLED_KEY]
+            when (stored) {
+                is Boolean -> stored
+                is String -> stored.equals("true", ignoreCase = true)
+                is Number -> stored.toInt() != 0
+                else -> true
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not read notifications_enabled, defaulting to on", e)
+            true
+        }
     }
 
     private fun isDuplicateMessage(context: Context, messageId: String): Boolean {
@@ -248,7 +222,7 @@ object GardenovaPushNotifier {
             .apply()
     }
 
-    private fun buildPayloadJson(
+    fun payloadJsonFor(
         message: RemoteMessage,
         title: String,
         body: String,

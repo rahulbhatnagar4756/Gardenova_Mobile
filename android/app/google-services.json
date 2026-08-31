@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "581483405194",
-    "project_id": "gardenova-c1f0a",
-    "storage_bucket": "gardenova-c1f0a.firebasestorage.app"
+    "project_number": "965793700730",
+    "project_id": "gardenova-f752f",
+    "storage_bucket": "gardenova-f752f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:581483405194:android:c49be1809f903838533273",
+        "mobilesdk_app_id": "1:965793700730:android:bc721d461a94d011ff94c3",
         "android_client_info": {
           "package_name": "com.gardenova.digisoft"
         }
       },
       "oauth_client": [
         {
-          "client_id": "581483405194-gnu18fc8129u7p760veukv1csekmd408.apps.googleusercontent.com",
+          "client_id": "965793700730-33b5emj5jh9kqnbrm50j2m85johfknu3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gardenova.digisoft",
@@ -22,15 +22,7 @@
           }
         },
         {
-          "client_id": "581483405194-nebdha5tkeub73b2iq8t8u0khf6h9lb9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.gardenova.digisoft",
-            "certificate_hash": "aef6a82f9ade057d547e58b9857f88e465ed0c9b"
-          }
-        },
-        {
-          "client_id": "581483405194-urtvjqiakseva6mnnv88tv5gg8oagqiu.apps.googleusercontent.com",
+          "client_id": "965793700730-4uvb4mmsnlajkdakhdkqd57c77qog6bq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gardenova.digisoft",
@@ -38,20 +30,28 @@
           }
         },
         {
-          "client_id": "581483405194-fp4i2qhfi4e4o5hfqpf2e22vi2g3smmn.apps.googleusercontent.com",
+          "client_id": "965793700730-cfjon48b43htfmjncduus0scdusd2af7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gardenova.digisoft",
+            "certificate_hash": "aef6a82f9ade057d547e58b9857f88e465ed0c9b"
+          }
+        },
+        {
+          "client_id": "965793700730-cb2ges5g2fogip1faib8dpjlubsaj6sm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDutPKCKe5hsMcrDdrHpg1wrKPhNefan9o"
+          "current_key": "AIzaSyChC-kuVOmvPCUC2j4t63E4UvmSlAbCZXo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "581483405194-fp4i2qhfi4e4o5hfqpf2e22vi2g3smmn.apps.googleusercontent.com",
+              "client_id": "965793700730-cb2ges5g2fogip1faib8dpjlubsaj6sm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

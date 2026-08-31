@@ -5,6 +5,7 @@ xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
 
@@ -27,22 +28,16 @@ xmlns:tools="http://schemas.android.com/tools">
 
         android:value="ca-app-pub-2559590883817958~6221905368"/>
        <!-- android:value="ca-app-pub-9167105189322595~4796206308"/>-->
-        <!-- Do not set default_notification_icon / channel — those enable a second
-             system tray post alongside GardenovaPushNotifier for data-only messages. -->
+        <!-- FCM uses this channel when the app is in background/terminated. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="plant_reminders" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_notify" />
         <meta-data
             android:name="firebase_messaging_notification_delegation_enabled"
             android:value="false" />
-        <receiver
-            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
-            tools:node="remove" />
-        <receiver
-            android:name=".GardenovaMessagingReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </receiver>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

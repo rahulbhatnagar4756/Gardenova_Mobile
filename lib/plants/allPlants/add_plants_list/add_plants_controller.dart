@@ -30,10 +30,7 @@ class AllPlantsController extends GetxController {
   final debouncer = Debouncer(delay: const Duration(milliseconds: 1000));
   ScrollController scrollController = ScrollController();
 
-  bool get hasMyPlants {
-    if (!Get.isRegistered<MyPlantsController>()) return false;
-    return Get.find<MyPlantsController>().myPlantList.isNotEmpty;
-  }
+  final RxBool hasMyPlants = false.obs;
 
   @override
   void onInit() {
@@ -53,8 +50,22 @@ class AllPlantsController extends GetxController {
         loadMorePlants();
       }
     });
+    _loadHasMyPlants();
     callGetAllPlantListApi();
     super.onInit();
+  }
+
+  Future<void> _loadHasMyPlants() async {
+    if (Get.isRegistered<MyPlantsController>() &&
+        Get.find<MyPlantsController>().myPlantList.isNotEmpty) {
+      hasMyPlants.value = true;
+      return;
+    }
+    if (!isUserLoggedIn.value) {
+      hasMyPlants.value = false;
+      return;
+    }
+    hasMyPlants.value = await plantsRepository.userHasMyPlants();
   }
 
   void selectPlant(int index) {

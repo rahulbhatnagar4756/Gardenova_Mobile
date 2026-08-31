@@ -35,8 +35,8 @@
 # Firebase
 #########################################
 
--keep class com.google.firebase.** { *; }
--dontwarn com.google.firebase.**
+-keep class io.flutter.plugins.firebase.messaging.** { *; }
+-keep class com.google.firebase.messaging.** { *; }
 
 #########################################
 # Facebook SDK

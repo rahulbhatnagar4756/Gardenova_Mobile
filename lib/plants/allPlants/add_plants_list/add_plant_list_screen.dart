@@ -171,7 +171,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
             children: [
               SizedBox(height: spacerSize20),
               BaseText(
-                text: controller.hasMyPlants
+                text: controller.hasMyPlants.value
                     ? AppLocalizations.of(context)!.addYourPlant
                     : AppLocalizations.of(context)!.addYourFirstPlant,
                 fontSize: fontSize20,

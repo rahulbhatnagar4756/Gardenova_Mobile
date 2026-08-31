@@ -99,7 +99,11 @@ class ReminderPushNotificationService {
   }
 
   void _handleForegroundMessage(RemoteMessage message, Map<String, dynamic> payload) {
-    if (!isReminderNotification(payload)) return;
+    debugPrint('[PUSH][received] reminder foreground payload=$payload');
+    if (!isReminderNotification(payload)) {
+      debugPrint('[PUSH][skipped] foreground message is not a plant reminder');
+      return;
+    }
 
     log('Reminder push intercepted (foreground): $payload');
     pendingReminderRefresh = true;

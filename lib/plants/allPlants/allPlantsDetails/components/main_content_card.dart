@@ -885,7 +885,8 @@ class MainContentCard extends StatelessWidget {
                       ],
                     ),
                     child: Text(
-                      AppLocalizations.of(Get.context!)!.addPlant,
+                       AppLocalizations.of(Get.context!)!.addPlant
+                          ,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,

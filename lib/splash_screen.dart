@@ -36,6 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final isUserAlreadyLogedIn =
         SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
     log(isUserAlreadyLogedIn ? 'user t11' : 'user t12');
+    // Let MainActivity attach to Flutter plugins before any permission prompt.
+    await Future.delayed(const Duration(milliseconds: 600));
+    if (!mounted) return;
     await _ensureNotificationPermission();
     if (!mounted) return;
     navigateToIntroductionScreen(isUserAlreadyLogedIn: isUserAlreadyLogedIn);
@@ -110,11 +113,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _ensureNotificationPermission() async {
-    await NotificationService.instance.initialize();
-    final granted =
-        await NotificationService.instance.ensureNotificationPermissionGranted();
-    if (granted) {
-      await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+    try {
+      await NotificationService.instance.initialize();
+      final granted =
+          await NotificationService.instance.ensureNotificationPermissionGranted();
+      if (granted) {
+        await ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+      }
+    } catch (e, stack) {
+      log('Notification permission flow failed: $e', stackTrace: stack);
     }
   }
 }
