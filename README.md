@@ -5,6 +5,32 @@
 **Developer:** Smriti Rawat
 **Date:** 19-08-2026
 
+## Features Added
+
+* **Chatbot**
+
+  * Introduced Chatbot for quick gardening-related questions and assistance.
+
+* **Plant Analysis History**
+
+  * Added Plant Analysis History with detailed diagnosis reports.
+
+* **Plant Comparison**
+
+  * Added Plant Comparison to compare current and previous plant scans.
+
+* **Fitness Score Card**
+
+  * Introduced the Fitness Score card to help assess garden health and potential.
+
+* **Performance and Bug Fixes**
+
+  * Improved app performance and fixed bugs.
+
+* **UI/UX Enhancements**
+
+  * Enhanced the UI/UX for a smoother and more user-friendly experience.
+
 ## Bugs Resolved
 
 * **Redirect to Home After Signup**
@@ -56,23 +82,55 @@
 
 ## Files Changed
 
-1. `lib/authentication/auth_repository.dart`
-2. `lib/authentication/login/login_view_model.dart`
-3. `lib/authentication/register/register_screen.dart`
-4. `lib/authentication/register/register_view_model.dart`
-5. `lib/base/widgets/base_text_field.dart`
-6. `lib/introduction/question/question_screen.dart`
-7. `lib/introduction/question/question_view_model.dart`
-8. `lib/landscape_design/landscape_design_repository.dart`
-9. `lib/main.dart`
-10. `lib/reminders/component/reminder_card.dart`
-11. `lib/reminders/component/upcoming_task.dart`
-12. `lib/reminders/plant_reminder_list_screen.dart`
-13. `lib/settings/settings_repository.dart`
-14. `lib/settings/settings_view_model.dart`
-15. `lib/splash_screen.dart`
-16. `lib/utils/constants/api_keys.dart`
-17. `lib/utils/constants/app_color.dart`
-18. `lib/utils/constants/app_strings.dart`
-19. `lib/utils/network_services/api_repository.dart`
-20. `lib/utils/validation_healper.dart`
+1. `assets/images/chatbotIcon.png`
+2. `assets/images/chatboticon.svg`
+3. `lib/authentication/auth_repository.dart`
+4. `lib/authentication/login/login_view_model.dart`
+5. `lib/authentication/register/register_screen.dart`
+6. `lib/authentication/register/register_view_model.dart`
+7. `lib/base/widgets/base_text_field.dart`
+8. `lib/base/widgets/chatbot_fab.dart`
+9. `lib/chatbot/chatbot_controller.dart`
+10. `lib/chatbot/chatbot_repository.dart`
+11. `lib/chatbot/chatbot_screen.dart`
+12. `lib/chatbot/models/chat_message.dart`
+13. `lib/chatbot/models/garden_chat_request_model.dart`
+14. `lib/chatbot/models/garden_chat_response_model.dart`
+15. `lib/dashboard/components/full_drawer.dart`
+16. `lib/dashboard/components/main_dashboard_content.dart`
+17. `lib/dashboard/dashboard_controller.dart`
+18. `lib/dashboard/dashboard_repository.dart`
+19. `lib/dashboard/dashboard_screen.dart`
+20. `lib/dashboard/model/garden_insights_model.dart`
+21. `lib/introduction/question/question_screen.dart`
+22. `lib/introduction/question/question_view_model.dart`
+23. `lib/landscape_design/landscape_design_repository.dart`
+24. `lib/main.dart`
+25. `lib/plants/plant_analysis/components/plant_scan_card.dart`
+26. `lib/plants/plant_analysis/components/plant_scan_compare_sheet.dart`
+27. `lib/plants/plant_analysis/model/plant_scan_compare_model.dart`
+28. `lib/plants/plant_analysis/model/plant_scan_detail_model.dart`
+29. `lib/plants/plant_analysis/model/plant_scan_model.dart`
+30. `lib/plants/plant_analysis/plant_analysis_compare_controller.dart`
+31. `lib/plants/plant_analysis/plant_analysis_compare_screen.dart`
+32. `lib/plants/plant_analysis/plant_analysis_controller.dart`
+33. `lib/plants/plant_analysis/plant_analysis_detail_controller.dart`
+34. `lib/plants/plant_analysis/plant_analysis_detail_screen.dart`
+35. `lib/plants/plant_analysis/plant_analysis_repository.dart`
+36. `lib/plants/plant_analysis/plant_analysis_screen.dart`
+37. `lib/plants/plant_analysis/views/plant_analysis_detail_error_view.dart`
+38. `lib/plants/plant_analysis/views/plant_analysis_detail_loading_view.dart`
+39. `lib/plants/plant_analysis/views/plant_analysis_detail_success_view.dart`
+40. `lib/reminders/component/reminder_card.dart`
+41. `lib/reminders/component/upcoming_task.dart`
+42. `lib/reminders/plant_reminder_list_screen.dart`
+43. `lib/settings/settings_repository.dart`
+44. `lib/settings/settings_view_model.dart`
+45. `lib/splash_screen.dart`
+46. `lib/utils/constants/api_keys.dart`
+47. `lib/utils/constants/app_assets.dart`
+48. `lib/utils/constants/app_color.dart`
+49. `lib/utils/constants/app_strings.dart`
+50. `lib/utils/network_services/api_repository.dart`
+51. `lib/utils/routes.dart`
+52. `lib/utils/validation_healper.dart`
