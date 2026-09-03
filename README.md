@@ -1,84 +1,60 @@
-# Kasagardem
+# Gardenova
 
 **A Plant and Garden Management App**
 
 **Developer:** Smriti Rawat
-**Date:** 19-08-2026
+**Date:** 01-09-2026
 
 ## Features Added
 
-* **Chatbot**
+- **Chatbot**
+  - Introduced Chatbot for quick gardening-related questions and assistance.
+- **Plant Analysis History**
+  - Added Plant Analysis History with detailed diagnosis reports.
+- **Plant Comparison**
+  - Added Plant Comparison to compare current and previous plant scans.
+- **Fitness Score Card**
+  - Introduced the Fitness Score card to help assess garden health and potential.
+- **Performance and Bug Fixes**
+  - Improved app performance and fixed bugs.
+- **UI/UX Enhancements**
+  - Enhanced the UI/UX for a smoother and more user-friendly experience.
 
-  * Introduced Chatbot for quick gardening-related questions and assistance.
 
-* **Plant Analysis History**
-
-  * Added Plant Analysis History with detailed diagnosis reports.
-
-* **Plant Comparison**
-
-  * Added Plant Comparison to compare current and previous plant scans.
-
-* **Fitness Score Card**
-
-  * Introduced the Fitness Score card to help assess garden health and potential.
-
-* **Performance and Bug Fixes**
-
-  * Improved app performance and fixed bugs.
-
-* **UI/UX Enhancements**
-
-  * Enhanced the UI/UX for a smoother and more user-friendly experience.
 
 ## Bugs Resolved
 
-* **Redirect to Home After Signup**
+- **Redirect to Home After Signup**
+  - After successful registration and OTP verification, the user is automatically logged in.
+  - The access token and refresh token are saved successfully.
+  - The user is redirected to the onboarding questions screen instead of the login screen.
+- **Onboarding Questions Progress Bar**
+  - Fixed the progress bar so that progress is based on the number of answered questions rather than the current question index.
+  - For example, the first unanswered question no longer displays 16% progress.
+  - Progress reaches 100% once all onboarding questions have been answered.
+- **Refresh Token Functionality**
+  - When an API returns a `401 Unauthorized` response due to an expired access token, the app automatically calls the refresh-token API using the stored `refreshToken`.
+  - On successful refresh, the new access and refresh tokens are saved.
+  - The original failed API request is then retried using the new access token.
+  - If the refresh-token API also returns `401`, the user is automatically logged out.
+- **Preferences Progress**
+  - Fixed onboarding and preference progress so that it reflects the number of answered questions instead of the current question index.
+- **Error Messages**
+  - Fixed API and validation error handling so that appropriate error messages are displayed correctly to the user.
+- **Success and Failure Messages**
+  - Fixed popup and snackbar visibility issues.
+  - Success and failure messages are now displayed correctly to the user.
+- **Password Validation**
+  - Fixed password validation messages on the registration and related forms.
+- **Plant Care Reminders UI**
+  - Fixed UI issues in the plant care reminders list and related reminder components.
+  - Reminder information and upcoming tasks are now displayed correctly.
+- **Mobile Number Validation**
+  - Added validation to ensure that the mobile number contains exactly 10 digits.
+  - The 10-digit limit is still enforced.
+  - The `maxLength` counter, such as `1/10`, is hidden from the mobile number field.
 
-  * After successful registration and OTP verification, the user is automatically logged in.
-  * The access token and refresh token are saved successfully.
-  * The user is redirected to the onboarding questions screen instead of the login screen.
 
-* **Onboarding Questions Progress Bar**
-
-  * Fixed the progress bar so that progress is based on the number of answered questions rather than the current question index.
-  * For example, the first unanswered question no longer displays 16% progress.
-  * Progress reaches 100% once all onboarding questions have been answered.
-
-* **Refresh Token Functionality**
-
-  * When an API returns a `401 Unauthorized` response due to an expired access token, the app automatically calls the refresh-token API using the stored `refreshToken`.
-  * On successful refresh, the new access and refresh tokens are saved.
-  * The original failed API request is then retried using the new access token.
-  * If the refresh-token API also returns `401`, the user is automatically logged out.
-
-* **Preferences Progress**
-
-  * Fixed onboarding and preference progress so that it reflects the number of answered questions instead of the current question index.
-
-* **Error Messages**
-
-  * Fixed API and validation error handling so that appropriate error messages are displayed correctly to the user.
-
-* **Success and Failure Messages**
-
-  * Fixed popup and snackbar visibility issues.
-  * Success and failure messages are now displayed correctly to the user.
-
-* **Password Validation**
-
-  * Fixed password validation messages on the registration and related forms.
-
-* **Plant Care Reminders UI**
-
-  * Fixed UI issues in the plant care reminders list and related reminder components.
-  * Reminder information and upcoming tasks are now displayed correctly.
-
-* **Mobile Number Validation**
-
-  * Added validation to ensure that the mobile number contains exactly 10 digits.
-  * The 10-digit limit is still enforced.
-  * The `maxLength` counter, such as `1/10`, is hidden from the mobile number field.
 
 ## Files Changed
 
@@ -134,3 +110,4 @@
 50. `lib/utils/network_services/api_repository.dart`
 51. `lib/utils/routes.dart`
 52. `lib/utils/validation_healper.dart`
+

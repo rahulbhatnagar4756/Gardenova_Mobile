@@ -36,23 +36,71 @@ class AllPlantsController extends GetxController {
   void onInit() {
     isUserLoggedIn.value =
         sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
-    scrollController.addListener(() {
-      if (!scrollController.hasClients) return;
-
-      if (isRefreshing.value) return;
-
-      if (isLoading.value) return;
-
-      if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent - 200 &&
-          !isLoadMoreRunning.value &&
-          isLoadMoreVisible.value) {
-        loadMorePlants();
-      }
-    });
+    scrollController.addListener(_onScroll);
     _loadHasMyPlants();
     callGetAllPlantListApi();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    scrollController.removeListener(_onScroll);
+    scrollController.dispose();
+    searchController.dispose();
+    super.onClose();
+  }
+
+  /// True only when this controller is attached to exactly one scroll view.
+  /// Accessing [ScrollController.position] with 0 clients throws, and with
+  /// more than one throws "Bad state: Too many elements".
+  bool get _hasSingleScrollClient =>
+      scrollController.hasClients && scrollController.positions.length == 1;
+
+  void _onScroll() {
+    if (!_hasSingleScrollClient) return;
+    if (isRefreshing.value || isLoading.value) return;
+    if (isLoadMoreRunning.value || !isLoadMoreVisible.value) return;
+
+    final position = scrollController.positions.first;
+    if (position.pixels >= position.maxScrollExtent - 200) {
+      loadMorePlants();
+    }
+  }
+
+  /// Rejects empty, relative, and host-less URLs that would crash
+  /// [CachedNetworkImage] with "No host specified in URI".
+  static bool isValidNetworkImageUrl(String? url) {
+    final value = url?.trim() ?? '';
+    if (value.isEmpty) return false;
+
+    final uri = Uri.tryParse(value);
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) return false;
+
+    return uri.scheme == 'http' || uri.scheme == 'https';
+  }
+
+  String? resolvedPlantImageUrl(Plants plant) {
+    if (isValidNetworkImageUrl(plant.imageUrl)) {
+      return plant.imageUrl!.trim();
+    }
+    if (isValidNetworkImageUrl(plant.imageOriginalUrl)) {
+      return plant.imageOriginalUrl!.trim();
+    }
+    return null;
+  }
+
+  Plants _sanitizePlantImages(Plants plant) {
+    if (!isValidNetworkImageUrl(plant.imageUrl)) {
+      plant.imageUrl = null;
+    } else {
+      plant.imageUrl = plant.imageUrl!.trim();
+    }
+    if (!isValidNetworkImageUrl(plant.imageOriginalUrl)) {
+      plant.imageOriginalUrl = null;
+    } else {
+      plant.imageOriginalUrl = plant.imageOriginalUrl!.trim();
+    }
+    return plant;
   }
 
   Future<void> _loadHasMyPlants() async {
@@ -195,11 +243,12 @@ class AllPlantsController extends GetxController {
     );
     if (response != null) {
       AddPlantsModel allPlantsResponse = AddPlantsModel.fromJson(response);
-      allPlantList.addAll(allPlantsResponse.data!.plants ?? []);
+      final plants = (allPlantsResponse.data?.plants ?? [])
+          .map(_sanitizePlantImages)
+          .toList();
+      allPlantList.addAll(plants);
       isLoadMoreVisible.value =
-          allPlantsResponse.data!.totalCount! > allPlantList.length
-          ? true
-          : false;
+          (allPlantsResponse.data?.totalCount ?? 0) > allPlantList.length;
     }
   }
 }

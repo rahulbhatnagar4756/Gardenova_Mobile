@@ -279,15 +279,7 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
                 topLeft: Radius.circular(spacerSize15),
                 topRight: Radius.circular(spacerSize15),
               ),
-              child: CachedNetworkImage(
-                height: 118.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                imageUrl: plant.imageUrl ?? plant.imageOriginalUrl ?? "",
-                placeholder: (_, __) =>
-                    BaseShimmer(borderRadious: spacerSize15),
-                errorWidget: (_, __, ___) => Icon(Icons.broken_image),
-              ),
+              child: _plantImage(plant),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: spacerSize12),
@@ -316,6 +308,32 @@ class AllPlantsListScreen extends GetWidget<AllPlantsController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _plantImage(Plants plant) {
+    final imageUrl = controller.resolvedPlantImageUrl(plant);
+    if (imageUrl == null) {
+      return _plantImageFallback();
+    }
+    return CachedNetworkImage(
+      height: 118.h,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      imageUrl: imageUrl,
+      placeholder: (_, __) => BaseShimmer(borderRadious: spacerSize15),
+      errorWidget: (_, __, ___) => _plantImageFallback(),
+    );
+  }
+
+  Widget _plantImageFallback() {
+    return SizedBox(
+      height: 118.h,
+      width: double.infinity,
+      child: ColoredBox(
+        color: AppColors.greenColor.withValues(alpha: 0.08),
+        child: const Icon(Icons.broken_image),
       ),
     );
   }

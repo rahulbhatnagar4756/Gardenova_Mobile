@@ -720,6 +720,21 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  Future<void> _showSuccessThenGoToProfile({
+    required String title,
+    required String message,
+  }) async {
+    Utils.hideKeyboard();
+    Get.until((route) => route.settings.name == Routes.profile || route.isFirst);
+    if (Get.currentRoute != Routes.profile) {
+      Get.offNamed(Routes.profile);
+    }
+    oldPasswordController.clear();
+    newPasswordController.clear();
+    confirmPasswordController.clear();
+    BaseSnackBar.show(title: title, message: message);
+  }
+
   void updatePassword() async {
     var response = await profileRepository.changePassword(
       oldPasswordController.text,
@@ -738,17 +753,12 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
       return;
     }
 
-    oldPasswordController.clear();
-    newPasswordController.clear();
-    confirmPasswordController.clear();
-    BaseSnackBar.show(
+    await _showSuccessThenGoToProfile(
       title: AppLocalizations.of(Get.context!)!.passwordChanged,
       message: (apiMessage != null && apiMessage.isNotEmpty)
           ? apiMessage
           : AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
     );
-    Get.back();
-
   }
 
   void setPassword() async {
@@ -760,15 +770,12 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
         (response['success'] == true ||
             response['statusCode'] == 200 ||
             response['statusCode'] == 201)) {
-      isEmailLogedInUser.value = true;
-      isEmailLogedInUser.refresh();
       await SharedPrefsService.instance.setBool(AppKeys.emailLogedInUser, true);
-      oldPasswordController.clear();
-      BaseSnackBar.show(
+      await _showSuccessThenGoToProfile(
         title: AppStrings.setPwd,
         message: AppLocalizations.of(Get.context!)!.passwordChangedSuccessfully,
       );
-      Get.back();
+      isEmailLogedInUser.value = true;
     }
   }
 

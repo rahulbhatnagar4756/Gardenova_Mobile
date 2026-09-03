@@ -151,7 +151,7 @@ class AppStrings {
   static const changePwdMsg = "Update your security password";
   static const setPwdMsg = "Set your security password";
   static const setPwdBtnMsg = "Set Password";
-  static const tapAddPlantsToAddNewPlant = "Tap “Add Plants” to add your first plant";
+  static const tapAddPlantsToAddNewPlant = "Tap “Add Plants” to add your plant";
   static const saveChanges = "Save Changes";
   static const selectPruningTime = "Please select pruning time";
   static const selectCriticalCareTime = "Please select critical care time";
