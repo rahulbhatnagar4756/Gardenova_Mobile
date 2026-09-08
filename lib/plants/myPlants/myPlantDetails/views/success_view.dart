@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -42,7 +42,7 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CachedNetworkImage(
+        SafeCachedNetworkImage(
           height: spacerSize350,
           width: double.infinity,
           fit: BoxFit.cover,
@@ -50,8 +50,11 @@ class MyPlantDetailsSuccessView extends StatelessWidget {
               controller.plantDetailData.value.data?.plant?.imageUrl ?? "",
           placeholder: (context, url) =>
               const BaseShimmer(height: spacerSize350, width: double.infinity),
-          errorWidget: (context, url, error) =>
-              const Icon(Icons.broken_image, color: AppColors.offWhite10),
+          errorWidget: (context, url, error) => const BrokenImageView(
+            height: spacerSize350,
+            width: double.infinity,
+            iconSize: 64,
+          ),
         ),
         StatusBarOverlapScrollView(
           child: Column(

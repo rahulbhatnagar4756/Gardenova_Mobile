@@ -9,7 +9,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/utils/utils.dart';
 import 'package:photo_view/photo_view.dart';
+
+import 'safe_cached_network_image.dart';
 
 class FullScreenImageView extends StatelessWidget {
   final String imageUrl;
@@ -64,8 +67,8 @@ class FullScreenImageView extends StatelessWidget {
   }
 
   static ImageProvider _providerFor(String imageUrl) {
-    if (imageUrl.startsWith('http')) {
-      return CachedNetworkImageProvider(imageUrl);
+    if (Utils.isValidNetworkImageUrl(imageUrl)) {
+      return CachedNetworkImageProvider(imageUrl.trim());
     }
     if (imageUrl.startsWith('assets/')) {
       return AssetImage(imageUrl);
@@ -136,6 +139,11 @@ class FullScreenImageView extends StatelessWidget {
                     backgroundDecoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
+                    errorBuilder: (_, __, ___) => const BrokenImageView(
+                      iconSize: 64,
+                      color: Colors.white54,
+                      backgroundColor: Colors.transparent,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -171,6 +179,11 @@ class FullScreenImageView extends StatelessWidget {
                     filterQuality: FilterQuality.high,
                     width: rect.width,
                     height: rect.height,
+                    errorBuilder: (_, __, ___) => const BrokenImageView(
+                      iconSize: 48,
+                      color: Colors.white54,
+                      backgroundColor: Colors.transparent,
+                    ),
                   ),
                 ),
               ),
@@ -248,7 +261,9 @@ class _FullScreenGalleryViewState extends State<FullScreenGalleryView> {
   }
 
   ImageProvider _imageProviderFor(String url) {
-    if (url.startsWith('http')) return CachedNetworkImageProvider(url);
+    if (Utils.isValidNetworkImageUrl(url)) {
+      return CachedNetworkImageProvider(url.trim());
+    }
     if (url.startsWith('assets/')) return AssetImage(url);
     return FileImage(File(url));
   }
@@ -272,6 +287,11 @@ class _FullScreenGalleryViewState extends State<FullScreenGalleryView> {
                 maxScale: PhotoViewComputedScale.covered * 3,
                 backgroundDecoration: const BoxDecoration(
                   color: Colors.transparent,
+                ),
+                errorBuilder: (_, __, ___) => const BrokenImageView(
+                  iconSize: 64,
+                  color: Colors.white54,
+                  backgroundColor: Colors.transparent,
                 ),
                 // Allow horizontal swipe to propagate to PageView
                 gestureDetectorBehavior: HitTestBehavior.translucent,

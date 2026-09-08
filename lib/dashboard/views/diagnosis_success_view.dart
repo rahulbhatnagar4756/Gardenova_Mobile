@@ -20,6 +20,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 
 import '../../base/widgets/clickable_image.dart';
 import '../../base/widgets/expandable_text.dart';
+import '../../base/widgets/safe_cached_network_image.dart';
 import '../../base/widgets/status_bar_overlap_scroll_view.dart';
 
 class DiagnosisSuccessView extends StatelessWidget {
@@ -222,27 +223,17 @@ class DiagnosisSuccessView extends StatelessWidget {
   }
 
   Widget imageCard(String imageUrl) {
-    return Container(
-      color: AppColors.charcoalGrey,
-      child: imageUrl.isNotEmpty
-          ? ClickableImage(
-              imageUrl: imageUrl,
-              height: spacerSize350,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              heroTag: "diagnosis_main_image",
-            )
-          : Container(
-              height: spacerSize350,
-              width: double.infinity,
-              color: AppColors.greenColor.withValues(alpha: .08),
-              alignment: Alignment.center,
-              child: Icon(
-                Icons.image_not_supported_outlined,
-                size: 50.sp,
-                color: AppColors.greenColor,
-              ),
-            ),
+    return ClickableImage(
+      imageUrl: imageUrl,
+      height: spacerSize350,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      heroTag: "diagnosis_main_image",
+      errorWidget: const BrokenImageView(
+        height: spacerSize350,
+        width: double.infinity,
+        iconSize: 64,
+      ),
     );
   }
 
@@ -275,39 +266,44 @@ class DiagnosisSuccessView extends StatelessWidget {
           ),
         ),
 
-        // Add Plant Button (UI Only for now)
-        CommonClickWidget(
-          onTap: () {
-            // Functionality to be implemented in the future
-            BaseSnackBar.show(
-              title: AppStrings.comingSoon,
-              message: AppStrings.addPlantFunctionalityWillBeAvailableSoon,
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
-            decoration: BoxDecoration(
-              gradient: AppColors.linearGradientForBtn,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.greenColor.withValues(alpha: 0.25),
-                  blurRadius: 12,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Text(
-              AppLocalizations.of(context)!.addPlant,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.3,
+        Obx(() {
+          final isAdding = controller.isAddingPlant.value;
+          return CommonClickWidget(
+            onTap: isAdding ? () {} : () => controller.addPlantByScientificName(),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+              decoration: BoxDecoration(
+                gradient: AppColors.linearGradientForBtn,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.greenColor.withValues(alpha: 0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
+              child: isAdding
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Text(
+                      AppLocalizations.of(context)!.addPlant,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
             ),
-          ),
-        ),
+          );
+        }),
       ],
     );
   }

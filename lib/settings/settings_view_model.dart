@@ -779,16 +779,34 @@ class SettingsViewModel extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  void callDeleteAccountApi() async {
-    var response = await profileRepository.deleteAccount();
-    if (response != null) {
-      // await ReminderPushNotificationService.instance.onUserLogout();
-      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
-      SharedPrefsService.instance.clear();
-      // Get.offAllNamed(Routes.chooseAccountType);
-      SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
-      Get.offAllNamed(Routes.login);
+  Future<void> callDeleteAccountApi() async {
+    try {
+      await ReminderPushNotificationService.instance.unregisterDeviceToken();
+    } catch (e) {
+      log('Failed to deregister FCM token before delete account: $e');
     }
+
+    final response = await profileRepository.deleteAccount();
+    if (response == null || response is! Map || response[ApiKeys.success] != true) {
+      unawaited(ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded());
+      if (response == null || response is! Map) return;
+
+      final apiMessage = response[ApiKeys.message]?.toString().trim();
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: (apiMessage != null && apiMessage.isNotEmpty)
+            ? apiMessage
+            : AppStrings.somethingWentWrong,
+      );
+      return;
+    }
+
+    final apiMessage = response[ApiKeys.message]?.toString().trim();
+    final successTitle = AppLocalizations.of(Get.context!)!.success;
+    final message = (apiMessage != null && apiMessage.isNotEmpty) ? apiMessage : successTitle;
+    await Utils.logoutUser(deregisterRemote: false);
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    BaseSnackBar.show(title: successTitle, message: message);
   }
 
   Future<void> sendEmailVerification() async {

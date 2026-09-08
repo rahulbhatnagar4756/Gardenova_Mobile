@@ -6,6 +6,7 @@ import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 
 import '../../../base/widgets/clickable_image.dart';
+import '../../../base/widgets/safe_cached_network_image.dart';
 import 'package:kasagardem/utils/constants/app_strings.dart';
 
 class SimilarImagesSection extends StatelessWidget {
@@ -40,12 +41,18 @@ class SimilarImagesSection extends StatelessWidget {
               itemBuilder: (_, index) {
                 return ClickableImage(
                   imageUrl: images[index],
+                  height: 110.h,
                   width: 110.w,
                   fit: BoxFit.cover,
                   heroTag: "similar_image_$index",
                   borderRadius: BorderRadius.circular(18.r),
                   allImages: images,
                   initialIndex: index,
+                  errorWidget: BrokenImageView(
+                    height: 110.h,
+                    width: 110.w,
+                    iconSize: 36,
+                  ),
                 );
                 // return GestureDetector(
                 //   onTap: () {

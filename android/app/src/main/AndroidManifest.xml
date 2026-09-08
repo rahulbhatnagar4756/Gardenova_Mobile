@@ -114,6 +114,9 @@ xmlns:tools="http://schemas.android.com/tools">
             <action android:name="com.google.android.gms.ads.service.CACHE" />
         </intent>
         <package android:name="com.google.android.gms" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.facebook.lite" />
+        <package android:name="com.facebook.orca" />
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" />
         <!-- Razorpay UPI / wallet app visibility (Android 11+) -->

@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -214,7 +214,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
         : controller.profileImage.value;
 
     if (url != null && url.isNotEmpty) {
-      return CachedNetworkImage(
+      return SafeCachedNetworkImage(
         imageUrl: url,
         fit: BoxFit.cover,
         width: size,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
+import 'package:kasagardem/utils/constants/app_color.dart';
 
 class CircularImageCard extends StatelessWidget {
   final String imageUrl;
@@ -16,7 +18,7 @@ class CircularImageCard extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 3),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             spreadRadius: 2,
             offset: const Offset(0, 4),
@@ -24,21 +26,16 @@ class CircularImageCard extends StatelessWidget {
         ],
       ),
       child: ClipOval(
-        child: Image.network(
-          imageUrl,
+        child: SafeCachedNetworkImage(
+          imageUrl: imageUrl,
           width: size,
           height: size,
           fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
-              color: Colors.grey[200],
-              child: const Center(child: CircularProgressIndicator()),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: Colors.grey[200],
-            child: const Icon(Icons.broken_image, color: Colors.grey),
+          errorWidget: (_, __, ___) => BrokenImageView(
+            height: size,
+            width: size,
+            iconSize: size * 0.4,
+            backgroundColor: AppColors.backgroundGrey,
           ),
         ),
       ),

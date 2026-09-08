@@ -4,6 +4,7 @@ class PlantsRepository {
   final String allPlantUrl = 'api/v1/allPlants';
   final String getAllPlantDetailUrl = 'api/v1/allPlants/';
   final String addPlantUrl = 'api/v1/allPlants/addplant';
+  final String addPlantByScientificNameUrl = 'api/v1/allplants/add-by-scientific-name';
   final String editPlantUrl = 'api/v1/allPlants/updatePlant/';
   final String myPlantUrl = 'api/v1/allPlants/user/myplants';
   final String getMyPlantDetailUrl = 'api/v1/allplants/user/plants/';
@@ -46,6 +47,14 @@ class PlantsRepository {
   addPlant({Map? addPlantReq}) async {
     var addPlantsResponse = await ApiRepository.instance.post(addPlantUrl, body: addPlantReq);
     return addPlantsResponse;
+  }
+
+  Future<dynamic> addPlantByScientificName({required String scientificName}) async {
+    return ApiRepository.instance.post(
+      addPlantByScientificNameUrl,
+      body: {'scientific_name': scientificName},
+      returnFailureResponse: true,
+    );
   }
 
   editPlant({Map? editPlantReq, required String userPlantId}) async {

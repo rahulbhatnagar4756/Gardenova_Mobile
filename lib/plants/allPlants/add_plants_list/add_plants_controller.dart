@@ -70,13 +70,7 @@ class AllPlantsController extends GetxController {
   /// Rejects empty, relative, and host-less URLs that would crash
   /// [CachedNetworkImage] with "No host specified in URI".
   static bool isValidNetworkImageUrl(String? url) {
-    final value = url?.trim() ?? '';
-    if (value.isEmpty) return false;
-
-    final uri = Uri.tryParse(value);
-    if (uri == null || !uri.hasScheme || uri.host.isEmpty) return false;
-
-    return uri.scheme == 'http' || uri.scheme == 'https';
+    return Utils.isValidNetworkImageUrl(url);
   }
 
   String? resolvedPlantImageUrl(Plants plant) {

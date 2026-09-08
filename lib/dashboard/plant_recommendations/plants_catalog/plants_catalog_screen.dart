@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
@@ -96,7 +96,7 @@ class PlantsCatalogScreen extends GetView<PlantsCatalogViewModel> {
                               borderRadius: BorderRadius.circular(spacerSize15),
                               child: Column(
                                 children: [
-                                  CachedNetworkImage(
+                                  SafeCachedNetworkImage(
                                     fit: BoxFit.cover,
                                     height: spacerSize150,
                                     width: Get.width,

@@ -9,11 +9,19 @@ import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_req
 import 'package:kasagardem/dashboard/plants_diagnostic/model/plant_diagnosis_response_model.dart';
 import 'package:kasagardem/dashboard/plants_diagnostic/plant_diagnosis_repository.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
+import 'package:kasagardem/plants/allPlants/add_plants_list/add_plants_controller.dart';
+import 'package:kasagardem/plants/allPlants/allPlantsDetails/components/plant_add_success_dialog.dart';
+import 'package:kasagardem/plants/myPlants/myPlantsList/my_plants_controller.dart';
+import 'package:kasagardem/plants/plant_repository.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/network_services/app_exceptions.dart';
 import 'package:kasagardem/utils/permission_manager.dart';
 
+import '../../base/dialogs/base_dialog.dart';
+import '../../utils/constants/api_keys.dart';
+import '../../utils/constants/app_constants.dart';
 import '../../utils/constants/app_keys.dart';
+import '../../utils/constants/app_strings.dart';
 import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../../utils/utils.dart';
@@ -21,10 +29,12 @@ import '../dashboard_controller.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
   PlantDiagnosisRepository plantDiagnosisRepository = PlantDiagnosisRepository();
+  final PlantsRepository _plantsRepository = PlantsRepository();
   Rx<File>? imageFile = File('').obs;
   Rx<PlantDiagnosisResponseModel> plantDiagnosisResponse = PlantDiagnosisResponseModel().obs;
   RxBool isCurrentImagePlant = true.obs;
   RxBool isLoading = false.obs;
+  RxBool isAddingPlant = false.obs;
   RxString errorMessage = "".obs;
 
   /// Flips to true the moment the API call finishes.
@@ -276,6 +286,94 @@ class PlantDiagnosisViewModel extends GetxController {
       default:
         Get.back();
         break;
+    }
+  }
+
+  Future<void> addPlantByScientificName() async {
+    if (isAddingPlant.value) return;
+
+    final plantInfo = plantDiagnosisResponse.value.data?.plantInfo;
+    final scientificName = plantInfo?.scientificName?.trim() ?? '';
+    if (scientificName.isEmpty) {
+      BaseSnackBar.show(
+        title: AppLocalizations.of(Get.context!)!.error,
+        message: AppStrings.scientificNameNotAvailable,
+      );
+      return;
+    }
+
+    final isLoggedIn = SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+    if (!isLoggedIn) {
+      BaseDialog.showAlertDialog(
+        context: Get.context!,
+        onButtonPressed: () {
+          Get.back();
+          Get.offAllNamed(Routes.login, arguments: {'question_state_passed': true});
+        },
+        title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+        description: AppStrings.pleaseLoginToSeeAiDiagnosis,
+        buttonLabel: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+      );
+      return;
+    }
+
+    isAddingPlant.value = true;
+    try {
+      final response = await _plantsRepository.addPlantByScientificName(
+        scientificName: scientificName,
+      );
+      if (response == null || response is! Map) return;
+
+      final apiMessage = response[ApiKeys.message]?.toString().trim();
+      final hasApiMessage = apiMessage != null && apiMessage.isNotEmpty;
+      if (response[ApiKeys.success] != true) {
+        BaseSnackBar.show(
+          title: AppLocalizations.of(Get.context!)!.addPlant,
+          message: hasApiMessage ? apiMessage : AppStrings.somethingWentWrong,
+        );
+        return;
+      }
+
+      if (Get.isRegistered<MyPlantsController>()) {
+        Get.find<MyPlantsController>().callGetMyPlantListApi();
+      }
+      if (Get.isRegistered<AllPlantsController>()) {
+        Get.find<AllPlantsController>().hasMyPlants.value = true;
+      }
+
+      final data = response[ApiKeys.data];
+      final dataMap = data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
+      final commonName = dataMap['common_name']?.toString().trim() ?? '';
+      final imageUrl = dataMap['image_url']?.toString().trim() ?? '';
+      final title = commonName.isNotEmpty
+          ? commonName
+          : (plantInfo?.commonNames != null && plantInfo!.commonNames!.isNotEmpty)
+          ? plantInfo.commonNames!.first
+          : scientificName;
+      final image = imageUrl.isNotEmpty
+          ? imageUrl
+          : (plantInfo?.images != null && plantInfo!.images!.isNotEmpty)
+          ? plantInfo.images!.first
+          : '';
+
+      PlantAddSuccessDialog.show(
+        Get.context!,
+        title: title,
+        image: image,
+        description: '',
+        buttonLabel: AppLocalizations.of(Get.context!)!.gotoMyPlants,
+        onButtonPressed: () async {
+          if (Get.isRegistered<MyPlantsController>()) {
+            Get.until((route) => route.settings.name == Routes.myPlantsScreen);
+          } else {
+            Get.back();
+            await Future.delayed(const Duration(milliseconds: 100));
+            Get.offNamed(Routes.myPlantsScreen);
+          }
+        },
+      );
+    } finally {
+      isAddingPlant.value = false;
     }
   }
 

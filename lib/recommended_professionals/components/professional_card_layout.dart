@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
@@ -36,7 +36,7 @@ class ProfessionalCardLayout extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(spacerSize8),
-              child: CachedNetworkImage(
+              child: SafeCachedNetworkImage(
                 fit: BoxFit.fill,
                 imageUrl: professional!.imageUrl ?? "",
                 height: spacerSize190,

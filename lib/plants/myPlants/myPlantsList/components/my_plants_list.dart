@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -52,15 +52,18 @@ class MyPlantsList extends StatelessWidget {
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(spacerSize15),
                     ),
-                    child: CachedNetworkImage(
+                    child: SafeCachedNetworkImage(
                       height: 110,
                       // Fixed height for image area
                       width: double.infinity,
                       fit: BoxFit.cover,
                       imageUrl: item.imageOriginalUrl ?? "",
                       placeholder: (context, url) => const BaseShimmer(),
-                      errorWidget: (context, url, error) =>
-                          Icon(Icons.broken_image, color: AppColors.offWhite10),
+                      errorWidget: (context, url, error) => const BrokenImageView(
+                        height: 110,
+                        width: double.infinity,
+                        iconSize: 40,
+                      ),
                     ),
                   ),
 

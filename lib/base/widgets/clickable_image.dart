@@ -5,9 +5,10 @@
 
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:kasagardem/base/widgets/base_shimmer.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
+import 'package:kasagardem/utils/utils.dart';
 
 import '../../utils/constants/app_assets.dart';
 import 'full_screen_image_preview.dart';
@@ -68,29 +69,35 @@ class ClickableImage extends StatelessWidget {
     }
   }
 
+  Widget _fallback() {
+    return errorWidget ?? BrokenImageView(height: height, width: width);
+  }
+
   Widget _buildImage() {
     final url = imageUrl.trim();
     if (url.isEmpty || url.startsWith('assets/')) {
+      if (url.isEmpty) return _fallback();
       return Image.asset(
-        url.isEmpty ? errorImageUrl : url,
+        url,
         height: height,
         width: width,
         fit: fit,
         gaplessPlayback: true,
-        errorBuilder: (_, __, ___) =>
-            errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+        errorBuilder: (_, __, ___) => _fallback(),
       );
     }
-    if (url.startsWith('http')) {
-      return CachedNetworkImage(
+    if (Utils.isValidNetworkImageUrl(url)) {
+      return SafeCachedNetworkImage(
         imageUrl: url,
         height: height,
         width: width,
         fit: fit,
         placeholder: (context, url) => BaseShimmer(height: height, width: width),
-        errorWidget: (_, __, ___) =>
-            errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+        errorWidget: (_, __, ___) => _fallback(),
       );
+    }
+    if (url.startsWith('http')) {
+      return _fallback();
     }
     return Image.file(
       File(url),
@@ -98,8 +105,7 @@ class ClickableImage extends StatelessWidget {
       width: width,
       fit: fit,
       gaplessPlayback: true,
-      errorBuilder: (_, __, ___) =>
-          errorWidget ?? const Center(child: Icon(Icons.broken_image)),
+      errorBuilder: (_, __, ___) => _fallback(),
     );
   }
 

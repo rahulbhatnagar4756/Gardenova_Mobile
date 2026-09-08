@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kasagardem/base/widgets/base_date_format.dart';
@@ -137,7 +137,7 @@ class _ScanImage extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: radius,
-      child: CachedNetworkImage(
+      child: SafeCachedNetworkImage(
         imageUrl: scan.imageUrl,
         height: _size.w,
         width: _size.w,

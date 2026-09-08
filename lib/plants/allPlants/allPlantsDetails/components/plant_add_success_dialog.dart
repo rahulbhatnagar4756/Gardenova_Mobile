@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -70,7 +70,7 @@ class PlantAddSuccessDialog {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(spacerSize45),
-                        child: CachedNetworkImage(
+                        child: SafeCachedNetworkImage(
                           height: 86.w,
                           width: 86.w,
                           fit: BoxFit.cover,

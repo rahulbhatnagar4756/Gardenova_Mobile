@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -480,7 +480,7 @@ class _PhotoCard extends StatelessWidget {
   Widget _image() {
     final url = imageUrl.trim();
     if (url.isNotEmpty) {
-      return CachedNetworkImage(
+      return SafeCachedNetworkImage(
         imageUrl: url,
         height: 168.h,
         width: double.infinity,

@@ -45,7 +45,21 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   ''';
 
   Future<void> _hideWebsiteNavigation(InAppWebViewController controller) async {
+    if (!mounted) return;
     await controller.evaluateJavascript(source: _hideWebsiteNavScript);
+  }
+
+  void _setLoading(bool loading) {
+    if (!mounted) return;
+    setState(() {
+      isLoading = loading;
+    });
+  }
+
+  @override
+  void dispose() {
+    webViewController = null;
+    super.dispose();
   }
 
   // @override
@@ -119,21 +133,16 @@ class PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                       webViewController = controller;
                     },
                     onLoadStart: (controller, url) {
-                      setState(() {
-                        isLoading = true;
-                      });
+                      _setLoading(true);
                     },
                     onLoadStop: (controller, url) async {
                       await _hideWebsiteNavigation(controller);
+                      if (!mounted) return;
                       StatusBarStyle.applyLightScreen();
-                      setState(() {
-                        isLoading = false;
-                      });
+                      _setLoading(false);
                     },
                     onReceivedError: (controller, request, error) {
-                      setState(() {
-                        isLoading = false;
-                      });
+                      _setLoading(false);
                     },
                   ),
                   if (isLoading)

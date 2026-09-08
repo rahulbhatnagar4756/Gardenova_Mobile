@@ -219,6 +219,7 @@ class ApiRepository {
     bool directUrl = false,
     bool showRunTimeError = true,
     bool rethrowExceptions = false,
+    bool returnFailureResponse = false,
   }) async => request(
     ApiKeys.post,
     endPoint,
@@ -228,6 +229,7 @@ class ApiRepository {
     directUrl: directUrl,
     showRunTimeError: showRunTimeError,
     rethrowExceptions: rethrowExceptions,
+    returnFailureResponse: returnFailureResponse,
   );
 
   Future<dynamic> patch(

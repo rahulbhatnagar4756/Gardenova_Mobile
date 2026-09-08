@@ -77,10 +77,15 @@ mixin SocialSignInMixin {
     try {
       final rawNonce = _generateNonce();
       final nonce = _sha256(rawNonce);
+      // Android native Facebook login crashes when the Facebook app (or its
+      // login activity) is missing. Custom Tabs / web login avoids that path.
       final LoginResult result = await FacebookAuth.instance.login(
         permissions: ['email', 'public_profile'],
         loginTracking: LoginTracking.enabled,
         nonce: nonce,
+        loginBehavior: Platform.isAndroid
+            ? LoginBehavior.webOnly
+            : LoginBehavior.nativeWithFallback,
       );
       if (result.status == LoginStatus.success) {
         facebookAuthToken = result.accessToken!.tokenString;

@@ -72,9 +72,11 @@ class ReminderPushNotificationService {
     log('FCM token deregistered for plant care reminders.');
   }
 
-  Future<void> onUserLogout() async {
+  Future<void> onUserLogout({bool deregisterRemote = true}) async {
     try {
-      await unregisterDeviceToken();
+      if (deregisterRemote) {
+        await unregisterDeviceToken();
+      }
       await FirebaseMessaging.instance.deleteToken();
       await SharedPrefsService.instance.setString(AppKeys.fcmToken, '');
       debugPrint('[PUSH][logout] FCM token deregistered and deleted');

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_text_field.dart';
+import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/plants/myPlants/myPlantsList/components/my_plants_header_delegate.dart';
 import 'package:kasagardem/services/admob_service.dart';
 
@@ -63,117 +62,117 @@ class MyPlantsScreen extends GetView<MyPlantsController> {
       ),
 
       /// 🔹 BODY
-      body: Column(
-        children: [
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                controller.pageNumber.value = 1;
-                controller.callGetMyPlantListApi();
-              },
-
-              /// 🚀 IMPORTANT: Obx wraps CustomScrollView to handle slivers correctly
-              child: Obx(
-                () => CustomScrollView(
-                  controller: controller.scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                  slivers: [
-                    /// 🔹 HEADER
-                    SliverPersistentHeader(
-                      floating: true,
-                      pinned: false,
-                      delegate: MyPlantsHeaderDelegate(
-                        minHeight: 210.h,
-                        maxHeight: 210.h,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: spacerSize20),
-                          child: titleWithSearch(context),
-                        ),
-                      ),
-                    ),
-
-                    /// 🔹 LIST / EMPTY / LOADING
-                    if (controller.myPlantList.isEmpty && controller.isLoading.value)
-                      _shimmerList()
-                    else if (controller.myPlantList.isEmpty)
-                      SliverFillRemaining(hasScrollBody: false, child: _emptyState(context))
-                    else
-                      SliverPadding(
-                        padding: EdgeInsets.only(
-                          left: spacerSize20,
-                          right: spacerSize20,
-                          bottom: 25.h,
-                        ),
-                        sliver: SliverGrid(
-                          delegate: SliverChildBuilderDelegate((context, index) {
-                            var item = controller.myPlantList[index];
-
-                            return MyPlantsListItem(
-                              item: item,
-                              onTap: () {
-                                Get.toNamed(Routes.myPlantsDetails, arguments: item.plantId)?.then((
-                                  value,
-                                ) {
-                                  Utils.hideKeyboard();
-                                });
-                              },
-                              onDelete: () {
-                                showDeleteConfirmationDialog(context, item.plantId);
-                              },
-                            );
-                          }, childCount: controller.myPlantList.length),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: .81,
-                            crossAxisSpacing: 8.w,
-                            mainAxisSpacing: 8.w,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  controller.pageNumber.value = 1;
+                  controller.callGetMyPlantListApi();
+                },
+        
+                /// 🚀 IMPORTANT: Obx wraps CustomScrollView to handle slivers correctly
+                child: Obx(
+                  () => CustomScrollView(
+                    controller: controller.scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                    slivers: [
+                      /// 🔹 HEADER
+                      SliverPersistentHeader(
+                        floating: true,
+                        pinned: false,
+                        delegate: MyPlantsHeaderDelegate(
+                          minHeight: 210.h,
+                          maxHeight: 210.h,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: spacerSize20),
+                            child: titleWithSearch(context),
                           ),
                         ),
                       ),
-
-                    /// 🔹 LOAD MORE LOADER
-                    SliverToBoxAdapter(
-                      child: controller.isLoadMoreRunning.value
-                          ? Padding(
-                              padding: EdgeInsets.only(
-                                left: spacerSize20,
-                                right: spacerSize20,
-                                bottom: spacerSize20,
-                              ),
-                              child: GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: .84,
-                                  crossAxisSpacing: 8.w,
-                                  mainAxisSpacing: 8.w,
+        
+                      /// 🔹 LIST / EMPTY / LOADING
+                      if (controller.myPlantList.isEmpty && controller.isLoading.value)
+                        _shimmerList()
+                      else if (controller.myPlantList.isEmpty)
+                        SliverFillRemaining(hasScrollBody: false, child: _emptyState(context))
+                      else
+                        SliverPadding(
+                          padding: EdgeInsets.only(
+                            left: spacerSize20,
+                            right: spacerSize20,
+                            bottom: 25.h,
+                          ),
+                          sliver: SliverGrid(
+                            delegate: SliverChildBuilderDelegate((context, index) {
+                              var item = controller.myPlantList[index];
+        
+                              return MyPlantsListItem(
+                                item: item,
+                                onTap: () {
+                                  Get.toNamed(Routes.myPlantsDetails, arguments: item.plantId)?.then((
+                                    value,
+                                  ) {
+                                    Utils.hideKeyboard();
+                                  });
+                                },
+                                onDelete: () {
+                                  showDeleteConfirmationDialog(context, item.plantId);
+                                },
+                              );
+                            }, childCount: controller.myPlantList.length),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: .81,
+                              crossAxisSpacing: 8.w,
+                              mainAxisSpacing: 8.w,
+                            ),
+                          ),
+                        ),
+        
+                      /// 🔹 LOAD MORE LOADER
+                      SliverToBoxAdapter(
+                        child: controller.isLoadMoreRunning.value
+                            ? Padding(
+                                padding: EdgeInsets.only(
+                                  left: spacerSize20,
+                                  right: spacerSize20,
+                                  bottom: spacerSize20,
                                 ),
-                                itemCount: 2,
-                                itemBuilder: (context, index) => _shimmerListItem(),
-                              ),
-                            )
-                          : const SizedBox(),
-                    ),
-                  ],
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: .84,
+                                    crossAxisSpacing: 8.w,
+                                    mainAxisSpacing: 8.w,
+                                  ),
+                                  itemCount: 2,
+                                  itemBuilder: (context, index) => _shimmerListItem(),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Obx(() {
-            if (AdMobService.instance.shouldShowBanners &&
-                controller.isAdLoaded.value &&
-                controller.bannerAd != null) {
-              return Container(
-                alignment: Alignment.center,
-                width: controller.bannerAd!.size.width.toDouble().w,
-                height: controller.bannerAd!.size.height.toDouble().h,
-                child: AdWidget(ad: controller.bannerAd!),
-              );
-            }
-            return const SizedBox.shrink();
-          }),
-        ],
+            Obx(() {
+              final banner = controller.bannerAd;
+              if (AdMobService.instance.shouldShowBanners &&
+                  controller.isAdLoaded.value &&
+                  banner != null) {
+                return SafeArea(
+                  child: SafeBannerAd(key: ObjectKey(banner), ad: banner),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+          ],
+        ),
       ),
       ),
     );

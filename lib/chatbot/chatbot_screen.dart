@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -1078,7 +1078,7 @@ class _MessageImage extends StatelessWidget {
         fit: BoxFit.cover,
       );
     } else {
-      image = CachedNetworkImage(
+      image = SafeCachedNetworkImage(
         imageUrl: message.imageUrl!,
         width: width,
         height: height,

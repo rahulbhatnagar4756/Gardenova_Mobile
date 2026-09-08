@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
+import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/chatbot_fab.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
@@ -185,17 +185,13 @@ class DashboardScreen extends GetWidget<DashboardController> {
                 ),
                 // AdMob Banner Ad Area (only if user does not have a premium subscription)
                 Obx(() {
+                  final banner = controller.bannerAd;
                   if (AdMobService.instance.shouldShowBanners &&
                       controller.isAdLoaded.value &&
-                      controller.bannerAd != null) {
-                    final banner = controller.bannerAd!;
+                      banner != null) {
                     return Align(
                       alignment: Alignment.center,
-                      child: SizedBox(
-                        width: banner.size.width.toDouble(),
-                        height: banner.size.height.toDouble(),
-                        child: AdWidget(ad: banner),
-                      ),
+                      child: SafeBannerAd(key: ObjectKey(banner), ad: banner),
                     );
                   }
                   return const SizedBox.shrink();

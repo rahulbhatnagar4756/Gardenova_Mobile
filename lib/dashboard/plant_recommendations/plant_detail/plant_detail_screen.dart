@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
@@ -23,7 +23,7 @@ class PlantDetailScreen extends GetWidget<PlantDetailViewModel> {
       backgroundColor: AppColors.darkGreen,
       body: Stack(
         children: [
-          CachedNetworkImage(
+          SafeCachedNetworkImage(
             imageUrl: controller.plantDetail.value.imageSearchUrl ?? "",
             height: Get.height * .45,
             placeholder: (context, url) =>

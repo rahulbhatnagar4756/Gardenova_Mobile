@@ -53,17 +53,31 @@ class Utils {
     }
   }
 
+  /// Rejects empty, relative, and host-less URLs that crash
+  /// [CachedNetworkImage] with "No host specified in URI".
+  static bool isValidNetworkImageUrl(String? url) {
+    final value = url?.trim() ?? '';
+    if (value.isEmpty) return false;
+
+    final uri = Uri.tryParse(value);
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) return false;
+
+    return uri.scheme == 'http' || uri.scheme == 'https';
+  }
+
   static Future<void> callSettingBasicApi() async {
     if (Get.isRegistered<SettingsViewModel>()) {
       await Get.find<SettingsViewModel>().initFunctions();
     }
   }
 
-  static Future<void> logoutUser() async {
+  static Future<void> logoutUser({bool deregisterRemote = true}) async {
     ApiRepository.instance.showLoader();
     await Future<void>.delayed(Duration.zero);
     try {
-      await ReminderPushNotificationService.instance.onUserLogout();
+      await ReminderPushNotificationService.instance.onUserLogout(
+        deregisterRemote: deregisterRemote,
+      );
       SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
       SharedPrefsService.instance.clear();
       SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);

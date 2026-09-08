@@ -119,6 +119,8 @@ class AppStrings {
   static const String comingSoon = "Coming Soon";
   static const String addPlantFunctionalityWillBeAvailableSoon =
       "Add Plant functionality will be available soon!";
+  static const String scientificNameNotAvailable =
+      "Scientific name is not available for this plant.";
   static const String noDetailsFoundForThisPlant = "No details found for this plant.";
   static const String careOverview = "Care Overview";
   static const String fertilizer = "Fertilizer";

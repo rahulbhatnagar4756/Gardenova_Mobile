@@ -296,6 +296,7 @@ class SettingsScreen extends GetWidget<SettingsViewModel> {
       title: AppLocalizations.of(Get.context!)!.deleteAccount,
       description: AppLocalizations.of(Get.context!)!.areYouSureYouWantToDeleteYourAccount,
       onButtonPressed: () {
+        Get.back();
         controller.callDeleteAccountApi();
       },
     );

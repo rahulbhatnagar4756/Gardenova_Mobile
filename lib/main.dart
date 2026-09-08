@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide appFlavor;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -47,13 +47,23 @@ Future<void> main() async {
       debugPrint('Background FCM handler registration deferred: $e');
     }
 
-    FlutterError.onError = (errorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    };
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
+    if (kReleaseMode) {
+      FlutterError.onError = (errorDetails) {
+        if (_shouldIgnoreCrashlyticsError(errorDetails.exception, details: errorDetails)) {
+          debugPrint('Ignored Crashlytics FlutterError: ${errorDetails.exception}');
+          return;
+        }
+        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      };
+      PlatformDispatcher.instance.onError = (error, stack) {
+        if (_shouldIgnoreCrashlyticsError(error)) {
+          debugPrint('Ignored Crashlytics async error: $error');
+          return true;
+        }
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+    }
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setSystemUIOverlayStyle(appSystemOverlayStyle);
@@ -68,7 +78,7 @@ Future<void> main() async {
       );
     }
 
-    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'prod');
+    final flavorString = const String.fromEnvironment('appFlavor', defaultValue: 'dev');
     late final Flavor currentFlavor;
     late final String baseUrl;
     switch (flavorString.toLowerCase()) {
@@ -116,7 +126,13 @@ Future<void> main() async {
     });
   } catch (error, stack) {
     try {
-      await FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      if (kReleaseMode) {
+        debugPrint('Error: $error');
+        debugPrint('Stack: $stack');
+        await FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        debugPrint('Error recorded to Crashlytics');
+        debugPrint('Crashlytics instance: ${FirebaseCrashlytics.instance}');
+      }
     } catch (_) {}
     runApp(
       MaterialApp(
@@ -135,13 +151,17 @@ Future<void> _initDeferredServices() async {
     await NotificationService.instance.initialize();
     ReminderPushNotificationService.instance.configure();
   } catch (e, stack) {
-    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
+    if (kReleaseMode) {
+      await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
+    }
   }
 
   try {
     await AdMobService.instance.ensureInitialized();
   } catch (e, stack) {
-    await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
+    if (kReleaseMode) {
+      await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
+    }
   }
 }
 
@@ -247,4 +267,64 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ),
     );
   }
+}
+
+/// Missing/corrupt images and HTTP load failures are expected at runtime
+/// and should not be reported as crashes.
+bool _shouldIgnoreCrashlyticsError(Object error, {FlutterErrorDetails? details}) {
+  final library = details?.library?.toLowerCase() ?? '';
+  if (library.contains('image')) return true;
+
+  final context = details?.context?.toString().toLowerCase() ?? '';
+  if (context.contains('resolving an image') ||
+      context.contains('loading an image') ||
+      context.contains('decoding an image')) {
+    return true;
+  }
+
+  if (error is NetworkImageLoadException) return true;
+
+  final typeName = error.runtimeType.toString();
+  if (typeName == 'HttpException' ||
+      typeName == 'HttpExceptionWithStatus' ||
+      typeName == 'ClientException') {
+    return true;
+  }
+
+  final message = error.toString().toLowerCase();
+  if (message.contains('this adwidget is already in the widget tree')) {
+    return true;
+  }
+  if (message.contains('unable to find explicit activity class') &&
+      message.contains('facebook')) {
+    return true;
+  }
+
+  const ignorableSnippets = [
+    'networkimageloadexception',
+    'httpexception',
+    'httpexceptionwithstatus',
+    'invalid statuscode',
+    'statuscode: 403',
+    'status code: 403',
+    'statuscode: 404',
+    'status code: 404',
+    'http request failed',
+    'failed to load network image',
+    'invalid image data',
+    'could not instantiate image codec',
+    'exception: invalid image data',
+    'no host specified in uri',
+  ];
+  if (ignorableSnippets.any(message.contains)) return true;
+
+  final looksLikeMissingImage =
+      message.contains('image') &&
+      (message.contains('403') ||
+          message.contains('404') ||
+          message.contains('forbidden') ||
+          message.contains('not found') ||
+          message.contains('corrupt') ||
+          message.contains('decode'));
+  return looksLikeMissingImage;
 }

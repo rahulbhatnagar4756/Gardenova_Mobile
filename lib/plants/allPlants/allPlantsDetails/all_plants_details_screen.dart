@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
@@ -10,6 +10,7 @@ import 'package:kasagardem/utils/constants/app_strings.dart';
 import '../../../base/widgets/base_button.dart';
 import '../../../base/widgets/base_shimmer.dart';
 import '../../../base/widgets/clickable_image.dart';
+import '../../../base/widgets/safe_cached_network_image.dart';
 import '../../../base/widgets/status_bar_overlap_scroll_view.dart';
 import '../../../l10n/app_localizations.dart';
 import 'all_plants_details_controller.dart';
@@ -35,40 +36,39 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
 
       return Scaffold(
         backgroundColor: AppColors.appColor,
-        body: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned(top: 0, left: 0, right: 0, child: imageCard()),
-                  MainContentCard(controller: controller),
-                  backButton(),
-                ],
+        body: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned(top: 0, left: 0, right: 0, child: imageCard()),
+                    MainContentCard(controller: controller),
+                    backButton(),
+                  ],
+                ),
               ),
-            ),
-            if (controller.screenType.value == "edit")
-              BaseButton(
-                buttonLabel: AppStrings.saveChanges,
-                buttonWidth: double.infinity,
-                onPressed: () {
-                  //Get.toNamed(Routes.plantRemindersListing);
-                  controller.validateAndSubmit(context);
-                },
-              ).marginAll(spacerSize10),
-            Obx(() {
-              if (AdMobService.instance.shouldShowBanners &&
-                  controller.isAdLoaded.value &&
-                  controller.bannerAd != null) {
-                return Container(
-                  alignment: Alignment.center,
-                  width: controller.bannerAd!.size.width.toDouble().w,
-                  height: controller.bannerAd!.size.height.toDouble().h,
-                  child: AdWidget(ad: controller.bannerAd!),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-          ],
+              if (controller.screenType.value == "edit")
+                BaseButton(
+                  buttonLabel: AppStrings.saveChanges,
+                  buttonWidth: double.infinity,
+                  onPressed: () {
+                    //Get.toNamed(Routes.plantRemindersListing);
+                    controller.validateAndSubmit(context);
+                  },
+                ).marginAll(spacerSize10),
+              Obx(() {
+                final banner = controller.bannerAd;
+                if (AdMobService.instance.shouldShowBanners &&
+                    controller.isAdLoaded.value &&
+                    banner != null) {
+                  return SafeBannerAd(key: ObjectKey(banner), ad: banner);
+                }
+                return const SizedBox.shrink();
+              }),
+            ],
+          ),
         ),
       );
     });
@@ -77,10 +77,12 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
   Widget _loadingView() {
     return Scaffold(
       backgroundColor: AppColors.appColor,
-      body: Stack(
-        children: [
-          // 1. Image Shimmer
-          const BaseShimmer(height: spacerSize350),
+      body: SafeArea(
+        top: false,
+        child: Stack(
+          children: [
+            // 1. Image Shimmer
+            const BaseShimmer(height: spacerSize350),
 
           // 2. Content Card Shimmer
           StatusBarOverlapScrollView(
@@ -184,6 +186,7 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
           // Back Button
           backButton(),
         ],
+        ),
       ),
     );
   }
@@ -271,15 +274,16 @@ class AllPlantsDetailsScreen extends GetWidget<AllPlantsDetailsController> {
   Widget imageCard() {
     final imageUrl = controller.plantDetailData.value.data?.plant?.imageUrl ?? "";
 
-    return Container(
-      color: AppColors.charcoalGrey,
-      child: ClickableImage(
-        imageUrl: imageUrl,
+    return ClickableImage(
+      imageUrl: imageUrl,
+      height: spacerSize350,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      heroTag: "plant_detail_image",
+      errorWidget: const BrokenImageView(
         height: spacerSize350,
         width: double.infinity,
-        fit: BoxFit.cover,
-        heroTag: "plant_detail_image",
-        errorWidget: Icon(Icons.broken_image, color: AppColors.offWhite, size: spacerSize40),
+        iconSize: 64,
       ),
     );
   }

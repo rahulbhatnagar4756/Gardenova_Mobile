@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_bordered_container.dart';
@@ -71,7 +71,7 @@ class SimilarPlantsLayout extends StatelessWidget {
                               borderRadius: BorderRadius.circular(spacerSize15),
                               child: plantDiagnosisViewModel!.isLoading.value
                                   ? const BaseShimmer()
-                                  : CachedNetworkImage(
+                                  : SafeCachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl: plantDiagnosisViewModel!
                                           .plantDiagnosisResponse

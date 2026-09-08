@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:kasagardem/base/widgets/safe_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/widget_extensions.dart';
@@ -42,7 +42,7 @@ class ProfessionalItem extends StatelessWidget {
                 topLeft: Radius.circular(spacerSize16),
                 topRight: Radius.circular(spacerSize16),
               ),
-              child: CachedNetworkImage(
+              child: SafeCachedNetworkImage(
                 fit: BoxFit.fill,
                 imageUrl: professional!.imageUrl ?? "",
                 height: spacerSize190,

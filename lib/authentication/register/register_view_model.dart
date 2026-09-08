@@ -95,12 +95,12 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       pinController.clear();
       startResendTimer();
       startOtpExpiryTimer();
-      if (isResend) {
-        BaseSnackBar.show(
-          title: AppLocalizations.of(Get.context!)!.success,
-          message: AppLocalizations.of(Get.context!)!.codeSentSuccessfully,
-        );
-      }
+      _showApiMessage(
+        response,
+        fallbackMessage: isResend
+            ? AppLocalizations.of(Get.context!)!.codeSentSuccessfully
+            : null,
+      );
     }
   }
 
@@ -114,6 +114,21 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       _saveRegisterSession(response);
       registerSuccessDialog();
     }
+  }
+
+  void _showApiMessage(dynamic response, {String? fallbackMessage}) {
+    final apiMessage = response is Map
+        ? response[ApiKeys.message]?.toString().trim()
+        : null;
+    final message = (apiMessage != null && apiMessage.isNotEmpty)
+        ? apiMessage
+        : fallbackMessage;
+    if (message == null || message.isEmpty) return;
+
+    BaseSnackBar.show(
+      title: AppLocalizations.of(Get.context!)!.success,
+      message: message,
+    );
   }
 
   void _saveRegisterSession(dynamic response) {
@@ -158,6 +173,7 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
       startResendTimer();
       startOtpExpiryTimer();
       Get.toNamed(Routes.registerVerifyOtp);
+      _showApiMessage(registerResponse);
     }
   }
 
