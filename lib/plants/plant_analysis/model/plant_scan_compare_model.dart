@@ -96,9 +96,10 @@ class PlantScanCompareItem {
   Issues? get primaryIssue => issues.isNotEmpty ? issues.first : null;
 
   bool get isHealthy {
-    if (healthStatus?.isHealthy == true) return true;
-    if (healthStatus?.isHealthy == false) return false;
-    return issues.isEmpty && predictedDisease.trim().isEmpty;
+    final disease = predictedDisease.trim().toLowerCase();
+    if (disease == 'healthy') return true;
+    if (disease.isNotEmpty) return false;
+    return issues.isEmpty;
   }
 
   String get displayName {

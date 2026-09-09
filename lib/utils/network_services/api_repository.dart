@@ -32,6 +32,7 @@ class ApiRepository {
   bool _isLoaderVisible = false;
   Future<bool>? _refreshInFlight;
   bool _isUnauthorizedDialogVisible = false;
+  bool _isLoggingOut = false;
   static const String _refreshTokenUrl = 'api/v1/auth/refresh';
 
   Map<String, String> _buildDefaultHeaders({bool includeAuth = true}) {
@@ -113,6 +114,7 @@ class ApiRepository {
       log("API Response::: ${response.body}");
 
       if (response.statusCode == 401 &&
+          !_isLoggingOut &&
           !_isRefreshTokenEndpoint(endPoint) &&
           _storedRefreshToken().isNotEmpty) {
         final refreshed = await _refreshSession();
@@ -342,8 +344,8 @@ class ApiRepository {
       log('Refresh token status::: ${refreshResponse.statusCode}');
       log('Refresh token body::: ${refreshResponse.body}');
 
-      if (refreshResponse.statusCode == 401) {
-        _showUnauthorizedLogout();
+      if (_isInvalidRefreshTokenResponse(refreshResponse)) {
+        await _logoutDueToInvalidRefreshToken();
         return false;
       }
 
@@ -353,6 +355,9 @@ class ApiRepository {
 
       final result = jsonDecode(refreshResponse.body);
       if (result is! Map || result[ApiKeys.success] != true) {
+        if (_isInvalidRefreshTokenMessage(result)) {
+          await _logoutDueToInvalidRefreshToken();
+        }
         return false;
       }
       final data = result[ApiKeys.data];
@@ -373,7 +378,48 @@ class ApiRepository {
     }
   }
 
+  bool _isInvalidRefreshTokenResponse(http.Response response) {
+    if (response.statusCode == 401) return true;
+    try {
+      return _isInvalidRefreshTokenMessage(jsonDecode(response.body));
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool _isInvalidRefreshTokenMessage(dynamic result) {
+    if (result is! Map) return false;
+    if (result[ApiKeys.success] == true) return false;
+    final message = (result[ApiKeys.message] ?? '').toString().toLowerCase();
+    return message.contains('invalid or expired refresh token') ||
+        message.contains('expired refresh token');
+  }
+
+  Future<void> _logoutDueToInvalidRefreshToken() async {
+    if (_isLoggingOut) return;
+    _isLoggingOut = true;
+    log('Invalid or expired refresh token — logging out');
+    try {
+      await ReminderPushNotificationService.instance.onUserLogout();
+      SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, false);
+      SharedPrefsService.instance.clear();
+      SharedPrefsService.instance.setString(AppKeys.role, AppKeys.user);
+      if (Get.currentRoute != Routes.login) {
+        Get.offAllNamed(Routes.login);
+      }
+    } catch (e) {
+      log('Forced logout failed: $e');
+      if (Get.currentRoute != Routes.login) {
+        Get.offAllNamed(Routes.login);
+      }
+    } finally {
+      _isLoggingOut = false;
+      _isUnauthorizedDialogVisible = false;
+    }
+  }
+
   void _showUnauthorizedLogout() {
+    if (_isLoggingOut) return;
     if (_isUnauthorizedDialogVisible) return;
     _isUnauthorizedDialogVisible = true;
     Future.delayed(Duration.zero, () {
@@ -424,6 +470,7 @@ class ApiRepository {
         throw BadRequestException(message ?? response.body.toString());
 
       case 401:
+        if (_isLoggingOut) return null;
         _showUnauthorizedLogout();
         return null;
       case 403:

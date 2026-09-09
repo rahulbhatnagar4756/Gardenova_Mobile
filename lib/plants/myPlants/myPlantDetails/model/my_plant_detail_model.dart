@@ -474,7 +474,8 @@ class ReminderModel {
 
     lastFertilizedAt = _parseDate(json['last_fertilized_at']);
 
-    puringNotificationEnabled = json['puring_notification_enabled'];
+    puringNotificationEnabled =
+        json['pruning_notification_enabled'] ?? json['puring_notification_enabled'];
 
     pruningReminderFrequency = json['pruning_reminder_frequency'];
 
@@ -531,7 +532,7 @@ class ReminderModel {
 
       'last_fertilized_at': lastFertilizedAt?.toIso8601String(),
 
-      'puring_notification_enabled': puringNotificationEnabled,
+      'pruning_notification_enabled': puringNotificationEnabled,
 
       'pruning_reminder_frequency': pruningReminderFrequency,
 
