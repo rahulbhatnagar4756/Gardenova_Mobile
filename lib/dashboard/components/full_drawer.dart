@@ -110,9 +110,12 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
           child: Row(
             children: [
               Obx(() {
-                final imageUrl = Get.isRegistered<SettingsViewModel>()
+                final rawUrl = Get.isRegistered<SettingsViewModel>()
                     ? Get.find<SettingsViewModel>().profileImage.value
                     : "";
+                final imageUrl = Utils.isValidNetworkImageUrl(rawUrl)
+                    ? rawUrl
+                    : AppAssets.appLogo;
 
                 return Container(
                   width: 56.w,
@@ -132,6 +135,7 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                       fit: BoxFit.cover,
                       heroTag: "profile_image_appbar_drawer",
                       errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                      previewErrorAsset: AppAssets.appLogo,
                     ),
                   ),
                 );

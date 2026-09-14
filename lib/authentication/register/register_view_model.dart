@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:kasagardem/authentication/social_sign_in_mixin.dart';
 import 'package:kasagardem/base/dialogs/base_dialog.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
+import 'package:kasagardem/services/reminder_push_notification_service.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/routes.dart';
@@ -112,7 +114,21 @@ class RegisterViewModel extends GetxController with SocialSignInMixin {
     );
     if (response != null) {
       _saveRegisterSession(response);
-      registerSuccessDialog();
+      final responseId =
+          response[ApiKeys.data]?[ApiKeys.responseId]?.toString().trim() ?? '';
+      log(responseId);
+      if (responseId.isEmpty) {
+        registerSuccessDialog();
+      } else {
+        SharedPrefsService.instance.setString(
+          AppKeys.submissionResponseId,
+          responseId,
+        );
+        SharedPrefsService.instance.setBool(AppKeys.isSoftLoggedIn, false);
+        SharedPrefsService.instance.setBool(AppKeys.isLoggedIn, true);
+        ReminderPushNotificationService.instance.registerDeviceTokenIfNeeded();
+        Get.offAllNamed(Routes.dashboard);
+      }
     }
   }
 

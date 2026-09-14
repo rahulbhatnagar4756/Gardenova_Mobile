@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -27,11 +28,22 @@ class AboutAppScreen extends StatefulWidget {
 
 class AboutAppScreenState extends State<AboutAppScreen> {
   late final WebViewController _controller;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController();
+    _controller = WebViewController()
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) => _setLoading(true),
+          onPageFinished: (_) {
+            StatusBarStyle.applyLightScreen();
+            _setLoading(false);
+          },
+          onWebResourceError: (_) => _setLoading(false),
+        ),
+      );
     debugPrint(
       "language::::${SharedPrefsService.instance.getString(AppKeys.selectedLang) ?? "en"}",
     );
@@ -42,33 +54,40 @@ class AboutAppScreenState extends State<AboutAppScreen> {
     );
   }
 
+  void _setLoading(bool loading) {
+    if (!mounted) return;
+    setState(() {
+      isLoading = loading;
+    });
+  }
+
   Future<void> loadHtmlFromAssets({required String languageCode}) async {
     debugPrint("languageCode:::$languageCode");
-    final String path = languageCode == 'en'
-        ? Assets.htmlAboutEn
-        : Assets.htmlAboutPt;
+    try {
+      final String path = Assets.htmlAboutEn;
+      final String htmlTemplate = await rootBundle.loadString(path);
+      final String appVersion = await DeviceInfoHelper.getAppVersion();
+      final String htmlContent = htmlTemplate.replaceAll(
+        '{{APP_VERSION}}',
+        appVersion,
+      );
 
-    final String htmlTemplate = await rootBundle.loadString(path);
-    final String appVersion = await DeviceInfoHelper.getAppVersion();
-    final String htmlContent = htmlTemplate.replaceAll(
-      '{{APP_VERSION}}',
-      appVersion,
-    );
-
-    await _controller.loadRequest(
-      Uri.dataFromString(
-        htmlContent,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8'),
-      ),
-    );
-    StatusBarStyle.applyLightScreen();
+      await _controller.loadRequest(
+        Uri.dataFromString(
+          htmlContent,
+          mimeType: 'text/html',
+          encoding: Encoding.getByName('utf-8'),
+        ),
+      );
+    } catch (_) {
+      _setLoading(false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: AppColors.appColor,
+      backgroundColor: AppColors.appColor,
       appBar: BaseAppBar(
         isBackButtonVisible: true,
         isAppIconVisible: false,
@@ -77,7 +96,21 @@ class AboutAppScreenState extends State<AboutAppScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: WebViewWidget(controller: _controller)),
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  WebViewWidget(controller: _controller),
+                  if (isLoading)
+                    ColoredBox(
+                      color: AppColors.appColor,
+                      child: const Center(
+                        child: SpinKitSpinningLines(color: AppColors.greenColor),
+                      ),
+                    ),
+                ],
+              ),
+            ),
             Container(
               margin: EdgeInsets.only(top: 20.h),
               width: double.infinity,

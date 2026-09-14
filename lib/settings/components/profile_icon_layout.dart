@@ -11,6 +11,7 @@ import 'package:kasagardem/utils/constants/app_assets.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
 import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
+import 'package:kasagardem/utils/utils.dart';
 
 import '../../base/widgets/common_click_widget.dart';
 
@@ -151,6 +152,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
                         borderRadius: BorderRadius.circular(100),
                         heroTag: "profile_image_appbar",
                         errorWidget: _defaultImage(size),
+                        previewErrorAsset: AppAssets.appLogo,
                       ),
               ),
             ),
@@ -192,7 +194,7 @@ class ProfileIconLayout extends GetWidget<SettingsViewModel> {
     final url = controller.screenType.value == AppKeys.professional
         ? controller.professionalProfileData.value?.data?.imageUrl
         : controller.profileImage.value;
-    if (url != null && url.isNotEmpty) return url;
+    if (url != null && Utils.isValidNetworkImageUrl(url)) return url;
     return AppAssets.appLogo;
   }
 

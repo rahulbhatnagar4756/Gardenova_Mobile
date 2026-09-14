@@ -23,6 +23,10 @@ class ClickableImage extends StatelessWidget {
   final String? heroTag;
   final Widget? errorWidget;
 
+  /// Asset shown in the fullscreen preview when [imageUrl] cannot be loaded.
+  /// Leave null so failed images (plants, scans, etc.) still show the broken icon.
+  final String? previewErrorAsset;
+
   /// When provided and contains more than one URL, tapping opens the
   /// swipeable [FullScreenGalleryView] starting at [initialIndex].
   /// When null or a single item, falls back to the normal single-image view.
@@ -39,13 +43,26 @@ class ClickableImage extends StatelessWidget {
     this.borderRadius,
     this.heroTag,
     this.errorWidget,
+    this.previewErrorAsset,
     this.allImages,
     this.initialIndex = 0,
   });
 
+  bool _canPreview(String url) {
+    final value = url.trim();
+    if (value.isEmpty) return false;
+    if (value.startsWith('assets/')) return true;
+    if (Utils.isValidNetworkImageUrl(value)) return true;
+    if (value.startsWith('http')) return false;
+    return File(value).existsSync();
+  }
+
   void _onTap(BuildContext context) {
     final images = allImages;
-    final urlToOpen = imageUrl.trim().isEmpty ? errorImageUrl : imageUrl;
+    var urlToOpen = imageUrl.trim().isEmpty ? errorImageUrl : imageUrl;
+    if (previewErrorAsset != null && !_canPreview(urlToOpen)) {
+      urlToOpen = previewErrorAsset!;
+    }
     final box = context.findRenderObject() as RenderBox?;
     Rect? origin;
     if (box != null && box.hasSize) {
@@ -65,6 +82,7 @@ class ClickableImage extends StatelessWidget {
         originRect: origin,
         originRadius: borderRadius ?? BorderRadius.zero,
         context: context,
+        errorFallbackAsset: previewErrorAsset,
       );
     }
   }

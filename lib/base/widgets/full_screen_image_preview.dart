@@ -20,6 +20,7 @@ class FullScreenImageView extends StatelessWidget {
   final Rect? originRect;
   final BorderRadius originRadius;
   final Animation<double> animation;
+  final String? errorFallbackAsset;
 
   const FullScreenImageView({
     super.key,
@@ -28,6 +29,7 @@ class FullScreenImageView extends StatelessWidget {
     this.heroTag,
     this.originRect,
     this.originRadius = BorderRadius.zero,
+    this.errorFallbackAsset,
   });
 
   static void open({
@@ -36,6 +38,7 @@ class FullScreenImageView extends StatelessWidget {
     Rect? originRect,
     BorderRadius? originRadius,
     BuildContext? context,
+    String? errorFallbackAsset,
   }) {
     if (imageUrl.trim().isEmpty) return;
     final navContext = context ?? Get.overlayContext ?? Get.context;
@@ -57,6 +60,7 @@ class FullScreenImageView extends StatelessWidget {
             originRect: originRect,
             originRadius: originRadius ?? BorderRadius.zero,
             animation: animation,
+            errorFallbackAsset: errorFallbackAsset,
           );
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -77,6 +81,18 @@ class FullScreenImageView extends StatelessWidget {
   }
 
   ImageProvider get _imageProvider => _providerFor(imageUrl);
+
+  Widget _previewError({required double iconSize}) {
+    final fallback = errorFallbackAsset;
+    if (fallback != null && fallback.startsWith('assets/')) {
+      return Image.asset(fallback, fit: BoxFit.contain);
+    }
+    return BrokenImageView(
+      iconSize: iconSize,
+      color: Colors.white54,
+      backgroundColor: Colors.transparent,
+    );
+  }
 
   Widget _closeButton(BuildContext context) {
     return GestureDetector(
@@ -139,11 +155,7 @@ class FullScreenImageView extends StatelessWidget {
                     backgroundDecoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
-                    errorBuilder: (_, __, ___) => const BrokenImageView(
-                      iconSize: 64,
-                      color: Colors.white54,
-                      backgroundColor: Colors.transparent,
-                    ),
+                    errorBuilder: (_, __, ___) => _previewError(iconSize: 64),
                   ),
                 ),
                 Positioned(
@@ -179,11 +191,7 @@ class FullScreenImageView extends StatelessWidget {
                     filterQuality: FilterQuality.high,
                     width: rect.width,
                     height: rect.height,
-                    errorBuilder: (_, __, ___) => const BrokenImageView(
-                      iconSize: 48,
-                      color: Colors.white54,
-                      backgroundColor: Colors.transparent,
-                    ),
+                    errorBuilder: (_, __, ___) => _previewError(iconSize: 48),
                   ),
                 ),
               ),
