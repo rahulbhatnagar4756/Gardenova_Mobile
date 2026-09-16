@@ -146,3 +146,6 @@
 
 -keep class com.dexterous.** { *; }
 -dontwarn com.dexterous.**
+
+# In android/app/proguard-rules.pro
+-keep class com.android.billingclient.api.ProxyBillingActivity { *; }

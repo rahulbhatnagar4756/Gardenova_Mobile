@@ -1,7 +1,7 @@
 name: kasagardem
 description: "A plant and garden management app."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev Gardenova
-version: 1.0.3+15
+version: 1.0.4+16
 environment:
   sdk: ^3.8.1
 
@@ -57,6 +57,8 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   flutter_tts: ^4.2.5
   flutter_svg: ^2.2.0
+  reward_popup: ^0.0.7
+  flutter_confetti: ^0.9.2
 
   flutter_localizations:
     sdk: flutter
@@ -71,6 +73,7 @@ dependency_overrides:
   package_info_plus: ^10.1.0
   win32: ^6.2.0
   flutter_secure_storage_windows: ^4.2.1
+  lottie: ^3.3.2
 
 
 dev_dependencies:

@@ -24,7 +24,11 @@ class FullScreenDrawer extends StatefulWidget {
   final bool isProfessional;
   final Function(int) onTap;
 
-  const FullScreenDrawer({super.key, this.isProfessional = false, required this.onTap});
+  const FullScreenDrawer({
+    super.key,
+    this.isProfessional = false,
+    required this.onTap,
+  });
 
   @override
   State<FullScreenDrawer> createState() => _FullScreenDrawerState();
@@ -39,7 +43,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
 
   @override
   void initState() {
-    if (SharedPrefsService.instance.getString(AppKeys.role) != AppKeys.professional) {
+    if (SharedPrefsService.instance.getString(AppKeys.role) !=
+        AppKeys.professional) {
       if (!isExternalLinkLoaded) {
         //    callGetExternalLinkApi();
       }
@@ -80,7 +85,11 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
             child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.only(top: 15.h, right: 15.w),
-                child: Image.asset(Assets.backBtnDraweClose, height: 42.w, width: 42.w),
+                child: Image.asset(
+                  Assets.backBtnDraweClose,
+                  height: 42.w,
+                  width: 42.w,
+                ),
               ),
             ),
           ),
@@ -91,7 +100,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
 
   Widget _buildHeader() {
     final bool isProfessional =
-        SharedPrefsService.instance.getString(AppKeys.role) == AppKeys.professional;
+        SharedPrefsService.instance.getString(AppKeys.role) ==
+        AppKeys.professional;
 
     return Container(
       width: double.infinity,
@@ -134,7 +144,10 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                       width: double.infinity,
                       fit: BoxFit.cover,
                       heroTag: "profile_image_appbar_drawer",
-                      errorWidget: Image.asset(AppAssets.appLogo, fit: BoxFit.cover),
+                      errorWidget: Image.asset(
+                        AppAssets.appLogo,
+                        fit: BoxFit.cover,
+                      ),
                       previewErrorAsset: AppAssets.appLogo,
                     ),
                   ),
@@ -160,7 +173,10 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                       Obx(() {
                         final userName = Get.isRegistered<SettingsViewModel>()
                             ? Get.find<SettingsViewModel>().name.value
-                            : (SharedPrefsService.instance.getString(AppKeys.name) ?? "");
+                            : (SharedPrefsService.instance.getString(
+                                    AppKeys.name,
+                                  ) ??
+                                  "");
                         return BaseText(
                           fontWeight: FontWeight.w600,
                           fontFamily: AppKeys.poppins,
@@ -168,7 +184,8 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                           textColor: AppColors.whiteColor,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          text: '${AppLocalizations.of(Get.context!)!.hi}, $userName!',
+                          text:
+                              '${AppLocalizations.of(Get.context!)!.hi}, $userName!',
                         );
                       }),
                       if (isProfessional) ...[
@@ -185,10 +202,11 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
                           child: BaseText(
                             text: () {
                               final l10n = AppLocalizations.of(Get.context!)!;
-                              final remaining = SharedPrefsService.instance.getString(
-                                AppKeys.remainingDays,
-                              );
-                              if (BaseCalculateRemainingDays.isZeroRemainingDays(remaining)) {
+                              final remaining = SharedPrefsService.instance
+                                  .getString(AppKeys.remainingDays);
+                              if (BaseCalculateRemainingDays.isZeroRemainingDays(
+                                remaining,
+                              )) {
                                 return l10n.planExpiringToday;
                               }
                               return "$remaining\t${l10n.days}\t${l10n.left}";
@@ -256,6 +274,17 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
               icon: Icons.person_outline,
               title: AppLocalizations.of(Get.context!)!.myProfile,
               onTap: () => widget.onTap(5),
+            ),
+            drawerItem(
+              icon: Icons.emoji_events_outlined,
+              title: AppLocalizations.of(
+                Get.context!,
+              )!.challengesLeaderboardTitle,
+              onTap: () {
+                Get.back();
+                if (Get.currentRoute == Routes.leaderboard) return;
+                Get.toNamed(Routes.leaderboard);
+              },
             ),
             drawerItem(
               icon: Icons.settings_outlined,
@@ -379,7 +408,9 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
     final Color resolvedIconBg = isDestructive
         ? AppColors.red.withValues(alpha: 0.1)
         : AppColors.greenColor.withValues(alpha: 0.1);
-    final Color resolvedTitleColor = isDestructive ? AppColors.red : AppColors.blackColor;
+    final Color resolvedTitleColor = isDestructive
+        ? AppColors.red
+        : AppColors.blackColor;
     final Color resolvedChevronColor = isDestructive
         ? AppColors.red.withValues(alpha: 0.5)
         : AppColors.liteGreyColor;
@@ -444,11 +475,16 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
 
       final cleanUrl = url.split(':::').first.trim();
 
-      final Uri uri = Uri.parse(cleanUrl.startsWith('http') ? cleanUrl : 'https://$cleanUrl');
+      final Uri uri = Uri.parse(
+        cleanUrl.startsWith('http') ? cleanUrl : 'https://$cleanUrl',
+      );
 
       debugPrint("Opening URL ::: $uri");
 
-      final bool launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final bool launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
 
       if (!launched) {
         debugPrint("Could not launch $uri");

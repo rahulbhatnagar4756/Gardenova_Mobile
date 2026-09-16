@@ -39,4 +39,6 @@ class AppKeys {
   static const notificationsEnabled = 'notifications_enabled';
   static const pendingNotificationPayload = 'pending_notification_payload';
   static const isNewUserOtpLogin = 'isNewUserOtpLogin';
+  static const todaysTasksState = 'todays_tasks_state';
+  static const challengesState = 'challenges_state';
 }

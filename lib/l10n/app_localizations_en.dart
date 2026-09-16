@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -13,22 +12,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careTitle => 'Care For Your Plants Intelligently';
 
   @override
-  String get careDescription =>
-      'Give your plants smart care with perfect hydration, nutrition, and growth using this app.';
+  String get careDescription => 'Give your plants smart care with perfect hydration, nutrition, and growth using this app.';
 
   @override
   String get identifyTitle => 'Identify Plants Instantly';
 
   @override
-  String get identifyDescription =>
-      'Quickly recognize any plant and learn detailed information about it in just seconds.';
+  String get identifyDescription => 'Quickly recognize any plant and learn detailed information about it in just seconds.';
 
   @override
   String get connectTitle => 'Connect With Other Gardeners';
 
   @override
-  String get connectDescription =>
-      'Join a vibrant community of plant lovers to share tips, stories, advice, and grow together.';
+  String get connectDescription => 'Join a vibrant community of plant lovers to share tips, stories, advice, and grow together.';
 
   @override
   String get next => 'Next';
@@ -142,8 +138,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterYourOtp => 'Enter Your OTP';
 
   @override
-  String get checkYourEmailOrPhoneForTheOTPAndEnterItBelow =>
-      'Check your email or phone for the\nOTP and enter it below';
+  String get checkYourEmailOrPhoneForTheOTPAndEnterItBelow => 'Check your email or phone for the\nOTP and enter it below';
 
   @override
   String get verifyOtp => 'Verify OTP';
@@ -158,8 +153,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createPassword => 'Create New Password';
 
   @override
-  String get setAStrongPasswordToSecureYourAccount =>
-      'Set a strong password to secure your account.';
+  String get setAStrongPasswordToSecureYourAccount => 'Set a strong password to secure your account.';
 
   @override
   String get backToLogin => 'Back To Login';
@@ -240,8 +234,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get professionalConnectionsDesc => 'Connect With Vetted Professionals\nin Your Area';
 
   @override
-  String get startIntelligentDiagnosisDesc =>
-      'Answer a Few Questions About Your Space and Preferences to Receive Personalized Recommendations For Your Garden Transformation.';
+  String get startIntelligentDiagnosisDesc => 'Answer a Few Questions About Your Space and Preferences to Receive Personalized Recommendations For Your Garden Transformation.';
 
   @override
   String get startIntelligentDiagnosis => 'Start Intelligent Diagnosis';
@@ -319,8 +312,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get city => 'City';
 
   @override
-  String get yourIntelligentDiagnosisReportIsReady =>
-      'Your Intelligent Diagnosis\nReport Is Ready!';
+  String get yourIntelligentDiagnosisReportIsReady => 'Your Intelligent Diagnosis\nReport Is Ready!';
 
   @override
   String get viewReport => 'View Report';
@@ -383,7 +375,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordsDoNotMatch => 'Passwords do not match';
 
   @override
-  String get codeSentSuccessfully => 'OTP sent successfully';
+  String get codeSentSuccessfully => 'Code sent successfully';
 
   @override
   String get close => 'Close';
@@ -428,8 +420,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requestSentSuccessfully => 'Request Sent Successfully!';
 
   @override
-  String get requestSentSuccessMessage =>
-      'Your Quote Request Has Been Sent To Our Professionals. They Will Review Your Requirements And Reach Out To You With Their Proposals.';
+  String get requestSentSuccessMessage => 'Your Quote Request Has Been Sent To Our Professionals. They Will Review Your Requirements And Reach Out To You With Their Proposals.';
 
   @override
   String get professionalNotified => 'Professionals Notified';
@@ -462,8 +453,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeLanguage => 'Change Language';
 
   @override
-  String get areYouSureYouWantToChangeTheLanguage =>
-      'Are you sure you want to change the language?';
+  String get areYouSureYouWantToChangeTheLanguage => 'Are you sure you want to change the language?';
 
   @override
   String get areYouSureYouWantToLogout => 'Are you sure you want to logout?';
@@ -484,8 +474,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseLoginToSubmitQuote => 'Please log in to submit your quote request';
 
   @override
-  String get pleaseLoginToSeeRecommendedProfessionals =>
-      'Please log in to see recommended professionals';
+  String get pleaseLoginToSeeRecommendedProfessionals => 'Please log in to see recommended professionals';
 
   @override
   String get incorrectCodePleaseTryAgain => 'Incorrect code. Please try again.';
@@ -533,15 +522,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inText => 'in';
 
   @override
-  String get noProfessionalsAvailable =>
-      'There are currently no professionals available for this area.';
+  String get noProfessionalsAvailable => 'There are currently no professionals available for this area.';
 
   @override
   String get noInternetConnection => 'No Internet Connection!!';
 
   @override
-  String get pleaseAcceptTermsAndConditions =>
-      'Please accept the Terms of Use & Privacy Policy to continue.';
+  String get pleaseAcceptTermsAndConditions => 'Please accept the Terms of Use & Privacy Policy to continue.';
 
   @override
   String get comingSoon => 'Coming Soon !!!';
@@ -646,8 +633,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationPermissionRequired => 'Location Permission Required';
 
   @override
-  String get locationPermissionsAreDenied =>
-      'Location permissions are permanently denied. Please go to your app settings to enable them for Gardenova.';
+  String get locationPermissionsAreDenied => 'Location permissions are permanently denied. Please go to your app settings to enable them for Gardenova.';
 
   @override
   String get openSettings => 'Open Settings';
@@ -695,8 +681,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addYourPlant => 'Add Your Plant';
 
   @override
-  String get addYourFirstPlantDescription =>
-      'Search by common name, scientific name or variety of your plant';
+  String get addYourFirstPlantDescription => 'Search by common name, scientific name or variety of your plant';
 
   @override
   String get searchPlants => 'Search Plants';
@@ -795,8 +780,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgradeNow => 'Upgrade Now';
 
   @override
-  String get youAreOnA30DayFreeTrial =>
-      'You are on a 30-day free trial. To prevent your profile from being blocked and hidden from users after 30 days, please purchase a plan.';
+  String get youAreOnA30DayFreeTrial => 'You are on a 30-day free trial. To prevent your profile from being blocked and hidden from users after 30 days, please purchase a plan.';
 
   @override
   String get orderSummary => 'Order Summary';
@@ -1018,8 +1002,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inactive => 'inactive';
 
   @override
-  String get customerPlanDesc =>
-      'Customers can\'t find you in the app, and your potential bookings are being suspended.';
+  String get customerPlanDesc => 'Customers can\'t find you in the app, and your potential bookings are being suspended.';
 
   @override
   String get customerPlanDesc2 => 'Do you want to continue receiving customers through Gardenova?';
@@ -1031,12 +1014,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notNow => 'Not now';
 
   @override
-  String get additionalNationalCoverageDesc1 =>
-      'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
+  String get additionalNationalCoverageDesc1 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals.';
 
   @override
-  String get additionalNationalCoverageDesc2 =>
-      'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.';
+  String get additionalNationalCoverageDesc2 => 'Recommended for online flower delivery, large manufacturers, and nation-wide service professionals, all over the Brazil.';
 
   @override
   String get validFor1Year => '(Valid for 1 year only)';
@@ -1054,22 +1035,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourPlanEnds => 'Your Plan Ends';
 
   @override
-  String get yourPlanEndsDesc =>
-      'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
+  String get yourPlanEndsDesc => 'After 30 days, choose a plan to continue. If there is no subscription, the profile will be inactive.';
 
   @override
   String get planExpired => 'Plan Expired';
 
   @override
-  String get planExpiredDesc =>
-      'Your subscription has ended. Choose a plan to continue using premium features.';
+  String get planExpiredDesc => 'Your subscription has ended. Choose a plan to continue using premium features.';
 
   @override
   String get planExpiringToday => 'Expiring Today';
 
   @override
-  String get planExpiringTodayDesc =>
-      'Your subscription ends today. Renew to keep premium features.';
+  String get planExpiringTodayDesc => 'Your subscription ends today. Renew to keep premium features.';
 
   @override
   String get selectYourPlan => 'Select Your Plan';
@@ -1111,8 +1089,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccount => 'Delete Account';
 
   @override
-  String get areYouSureYouWantToDeleteYourAccount =>
-      'Are you sure you want to permanently delete your account? This action cannot be undone.';
+  String get areYouSureYouWantToDeleteYourAccount => 'Are you sure you want to permanently delete your account? This action cannot be undone.';
 
   @override
   String get currentPassword => 'Current password';
@@ -1142,8 +1119,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deletePlant => 'Remove Plant';
 
   @override
-  String get areYouSureYouWantToDeletePlant =>
-      'Are you sure you want to remove this plant from My Plants? This action cannot be undone.';
+  String get areYouSureYouWantToDeletePlant => 'Are you sure you want to remove this plant from My Plants? This action cannot be undone.';
 
   @override
   String get plantDeletedSuccessfully => 'Plant removed from My Plants successfully.';
@@ -1185,8 +1161,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fitnessScore => 'Fitness Score';
 
   @override
-  String get fitnessScoreSubtitle =>
-      'See how well your garden is set up for healthy growth';
+  String get fitnessScoreSubtitle => 'See how well your garden is set up for healthy growth';
 
   @override
   String get healthy => 'Healthy';
@@ -1201,8 +1176,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPlantAnalysisFound => 'No plant analysis yet';
 
   @override
-  String get noPlantAnalysisFoundDescription =>
-      'Scan a plant to see your analysis history here.';
+  String get noPlantAnalysisFoundDescription => 'Scan a plant to see your analysis history here.';
 
   @override
   String get compare => 'Compare';
@@ -1233,4 +1207,280 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rescan => 'Rescan';
+
+  @override
+  String get todaysTasks => 'Today\'s Tasks';
+
+  @override
+  String get todaysTasksSubtitle => 'Complete daily care to grow your streak';
+
+  @override
+  String get todaysTasksAllDoneTitle => 'All done for today!';
+
+  @override
+  String get todaysTasksAllDoneSubtitle => 'Your garden is thriving. See you tomorrow.';
+
+  @override
+  String get todaysTasksStreak => 'Streak';
+
+  @override
+  String get todaysTasksXp => 'XP';
+
+  @override
+  String get todaysTasksGo => 'Go';
+
+  @override
+  String get todaysTasksClaimBonus => 'Claim bonus';
+
+  @override
+  String get todaysTasksBonusClaimed => 'Bonus claimed';
+
+  @override
+  String get todaysTasksAllCompleteSnack => 'Garden hero! All tasks complete.';
+
+  @override
+  String get todaysTasksBonusSnack => 'Bonus XP claimed. Keep the streak going!';
+
+  @override
+  String get taskWaterTitle => 'Water your plants';
+
+  @override
+  String get taskWaterSubtitle => 'Give them a fresh, even drink';
+
+  @override
+  String get taskInspectTitle => 'Inspect the leaves';
+
+  @override
+  String get taskInspectSubtitle => 'Look for pests and yellowing';
+
+  @override
+  String get taskScanTitle => 'Scan plant health';
+
+  @override
+  String get taskScanSubtitle => 'Catch issues early with AI';
+
+  @override
+  String get taskRemindersTitle => 'Check care reminders';
+
+  @override
+  String get taskRemindersSubtitle => 'Stay on top of today\'s schedule';
+
+  @override
+  String get taskFertilizeTitle => 'Fertilize your plants';
+
+  @override
+  String get taskFertilizeSubtitle => 'Give nutrients for stronger growth';
+
+  @override
+  String get taskPruneTitle => 'Prune and tidy';
+
+  @override
+  String get taskPruneSubtitle => 'Trim dead leaves and shape growth';
+
+  @override
+  String get taskWaterShort => 'Water';
+
+  @override
+  String get taskInspectShort => 'Inspect';
+
+  @override
+  String get taskScanShort => 'Scan';
+
+  @override
+  String get taskRemindersShort => 'Remind';
+
+  @override
+  String get taskFertilizeShort => 'Fertilize';
+
+  @override
+  String get taskPruneShort => 'Prune';
+
+  @override
+  String get gardenLevelSprout => 'Sprout';
+
+  @override
+  String get gardenLevelSeedling => 'Seedling';
+
+  @override
+  String get gardenLevelBloom => 'Bloom';
+
+  @override
+  String get gardenLevelMaster => 'Garden Master';
+
+  @override
+  String get pleaseLoginToSeeReminders => 'Please log in to view your plant care reminders.';
+
+  @override
+  String get taskDueToday => 'Today';
+
+  @override
+  String get taskOverdue => 'Overdue';
+
+  @override
+  String get noCareDueToday => 'No plant care due today';
+
+  @override
+  String get todaysTasksViewAll => 'View all';
+
+  @override
+  String get todaysTasksPlantFallback => 'plant';
+
+  @override
+  String get viewAllChallenges => 'View all challenges';
+
+  @override
+  String get challengesHubTitle => 'Challenges';
+
+  @override
+  String get challengesHubSubtitle => 'Earn points, grow your streak, and climb the board';
+
+  @override
+  String get challengesPoints => 'Points';
+
+  @override
+  String get challengesRank => 'Rank';
+
+  @override
+  String get challengesNextLevel => 'Next level';
+
+  @override
+  String get challengesDaily => 'Daily';
+
+  @override
+  String get challengesWeekly => 'Weekly';
+
+  @override
+  String get challengesMonthly => 'Monthly';
+
+  @override
+  String get challengesRewardsTitle => 'Redeem rewards';
+
+  @override
+  String get challengesLeaderboardTitle => 'Leaderboard';
+
+  @override
+  String get challengesHowToEarn => 'How to earn';
+
+  @override
+  String get challengesWhyYou => 'Why you';
+
+  @override
+  String get challengesStart => 'Start';
+
+  @override
+  String get challengesClaimed => 'Claimed';
+
+  @override
+  String get challengesRedeem => 'Redeem';
+
+  @override
+  String get challengesRedeemed => 'Unlocked';
+
+  @override
+  String get challengesNotEnoughPoints => 'Not enough points yet. Keep gardening!';
+
+  @override
+  String get challengesRedeemSuccess => 'Reward unlocked. Enjoy your garden perk!';
+
+  @override
+  String get challengesMysteryOpened => 'Mystery Garden Reward opened!';
+
+  @override
+  String get challengesYou => 'You';
+
+  @override
+  String get challengesQuizCorrect => 'Correct! Bonus points added.';
+
+  @override
+  String get challengesQuizWrong => 'Not quite. Try another challenge!';
+
+  @override
+  String get challengeCatchUpTitle => 'Catch up — missed tasks';
+
+  @override
+  String get challengeCatchUpWhy => 'Some plants in your garden are overdue';
+
+  @override
+  String get challengeQuizTitle => 'Quiz — know your plant';
+
+  @override
+  String get challengeQuizWhy => 'A plant in your garden is waiting to be named';
+
+  @override
+  String get challengeAddPlants => 'Add 2 new plants';
+
+  @override
+  String get challengeCareActivities => 'Complete 5 plant-care activities';
+
+  @override
+  String get challengeDiagnoses => 'Complete 2 plant diagnoses';
+
+  @override
+  String get challengeWeekStreak => 'Maintain a 7-day care streak';
+
+  @override
+  String get challengeMaintainPlants => 'Maintain 5 plants for 30 days';
+
+  @override
+  String get challengeMonthDiagnoses => 'Complete 5 plant diagnoses';
+
+  @override
+  String get challengeMonthLandscape => 'Create 2 landscape designs';
+
+  @override
+  String get challengeMonthStreak => 'Maintain a 30-day care streak';
+
+  @override
+  String get challengeWaterFallback => 'Water a plant today';
+
+  @override
+  String get challengeWaterFallbackWhy => 'Daily care keeps your garden thriving';
+
+  @override
+  String get earnAddPlant => 'Add a plant';
+
+  @override
+  String get earnDiagnosis => 'Plant diagnosis';
+
+  @override
+  String get earnLandscape => 'Landscape design';
+
+  @override
+  String get earnPlantCare => 'Plant care';
+
+  @override
+  String get earnDailyChallenge => 'Daily challenge';
+
+  @override
+  String get earnCareStreak => 'Care streak';
+
+  @override
+  String get earnAchievement => 'Achievement';
+
+  @override
+  String get earn30Day => '30-day challenge';
+
+  @override
+  String get rewardChatCredits => 'Chat credits';
+
+  @override
+  String get rewardExtraDiagnosis => 'Extra plant diagnosis';
+
+  @override
+  String get rewardExtraLandscape => 'Extra landscape design';
+
+  @override
+  String get rewardPlantInsights => 'Detailed plant insights';
+
+  @override
+  String get rewardExclusiveChallenge => 'Exclusive challenge';
+
+  @override
+  String get rewardExtraScan => 'Extra plant scan';
+
+  @override
+  String get rewardMystery => 'Mystery garden reward';
+
+  @override
+  String get rewardPremiumTrial => 'Premium trial · 3 days';
 }

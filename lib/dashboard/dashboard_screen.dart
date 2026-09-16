@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
+import 'package:kasagardem/base/widgets/base_text.dart';
 import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/chatbot_fab.dart';
@@ -11,7 +12,9 @@ import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
+import 'package:kasagardem/dashboard/components/todays_tasks_card.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
+import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/services/admob_service.dart';
@@ -44,169 +47,322 @@ class DashboardScreen extends GetWidget<DashboardController> {
       () => AnnotatedRegion<SystemUiOverlayStyle>(
         value: appSystemOverlayStyle,
         child: Scaffold(
-        backgroundColor: AppColors.appColor,
-        drawer: SizedBox(
-          // width: MediaQuery.of(context).size.width * 0.9,
-          child: FullScreenDrawer(
-            onTap: (index) {
-              controller.navigateToNext(index);
-            },
+          backgroundColor: AppColors.appColor,
+          drawer: SizedBox(
+            // width: MediaQuery.of(context).size.width * 0.9,
+            child: FullScreenDrawer(
+              onTap: (index) {
+                controller.navigateToNext(index);
+              },
+            ),
           ),
-        ),
-        appBar: controller.isUserLoggedIn.value
-            ? PreferredSize(
-                preferredSize: Size.fromHeight(spacerSize80),
-                child: Builder(
-                  builder: (context) {
-                    return CircularBottomAppBar(
-                      showMenuIcon: true,
-                      onSettingPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
+          appBar: controller.isUserLoggedIn.value
+              ? PreferredSize(
+                  preferredSize: Size.fromHeight(spacerSize80),
+                  child: Builder(
+                    builder: (context) {
+                      return CircularBottomAppBar(
+                        showMenuIcon: true,
+                        onSettingPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      );
+                    },
+                  ),
+                )
+              : BaseAppBar(
+                  isBackButtonVisible: true,
+                  title: AppLocalizations.of(context)!.report,
+                  isAppIconVisible: false,
+                  onBackPressed: () {
+                    Get.offAllNamed(
+                      Routes.login,
+                      arguments: {"question_state_passed": true},
                     );
                   },
                 ),
-              )
-            : BaseAppBar(
-                isBackButtonVisible: true,
-                title: AppLocalizations.of(context)!.report,
-                isAppIconVisible: false,
-                onBackPressed: () {
-                  Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
-                },
-              ),
 
-        floatingActionButton: ChatbotFab(onTap: _onChatbotTap),
-        floatingActionButtonLocation: const _TightEndFloatFabLocation(),
-        body: SafeArea(
-          child: SizedBox(
-            child: Column(
-              children: [
-                Expanded(
-                  child: RefreshIndicator(
-                    color: AppColors.greenColor,
-                    onRefresh: controller.refreshDashboard,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 3.h),
-                        Obx(() {
-                          controller.refreshSoilAnalysis.value;
-                          return HeadingUiLayout(
-                            sectionTitle: AppLocalizations.of(context)!.overview,
-                            child: SoilAnalysis(
-                              chartData: controller.chartData,
-                              isLoading: controller.isLoadingGardenInsights.value,
-                            ),
-                          ).marginOnly(left: spacerSize20, right: spacerSize20);
-                        }),
-                        // const SizedBox(height: spacerSize15),
-                        // HeadingUiLayout(
-                        //   sectionTitle: AppLocalizations.of(
-                        //     context,
-                        //   )!.automationSuggestions,
-                        //   child: AutomationSuggestions(),
-                        // ),|
-                        const SizedBox(height: spacerSize12),
-                        AiPlantDiagnosisCard(
-                          onTap: () {
-                            openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
-                          },
-                        ).marginOnly(left: spacerSize20, right: spacerSize20),
-                        const SizedBox(height: spacerSize12),
-                        LandscapeDesignCard(
-                          onTap: () {
-                            if (controller.isUserLoggedIn.value == false) {
-                              BaseDialog.showAlertDialog(
-                                context: Get.context!,
-                                onButtonPressed: () {
-                                  Get.back();
-                                  Get.offAllNamed(
-                                    Routes.login,
-                                    arguments: {"question_state_passed": true},
-                                  );
-                                },
-                                title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
-                                description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
-                                buttonLabel: AppLocalizations.of(
-                                  Get.context!,
-                                )!.login.toUpperCase(),
-                              );
-                              return;
-                            }
-                            LandscapeStyleBottomSheet.show().then((style) {
-                              if (style != null) {
-                                openImagePickerBottomSheet(
-                                  source: ImagePickerSource.landscape,
-                                  selectedStyle: style,
-                                );
-                              }
-                            });
-                          },
-                        ).marginOnly(left: spacerSize20, right: spacerSize20),
-                        const SizedBox(height: spacerSize12),
-                        HeadingUiLayout(
-                          titleLeftPadding: spacerSize20,
-                          sectionTitle: AppLocalizations.of(context)!.plantRecommendations,
-                          child: Column(children: [PlantRecommendations(controller: controller)]),
-                        ),
-          
-                        SizedBox(height: spacerSize5),
-                        Obx(
-                          () => controller.isUserLoggedIn.value == false
-                              ? SizedBox()
-                              : Container(
-                                  width: double.infinity,
-                                  // color: AppColors.blackColor.withValues(
-                                  //   alpha: 0.6,
-                                  // ),
-                                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                                  child: BaseButton(
-                                    bottomPadding: false,
-                                    buttonLabel: AppLocalizations.of(context)!.addPlant,
-                                    buttonWidth: Get.width,
-                                    fontSize: fontSize15,
-                                    onPressed: () {
-                                      Get.toNamed(Routes.allPlantsScreen);
-                                      return;
-                                    },
-                                  ).paddingSymmetric(horizontal: spacerSize20),
+          floatingActionButton: ChatbotFab(onTap: _onChatbotTap),
+          floatingActionButtonLocation: const _TightEndFloatFabLocation(),
+          body: SafeArea(
+            child: SizedBox(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: AppColors.greenColor,
+                      onRefresh: controller.refreshDashboard,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 3.h),
+                            Obx(() {
+                              controller.refreshSoilAnalysis.value;
+                              return HeadingUiLayout(
+                                sectionTitle: AppLocalizations.of(
+                                  context,
+                                )!.overview,
+                                child: SoilAnalysis(
+                                  chartData: controller.chartData,
+                                  isLoading:
+                                      controller.isLoadingGardenInsights.value,
                                 ),
+                              ).marginOnly(
+                                left: spacerSize20,
+                                right: spacerSize20,
+                              );
+                            }),
+                            // const SizedBox(height: spacerSize15),
+                            // HeadingUiLayout(
+                            //   sectionTitle: AppLocalizations.of(
+                            //     context,
+                            //   )!.automationSuggestions,
+                            //   child: AutomationSuggestions(),
+                            // ),|
+                            const SizedBox(height: spacerSize12),
+                            TodaysTasksCard(
+                              onScanTap: () {
+                                openImagePickerBottomSheet(
+                                  source: ImagePickerSource.diagnosis,
+                                );
+                              },
+                              onRemindersTap: () {
+                                if (controller.isUserLoggedIn.value == false) {
+                                  BaseDialog.showAlertDialog(
+                                    context: Get.context!,
+                                    onButtonPressed: () {
+                                      Get.back();
+                                      Get.offAllNamed(
+                                        Routes.login,
+                                        arguments: {
+                                          "question_state_passed": true,
+                                        },
+                                      );
+                                    },
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.login.toUpperCase(),
+                                    description: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.pleaseLoginToSeeReminders,
+                                    buttonLabel: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.login.toUpperCase(),
+                                  );
+                                  return;
+                                }
+                                Get.toNamed(Routes.plantRemindersListing)?.then(
+                                  (_) {
+                                    controller.selectedNavType.value =
+                                        BottomNavType.home;
+                                    Get.find<TodaysTasksController>()
+                                        .fetchTodaysCareTasks();
+                                  },
+                                );
+                              },
+                            ).marginOnly(
+                              left: spacerSize20,
+                              right: spacerSize20,
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  Get.toNamed(Routes.challenges)?.then((
+                                    result,
+                                  ) {
+                                    if (result == 'diagnosis') {
+                                      openImagePickerBottomSheet(
+                                        source: ImagePickerSource.diagnosis,
+                                      );
+                                    } else if (result == 'landscape') {
+                                      if (controller.isUserLoggedIn.value ==
+                                          false) {
+                                        BaseDialog.showAlertDialog(
+                                          context: Get.context!,
+                                          onButtonPressed: () {
+                                            Get.back();
+                                            Get.offAllNamed(
+                                              Routes.login,
+                                              arguments: {
+                                                "question_state_passed": true,
+                                              },
+                                            );
+                                          },
+                                          title: AppLocalizations.of(
+                                            Get.context!,
+                                          )!.login.toUpperCase(),
+                                          description: AppStrings
+                                              .pleaseLoginToMakeAiLandscapeDesign,
+                                          buttonLabel: AppLocalizations.of(
+                                            Get.context!,
+                                          )!.login.toUpperCase(),
+                                        );
+                                        return;
+                                      }
+                                      LandscapeStyleBottomSheet.show().then((
+                                        style,
+                                      ) {
+                                        if (style != null) {
+                                          openImagePickerBottomSheet(
+                                            source: ImagePickerSource.landscape,
+                                            selectedStyle: style,
+                                          );
+                                        }
+                                      });
+                                    }
+                                    Get.find<TodaysTasksController>()
+                                        .fetchTodaysCareTasks();
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 8.h,
+                                    bottom: 2.h,
+                                    left: spacerSize20,
+                                    right: spacerSize20,
+                                  ),
+                                  child: BaseText(
+                                    text: AppLocalizations.of(
+                                      context,
+                                    )!.viewAllChallenges,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: AppKeys.poppins,
+                                    textColor: AppColors.greenColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: spacerSize12),
+                            AiPlantDiagnosisCard(
+                              onTap: () {
+                                openImagePickerBottomSheet(
+                                  source: ImagePickerSource.diagnosis,
+                                );
+                              },
+                            ).marginOnly(
+                              left: spacerSize20,
+                              right: spacerSize20,
+                            ),
+                            const SizedBox(height: spacerSize12),
+                            LandscapeDesignCard(
+                              onTap: () {
+                                if (controller.isUserLoggedIn.value == false) {
+                                  BaseDialog.showAlertDialog(
+                                    context: Get.context!,
+                                    onButtonPressed: () {
+                                      Get.back();
+                                      Get.offAllNamed(
+                                        Routes.login,
+                                        arguments: {
+                                          "question_state_passed": true,
+                                        },
+                                      );
+                                    },
+                                    title: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.login.toUpperCase(),
+                                    description: AppStrings
+                                        .pleaseLoginToMakeAiLandscapeDesign,
+                                    buttonLabel: AppLocalizations.of(
+                                      Get.context!,
+                                    )!.login.toUpperCase(),
+                                  );
+                                  return;
+                                }
+                                LandscapeStyleBottomSheet.show().then((style) {
+                                  if (style != null) {
+                                    openImagePickerBottomSheet(
+                                      source: ImagePickerSource.landscape,
+                                      selectedStyle: style,
+                                    );
+                                  }
+                                });
+                              },
+                            ).marginOnly(
+                              left: spacerSize20,
+                              right: spacerSize20,
+                            ),
+                            const SizedBox(height: spacerSize12),
+                            HeadingUiLayout(
+                              titleLeftPadding: spacerSize20,
+                              sectionTitle: AppLocalizations.of(
+                                context,
+                              )!.plantRecommendations,
+                              child: Column(
+                                children: [
+                                  PlantRecommendations(controller: controller),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: spacerSize5),
+                            Obx(
+                              () => controller.isUserLoggedIn.value == false
+                                  ? SizedBox()
+                                  : Container(
+                                      width: double.infinity,
+                                      // color: AppColors.blackColor.withValues(
+                                      //   alpha: 0.6,
+                                      // ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 10.h,
+                                      ),
+                                      child:
+                                          BaseButton(
+                                            bottomPadding: false,
+                                            buttonLabel: AppLocalizations.of(
+                                              context,
+                                            )!.addPlant,
+                                            buttonWidth: Get.width,
+                                            fontSize: fontSize15,
+                                            onPressed: () {
+                                              Get.toNamed(
+                                                Routes.allPlantsScreen,
+                                              );
+                                              return;
+                                            },
+                                          ).paddingSymmetric(
+                                            horizontal: spacerSize20,
+                                          ),
+                                    ),
+                            ),
+                            SizedBox(height: 0.h),
+                          ],
                         ),
-                        SizedBox(height: 0.h),
-                      ],
+                      ),
                     ),
                   ),
-                  ),
-                ),
-                // AdMob Banner Ad Area (only if user does not have a premium subscription)
-                Obx(() {
-                  final banner = controller.bannerAd;
-                  if (AdMobService.instance.shouldShowBanners &&
-                      controller.isAdLoaded.value &&
-                      banner != null) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: SafeBannerAd(key: ObjectKey(banner), ad: banner),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }),
-              ],
+                  // AdMob Banner Ad Area (only if user does not have a premium subscription)
+                  Obx(() {
+                    final banner = controller.bannerAd;
+                    if (AdMobService.instance.shouldShowBanners &&
+                        controller.isAdLoaded.value &&
+                        banner != null) {
+                      return Align(
+                        alignment: Alignment.center,
+                        child: SafeBannerAd(key: ObjectKey(banner), ad: banner),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                ],
+              ),
             ),
           ),
-        ),
-        bottomNavigationBar: Obx(() {
-          return BottomNavigationWidget(
-            selectNavType: controller.selectedNavType.value,
-            needToShow: controller.isUserLoggedIn.value,
-            onAddPlantClick: (p0) {
-              controller.selectedNavType.value = p0;
-              /*   if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
+          bottomNavigationBar: Obx(() {
+            return BottomNavigationWidget(
+              selectNavType: controller.selectedNavType.value,
+              needToShow: controller.isUserLoggedIn.value,
+              onAddPlantClick: (p0) {
+                controller.selectedNavType.value = p0;
+                /*   if (p0 != BottomNavType.scan && p0 != BottomNavType.report) {
                 controller.selectedNavType.value = p0;
               }
               if (p0 == BottomNavType.report) {
@@ -218,36 +374,38 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   );
                 }
               }*/
-              switch (p0) {
-                case BottomNavType.home:
-                  break;
-                case BottomNavType.scan:
-                  openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
-                  break;
+                switch (p0) {
+                  case BottomNavType.home:
+                    break;
+                  case BottomNavType.scan:
+                    openImagePickerBottomSheet(
+                      source: ImagePickerSource.diagnosis,
+                    );
+                    break;
 
-                case BottomNavType.reminders:
-                  Get.toNamed(Routes.plantRemindersListing)?.then((value) {
-                    controller.selectedNavType.value = BottomNavType.home;
-                  });
-                  break;
-                case BottomNavType.plant:
-                  Get.toNamed(Routes.myPlantsScreen)?.then((value) {
-                    controller.selectedNavType.value = BottomNavType.home;
-                  });
-                  break;
-                /*case BottomNavType.report:
+                  case BottomNavType.reminders:
+                    Get.toNamed(Routes.plantRemindersListing)?.then((value) {
+                      controller.selectedNavType.value = BottomNavType.home;
+                    });
+                    break;
+                  case BottomNavType.plant:
+                    Get.toNamed(Routes.myPlantsScreen)?.then((value) {
+                      controller.selectedNavType.value = BottomNavType.home;
+                    });
+                    break;
+                  /*case BottomNavType.report:
                   break;*/
-                case BottomNavType.profile:
-                  Utils.callSettingBasicApi();
-                  Get.toNamed(Routes.profile)?.then((value) {
-                    controller.selectedNavType.value = BottomNavType.home;
-                  });
-                  break;
-              }
-            },
-          );
-        }),
-      ),
+                  case BottomNavType.profile:
+                    Utils.callSettingBasicApi();
+                    Get.toNamed(Routes.profile)?.then((value) {
+                      controller.selectedNavType.value = BottomNavType.home;
+                    });
+                    break;
+                }
+              },
+            );
+          }),
+        ),
       ),
     );
   }
@@ -265,7 +423,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
         context: Get.context!,
         onButtonPressed: () {
           Get.back();
-          Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
+          Get.offAllNamed(
+            Routes.login,
+            arguments: {"question_state_passed": true},
+          );
         },
         title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
         description: source == ImagePickerSource.diagnosis
@@ -283,7 +444,11 @@ class DashboardScreen extends GetWidget<DashboardController> {
         //   directApiCall: true,
         // );
         await Future.delayed(Duration(milliseconds: 200));
-        controller.pickImage(isCamera: isCamera, source: source, selectedStyle: selectedStyle);
+        controller.pickImage(
+          isCamera: isCamera,
+          source: source,
+          selectedStyle: selectedStyle,
+        );
       },
       onThenCall: () {
         controller.selectedNavType.value = BottomNavType.home;

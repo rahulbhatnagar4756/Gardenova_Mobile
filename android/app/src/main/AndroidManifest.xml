@@ -82,6 +82,11 @@ xmlns:tools="http://schemas.android.com/tools">
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <!-- android/app/src/main/AndroidManifest.xml -->
+        <activity
+            android:name="com.android.billingclient.api.ProxyBillingActivity"
+            android:exported="false"
+            tools:replace="android:exported" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

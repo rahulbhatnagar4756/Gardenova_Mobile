@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
 import 'package:kasagardem/dashboard/dashboard_repository.dart';
+import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
 import 'package:kasagardem/dashboard/model/garden_insights_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
@@ -53,11 +54,15 @@ class DashboardController extends GetxController {
   void onInit() {
     SubscriptionService.instance.checkAndRecoverPendingPurchases();
     responseId = Get.arguments.toString();
+    if (!Get.isRegistered<TodaysTasksController>()) {
+      Get.put(TodaysTasksController(), permanent: true);
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _setupBannerAds();
       getPlantsRecommendations(responseId);
       getGardenInsights();
-      isUserLoggedIn.value = sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
+      isUserLoggedIn.value =
+          sharedPrefsService.getBool(AppKeys.isLoggedIn) ?? false;
     });
 
     super.onInit();
@@ -114,13 +119,19 @@ class DashboardController extends GetxController {
         break;
       case 1:
         if (isUserLoggedIn.value) {
-          Get.toNamed(Routes.recommendedProfessionals, arguments: {"lat": lat, "lng": long});
+          Get.toNamed(
+            Routes.recommendedProfessionals,
+            arguments: {"lat": lat, "lng": long},
+          );
         } else {
           BaseDialog.showAlertDialog(
             context: Get.context!,
             onButtonPressed: () {
               Get.back();
-              Get.toNamed(Routes.login, arguments: {"question_state_passed": true});
+              Get.toNamed(
+                Routes.login,
+                arguments: {"question_state_passed": true},
+              );
             },
             title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
             description: AppLocalizations.of(
@@ -177,12 +188,16 @@ class DashboardController extends GetxController {
   void goToLandscapeDesign(XFile? pickedFile, String? selectedStyle) {
     Get.toNamed(
       Routes.landscapeDesign,
-      arguments: {ApiKeys.imagePath: pickedFile!.path, "selected_style": selectedStyle},
+      arguments: {
+        ApiKeys.imagePath: pickedFile!.path,
+        "selected_style": selectedStyle,
+      },
     );
   }
 
   Future<void> getPlantsRecommendations(String responseId) async {
-    String recommendationId = sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
+    String recommendationId =
+        sharedPrefsService.getString(AppKeys.submissionResponseId) ?? '';
     if (recommendationId.trim().isEmpty) {
       recommendationId = responseId;
     }
@@ -194,7 +209,8 @@ class DashboardController extends GetxController {
     PlantRecommendationsResponseModel recommendationsResponse =
         PlantRecommendationsResponseModel.fromJson(response);
     if (recommendationsResponse.data != null) {
-      plantRecommendationList.value = recommendationsResponse.data!.plantRecommendations ?? [];
+      plantRecommendationList.value =
+          recommendationsResponse.data!.plantRecommendations ?? [];
       _scrollToFirstIndex();
     }
     isLoading.value = false;
@@ -202,6 +218,11 @@ class DashboardController extends GetxController {
 
   Future<void> refreshDashboard() async {
     refreshSoilAnalysis.refresh();
+    if (Get.isRegistered<TodaysTasksController>()) {
+      final tasksController = Get.find<TodaysTasksController>();
+      tasksController.loadState();
+      await tasksController.fetchTodaysCareTasks();
+    }
     await Future.wait([
       getGardenInsights(),
       getPlantsRecommendations(responseId),
@@ -210,7 +231,8 @@ class DashboardController extends GetxController {
 
   void _scrollToFirstIndex() {
     try {
-      if (plantRecController.hasClients && plantRecController.position.hasPixels) {
+      if (plantRecController.hasClients &&
+          plantRecController.position.hasPixels) {
         plantRecController.animateTo(
           0.0,
           duration: const Duration(milliseconds: 300),
@@ -307,7 +329,10 @@ class DashboardController extends GetxController {
     }
   }
 
-  Future<void> getSoilAnalysis({required double lat, required double long}) async {
+  Future<void> getSoilAnalysis({
+    required double lat,
+    required double long,
+  }) async {
     return getGardenInsights();
   }
 
@@ -342,7 +367,8 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-        _showAdAndProceed(() {
+          TodaysTasksController.completeIfRegistered(DailyTaskId.scan);
+          _showAdAndProceed(() {
             goToPlantDiagnosis(result);
           });
         }
@@ -365,6 +391,7 @@ class DashboardController extends GetxController {
 
         _showAdAndProceed(() {
           if (source == ImagePickerSource.diagnosis) {
+            TodaysTasksController.completeIfRegistered(DailyTaskId.scan);
             goToPlantDiagnosis(pickedFile);
           } else {
             goToLandscapeDesign(pickedFile, selectedStyle);
@@ -384,7 +411,9 @@ class DashboardController extends GetxController {
 
     // Show loading dialog
     Get.dialog(
-      const Center(child: CircularProgressIndicator(color: AppColors.greenColor)),
+      const Center(
+        child: CircularProgressIndicator(color: AppColors.greenColor),
+      ),
       barrierDismissible: false,
     );
 

@@ -2312,31 +2312,31 @@ abstract class AppLocalizations {
   /// No description provided for @deletePlant.
   ///
   /// In en, this message translates to:
-  /// **'Delete Plant'**
+  /// **'Remove Plant'**
   String get deletePlant;
 
   /// No description provided for @areYouSureYouWantToDeletePlant.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to delete this plant? This action cannot be undone.'**
+  /// **'Are you sure you want to remove this plant from My Plants? This action cannot be undone.'**
   String get areYouSureYouWantToDeletePlant;
 
   /// No description provided for @plantDeletedSuccessfully.
   ///
   /// In en, this message translates to:
-  /// **'Plant deleted successfully'**
+  /// **'Plant removed from My Plants successfully.'**
   String get plantDeletedSuccessfully;
 
   /// No description provided for @aiAssistant.
   ///
   /// In en, this message translates to:
-  /// **'AI Assistant'**
+  /// **'AI Garden Assistant'**
   String get aiAssistant;
 
   /// No description provided for @askMeAnything.
   ///
   /// In en, this message translates to:
-  /// **'Ask me anything'**
+  /// **'Ask Our Garden Expert'**
   String get askMeAnything;
 
   /// No description provided for @newChat.
@@ -2494,6 +2494,558 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rescan'**
   String get rescan;
+
+  /// No description provided for @todaysTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Tasks'**
+  String get todaysTasks;
+
+  /// No description provided for @todaysTasksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete daily care to grow your streak'**
+  String get todaysTasksSubtitle;
+
+  /// No description provided for @todaysTasksAllDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All done for today!'**
+  String get todaysTasksAllDoneTitle;
+
+  /// No description provided for @todaysTasksAllDoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your garden is thriving. See you tomorrow.'**
+  String get todaysTasksAllDoneSubtitle;
+
+  /// No description provided for @todaysTasksStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get todaysTasksStreak;
+
+  /// No description provided for @todaysTasksXp.
+  ///
+  /// In en, this message translates to:
+  /// **'XP'**
+  String get todaysTasksXp;
+
+  /// No description provided for @todaysTasksGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get todaysTasksGo;
+
+  /// No description provided for @todaysTasksClaimBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim bonus'**
+  String get todaysTasksClaimBonus;
+
+  /// No description provided for @todaysTasksBonusClaimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus claimed'**
+  String get todaysTasksBonusClaimed;
+
+  /// No description provided for @todaysTasksAllCompleteSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Garden hero! All tasks complete.'**
+  String get todaysTasksAllCompleteSnack;
+
+  /// No description provided for @todaysTasksBonusSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus XP claimed. Keep the streak going!'**
+  String get todaysTasksBonusSnack;
+
+  /// No description provided for @taskWaterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water your plants'**
+  String get taskWaterTitle;
+
+  /// No description provided for @taskWaterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give them a fresh, even drink'**
+  String get taskWaterSubtitle;
+
+  /// No description provided for @taskInspectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect the leaves'**
+  String get taskInspectTitle;
+
+  /// No description provided for @taskInspectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Look for pests and yellowing'**
+  String get taskInspectSubtitle;
+
+  /// No description provided for @taskScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan plant health'**
+  String get taskScanTitle;
+
+  /// No description provided for @taskScanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Catch issues early with AI'**
+  String get taskScanSubtitle;
+
+  /// No description provided for @taskRemindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check care reminders'**
+  String get taskRemindersTitle;
+
+  /// No description provided for @taskRemindersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on top of today\'s schedule'**
+  String get taskRemindersSubtitle;
+
+  /// No description provided for @taskFertilizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fertilize your plants'**
+  String get taskFertilizeTitle;
+
+  /// No description provided for @taskFertilizeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give nutrients for stronger growth'**
+  String get taskFertilizeSubtitle;
+
+  /// No description provided for @taskPruneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prune and tidy'**
+  String get taskPruneTitle;
+
+  /// No description provided for @taskPruneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trim dead leaves and shape growth'**
+  String get taskPruneSubtitle;
+
+  /// No description provided for @taskWaterShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get taskWaterShort;
+
+  /// No description provided for @taskInspectShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect'**
+  String get taskInspectShort;
+
+  /// No description provided for @taskScanShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get taskScanShort;
+
+  /// No description provided for @taskRemindersShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind'**
+  String get taskRemindersShort;
+
+  /// No description provided for @taskFertilizeShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Fertilize'**
+  String get taskFertilizeShort;
+
+  /// No description provided for @taskPruneShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Prune'**
+  String get taskPruneShort;
+
+  /// No description provided for @gardenLevelSprout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sprout'**
+  String get gardenLevelSprout;
+
+  /// No description provided for @gardenLevelSeedling.
+  ///
+  /// In en, this message translates to:
+  /// **'Seedling'**
+  String get gardenLevelSeedling;
+
+  /// No description provided for @gardenLevelBloom.
+  ///
+  /// In en, this message translates to:
+  /// **'Bloom'**
+  String get gardenLevelBloom;
+
+  /// No description provided for @gardenLevelMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Garden Master'**
+  String get gardenLevelMaster;
+
+  /// No description provided for @pleaseLoginToSeeReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to view your plant care reminders.'**
+  String get pleaseLoginToSeeReminders;
+
+  /// No description provided for @taskDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get taskDueToday;
+
+  /// No description provided for @taskOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get taskOverdue;
+
+  /// No description provided for @noCareDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No plant care due today'**
+  String get noCareDueToday;
+
+  /// No description provided for @todaysTasksViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get todaysTasksViewAll;
+
+  /// No description provided for @todaysTasksPlantFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'plant'**
+  String get todaysTasksPlantFallback;
+
+  /// No description provided for @viewAllChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'View all challenges'**
+  String get viewAllChallenges;
+
+  /// No description provided for @challengesHubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenges'**
+  String get challengesHubTitle;
+
+  /// No description provided for @challengesHubSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn points, grow your streak, and climb the board'**
+  String get challengesHubSubtitle;
+
+  /// No description provided for @challengesPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get challengesPoints;
+
+  /// No description provided for @challengesRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get challengesRank;
+
+  /// No description provided for @challengesNextLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next level'**
+  String get challengesNextLevel;
+
+  /// No description provided for @challengesDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get challengesDaily;
+
+  /// No description provided for @challengesWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get challengesWeekly;
+
+  /// No description provided for @challengesMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get challengesMonthly;
+
+  /// No description provided for @challengesRewardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem rewards'**
+  String get challengesRewardsTitle;
+
+  /// No description provided for @challengesLeaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get challengesLeaderboardTitle;
+
+  /// No description provided for @challengesHowToEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'How to earn'**
+  String get challengesHowToEarn;
+
+  /// No description provided for @challengesWhyYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Why you'**
+  String get challengesWhyYou;
+
+  /// No description provided for @challengesStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get challengesStart;
+
+  /// No description provided for @challengesClaimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Claimed'**
+  String get challengesClaimed;
+
+  /// No description provided for @challengesRedeem.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem'**
+  String get challengesRedeem;
+
+  /// No description provided for @challengesRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked'**
+  String get challengesRedeemed;
+
+  /// No description provided for @challengesNotEnoughPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough points yet. Keep gardening!'**
+  String get challengesNotEnoughPoints;
+
+  /// No description provided for @challengesRedeemSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward unlocked. Enjoy your garden perk!'**
+  String get challengesRedeemSuccess;
+
+  /// No description provided for @challengesMysteryOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'Mystery Garden Reward opened!'**
+  String get challengesMysteryOpened;
+
+  /// No description provided for @challengesYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get challengesYou;
+
+  /// No description provided for @challengesQuizCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct! Bonus points added.'**
+  String get challengesQuizCorrect;
+
+  /// No description provided for @challengesQuizWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Not quite. Try another challenge!'**
+  String get challengesQuizWrong;
+
+  /// No description provided for @challengeCatchUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Catch up — missed tasks'**
+  String get challengeCatchUpTitle;
+
+  /// No description provided for @challengeCatchUpWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Some plants in your garden are overdue'**
+  String get challengeCatchUpWhy;
+
+  /// No description provided for @challengeQuizTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz — know your plant'**
+  String get challengeQuizTitle;
+
+  /// No description provided for @challengeQuizWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'A plant in your garden is waiting to be named'**
+  String get challengeQuizWhy;
+
+  /// No description provided for @challengeAddPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Add 2 new plants'**
+  String get challengeAddPlants;
+
+  /// No description provided for @challengeCareActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 5 plant-care activities'**
+  String get challengeCareActivities;
+
+  /// No description provided for @challengeDiagnoses.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 2 plant diagnoses'**
+  String get challengeDiagnoses;
+
+  /// No description provided for @challengeWeekStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain a 7-day care streak'**
+  String get challengeWeekStreak;
+
+  /// No description provided for @challengeMaintainPlants.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain 5 plants for 30 days'**
+  String get challengeMaintainPlants;
+
+  /// No description provided for @challengeMonthDiagnoses.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete 5 plant diagnoses'**
+  String get challengeMonthDiagnoses;
+
+  /// No description provided for @challengeMonthLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Create 2 landscape designs'**
+  String get challengeMonthLandscape;
+
+  /// No description provided for @challengeMonthStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintain a 30-day care streak'**
+  String get challengeMonthStreak;
+
+  /// No description provided for @challengeWaterFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Water a plant today'**
+  String get challengeWaterFallback;
+
+  /// No description provided for @challengeWaterFallbackWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily care keeps your garden thriving'**
+  String get challengeWaterFallbackWhy;
+
+  /// No description provided for @earnAddPlant.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a plant'**
+  String get earnAddPlant;
+
+  /// No description provided for @earnDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant diagnosis'**
+  String get earnDiagnosis;
+
+  /// No description provided for @earnLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Landscape design'**
+  String get earnLandscape;
+
+  /// No description provided for @earnPlantCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant care'**
+  String get earnPlantCare;
+
+  /// No description provided for @earnDailyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily challenge'**
+  String get earnDailyChallenge;
+
+  /// No description provided for @earnCareStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Care streak'**
+  String get earnCareStreak;
+
+  /// No description provided for @earnAchievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievement'**
+  String get earnAchievement;
+
+  /// No description provided for @earn30Day.
+  ///
+  /// In en, this message translates to:
+  /// **'30-day challenge'**
+  String get earn30Day;
+
+  /// No description provided for @rewardChatCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat credits'**
+  String get rewardChatCredits;
+
+  /// No description provided for @rewardExtraDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra plant diagnosis'**
+  String get rewardExtraDiagnosis;
+
+  /// No description provided for @rewardExtraLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra landscape design'**
+  String get rewardExtraLandscape;
+
+  /// No description provided for @rewardPlantInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed plant insights'**
+  String get rewardPlantInsights;
+
+  /// No description provided for @rewardExclusiveChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclusive challenge'**
+  String get rewardExclusiveChallenge;
+
+  /// No description provided for @rewardExtraScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra plant scan'**
+  String get rewardExtraScan;
+
+  /// No description provided for @rewardMystery.
+  ///
+  /// In en, this message translates to:
+  /// **'Mystery garden reward'**
+  String get rewardMystery;
+
+  /// No description provided for @rewardPremiumTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium trial · 3 days'**
+  String get rewardPremiumTrial;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

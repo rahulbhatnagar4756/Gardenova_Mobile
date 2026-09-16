@@ -26,6 +26,7 @@ import '../../utils/routes.dart';
 import '../../utils/shared_prefs_service.dart';
 import '../../utils/utils.dart';
 import '../dashboard_controller.dart';
+import '../todays_tasks_controller.dart';
 
 class PlantDiagnosisViewModel extends GetxController {
   PlantDiagnosisRepository plantDiagnosisRepository = PlantDiagnosisRepository();
@@ -91,6 +92,7 @@ class PlantDiagnosisViewModel extends GetxController {
       isCurrentImagePlant.value = plantDiagnosisResponse.value.data?.isPlant ?? false;
 
       if (isCurrentImagePlant.value) {
+        TodaysTasksController.completeIfRegistered(DailyTaskId.scan);
         getKasagardemData();
       }
     } catch (e) {

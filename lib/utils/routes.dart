@@ -12,8 +12,12 @@ import 'package:kasagardem/authentication/register/register_screen.dart';
 import 'package:kasagardem/authentication/register/register_verify_otp_screen.dart';
 import 'package:kasagardem/authentication/register/register_view_model.dart';
 import 'package:kasagardem/base/widgets/coming_soon.dart';
+import 'package:kasagardem/dashboard/challenges/challenges_controller.dart';
+import 'package:kasagardem/dashboard/challenges/challenges_screen.dart';
+import 'package:kasagardem/dashboard/challenges/leaderboard_screen.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/dashboard_screen.dart';
+import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_detail/plant_detail_screen.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_detail/plant_detail_view_model.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plants_catalog/plants_catalog_screen.dart';
@@ -103,7 +107,8 @@ class Routes {
   static const privacyPolicy = '/privacy_policy';
   static const aboutApp = '/about_app';
   static const requestQuoteSuccess = '/request_quote_success';
-  static const professionalDashboardSuccessQuote = '/professional_dashboard_success_quote';
+  static const professionalDashboardSuccessQuote =
+      '/professional_dashboard_success_quote';
   static const referAFriend = '/refer_friend';
   static const plantDetail = '/plant_detail';
   static const plantsCatalog = '/plants_catalog';
@@ -123,10 +128,13 @@ class Routes {
   static const chatScreen = '/chat_screen';
   static const leadDetailsScreen = '/lead_details_screen';
   static const createRequestScreen = '/create_request_screen';
-  static const createProfessionalLeadRequestScreen = '/create_professional_request_screen';
+  static const createProfessionalLeadRequestScreen =
+      '/create_professional_request_screen';
   static const landscapeDesign = '/landscape_design';
   static const cameraCapture = '/camera_capture';
   static const plantRemindersListing = '/plant_reminders_listing';
+  static const challenges = '/challenges';
+  static const leaderboard = '/leaderboard';
   static const plantAnalysis = '/plant_analysis';
   static const plantAnalysisDetail = '/plant_analysis_detail';
   static const plantAnalysisCompare = '/plant_analysis_compare';
@@ -137,7 +145,9 @@ class Routes {
         name: Routes.splash,
         page: () => const SplashScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -147,7 +157,9 @@ class Routes {
         // page: () => LoginScreen(),
         // binding: BindingsBuilder.put(() => LoginViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -155,7 +167,9 @@ class Routes {
         page: () => LoginScreen(),
         binding: BindingsBuilder.put(() => LoginViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       // Login with OTP / verify mobile number screens disabled.
@@ -165,7 +179,6 @@ class Routes {
       //   transition: Utils.transition,
       //   transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       // ),
-
       GetPage(
         name: Routes.dashboard,
         page: () => DashboardScreen(),
@@ -175,9 +188,16 @@ class Routes {
           }
           Get.put(DashboardController());
           Get.put(SettingsViewModel());
+          if (!Get.isRegistered<TodaysTasksController>()) {
+            Get.put(TodaysTasksController(), permanent: true);
+          } else {
+            Get.find<TodaysTasksController>().loadState();
+          }
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -185,7 +205,9 @@ class Routes {
         page: () => RegisterScreen(),
         binding: BindingsBuilder.put(() => RegisterViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       // Register email OTP verification.
@@ -193,7 +215,9 @@ class Routes {
         name: Routes.registerVerifyOtp,
         page: () => const RegisterVerifyOtpScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -201,21 +225,27 @@ class Routes {
         page: () => ForgotPassword(),
         binding: BindingsBuilder.put(() => ForgotPasswordViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.verifyOtp,
         page: () => VerifyOtp(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.resetPassword,
         page: () => ResetPassword(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -223,14 +253,18 @@ class Routes {
         page: () => QuestionScreen(),
         binding: BindingsBuilder.put(() => QuestionViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.reportSuccess,
         page: () => ReportSuccessScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -242,7 +276,9 @@ class Routes {
           }
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -254,7 +290,9 @@ class Routes {
           }
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.editProfile,
@@ -265,14 +303,18 @@ class Routes {
           }
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.verifyEmailOtp,
         page: () => const VerifyEmailOtpScreen(),
         binding: BindingsBuilder.put(() => VerifiedEmailOtpViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -284,7 +326,9 @@ class Routes {
           }
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -292,44 +336,61 @@ class Routes {
         page: () => RecommendedProfessionals(),
         binding: BindingsBuilder.put(() => RecommendedProfessionalsViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.requestQuoteSuccess,
         page: () => RequestQuoteSuccess(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.professionalDashboardSuccessQuote,
         page: () => ProfessionalDashboardSuccessQuote(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.privacyPolicy,
-        page: () => PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_en.html'),
+        page: () =>
+            PrivacyPolicyScreen(filePath: 'assets/html/privacy_policy_en.html'),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.aboutApp,
         page: () => AboutAppScreen(filePath: 'assets/html/about_en.html'),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.termsAndConditions,
-        page: () => TermsAndConditions(filePath: 'assets/html/terms_and_conditions_en.html'),
+        page: () => TermsAndConditions(
+          filePath: 'assets/html/terms_and_conditions_en.html',
+        ),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.referAFriend,
         page: () => ComingSoon(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -337,21 +398,27 @@ class Routes {
         page: () => PlantDetailScreen(),
         binding: BindingsBuilder.put(() => PlantDetailViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantsCatalog,
         page: () => PlantsCatalogScreen(),
         binding: BindingsBuilder.put(() => PlantsCatalogViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantDiagnosis,
         page: () => PlantDiagnosisScreen(),
         binding: BindingsBuilder.put(() => PlantDiagnosisViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       /// new
@@ -360,42 +427,54 @@ class Routes {
         page: () => AllPlantsListScreen(),
         binding: BindingsBuilder.put(() => AllPlantsController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.allPlantsDetails,
         page: () => AllPlantsDetailsScreen(),
         binding: BindingsBuilder.put(() => AllPlantsDetailsController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.myPlantsScreen,
         page: () => MyPlantsScreen(),
         binding: BindingsBuilder.put(() => MyPlantsController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.myPlantsDetails,
         page: () => MyPlantDetailsScreen(),
         binding: BindingsBuilder.put(() => MyPlantDetailsController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantAnalysis,
         page: () => const PlantAnalysisScreen(),
         binding: BindingsBuilder.put(() => PlantAnalysisController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantAnalysisDetail,
         page: () => const PlantAnalysisDetailScreen(),
         binding: BindingsBuilder.put(() => PlantAnalysisDetailController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantAnalysisCompare,
@@ -405,14 +484,18 @@ class Routes {
           Get.put(PlantAnalysisCompareController());
         }),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.chooseAccountType,
         page: () => ChooseAccountTypeScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -420,7 +503,9 @@ class Routes {
         page: () => UpgradePlanScreen(),
         binding: BindingsBuilder.put(() => UpgradePlanController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -428,7 +513,9 @@ class Routes {
         page: () => OrderSummaryScreen(),
         binding: BindingsBuilder.put(() => UpgradePlanController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -436,7 +523,9 @@ class Routes {
         page: () => const UserSubscriptionScreen(),
         binding: BindingsBuilder.put(() => UserSubscriptionController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -444,7 +533,9 @@ class Routes {
         page: () => const UserOrderSummaryScreen(),
         binding: BindingsBuilder.put(() => UserSubscriptionController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       // Razorpay payment route disabled — Google Play Billing only.
@@ -455,13 +546,14 @@ class Routes {
       //   transition: Utils.transition,
       //   transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
       // ),
-
       GetPage(
         name: Routes.professionalDashboard,
         page: () => ProfessionalDashboardScreen(),
         binding: BindingsBuilder.put(() => ProfessionalDashboardController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
@@ -469,55 +561,101 @@ class Routes {
         page: () => MyLeadScreen(),
         binding: BindingsBuilder.put(() => MyLeadController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.createRequestScreen,
         page: () => CreateRequestScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.createProfessionalLeadRequestScreen,
         page: () => CreateProfessionalLeadRequestScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
 
       GetPage(
         name: Routes.leadDetailsScreen,
         page: () => LeadDetailsScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.chatScreen,
         page: () => const ChatbotScreen(),
         binding: BindingsBuilder.put(() => ChatbotController()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.landscapeDesign,
         page: () => const LandscapeDesignScreen(),
         binding: BindingsBuilder.put(() => LandscapeDesignViewModel()),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.cameraCapture,
         page: () => const CameraCaptureScreen(),
         transition: Utils.transition,
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
       GetPage(
         name: Routes.plantRemindersListing,
         page: () => PlantReminderListScreen(),
         transition: Utils.transition,
         binding: BindingsBuilder.put(() => PlantReminderController()),
-        transitionDuration: const Duration(milliseconds: Utils.transitionDuration),
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.challenges,
+        page: () => const ChallengesScreen(),
+        binding: BindingsBuilder(() {
+          if (Get.isRegistered<ChallengesController>()) {
+            Get.delete<ChallengesController>(force: true);
+          }
+          Get.put(ChallengesController());
+        }),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.leaderboard,
+        page: () => const LeaderboardScreen(),
+        binding: BindingsBuilder(() {
+          if (!Get.isRegistered<ChallengesController>()) {
+            Get.put(ChallengesController());
+          }
+          if (!Get.isRegistered<TodaysTasksController>()) {
+            Get.put(TodaysTasksController(), permanent: true);
+          }
+        }),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
       ),
     ];
   }

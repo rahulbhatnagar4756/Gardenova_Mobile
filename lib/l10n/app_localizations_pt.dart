@@ -114,8 +114,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loginWithEmail => 'Entrar com e-mail';
 
   @override
-  String get loginMobileOtpSubTitle =>
-      'Digite seu número de celular para receber uma senha de uso único';
+  String get loginMobileOtpSubTitle => 'Digite seu número de celular para receber uma senha de uso único';
 
   @override
   String get dontHaveAnAccount => 'Não tem uma conta?';
@@ -1048,8 +1047,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get planExpiringToday => 'Expiring Today';
 
   @override
-  String get planExpiringTodayDesc =>
-      'Your subscription ends today. Renew to keep premium features.';
+  String get planExpiringTodayDesc => 'Your subscription ends today. Renew to keep premium features.';
 
   @override
   String get selectYourPlan => 'Select Your Plan';
@@ -1163,8 +1161,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get fitnessScore => 'Pontuação de Aptidão';
 
   @override
-  String get fitnessScoreSubtitle =>
-      'Veja o quão preparado seu jardim está para um crescimento saudável';
+  String get fitnessScoreSubtitle => 'Veja o quão preparado seu jardim está para um crescimento saudável';
 
   @override
   String get healthy => 'Saudável';
@@ -1179,8 +1176,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noPlantAnalysisFound => 'Nenhuma análise de planta ainda';
 
   @override
-  String get noPlantAnalysisFoundDescription =>
-      'Escaneie uma planta para ver o histórico de análises aqui.';
+  String get noPlantAnalysisFoundDescription => 'Escaneie uma planta para ver o histórico de análises aqui.';
 
   @override
   String get compare => 'Comparar';
@@ -1198,8 +1194,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectEarlierScan => 'Selecione uma análise anterior';
 
   @override
-  String get noPreviousScan =>
-      'Nenhuma análise anterior encontrada para esta planta';
+  String get noPreviousScan => 'Nenhuma análise anterior encontrada para esta planta';
 
   @override
   String get healthImproved => 'Saúde melhorou';
@@ -1212,4 +1207,280 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get rescan => 'Nova análise';
+
+  @override
+  String get todaysTasks => 'Tarefas de hoje';
+
+  @override
+  String get todaysTasksSubtitle => 'Conclua os cuidados diários para aumentar sua sequência';
+
+  @override
+  String get todaysTasksAllDoneTitle => 'Tudo pronto por hoje!';
+
+  @override
+  String get todaysTasksAllDoneSubtitle => 'Seu jardim está prosperando. Até amanhã.';
+
+  @override
+  String get todaysTasksStreak => 'Sequência';
+
+  @override
+  String get todaysTasksXp => 'XP';
+
+  @override
+  String get todaysTasksGo => 'Ir';
+
+  @override
+  String get todaysTasksClaimBonus => 'Resgatar bônus';
+
+  @override
+  String get todaysTasksBonusClaimed => 'Bônus resgatado';
+
+  @override
+  String get todaysTasksAllCompleteSnack => 'Herói do jardim! Todas as tarefas concluídas.';
+
+  @override
+  String get todaysTasksBonusSnack => 'XP de bônus resgatado. Continue a sequência!';
+
+  @override
+  String get taskWaterTitle => 'Regue suas plantas';
+
+  @override
+  String get taskWaterSubtitle => 'Dê um gole fresco e uniforme';
+
+  @override
+  String get taskInspectTitle => 'Inspecione as folhas';
+
+  @override
+  String get taskInspectSubtitle => 'Procure pragas e amarelamento';
+
+  @override
+  String get taskScanTitle => 'Analise a saúde da planta';
+
+  @override
+  String get taskScanSubtitle => 'Detecte problemas cedo com IA';
+
+  @override
+  String get taskRemindersTitle => 'Veja os lembretes de cuidado';
+
+  @override
+  String get taskRemindersSubtitle => 'Acompanhe a agenda de hoje';
+
+  @override
+  String get taskFertilizeTitle => 'Adube suas plantas';
+
+  @override
+  String get taskFertilizeSubtitle => 'Dê nutrientes para um crescimento forte';
+
+  @override
+  String get taskPruneTitle => 'Pode e organize';
+
+  @override
+  String get taskPruneSubtitle => 'Corte folhas mortas e modele o crescimento';
+
+  @override
+  String get taskWaterShort => 'Regar';
+
+  @override
+  String get taskInspectShort => 'Olhar';
+
+  @override
+  String get taskScanShort => 'Analisar';
+
+  @override
+  String get taskRemindersShort => 'Lembrete';
+
+  @override
+  String get taskFertilizeShort => 'Adubar';
+
+  @override
+  String get taskPruneShort => 'Podar';
+
+  @override
+  String get gardenLevelSprout => 'Broto';
+
+  @override
+  String get gardenLevelSeedling => 'Muda';
+
+  @override
+  String get gardenLevelBloom => 'Floração';
+
+  @override
+  String get gardenLevelMaster => 'Mestre do Jardim';
+
+  @override
+  String get pleaseLoginToSeeReminders => 'Faça login para ver seus lembretes de cuidado das plantas.';
+
+  @override
+  String get taskDueToday => 'Hoje';
+
+  @override
+  String get taskOverdue => 'Atrasado';
+
+  @override
+  String get noCareDueToday => 'Nenhum cuidado de planta para hoje';
+
+  @override
+  String get todaysTasksViewAll => 'Ver tudo';
+
+  @override
+  String get todaysTasksPlantFallback => 'planta';
+
+  @override
+  String get viewAllChallenges => 'Ver todos os desafios';
+
+  @override
+  String get challengesHubTitle => 'Desafios';
+
+  @override
+  String get challengesHubSubtitle => 'Ganhe pontos, aumente sua sequência e suba no ranking';
+
+  @override
+  String get challengesPoints => 'Pontos';
+
+  @override
+  String get challengesRank => 'Ranking';
+
+  @override
+  String get challengesNextLevel => 'Próximo nível';
+
+  @override
+  String get challengesDaily => 'Diário';
+
+  @override
+  String get challengesWeekly => 'Semanal';
+
+  @override
+  String get challengesMonthly => 'Mensal';
+
+  @override
+  String get challengesRewardsTitle => 'Resgatar recompensas';
+
+  @override
+  String get challengesLeaderboardTitle => 'Ranking';
+
+  @override
+  String get challengesHowToEarn => 'Como ganhar';
+
+  @override
+  String get challengesWhyYou => 'Por que você';
+
+  @override
+  String get challengesStart => 'Começar';
+
+  @override
+  String get challengesClaimed => 'Concluído';
+
+  @override
+  String get challengesRedeem => 'Resgatar';
+
+  @override
+  String get challengesRedeemed => 'Desbloqueado';
+
+  @override
+  String get challengesNotEnoughPoints => 'Pontos insuficientes. Continue cultivando!';
+
+  @override
+  String get challengesRedeemSuccess => 'Recompensa desbloqueada. Aproveite!';
+
+  @override
+  String get challengesMysteryOpened => 'Recompensa misteriosa aberta!';
+
+  @override
+  String get challengesYou => 'Você';
+
+  @override
+  String get challengesQuizCorrect => 'Correto! Pontos de bônus adicionados.';
+
+  @override
+  String get challengesQuizWrong => 'Quase. Tente outro desafio!';
+
+  @override
+  String get challengeCatchUpTitle => 'Recuperar — tarefas atrasadas';
+
+  @override
+  String get challengeCatchUpWhy => 'Algumas plantas do seu jardim estão atrasadas';
+
+  @override
+  String get challengeQuizTitle => 'Quiz — conheça sua planta';
+
+  @override
+  String get challengeQuizWhy => 'Uma planta do seu jardim espera ser nomeada';
+
+  @override
+  String get challengeAddPlants => 'Adicione 2 plantas novas';
+
+  @override
+  String get challengeCareActivities => 'Conclua 5 cuidados de plantas';
+
+  @override
+  String get challengeDiagnoses => 'Faça 2 diagnósticos de plantas';
+
+  @override
+  String get challengeWeekStreak => 'Mantenha 7 dias de sequência';
+
+  @override
+  String get challengeMaintainPlants => 'Cuide de 5 plantas por 30 dias';
+
+  @override
+  String get challengeMonthDiagnoses => 'Faça 5 diagnósticos de plantas';
+
+  @override
+  String get challengeMonthLandscape => 'Crie 2 designs de paisagem';
+
+  @override
+  String get challengeMonthStreak => 'Mantenha 30 dias de sequência';
+
+  @override
+  String get challengeWaterFallback => 'Regue uma planta hoje';
+
+  @override
+  String get challengeWaterFallbackWhy => 'O cuidado diário deixa o jardim saudável';
+
+  @override
+  String get earnAddPlant => 'Adicionar planta';
+
+  @override
+  String get earnDiagnosis => 'Diagnóstico de planta';
+
+  @override
+  String get earnLandscape => 'Design de paisagem';
+
+  @override
+  String get earnPlantCare => 'Cuidado da planta';
+
+  @override
+  String get earnDailyChallenge => 'Desafio diário';
+
+  @override
+  String get earnCareStreak => 'Sequência de cuidado';
+
+  @override
+  String get earnAchievement => 'Conquista';
+
+  @override
+  String get earn30Day => 'Desafio de 30 dias';
+
+  @override
+  String get rewardChatCredits => 'Créditos de chat';
+
+  @override
+  String get rewardExtraDiagnosis => 'Diagnóstico extra';
+
+  @override
+  String get rewardExtraLandscape => 'Design de paisagem extra';
+
+  @override
+  String get rewardPlantInsights => 'Insights detalhados';
+
+  @override
+  String get rewardExclusiveChallenge => 'Desafio exclusivo';
+
+  @override
+  String get rewardExtraScan => 'Escaneamento extra';
+
+  @override
+  String get rewardMystery => 'Recompensa misteriosa';
+
+  @override
+  String get rewardPremiumTrial => 'Teste premium · 3 dias';
 }
