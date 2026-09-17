@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb, kReleaseMode;
@@ -24,6 +25,7 @@ import 'package:kasagardem/utils/routes.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
 import 'package:kasagardem/utils/status_bar_style.dart';
 import 'package:kasagardem/utils/utils.dart';
+
 import 'base/widgets/base_calculate_remaining_days.dart';
 import 'services/notification_service.dart';
 import 'services/reminder_push_notification_service.dart';
@@ -136,9 +138,7 @@ Future<void> main() async {
     } catch (_) {}
     runApp(
       MaterialApp(
-        home: Scaffold(
-          body: Center(child: Text('Startup failed: $error')),
-        ),
+        home: Scaffold(body: Center(child: Text('Startup failed: $error'))),
       ),
     );
   } finally {
@@ -218,53 +218,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           behavior: HitTestBehavior.opaque,
           onTap: () => Utils.hideKeyboard(),
           child: GetMaterialApp(
-              scrollBehavior: const MaterialScrollBehavior().copyWith(
-                overscroll: false,
-                physics: ClampingScrollPhysics(),
-              ),
-              fallbackLocale: enUS,
-              popGesture: true,
-              locale: widget.locale,
-              supportedLocales: [enUS],
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                scaffoldBackgroundColor: AppColors.appColor,
-                colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColor),
-                useMaterial3: true,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                appBarTheme: const AppBarTheme(
-                  surfaceTintColor: Colors.transparent,
-                  systemOverlayStyle: appSystemOverlayStyle,
-                ),
-              ),
-              color: AppColors.offWhite,
-              initialRoute: Routes.splash,
-              defaultTransition: Transition.rightToLeftWithFade,
-              getPages: Routes.getPages(),
-              routingCallback: (routing) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  StatusBarStyle.applyForRoute(routing?.current);
-                });
-              },
-              builder: (context, child) {
-                return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: appSystemOverlayStyle,
-                  child: MediaQuery(
-                    data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
-                    child: child!,
-                  ),
-                );
-              },
+            scrollBehavior: const MaterialScrollBehavior().copyWith(
+              overscroll: false,
+              physics: ClampingScrollPhysics(),
             ),
+            fallbackLocale: enUS,
+            popGesture: true,
+            locale: widget.locale,
+            supportedLocales: [enUS],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              scaffoldBackgroundColor: AppColors.appColor,
+              colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColor),
+              useMaterial3: true,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              appBarTheme: const AppBarTheme(
+                surfaceTintColor: Colors.transparent,
+                systemOverlayStyle: appSystemOverlayStyle,
+              ),
+            ),
+            color: AppColors.offWhite,
+            initialRoute: Routes.splash,
+            defaultTransition: Transition.rightToLeftWithFade,
+            getPages: Routes.getPages(),
+            routingCallback: (routing) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                StatusBarStyle.applyForRoute(routing?.current);
+              });
+            },
+            builder: (context, child) {
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: appSystemOverlayStyle,
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+                  child: child!,
+                ),
+              );
+            },
           ),
         ),
+      ),
     );
   }
 }
@@ -295,8 +295,7 @@ bool _shouldIgnoreCrashlyticsError(Object error, {FlutterErrorDetails? details})
   if (message.contains('this adwidget is already in the widget tree')) {
     return true;
   }
-  if (message.contains('unable to find explicit activity class') &&
-      message.contains('facebook')) {
+  if (message.contains('unable to find explicit activity class') && message.contains('facebook')) {
     return true;
   }
 
@@ -315,6 +314,10 @@ bool _shouldIgnoreCrashlyticsError(Object error, {FlutterErrorDetails? details})
     'could not instantiate image codec',
     'exception: invalid image data',
     'no host specified in uri',
+    'unsatisfiedlinkerror',
+    'em_aarch64',
+    'em_x86_64',
+    'proxybillingactivity',
   ];
   if (ignorableSnippets.any(message.contains)) return true;
 
