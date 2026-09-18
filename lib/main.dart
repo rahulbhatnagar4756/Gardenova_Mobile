@@ -56,6 +56,7 @@ Future<void> main() async {
           return;
         }
         FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+        debugPrint('Recorded Crashlytics FlutterFatalError: ${errorDetails.exception}');
       };
       PlatformDispatcher.instance.onError = (error, stack) {
         if (_shouldIgnoreCrashlyticsError(error)) {
@@ -63,6 +64,7 @@ Future<void> main() async {
           return true;
         }
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        debugPrint('Recorded Crashlytics Error: $error');
         return true;
       };
     }
@@ -153,6 +155,7 @@ Future<void> _initDeferredServices() async {
   } catch (e, stack) {
     if (kReleaseMode) {
       await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'Notification init failed');
+      debugPrint('Recorded Crashlytics Notification init failed: $e');
     }
   }
 
@@ -161,6 +164,7 @@ Future<void> _initDeferredServices() async {
   } catch (e, stack) {
     if (kReleaseMode) {
       await FirebaseCrashlytics.instance.recordError(e, stack, reason: 'MobileAds init failed');
+      debugPrint('Recorded Crashlytics Error: $e');
     }
   }
 }

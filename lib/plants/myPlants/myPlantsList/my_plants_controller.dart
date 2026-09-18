@@ -36,6 +36,7 @@ class MyPlantsController extends GetxController {
 
   BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
+  Worker? _adWorker;
 
   @override
   void onInit() {
@@ -56,7 +57,8 @@ class MyPlantsController extends GetxController {
 
   void _setupBannerAds() {
     if (Get.isRegistered<SettingsViewModel>()) {
-      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+      _adWorker?.dispose();
+      _adWorker = ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
         loadBannerAd();
       });
     }
@@ -92,6 +94,7 @@ class MyPlantsController extends GetxController {
 
   @override
   void onClose() {
+    _adWorker?.dispose();
     bannerAd?.dispose();
     super.onClose();
   }
