@@ -112,14 +112,12 @@ class AdMobService {
     await ensureInitialized();
 
     debugPrint('Loading banner ad: $bannerAdUnitId');
-    var loaded = false;
     final ad = BannerAd(
       adUnitId: bannerAdUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (ad) {
-          loaded = true;
           debugPrint('BannerAd loaded: ${ad.adUnitId}');
           onAdLoaded(ad);
         },
@@ -138,7 +136,7 @@ class AdMobService {
       return null;
     }
 
-    return loaded ? ad : null;
+    return ad;
   }
 
   /// Same gate as AI plant diagnosis: free users watch a rewarded ad
@@ -150,9 +148,7 @@ class AdMobService {
     }
 
     Get.dialog(
-      const Center(
-        child: CircularProgressIndicator(color: AppColors.greenColor),
-      ),
+      const Center(child: CircularProgressIndicator(color: AppColors.greenColor)),
       barrierDismissible: false,
     );
 

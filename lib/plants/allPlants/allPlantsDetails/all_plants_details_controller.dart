@@ -52,6 +52,7 @@ class AllPlantsDetailsController extends GetxController {
   final List<int> frequencyOptions = [1, 2, 3, 5, 7, 10, 15, 20, 30, 45, 60, 90];
   RxList<PlantInfoItem> plantInfoList = <PlantInfoItem>[].obs;
   BannerAd? bannerAd;
+  Worker? _adWorker;
 
   TextEditingController pruningController = TextEditingController();
   TextEditingController fertilizeController = TextEditingController();
@@ -95,7 +96,8 @@ class AllPlantsDetailsController extends GetxController {
 
   void _setupBannerAds() {
     if (Get.isRegistered<SettingsViewModel>()) {
-      ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
+      _adWorker?.dispose();
+      _adWorker = ever(Get.find<SettingsViewModel>().currentSubscriptionStatusModel, (_) {
         loadBannerAd();
       });
     }
@@ -160,6 +162,7 @@ class AllPlantsDetailsController extends GetxController {
 
   @override
   void onClose() {
+    _adWorker?.dispose();
     bannerAd?.dispose();
     super.onClose();
   }
@@ -563,7 +566,7 @@ class AllPlantsDetailsController extends GetxController {
   static const List<String> _genericEditKeys = [
     'generic_notification_enabled',
     'generic_care_reminder_frequency',
-    'generic_care_preferred_time',  
+    'generic_care_preferred_time',
     'generic_care_note',
   ];
 

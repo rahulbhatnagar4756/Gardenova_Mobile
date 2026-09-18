@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/soil_analysis.dart';
 import 'package:kasagardem/dashboard/dashboard_repository.dart';
-import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
 import 'package:kasagardem/dashboard/model/garden_insights_model.dart';
+import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations_response_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/utils/constants/api_keys.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
@@ -48,6 +48,7 @@ class DashboardController extends GetxController {
 
   BannerAd? bannerAd;
   RxBool isAdLoaded = false.obs;
+  Worker? _adWorker;
 
   @override
   void onInit() {
@@ -66,7 +67,8 @@ class DashboardController extends GetxController {
   void _setupBannerAds() {
     if (Get.isRegistered<SettingsViewModel>()) {
       final settingsVm = Get.find<SettingsViewModel>();
-      ever(settingsVm.currentSubscriptionStatusModel, (_) => loadBannerAd());
+      _adWorker?.dispose();
+      _adWorker = ever(settingsVm.currentSubscriptionStatusModel, (_) => loadBannerAd());
     }
     loadBannerAd();
   }
@@ -100,6 +102,7 @@ class DashboardController extends GetxController {
 
   @override
   void onClose() {
+    _adWorker?.dispose();
     bannerAd?.dispose();
     super.onClose();
   }
@@ -202,10 +205,7 @@ class DashboardController extends GetxController {
 
   Future<void> refreshDashboard() async {
     refreshSoilAnalysis.refresh();
-    await Future.wait([
-      getGardenInsights(),
-      getPlantsRecommendations(responseId),
-    ]);
+    await Future.wait([getGardenInsights(), getPlantsRecommendations(responseId)]);
   }
 
   void _scrollToFirstIndex() {
@@ -252,18 +252,14 @@ class DashboardController extends GetxController {
       final response = await dashboardRepository.fetchGardenInsights();
       if (response == null) return;
 
-      final model = GardenInsightsResponseModel.fromJson(
-        Map<String, dynamic>.from(response),
-      );
+      final model = GardenInsightsResponseModel.fromJson(Map<String, dynamic>.from(response));
       if (model.success != true || model.data?.chart == null) return;
 
       final mapped = <ChartData>[];
       final items = model.data!.chart!;
       for (int i = 0; i < items.length; i++) {
         final item = items[i];
-        final label = item.label?.trim().isNotEmpty == true
-            ? item.label!.trim()
-            : (item.key ?? '');
+        final label = item.label?.trim().isNotEmpty == true ? item.label!.trim() : (item.key ?? '');
         if (label.isEmpty) continue;
         mapped.add(
           ChartData(
@@ -342,7 +338,7 @@ class DashboardController extends GetxController {
           if (Get.isBottomSheetOpen ?? false) {
             Get.back();
           }
-        _showAdAndProceed(() {
+          _showAdAndProceed(() {
             goToPlantDiagnosis(result);
           });
         }
