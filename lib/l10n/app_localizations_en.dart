@@ -1483,4 +1483,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rewardPremiumTrial => 'Premium trial · 3 days';
+
+  @override
+  String get missedNotifications => 'Missed Notification';
+
+  @override
+  String get noMissedNotifications => 'No missed notifications';
+
+  @override
+  String get noMissedNotificationsDescription =>
+      'You\'re all caught up. Missed plant care reminders will show up here.';
+
+  @override
+  String get missedCountLabel => 'Missed';
+
+  @override
+  String get unableToLoadMissedNotifications =>
+      'Unable to load missed notifications';
 }

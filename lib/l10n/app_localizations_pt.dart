@@ -1483,4 +1483,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get rewardPremiumTrial => 'Teste premium · 3 dias';
+
+  @override
+  String get missedNotifications => 'Notificação perdida';
+
+  @override
+  String get noMissedNotifications => 'Nenhuma notificação perdida';
+
+  @override
+  String get noMissedNotificationsDescription =>
+      'Você está em dia. Os lembretes de cuidado perdidos aparecerão aqui.';
+
+  @override
+  String get missedCountLabel => 'Perdida';
+
+  @override
+  String get unableToLoadMissedNotifications =>
+      'Não foi possível carregar as notificações perdidas';
 }

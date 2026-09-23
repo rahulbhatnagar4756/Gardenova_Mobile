@@ -3,19 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:kasagardem/base/widgets/base_app_bar.dart';
-import 'package:kasagardem/base/widgets/base_text.dart';
-import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/base/widgets/base_button.dart';
 import 'package:kasagardem/base/widgets/chatbot_fab.dart';
 import 'package:kasagardem/base/widgets/circular_bottom_app_bar.dart';
+import 'package:kasagardem/base/widgets/safe_banner_ad.dart';
 import 'package:kasagardem/dashboard/components/ai_plan_diagnosis.dart';
 import 'package:kasagardem/dashboard/components/bottom_navigation_widget.dart';
 import 'package:kasagardem/dashboard/components/full_drawer.dart';
 import 'package:kasagardem/dashboard/components/landscape_design_card.dart';
 import 'package:kasagardem/dashboard/components/todays_tasks_card.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
-import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
 import 'package:kasagardem/dashboard/plant_recommendations/plant_recommendations.dart';
+import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/services/admob_service.dart';
 import 'package:kasagardem/utils/constants/app_color.dart';
@@ -29,6 +28,7 @@ import 'package:kasagardem/utils/utils.dart';
 import '../../services/reminder_push_notification_service.dart';
 import '../base/dialogs/base_dialog.dart';
 import '../base/open_image_pciker_bottom_sheet.dart';
+import '../base/widgets/base_text.dart';
 import 'components/heading_ui_layout.dart';
 import 'components/landscape_style_bottom_sheet.dart';
 import 'components/soil_analysis.dart';
@@ -75,10 +75,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   title: AppLocalizations.of(context)!.report,
                   isAppIconVisible: false,
                   onBackPressed: () {
-                    Get.offAllNamed(
-                      Routes.login,
-                      arguments: {"question_state_passed": true},
-                    );
+                    Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
                   },
                 ),
 
@@ -103,18 +100,12 @@ class DashboardScreen extends GetWidget<DashboardController> {
                             Obx(() {
                               controller.refreshSoilAnalysis.value;
                               return HeadingUiLayout(
-                                sectionTitle: AppLocalizations.of(
-                                  context,
-                                )!.overview,
+                                sectionTitle: AppLocalizations.of(context)!.overview,
                                 child: SoilAnalysis(
                                   chartData: controller.chartData,
-                                  isLoading:
-                                      controller.isLoadingGardenInsights.value,
+                                  isLoading: controller.isLoadingGardenInsights.value,
                                 ),
-                              ).marginOnly(
-                                left: spacerSize20,
-                                right: spacerSize20,
-                              );
+                              ).marginOnly(left: spacerSize20, right: spacerSize20);
                             }),
                             // const SizedBox(height: spacerSize15),
                             // HeadingUiLayout(
@@ -126,9 +117,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                             const SizedBox(height: spacerSize12),
                             TodaysTasksCard(
                               onScanTap: () {
-                                openImagePickerBottomSheet(
-                                  source: ImagePickerSource.diagnosis,
-                                );
+                                openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                               },
                               onRemindersTap: () {
                                 if (controller.isUserLoggedIn.value == false) {
@@ -138,14 +127,10 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                       Get.back();
                                       Get.offAllNamed(
                                         Routes.login,
-                                        arguments: {
-                                          "question_state_passed": true,
-                                        },
+                                        arguments: {"question_state_passed": true},
                                       );
                                     },
-                                    title: AppLocalizations.of(
-                                      Get.context!,
-                                    )!.login.toUpperCase(),
+                                    title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
                                     description: AppLocalizations.of(
                                       Get.context!,
                                     )!.pleaseLoginToSeeReminders,
@@ -155,59 +140,45 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                   );
                                   return;
                                 }
-                                Get.toNamed(Routes.plantRemindersListing)?.then(
-                                  (_) {
-                                    controller.selectedNavType.value =
-                                        BottomNavType.home;
-                                    Get.find<TodaysTasksController>()
-                                        .fetchTodaysCareTasks();
-                                  },
-                                );
+                                Get.toNamed(Routes.plantRemindersListing)?.then((_) {
+                                  controller.selectedNavType.value = BottomNavType.home;
+                                  Get.find<TodaysTasksController>().fetchTodaysCareTasks();
+                                });
                               },
-                            ).marginOnly(
-                              left: spacerSize20,
-                              right: spacerSize20,
-                            ),
+                            ).marginOnly(left: spacerSize20, right: spacerSize20),
                             Align(
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () {
-                                  Get.toNamed(Routes.challenges)?.then((
-                                    result,
-                                  ) {
+                                  Get.toNamed(Routes.challenges)?.then((result) {
                                     if (result == 'diagnosis') {
                                       openImagePickerBottomSheet(
                                         source: ImagePickerSource.diagnosis,
                                       );
                                     } else if (result == 'landscape') {
-                                      if (controller.isUserLoggedIn.value ==
-                                          false) {
+                                      if (controller.isUserLoggedIn.value == false) {
                                         BaseDialog.showAlertDialog(
                                           context: Get.context!,
                                           onButtonPressed: () {
                                             Get.back();
                                             Get.offAllNamed(
                                               Routes.login,
-                                              arguments: {
-                                                "question_state_passed": true,
-                                              },
+                                              arguments: {"question_state_passed": true},
                                             );
                                           },
                                           title: AppLocalizations.of(
                                             Get.context!,
                                           )!.login.toUpperCase(),
-                                          description: AppStrings
-                                              .pleaseLoginToMakeAiLandscapeDesign,
+                                          description:
+                                              AppStrings.pleaseLoginToMakeAiLandscapeDesign,
                                           buttonLabel: AppLocalizations.of(
                                             Get.context!,
                                           )!.login.toUpperCase(),
                                         );
                                         return;
                                       }
-                                      LandscapeStyleBottomSheet.show().then((
-                                        style,
-                                      ) {
+                                      LandscapeStyleBottomSheet.show().then((style) {
                                         if (style != null) {
                                           openImagePickerBottomSheet(
                                             source: ImagePickerSource.landscape,
@@ -216,8 +187,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                         }
                                       });
                                     }
-                                    Get.find<TodaysTasksController>()
-                                        .fetchTodaysCareTasks();
+                                    Get.find<TodaysTasksController>().fetchTodaysCareTasks();
                                   });
                                 },
                                 child: Padding(
@@ -228,9 +198,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                     right: spacerSize20,
                                   ),
                                   child: BaseText(
-                                    text: AppLocalizations.of(
-                                      context,
-                                    )!.viewAllChallenges,
+                                    text: AppLocalizations.of(context)!.viewAllChallenges,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: AppKeys.poppins,
@@ -242,14 +210,9 @@ class DashboardScreen extends GetWidget<DashboardController> {
                             const SizedBox(height: spacerSize12),
                             AiPlantDiagnosisCard(
                               onTap: () {
-                                openImagePickerBottomSheet(
-                                  source: ImagePickerSource.diagnosis,
-                                );
+                                openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                               },
-                            ).marginOnly(
-                              left: spacerSize20,
-                              right: spacerSize20,
-                            ),
+                            ).marginOnly(left: spacerSize20, right: spacerSize20),
                             const SizedBox(height: spacerSize12),
                             LandscapeDesignCard(
                               onTap: () {
@@ -260,16 +223,11 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                       Get.back();
                                       Get.offAllNamed(
                                         Routes.login,
-                                        arguments: {
-                                          "question_state_passed": true,
-                                        },
+                                        arguments: {"question_state_passed": true},
                                       );
                                     },
-                                    title: AppLocalizations.of(
-                                      Get.context!,
-                                    )!.login.toUpperCase(),
-                                    description: AppStrings
-                                        .pleaseLoginToMakeAiLandscapeDesign,
+                                    title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
+                                    description: AppStrings.pleaseLoginToMakeAiLandscapeDesign,
                                     buttonLabel: AppLocalizations.of(
                                       Get.context!,
                                     )!.login.toUpperCase(),
@@ -285,20 +243,13 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                   }
                                 });
                               },
-                            ).marginOnly(
-                              left: spacerSize20,
-                              right: spacerSize20,
-                            ),
+                            ).marginOnly(left: spacerSize20, right: spacerSize20),
                             const SizedBox(height: spacerSize12),
                             HeadingUiLayout(
                               titleLeftPadding: spacerSize20,
-                              sectionTitle: AppLocalizations.of(
-                                context,
-                              )!.plantRecommendations,
+                              sectionTitle: AppLocalizations.of(context)!.plantRecommendations,
                               child: Column(
-                                children: [
-                                  PlantRecommendations(controller: controller),
-                                ],
+                                children: [PlantRecommendations(controller: controller)],
                               ),
                             ),
 
@@ -311,26 +262,17 @@ class DashboardScreen extends GetWidget<DashboardController> {
                                       // color: AppColors.blackColor.withValues(
                                       //   alpha: 0.6,
                                       // ),
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10.h,
-                                      ),
-                                      child:
-                                          BaseButton(
-                                            bottomPadding: false,
-                                            buttonLabel: AppLocalizations.of(
-                                              context,
-                                            )!.addPlant,
-                                            buttonWidth: Get.width,
-                                            fontSize: fontSize15,
-                                            onPressed: () {
-                                              Get.toNamed(
-                                                Routes.allPlantsScreen,
-                                              );
-                                              return;
-                                            },
-                                          ).paddingSymmetric(
-                                            horizontal: spacerSize20,
-                                          ),
+                                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                                      child: BaseButton(
+                                        bottomPadding: false,
+                                        buttonLabel: AppLocalizations.of(context)!.addPlant,
+                                        buttonWidth: Get.width,
+                                        fontSize: fontSize15,
+                                        onPressed: () {
+                                          Get.toNamed(Routes.allPlantsScreen);
+                                          return;
+                                        },
+                                      ).paddingSymmetric(horizontal: spacerSize20),
                                     ),
                             ),
                             SizedBox(height: 0.h),
@@ -378,9 +320,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
                   case BottomNavType.home:
                     break;
                   case BottomNavType.scan:
-                    openImagePickerBottomSheet(
-                      source: ImagePickerSource.diagnosis,
-                    );
+                    openImagePickerBottomSheet(source: ImagePickerSource.diagnosis);
                     break;
 
                   case BottomNavType.reminders:
@@ -423,10 +363,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
         context: Get.context!,
         onButtonPressed: () {
           Get.back();
-          Get.offAllNamed(
-            Routes.login,
-            arguments: {"question_state_passed": true},
-          );
+          Get.offAllNamed(Routes.login, arguments: {"question_state_passed": true});
         },
         title: AppLocalizations.of(Get.context!)!.login.toUpperCase(),
         description: source == ImagePickerSource.diagnosis
@@ -444,11 +381,7 @@ class DashboardScreen extends GetWidget<DashboardController> {
         //   directApiCall: true,
         // );
         await Future.delayed(Duration(milliseconds: 200));
-        controller.pickImage(
-          isCamera: isCamera,
-          source: source,
-          selectedStyle: selectedStyle,
-        );
+        controller.pickImage(isCamera: isCamera, source: source, selectedStyle: selectedStyle);
       },
       onThenCall: () {
         controller.selectedNavType.value = BottomNavType.home;

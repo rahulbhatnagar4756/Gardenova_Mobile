@@ -14,7 +14,7 @@ class DashboardRepository {
     return "$_plantRecommendationEndPoint/$responseId";
   }
 
-  fetchPlantRecommendation(
+  Future<dynamic> fetchPlantRecommendation(
     String responseId, {
     bool showDefaultLoader = true,
   }) async {
@@ -25,7 +25,7 @@ class DashboardRepository {
     return plantsResponse;
   }
 
-  fetchExternalLink() async {
+  Future<dynamic> fetchExternalLink() async {
     var linkResponse = await ApiRepository.instance.get(_externalLinksUrl);
     return linkResponse;
   }
@@ -38,11 +38,25 @@ class DashboardRepository {
     );
   }
 
+  Future<dynamic> fetchDailyChallenges() async {
+    return ApiRepository.instance.get(
+      "api/v1/gamification/daily-challenges",
+      showDefaultLoader: false,
+      showRunTimeError: false,
+    );
+  }
+
+  Future<dynamic> completeDailyChallenge(String challengeId) async {
+    return ApiRepository.instance.post(
+      "api/v1/gamification/daily-challenges/$challengeId/complete",
+      showDefaultLoader: true,
+      showRunTimeError: false,
+      returnFailureResponse: true,
+    );
+  }
+
   /// NEW FUNCTION
-  Future<SoilAnalysisModel?> fetchSoilAnalysis({
-    required double lat,
-    required double lon,
-  }) async {
+  Future<SoilAnalysisModel?> fetchSoilAnalysis({required double lat, required double lon}) async {
     try {
       final url =
           "https://rest.isric.org/soilgrids/v2.0/properties/query"

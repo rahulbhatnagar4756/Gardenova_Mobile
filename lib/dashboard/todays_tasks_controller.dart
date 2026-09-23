@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:kasagardem/dashboard/dashboard_repository.dart';
+import 'package:kasagardem/dashboard/model/daily_challenges_model.dart';
 import 'package:kasagardem/l10n/app_localizations.dart';
 import 'package:kasagardem/reminders/model/notification_response_model.dart';
 import 'package:kasagardem/reminders/reminders_repository.dart';
+import 'package:kasagardem/utils/constants/app_constants.dart';
 import 'package:kasagardem/utils/constants/app_keys.dart';
 import 'package:kasagardem/utils/reward_celebration.dart';
 import 'package:kasagardem/utils/shared_prefs_service.dart';
@@ -38,7 +41,10 @@ class TodaysTasksController extends GetxController {
   static const _maxVisibleCareTasks = 3;
 
   final RemindersRepository _remindersRepository = RemindersRepository();
+  final DashboardRepository _dashboardRepository = DashboardRepository();
 
+  final challenges = <DailyChallenge>[].obs;
+  final isLoadingChallenges = false.obs;
   final completedIds = <String>{}.obs;
   final streak = 0.obs;
   final xp = 0.obs;
@@ -51,32 +57,21 @@ class TodaysTasksController extends GetxController {
 
   String _lastCompleteDate = '';
 
-  bool get isLoggedIn =>
-      SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
+  bool get isLoggedIn => SharedPrefsService.instance.getBool(AppKeys.isLoggedIn) ?? false;
 
   /// Care reminders only when there is at least one due/completed care item
-  /// for today. Otherwise fall back to daily habit tasks (avoids 0/0).
-  bool get isCareMode =>
-      isLoggedIn && careLoaded.value && todayKeys.isNotEmpty;
+  /// for today. Otherwise fall back to dynamic challenges from API.
+  bool get isCareMode => isLoggedIn && careLoaded.value && todayKeys.isNotEmpty;
 
-  int get completedCount {
-    if (isCareMode) {
-      return todayKeys.where(completedIds.contains).length;
-    }
-    return DailyTaskId.values.where(isCompleted).length;
-  }
+  int get completedCount => challenges.where((c) => c.isCompleted).length;
 
-  int get totalCount {
-    if (isCareMode) return todayKeys.length;
-    return DailyTaskId.values.length;
-  }
+  int get totalCount => challenges.length;
 
   double get progress => totalCount == 0 ? 0 : completedCount / totalCount;
 
   bool get allComplete => totalCount > 0 && completedCount >= totalCount;
 
-  List<TodaysCareTask> get visibleCareTasks =>
-      liveTasks.take(_maxVisibleCareTasks).toList();
+  List<TodaysCareTask> get visibleCareTasks => liveTasks.take(_maxVisibleCareTasks).toList();
 
   bool get hasMoreCareTasks => liveTasks.length > _maxVisibleCareTasks;
 
@@ -84,12 +79,18 @@ class TodaysTasksController extends GetxController {
   void onInit() {
     super.onInit();
     loadState();
-    fetchTodaysCareTasks();
+    if (isLoggedIn) {
+      refreshTasks();
+    }
   }
 
-  static void completeIfRegistered(DailyTaskId id) {
+  Future<void> refreshTasks() async {
+    await Future.wait([fetchChallenges(), fetchTodaysCareTasks()]);
+  }
+
+  static void completeIfRegistered(String code) {
     if (Get.isRegistered<TodaysTasksController>()) {
-      Get.find<TodaysTasksController>().completeTask(id);
+      Get.find<TodaysTasksController>().completeTask(code);
     }
   }
 
@@ -100,8 +101,7 @@ class TodaysTasksController extends GetxController {
 
   bool isCompleted(DailyTaskId id) => completedIds.contains(id.name);
 
-  bool isCareTaskCompleted(TodaysCareTask task) =>
-      completedIds.contains(task.id);
+  bool isCareTaskCompleted(TodaysCareTask task) => completedIds.contains(task.id);
 
   DailyTaskId? get nextTask {
     for (final id in DailyTaskId.values) {
@@ -118,8 +118,7 @@ class TodaysTasksController extends GetxController {
   }
 
   void loadState() {
-    final raw =
-        SharedPrefsService.instance.getString(AppKeys.todaysTasksState) ?? '';
+    final raw = SharedPrefsService.instance.getString(AppKeys.todaysTasksState) ?? '';
     if (raw.isEmpty) return;
 
     try {
@@ -132,8 +131,7 @@ class TodaysTasksController extends GetxController {
 
       if (_lastCompleteDate.isNotEmpty &&
           _lastCompleteDate != today &&
-          _lastCompleteDate !=
-              _dateKey(DateTime.now().subtract(const Duration(days: 1)))) {
+          _lastCompleteDate != _dateKey(DateTime.now().subtract(const Duration(days: 1)))) {
         streak.value = 0;
       }
 
@@ -148,6 +146,36 @@ class TodaysTasksController extends GetxController {
       }
     } catch (e) {
       debugPrint('Today\'s tasks load error: $e');
+    }
+  }
+
+  Future<void> fetchChallenges() async {
+    if (!isLoggedIn) {
+      challenges.clear();
+      return;
+    }
+    isLoadingChallenges.value = true;
+    try {
+      final response = await _dashboardRepository.fetchDailyChallenges();
+      if (response != null) {
+        final model = DailyChallengesResponseModel.fromJson(response);
+        final fetched = model.data?.challenges ?? [];
+        challenges.assignAll(fetched);
+
+        for (final c in fetched) {
+          if (c.isCompleted) {
+            if (c.id != null) completedIds.add(c.id!);
+            if (c.code != null) {
+              completedIds.add(c.code!);
+              completedIds.add(c.code!.toUpperCase());
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Fetch challenges error: $e');
+    } finally {
+      isLoadingChallenges.value = false;
     }
   }
 
@@ -222,7 +250,9 @@ class TodaysTasksController extends GetxController {
       );
       if (response == null) return;
       _markIdComplete(task.id);
+      _markIdComplete('TODAYS_CARE');
       liveTasks.removeWhere((item) => item.id == task.id);
+      fetchChallenges();
     } catch (e) {
       debugPrint('Complete care task error: $e');
     } finally {
@@ -230,8 +260,51 @@ class TodaysTasksController extends GetxController {
     }
   }
 
-  void completeTask(DailyTaskId id) {
-    _markIdComplete(id.name);
+  void completeTask(String code) {
+    _markIdComplete(code);
+  }
+
+  Future<void> completeChallengeApi(DailyChallenge challenge) async {
+    final challengeId = challenge.id;
+    if (challengeId == null || challengeId.isEmpty || challenge.isCompleted) return;
+
+    try {
+      final response = await _dashboardRepository.completeDailyChallenge(challengeId);
+
+      if (response != null && response['success'] == true) {
+        RewardCelebration.burstConfetti(big: true);
+
+        final pts = challenge.points ?? taskXp;
+        final l10n = AppLocalizations.of(Get.context!);
+        RewardCelebration.showPopup(
+          title: challenge.title ?? 'Challenge Completed!',
+          subtitle: '+$pts ${l10n?.todaysTasksXp ?? 'XP'}',
+          icon: Icons.emoji_events_rounded,
+        );
+
+        _markIdComplete(challengeId);
+        if (challenge.code != null) {
+          _markIdComplete(challenge.code!);
+        }
+
+        await fetchChallenges();
+      } else {
+        final message =
+            (response != null &&
+                response['message'] != null &&
+                response['message'].toString().trim().isNotEmpty)
+            ? response['message'].toString()
+            : "Complete today's care tasks first to unlock this reward! 🌿";
+
+        BaseSnackBar.show(title: "Garden Challenge 🌿", message: message);
+      }
+    } catch (e) {
+      debugPrint('Complete challenge API error: $e');
+      BaseSnackBar.show(
+        title: "Garden Challenge 🌿",
+        message: "Complete today's care tasks first to unlock this reward! 🌿",
+      );
+    }
   }
 
   void addXp(int amount) {
@@ -271,14 +344,46 @@ class TodaysTasksController extends GetxController {
     todayKeys.add(mapped.id);
     liveTasks.removeWhere((item) => item.id == mapped.id);
     _markIdComplete(mapped.id);
+    _markIdComplete('TODAYS_CARE');
+    fetchChallenges();
   }
 
-  void _markIdComplete(String id) {
-    if (completedIds.contains(id)) return;
+  void _markIdComplete(String idOrCode) {
+    final cleanCode = idOrCode.replaceAll('DailyTaskId.', '').toUpperCase();
+    if (completedIds.contains(idOrCode) && completedIds.contains(cleanCode)) return;
+
+    final index = challenges.indexWhere(
+      (c) =>
+          c.id == idOrCode ||
+          c.code?.toUpperCase() == cleanCode ||
+          c.code?.toUpperCase() == idOrCode.toUpperCase() ||
+          _isCodeAlias(c.code, cleanCode),
+    );
+
+    int earnedXp = taskXp;
+
+    if (index != -1) {
+      final challenge = challenges[index];
+      if (!challenge.isCompleted) {
+        challenge.progressCount = challenge.targetCount ?? ((challenge.progressCount ?? 0) + 1);
+        challenge.status = 'completed';
+        challenges[index] = challenge;
+        challenges.refresh();
+
+        earnedXp = challenge.points ?? taskXp;
+      }
+      if (challenge.id != null) completedIds.add(challenge.id!);
+      if (challenge.code != null) {
+        completedIds.add(challenge.code!);
+        completedIds.add(challenge.code!.toUpperCase());
+      }
+    }
+
+    completedIds.add(idOrCode);
+    completedIds.add(cleanCode);
 
     HapticFeedback.mediumImpact();
-    completedIds.add(id);
-    xp.value += taskXp;
+    xp.value += earnedXp;
 
     final l10n = AppLocalizations.of(Get.context!);
     if (allComplete) {
@@ -286,7 +391,7 @@ class TodaysTasksController extends GetxController {
       if (l10n != null) {
         RewardCelebration.showPopup(
           title: l10n.todaysTasksAllCompleteSnack,
-          subtitle: '+$taskXp ${l10n.todaysTasksXp}',
+          subtitle: '+$earnedXp ${l10n.todaysTasksXp}',
           icon: Icons.local_florist_rounded,
         );
       } else {
@@ -297,6 +402,20 @@ class TodaysTasksController extends GetxController {
     }
 
     _save();
+  }
+
+  bool _isCodeAlias(String? code, String input) {
+    if (code == null) return false;
+    final c = code.toUpperCase();
+    if ((c == 'PLANT_SCAN' || c == 'DIAGNOSIS') &&
+        (input == 'SCAN' || input == 'PLANT_SCAN' || input == 'DIAGNOSIS')) {
+      return true;
+    }
+    if ((c == 'TODAYS_CARE' || c == 'REMINDERS') &&
+        (input == 'TODAYS_CARE' || input == 'REMINDERS' || input == 'CARE')) {
+      return true;
+    }
+    return false;
   }
 
   TodaysCareTask? _mapCareTask(Tasks task) {
@@ -347,9 +466,7 @@ class TodaysTasksController extends GetxController {
     final today = _dateKey(DateTime.now());
     if (_lastCompleteDate == today) return;
 
-    final yesterday = _dateKey(
-      DateTime.now().subtract(const Duration(days: 1)),
-    );
+    final yesterday = _dateKey(DateTime.now().subtract(const Duration(days: 1)));
     streak.value = _lastCompleteDate == yesterday ? streak.value + 1 : 1;
     _lastCompleteDate = today;
   }

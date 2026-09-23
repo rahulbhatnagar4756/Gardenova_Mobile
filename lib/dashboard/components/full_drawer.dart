@@ -276,6 +276,15 @@ class _FullScreenDrawerState extends State<FullScreenDrawer> {
               onTap: () => widget.onTap(5),
             ),
             drawerItem(
+              icon: Icons.notifications_off_outlined,
+              title: AppLocalizations.of(Get.context!)!.missedNotifications,
+              onTap: () {
+                Get.back();
+                if (Get.currentRoute == Routes.missedNotifications) return;
+                Get.toNamed(Routes.missedNotifications);
+              },
+            ),
+            drawerItem(
               icon: Icons.emoji_events_outlined,
               title: AppLocalizations.of(
                 Get.context!,
