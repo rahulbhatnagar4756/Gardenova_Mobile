@@ -3046,6 +3046,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Premium trial · 3 days'**
   String get rewardPremiumTrial;
+
+  /// No description provided for @missedNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Notification'**
+  String get missedNotifications;
+
+  /// No description provided for @noMissedNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No missed notifications'**
+  String get noMissedNotifications;
+
+  /// No description provided for @noMissedNotificationsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You're all caught up. Missed plant care reminders will show up here.'**
+  String get noMissedNotificationsDescription;
+
+  /// No description provided for @missedCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get missedCountLabel;
+
+  /// No description provided for @unableToLoadMissedNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load missed notifications'**
+  String get unableToLoadMissedNotifications;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

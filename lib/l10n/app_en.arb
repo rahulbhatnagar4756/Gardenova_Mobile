@@ -492,5 +492,10 @@
   "rewardExclusiveChallenge": "Exclusive challenge",
   "rewardExtraScan": "Extra plant scan",
   "rewardMystery": "Mystery garden reward",
-  "rewardPremiumTrial": "Premium trial · 3 days"
+  "rewardPremiumTrial": "Premium trial · 3 days",
+  "missedNotifications": "Missed Notification",
+  "noMissedNotifications": "No missed notifications",
+  "noMissedNotificationsDescription": "You're all caught up. Missed plant care reminders will show up here.",
+  "missedCountLabel": "Missed",
+  "unableToLoadMissedNotifications": "Unable to load missed notifications"
 }

@@ -67,7 +67,7 @@ class AllPlantsDetailsController extends GetxController {
       plantId.value = Get.arguments['plant_id'].toString();
       screenType.value = Get.arguments['screen_type'].toString();
 
-      print("value screenType ${screenType.value}");
+      debugPrint("value screenType ${screenType.value}");
     }
     debugPrint('AllPlantsDetailsController plantId $plantId and screenType $screenType');
     if (screenType.value == "add") {

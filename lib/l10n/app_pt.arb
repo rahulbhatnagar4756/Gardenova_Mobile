@@ -490,5 +490,10 @@
   "rewardExclusiveChallenge": "Desafio exclusivo",
   "rewardExtraScan": "Escaneamento extra",
   "rewardMystery": "Recompensa misteriosa",
-  "rewardPremiumTrial": "Teste premium · 3 dias"
+  "rewardPremiumTrial": "Teste premium · 3 dias",
+  "missedNotifications": "Notificação perdida",
+  "noMissedNotifications": "Nenhuma notificação perdida",
+  "noMissedNotificationsDescription": "Você está em dia. Os lembretes de cuidado perdidos aparecerão aqui.",
+  "missedCountLabel": "Perdida",
+  "unableToLoadMissedNotifications": "Não foi possível carregar as notificações perdidas"
 }

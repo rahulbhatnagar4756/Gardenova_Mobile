@@ -92,7 +92,7 @@ class PlantDiagnosisViewModel extends GetxController {
       isCurrentImagePlant.value = plantDiagnosisResponse.value.data?.isPlant ?? false;
 
       if (isCurrentImagePlant.value) {
-        TodaysTasksController.completeIfRegistered(DailyTaskId.scan);
+        TodaysTasksController.completeIfRegistered(DailyTaskId.scan.toString());
         getKasagardemData();
       }
     } catch (e) {
@@ -134,44 +134,44 @@ class PlantDiagnosisViewModel extends GetxController {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-              leading: const Icon(Icons.camera_alt, color: AppColors.greenColor),
-              title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
-              onTap: () async {
-                Get.back();
-                await Future.delayed(const Duration(milliseconds: 200));
+                leading: const Icon(Icons.camera_alt, color: AppColors.greenColor),
+                title: BaseText(text: AppLocalizations.of(Get.context!)!.camera),
+                onTap: () async {
+                  Get.back();
+                  await Future.delayed(const Duration(milliseconds: 200));
 
-                // Camera Permission
-                bool hasPermission = await PermissionManager.handleCameraPermission();
-                if (!hasPermission) return;
+                  // Camera Permission
+                  bool hasPermission = await PermissionManager.handleCameraPermission();
+                  if (!hasPermission) return;
 
-                final result = await Get.toNamed(Routes.cameraCapture);
-                if (result != null && result is XFile) {
-                  imageFile!.value = File(result.path);
-                  isApiComplete.value = false;
-                  diagnosePlant();
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColors.greenColor),
-              title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
-              onTap: () async {
-                Get.back();
-                await Future.delayed(const Duration(milliseconds: 200));
+                  final result = await Get.toNamed(Routes.cameraCapture);
+                  if (result != null && result is XFile) {
+                    imageFile!.value = File(result.path);
+                    isApiComplete.value = false;
+                    diagnosePlant();
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: AppColors.greenColor),
+                title: BaseText(text: AppLocalizations.of(Get.context!)!.gallery),
+                onTap: () async {
+                  Get.back();
+                  await Future.delayed(const Duration(milliseconds: 200));
 
-                final ImagePicker picker = ImagePicker();
-                final XFile? pickedFile = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  requestFullMetadata: true,
-                  imageQuality: 70,
-                );
-                if (pickedFile != null && pickedFile.path.isNotEmpty) {
-                  imageFile!.value = File(pickedFile.path);
-                  isApiComplete.value = false;
-                  diagnosePlant();
-                }
-              },
-            ),
+                  final ImagePicker picker = ImagePicker();
+                  final XFile? pickedFile = await picker.pickImage(
+                    source: ImageSource.gallery,
+                    requestFullMetadata: true,
+                    imageQuality: 70,
+                  );
+                  if (pickedFile != null && pickedFile.path.isNotEmpty) {
+                    imageFile!.value = File(pickedFile.path);
+                    isApiComplete.value = false;
+                    diagnosePlant();
+                  }
+                },
+              ),
             ],
           ),
         ),

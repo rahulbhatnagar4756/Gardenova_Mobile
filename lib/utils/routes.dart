@@ -15,6 +15,8 @@ import 'package:kasagardem/base/widgets/coming_soon.dart';
 import 'package:kasagardem/dashboard/challenges/challenges_controller.dart';
 import 'package:kasagardem/dashboard/challenges/challenges_screen.dart';
 import 'package:kasagardem/dashboard/challenges/leaderboard_screen.dart';
+import 'package:kasagardem/dashboard/missed_notifications/missed_notifications_controller.dart';
+import 'package:kasagardem/dashboard/missed_notifications/missed_notifications_screen.dart';
 import 'package:kasagardem/dashboard/dashboard_controller.dart';
 import 'package:kasagardem/dashboard/dashboard_screen.dart';
 import 'package:kasagardem/dashboard/todays_tasks_controller.dart';
@@ -135,6 +137,7 @@ class Routes {
   static const plantRemindersListing = '/plant_reminders_listing';
   static const challenges = '/challenges';
   static const leaderboard = '/leaderboard';
+  static const missedNotifications = '/missed_notifications';
   static const plantAnalysis = '/plant_analysis';
   static const plantAnalysisDetail = '/plant_analysis_detail';
   static const plantAnalysisCompare = '/plant_analysis_compare';
@@ -636,6 +639,15 @@ class Routes {
           }
           Get.put(ChallengesController());
         }),
+        transition: Utils.transition,
+        transitionDuration: const Duration(
+          milliseconds: Utils.transitionDuration,
+        ),
+      ),
+      GetPage(
+        name: Routes.missedNotifications,
+        page: () => const MissedNotificationsScreen(),
+        binding: BindingsBuilder.put(() => MissedNotificationsController()),
         transition: Utils.transition,
         transitionDuration: const Duration(
           milliseconds: Utils.transitionDuration,
